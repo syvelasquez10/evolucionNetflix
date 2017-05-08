@@ -124,7 +124,7 @@ public final class PostPlayForMDX extends PostPlay
             mTitle.setVisibility(visibility);
             this.mSynopsis.setVisibility(8);
             this.mPlayButton.getLayoutParams().width = -2;
-            ((ViewGroup$MarginLayoutParams)this.mPlayButton.getLayoutParams()).bottomMargin = (int)this.mNetflixActivity.getResources().getDimension(2131362304);
+            ((ViewGroup$MarginLayoutParams)this.mPlayButton.getLayoutParams()).bottomMargin = (int)this.mNetflixActivity.getResources().getDimension(2131362306);
         }
     }
     
@@ -165,10 +165,10 @@ public final class PostPlayForMDX extends PostPlay
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131690176);
-        this.mStopButton = this.mNetflixActivity.findViewById(2131690183);
-        this.mPlayButton = this.mNetflixActivity.findViewById(2131690182);
-        this.mMoreButton = this.mNetflixActivity.findViewById(2131690184);
+        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131690177);
+        this.mStopButton = this.mNetflixActivity.findViewById(2131690184);
+        this.mPlayButton = this.mNetflixActivity.findViewById(2131690183);
+        this.mMoreButton = this.mNetflixActivity.findViewById(2131690185);
     }
     
     @Override

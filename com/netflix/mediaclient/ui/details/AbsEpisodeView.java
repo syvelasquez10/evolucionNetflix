@@ -62,7 +62,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             return episodeDetails.getTitle();
         }
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            return context.getString(2131231149);
+            return context.getString(2131231150);
         }
         return episodeDetails.getAvailabilityDateMessage();
     }

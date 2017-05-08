@@ -48,8 +48,9 @@ public abstract class ProgressiveRequest extends Request<Void>
     
     @Override
     public void deliverError(final VolleyError volleyError) {
-        if (this.mListener != null) {
-            this.mListener.onError(volleyError);
+        final ProgressiveRequestListener mListener = this.mListener;
+        if (mListener != null) {
+            mListener.onError(volleyError);
         }
     }
     

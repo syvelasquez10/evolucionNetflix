@@ -63,6 +63,8 @@ class LoggingAgent$2 implements Runnable
         Log.d("nf_log", "Running state check...");
         this.this$0.mIntegratedClientLoggingManager.checkState();
         this.this$0.mPresentationTrackingManager.checkState();
+        this.this$0.mLogblobLogging.checkState();
+        this.this$0.mPdsLogging.checkState();
         this.this$0.getApplication().getUserInput().checkState();
         Log.d("nf_log", "Running state check done.");
     }

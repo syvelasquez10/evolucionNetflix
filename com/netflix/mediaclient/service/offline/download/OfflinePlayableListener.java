@@ -12,6 +12,8 @@ public interface OfflinePlayableListener
     
     void onInitialized(final OfflinePlayable p0, final Status p1);
     
+    void onLicenseDeleteSuccessfully(final OfflinePlayablePersistentData p0);
+    
     void onNetworkError(final OfflinePlayable p0, final Status p1);
     
     void onProgress(final OfflinePlayable p0);

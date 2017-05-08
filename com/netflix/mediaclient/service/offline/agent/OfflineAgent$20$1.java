@@ -20,6 +20,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.log.OfflineLogUtils;
@@ -46,6 +49,7 @@ import android.os.Looper;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import com.netflix.mediaclient.service.offline.registry.RegistryData;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
@@ -72,7 +76,6 @@ import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
@@ -91,9 +94,7 @@ class OfflineAgent$20$1 extends SimpleBrowseAgentCallback
     public void onShowDetailsAndSeasonsFetched(final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
         super.onShowDetailsAndSeasonsFetched(showDetails, list, status);
         if (status.isError()) {
-            if (Log.isLoggable()) {
-                Log.w("nf_offlineAgent", "serializeMetadataToDisc() got an error: " + status);
-            }
+            handleFetchDetailsError(status);
             return;
         }
         RealmVideoDetails.insertInRealm(this.this$1.this$0.mRealm, this.this$1.this$0.getService(), showDetails, list, this.this$1.val$curProfile.getProfileGuid());

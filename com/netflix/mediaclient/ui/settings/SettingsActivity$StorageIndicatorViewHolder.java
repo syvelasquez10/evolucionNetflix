@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -54,13 +53,13 @@ class SettingsActivity$StorageIndicatorViewHolder extends LinearLayout
     }
     
     private void findViews() {
-        this.netflixViewLegend = (TextView)this.findViewById(2131690358);
-        this.usedViewLegend = (TextView)this.findViewById(2131690357);
-        this.freeViewLegend = (TextView)this.findViewById(2131690359);
-        this.deviceName = (TextView)this.findViewById(2131690352);
-        this.netflixView = this.findViewById(2131690355);
-        this.usedView = this.findViewById(2131690354);
-        this.freeView = this.findViewById(2131690356);
+        this.netflixViewLegend = (TextView)this.findViewById(2131690359);
+        this.usedViewLegend = (TextView)this.findViewById(2131690358);
+        this.freeViewLegend = (TextView)this.findViewById(2131690360);
+        this.deviceName = (TextView)this.findViewById(2131690353);
+        this.netflixView = this.findViewById(2131690356);
+        this.usedView = this.findViewById(2131690355);
+        this.freeView = this.findViewById(2131690357);
     }
     
     private void setupClicks() {

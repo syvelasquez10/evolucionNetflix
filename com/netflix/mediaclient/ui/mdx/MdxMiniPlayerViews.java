@@ -209,7 +209,7 @@ public class MdxMiniPlayerViews
     private void initDividersAndCollapsedViews(final boolean b) {
         Collection<View> viewsById = null;
         if (b) {
-            viewsById = ViewUtils.getViewsById((View)this.content, 2131689994, 2131689995, 2131689996, 2131689997);
+            viewsById = ViewUtils.getViewsById((View)this.content, 2131689995, 2131689996, 2131689997, 2131689998);
             ViewUtils.showViews(viewsById);
         }
         else {
@@ -218,13 +218,13 @@ public class MdxMiniPlayerViews
             this.episodesDivider = null;
         }
         if (this.languageCollapsed != null) {
-            this.initCollapsedButton(this.languageCollapsed, 2131231471, 2131230883, 18);
+            this.initCollapsedButton(this.languageCollapsed, 2131231468, 2131230883, 18);
         }
         if (this.episodesCollapsed != null) {
-            this.initCollapsedButton(this.episodesCollapsed, 2131231473, 2131230882, 20);
+            this.initCollapsedButton(this.episodesCollapsed, 2131231470, 2131230882, 20);
         }
         if (this.skipBackCollapsed != null) {
-            this.initCollapsedButton(this.skipBackCollapsed, 2131231488, 2131230888, 24);
+            this.initCollapsedButton(this.skipBackCollapsed, 2131231486, 2131230888, 24);
         }
         this.collapsedViews = new ArrayList<View>();
         if (this.playOrPauseCollapsed != null) {
@@ -441,38 +441,38 @@ public class MdxMiniPlayerViews
     }
     
     protected void findViews() {
-        this.titleGroup = this.content.findViewById(2131689960);
-        this.title = (TextView)this.content.findViewById(2131689963);
-        this.subtitle = (TextView)this.content.findViewById(2131689964);
-        this.titleExpanded = (TextView)this.content.findViewById(2131690018);
-        this.subtitleExpanded = (TextView)this.content.findViewById(2131690019);
-        this.titleTextGroup = this.content.findViewById(2131689961);
-        this.playcardCaret = (ImageView)this.content.findViewById(2131689962);
-        this.artwork = (AdvancedImageView)this.content.findViewById(2131689966);
-        this.bifSeekTime = (TextView)this.content.findViewById(2131689968);
-        this.bifImage = (ImageView)this.content.findViewById(2131689969);
-        this.deviceNameGroup = this.content.findViewById(2131689959);
-        this.deviceName = (TextView)this.content.findViewById(2131689967);
-        this.playcardControlsGroup = this.content.findViewById(2131689985);
-        this.playOrPauseExpanded = (ImageView)this.content.findViewById(2131689987);
-        this.skipBackExpanded = (IconFontTextView)this.content.findViewById(2131689986);
-        this.stop = (ImageView)this.content.findViewById(2131689988);
-        this.auxControlsGroup = this.content.findViewById(2131689954);
-        this.languageExpanded = (ImageView)this.content.findViewById(2131689955);
-        this.episodesExpanded = (ImageView)this.content.findViewById(2131689958);
-        this.rating = (ImageView)this.content.findViewById(2131689957);
-        this.volume = (ImageView)this.content.findViewById(2131689956);
-        this.currentTime = (TextView)this.content.findViewById(2131689983);
-        this.remainingTime = (TextView)this.content.findViewById(2131689984);
-        this.seekBar = (SnappableSeekBar)this.content.findViewById(2131689989);
-        this.languageCollapsed = (IconFontTextView)this.content.findViewById(2131689990);
-        this.episodesCollapsed = (IconFontTextView)this.content.findViewById(2131689991);
-        this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131689993);
-        this.episodesDivider = this.content.findViewById(2131689995);
+        this.titleGroup = this.content.findViewById(2131689961);
+        this.title = (TextView)this.content.findViewById(2131689964);
+        this.subtitle = (TextView)this.content.findViewById(2131689965);
+        this.titleExpanded = (TextView)this.content.findViewById(2131690019);
+        this.subtitleExpanded = (TextView)this.content.findViewById(2131690020);
+        this.titleTextGroup = this.content.findViewById(2131689962);
+        this.playcardCaret = (ImageView)this.content.findViewById(2131689963);
+        this.artwork = (AdvancedImageView)this.content.findViewById(2131689967);
+        this.bifSeekTime = (TextView)this.content.findViewById(2131689969);
+        this.bifImage = (ImageView)this.content.findViewById(2131689970);
+        this.deviceNameGroup = this.content.findViewById(2131689960);
+        this.deviceName = (TextView)this.content.findViewById(2131689968);
+        this.playcardControlsGroup = this.content.findViewById(2131689986);
+        this.playOrPauseExpanded = (ImageView)this.content.findViewById(2131689988);
+        this.skipBackExpanded = (IconFontTextView)this.content.findViewById(2131689987);
+        this.stop = (ImageView)this.content.findViewById(2131689989);
+        this.auxControlsGroup = this.content.findViewById(2131689955);
+        this.languageExpanded = (ImageView)this.content.findViewById(2131689956);
+        this.episodesExpanded = (ImageView)this.content.findViewById(2131689959);
+        this.rating = (ImageView)this.content.findViewById(2131689958);
+        this.volume = (ImageView)this.content.findViewById(2131689957);
+        this.currentTime = (TextView)this.content.findViewById(2131689984);
+        this.remainingTime = (TextView)this.content.findViewById(2131689985);
+        this.seekBar = (SnappableSeekBar)this.content.findViewById(2131689990);
+        this.languageCollapsed = (IconFontTextView)this.content.findViewById(2131689991);
+        this.episodesCollapsed = (IconFontTextView)this.content.findViewById(2131689992);
+        this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131689994);
+        this.episodesDivider = this.content.findViewById(2131689996);
         if (DeviceUtils.isNotTabletByContext(this.content.getContext())) {
-            this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131689990);
+            this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131689991);
         }
-        this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131689992);
+        this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131689993);
     }
     
     public View getContentView() {

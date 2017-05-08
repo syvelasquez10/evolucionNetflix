@@ -84,7 +84,7 @@ public class PlayScreen implements Screen
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
         final View view = mController.getView();
-        this.mSurface = (TappableSurfaceView)view.findViewById(2131690123);
+        this.mSurface = (TappableSurfaceView)view.findViewById(2131690124);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -95,19 +95,19 @@ public class PlayScreen implements Screen
         }
         this.mFlipper = (ViewFlipper)view.findViewById(2131689855);
         this.mBackground = (RelativeLayout)view.findViewById(2131689854);
-        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131690126);
-        this.mBufferingOverlay = view.findViewById(2131690145);
-        this.mLoadingOverlay = view.findViewById(2131690127);
+        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131690127);
+        this.mBufferingOverlay = view.findViewById(2131690146);
+        this.mLoadingOverlay = view.findViewById(2131690128);
         int n;
         if (mController.getNetflixActivity().isTablet()) {
-            n = 2131690142;
+            n = 2131690143;
         }
         else {
-            n = 2131690125;
+            n = 2131690126;
         }
         this.mBif = (ImageView)view.findViewById(n);
-        this.mTabletBifsLayout = view.findViewById(2131690141);
-        this.mQuickActions = view.findViewById(2131690134);
+        this.mTabletBifsLayout = view.findViewById(2131690142);
+        this.mQuickActions = view.findViewById(2131690135);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -256,13 +256,13 @@ public class PlayScreen implements Screen
             autoResizeTextView.setGravity(119);
             final int dipToPixels = AndroidUtils.dipToPixels((Context)this.mController.getActivity(), 5);
             autoResizeTextView.setPadding(dipToPixels, dipToPixels, dipToPixels, dipToPixels);
-            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231286, new Object[] { watermark.getIdentifier() }));
+            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231283, new Object[] { watermark.getIdentifier() }));
             float n;
             if (this.mController.getNetflixActivity().isTablet()) {
-                n = this.mController.getResources().getDimension(2131362290);
+                n = this.mController.getResources().getDimension(2131362292);
             }
             else {
-                n = this.mController.getResources().getDimension(2131362288);
+                n = this.mController.getResources().getDimension(2131362290);
             }
             SubtitleUtils.applyStyle(autoResizeTextView, watermark.getStyle((Context)this.mController.getActivity()), n);
             final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-2, -2);

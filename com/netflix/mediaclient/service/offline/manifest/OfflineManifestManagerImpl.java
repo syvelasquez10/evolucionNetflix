@@ -9,6 +9,7 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQualit
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import java.io.File;
+import com.netflix.mediaclient.android.app.BaseStatus;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -16,8 +17,7 @@ import java.util.List;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.service.player.exoplayback.logblob.OfflineErrorLogblob;
-import org.json.JSONException;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.pdslogging.DownloadContext;
 import org.json.JSONObject;
@@ -70,62 +70,36 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
         return nfManifest;
     }
     
-    private void handleManifestResponse(Status status, final String s, String persistManifest, final boolean b, final JSONObject jsonObject, final String s2, final String s3, final DownloadContext downloadContext) {
-        final long currentTimeMillis = System.currentTimeMillis();
-        final OfflineManifestCallback offlineManifestCallback = this.mOfflineManifestRequestMap.get(s);
+    private void handleManifestResponse(Status status, final String s, final String s2, final boolean b, final JSONObject jsonObject, final String s3, final String s4, final DownloadContext downloadContext) {
+        final OfflineManifestCallback offlineManifestCallback = this.mOfflineManifestRequestMap.remove(s);
         if (offlineManifestCallback == null) {
             Log.i("nf_offlineManifestMgr", "onManifestsFetched but no callback");
             return;
         }
-        final Status status2 = null;
-        while (true) {
-            Label_0173: {
-                if (!status.isSucces()) {
-                    break Label_0173;
-                }
-            Label_0097_Outer:
-                while (true) {
-                    while (true) {
-                        Object mStatus = null;
-                        Label_0194: {
-                            while (true) {
-                                try {
-                                    jsonObject.put("timestamp", currentTimeMillis);
-                                    final OfflineManifestManagerImpl$ManifestParseResult manifest = this.parseManifest(jsonObject);
-                                    mStatus = manifest.mStatus;
-                                    final Object mNfManifest = manifest.mNfManifest;
-                                    if (((Status)mStatus).isSucces()) {
-                                        persistManifest = (String)this.persistManifest(s, persistManifest, jsonObject);
-                                        if (status.isSucces()) {
-                                            this.addManifestToCache(s, manifest.mNfManifest);
-                                            if (b) {
-                                                this.mPdsAgent.onDownloadOfFirstTimeOfflineManifest(s, s2, s3, downloadContext, manifest.mNfManifest.getLinks());
-                                            }
-                                        }
-                                        status = (Status)mNfManifest;
-                                        offlineManifestCallback.onOfflineManifestResponse((NfManifest)status, (Status)persistManifest);
-                                        return;
-                                    }
-                                    break Label_0194;
-                                }
-                                catch (JSONException ex) {
-                                    Log.e("nf_offlineManifestMgr", "Failed to save timestamp to manifest data.", (Throwable)ex);
-                                    continue Label_0097_Outer;
-                                }
-                                break;
-                            }
-                            break;
-                        }
-                        persistManifest = (String)mStatus;
-                        continue;
-                    }
+        final NfManifest nfManifest = null;
+        NfManifest nfManifest2;
+        if (status.isSucces()) {
+            final OfflineManifestManagerImpl$ManifestParseResult manifest = this.parseManifest(jsonObject);
+            status = manifest.mStatus;
+            final NfManifest mNfManifest = manifest.mNfManifest;
+            if (status.isSucces()) {
+                status = this.persistManifest(s, s2, jsonObject);
+            }
+            if (status.isSucces()) {
+                this.addManifestToCache(s, manifest.mNfManifest);
+                if (b) {
+                    this.mPdsAgent.onDownloadOfFirstTimeOfflineManifest(s, s3, s4, downloadContext, manifest.mNfManifest.getLinks());
                 }
             }
-            OfflineErrorLogblob.sendBladerunnerError(this.mLoggingAgent, s, s2, s3, status);
-            persistManifest = (String)status;
-            status = status2;
-            continue;
+            nfManifest2 = mNfManifest;
         }
+        else {
+            nfManifest2 = nfManifest;
+        }
+        if (status.isError()) {
+            OfflineErrorLogblob.sendBladerunnerError(this.mLoggingAgent.getLogblobLogging(), s, s3, s4, status);
+        }
+        offlineManifestCallback.onOfflineManifestResponse(nfManifest2, status);
     }
     
     private OfflineManifestManagerImpl$ManifestParseResult parseManifest(final JSONObject jsonObject) {
@@ -145,11 +119,11 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
         final NetflixImmutableStatus ok = CommonStatus.OK;
         filePathOfflineManifest = OfflinePathUtils.getFilePathOfflineManifest(filePathOfflineManifest, s);
         Log.i("nf_offlineManifestMgr", "filepath for manifest= " + filePathOfflineManifest);
-        Status status = ok;
+        BaseStatus baseStatus = ok;
         if (!FileUtils.writeBytesToFile(filePathOfflineManifest, jsonObject.toString().getBytes())) {
-            status = new NetflixStatus(StatusCode.DL_CANT_PERSIST_MANIFEST);
+            baseStatus = new NetflixStatus(StatusCode.DL_CANT_PERSIST_MANIFEST);
         }
-        return status;
+        return baseStatus;
     }
     
     private NfManifest readManifestFromPersistentStore(final String s, final String s2) {
@@ -223,12 +197,12 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
         Log.i("nf_offlineManifestMgr", "requestOfflineManifestFromCache playableId=" + s);
         final NetflixImmutableStatus ok = CommonStatus.OK;
         final NfManifest manifestFromMemoryOrPersistentStore = this.getManifestFromMemoryOrPersistentStore(s, s2);
-        Status status = ok;
+        BaseStatus baseStatus = ok;
         if (manifestFromMemoryOrPersistentStore == null) {
-            status = new NetflixStatus(StatusCode.DL_MANIFEST_NOT_FOUND_IN_CACHE);
+            baseStatus = new NetflixStatus(StatusCode.DL_MANIFEST_NOT_FOUND_IN_CACHE);
         }
         if (offlineManifestCallback != null) {
-            offlineManifestCallback.onOfflineManifestResponse(manifestFromMemoryOrPersistentStore, status);
+            offlineManifestCallback.onOfflineManifestResponse(manifestFromMemoryOrPersistentStore, baseStatus);
         }
     }
     

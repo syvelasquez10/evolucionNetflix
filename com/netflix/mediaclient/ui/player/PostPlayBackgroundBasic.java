@@ -40,8 +40,8 @@ public class PostPlayBackgroundBasic extends PostPlayBackground
     
     @Override
     protected void findViews() {
-        this.background = (TopCropImageView)this.findViewById(2131690155);
-        this.playButton = (ImageView)this.findViewById(2131690159);
+        this.background = (TopCropImageView)this.findViewById(2131690156);
+        this.playButton = (ImageView)this.findViewById(2131690160);
     }
     
     @Override

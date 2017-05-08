@@ -215,7 +215,7 @@ public abstract class WebViewAccountActivity extends AccountActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(2130903291);
-        this.mWebView = (WebView)this.findViewById(2131690316);
+        this.mWebView = (WebView)this.findViewById(2131690317);
         this.mFlipper = (ViewFlipper)this.findViewById(2131689855);
         this.mWebViewClient = this.createWebViewClient();
         AndroidUtils.setWindowSecureFlag(this);
@@ -239,11 +239,11 @@ public abstract class WebViewAccountActivity extends AccountActivity
     }
     
     public void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231167), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231168), runnable)));
     }
     
     public void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231167), runnable, this.getString(2131231008), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231168), runnable, this.getString(2131231008), null)));
     }
     
     protected void reload(final boolean b) {

@@ -183,11 +183,11 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
         Log.v("CoppolaLoadingDecorator", "Updating UI...");
         AnimationUtils.startViewAppearanceAnimation(this.getController().getView(), true);
         this.getController().getActivity().getLayoutInflater().inflate(2130903238, viewGroup);
-        this.horzDispImg = (AdvancedImageView)viewGroup.findViewById(2131690109);
-        this.loadingIndicator = viewGroup.findViewById(2131690115);
-        this.loadingTextIndicator = (TextView)viewGroup.findViewById(2131690112);
-        this.gradient = viewGroup.findViewById(2131690110);
-        this.blackBackground = viewGroup.findViewById(2131690108);
+        this.horzDispImg = (AdvancedImageView)viewGroup.findViewById(2131690110);
+        this.loadingIndicator = viewGroup.findViewById(2131690116);
+        this.loadingTextIndicator = (TextView)viewGroup.findViewById(2131690113);
+        this.gradient = viewGroup.findViewById(2131690111);
+        this.blackBackground = viewGroup.findViewById(2131690109);
         this.animateProgressBar();
         boolean b;
         if (BandwidthUtility.isPlaybackInWifiOnly((Context)this.playerScreen.getController()) && ConnectivityUtils.getConnectionType((Context)this.playerScreen.getController()) != LogMobileType.WIFI) {
@@ -200,7 +200,7 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
             this.showProgressAndTextIndicator(false);
         }
         this.getController().setOnStartedPlaybackListener(new CoppolaLoadingDecorator$1(this));
-        this.launchButton = viewGroup.findViewById(2131690113);
+        this.launchButton = viewGroup.findViewById(2131690114);
         final View launchButton = this.launchButton;
         int visibility;
         if (this.getController().isInPortrait() && this.isDelayedAutoplay() && !b && Coppola1Utils.isNewPlayerExperience((Context)this.getController().getActivity())) {
@@ -230,7 +230,7 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
         this.updateViewMargins(this.getController().isInPortrait());
         if (!Coppola1Utils.isNewPlayerExperience((Context)this.getController().getActivity()) && !Coppola1Utils.shouldInjectPlayerFragment((Context)this.getController().getActivity())) {
             this.getController().getActivity().setRequestedOrientation(1);
-            (this.oldLaunchButton = viewGroup.findViewById(2131690114)).setVisibility(0);
+            (this.oldLaunchButton = viewGroup.findViewById(2131690115)).setVisibility(0);
             this.oldLaunchButton.setOnClickListener((View$OnClickListener)new CoppolaLoadingDecorator$3(this));
         }
     }

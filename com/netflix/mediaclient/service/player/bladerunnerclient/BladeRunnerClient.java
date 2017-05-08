@@ -15,11 +15,18 @@ import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLice
 import com.netflix.mediaclient.service.player.drm.BaseLicenseContext;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchDownloadComplete;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.OfflineLicenseDeactivate;
-import org.json.JSONException;
-import org.json.JSONObject;
 import com.netflix.mediaclient.service.msl.volley.MSLVolleyRequest;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLinkRequest;
+import com.netflix.mediaclient.util.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.StatusCode;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
+import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import android.content.Context;
@@ -44,15 +51,22 @@ public class BladeRunnerClient implements IBladeRunnerClient
         this.mUser = mUser;
     }
     
-    private void activateLicense(final OfflineLicenseResponse offlineLicenseResponse) {
-        final BladeRunnerClient$3 bladeRunnerClient$3 = new BladeRunnerClient$3(this);
-        Log.d(BladeRunnerClient.TAG, "activating license");
-        this.mslClient.addRequest(new FetchLinkRequest(this.buildLinkRequestParam(offlineLicenseResponse.mLinkActivate), bladeRunnerClient$3));
-    }
-    
     private String buildLinkRequestParam(final String s) {
         Log.d(BladeRunnerClient.TAG, "building param for link %s", s);
         return new LinksParamBuilder().setLink(this.getLinkJson(s)).build();
+    }
+    
+    private String buildYearlyWarningMessage(final Context context, final long n, final Locale locale) {
+        final String string = context.getString(2131231328, new Object[] { 1, new SimpleDateFormat("MMMM d, yyyy", locale).format(new Date(n)) });
+        Log.d(BladeRunnerClient.TAG, "yearly warning msg: %s", string);
+        return string;
+    }
+    
+    private Status buildYearlyWarningStatusCode(final Context context, final long n, final Locale locale) {
+        final String buildYearlyWarningMessage = this.buildYearlyWarningMessage(context, n, locale);
+        final NetflixStatus netflixStatus = new NetflixStatus(StatusCode.DL_WARNING_DL_N_TIMES_BEFORE_DATE, 0);
+        netflixStatus.setMessage(buildYearlyWarningMessage);
+        return netflixStatus;
     }
     
     private JSONObject getLinkJson(final String s) {
@@ -66,6 +80,17 @@ public class BladeRunnerClient implements IBladeRunnerClient
             Log.d(BladeRunnerClient.TAG, "error parsing link %s", s);
             return null;
         }
+    }
+    
+    @Override
+    public void activateOfflineLicense(final String s) {
+        if (StringUtils.isEmpty(s)) {
+            return;
+        }
+        Log.d(BladeRunnerClient.TAG, "activateOfflineLicense");
+        final BladeRunnerClient$2 bladeRunnerClient$2 = new BladeRunnerClient$2(this);
+        Log.d(BladeRunnerClient.TAG, "activating license");
+        this.mslClient.addRequest(new FetchLinkRequest(this.buildLinkRequestParam(s), bladeRunnerClient$2));
     }
     
     @Override
@@ -103,9 +128,9 @@ public class BladeRunnerClient implements IBladeRunnerClient
     @Override
     public void refreshOfflineLicense(final IBladeRunnerClient$OfflineRefreshInvoke invokeLocation, final String s, final String s2, final BladeRunnerWebCallback bladeRunnerWebCallback) {
         final String build = new LicenseRequestParamBuilder(this.mUser).buildBaseParams(this.getLinkJson(s), s2).setInvokeLocation(invokeLocation).build();
-        final BladeRunnerClient$2 bladeRunnerClient$2 = new BladeRunnerClient$2(this, bladeRunnerWebCallback);
+        final BladeRunnerClient$3 bladeRunnerClient$3 = new BladeRunnerClient$3(this, bladeRunnerWebCallback);
         Log.d(BladeRunnerClient.TAG, "refreshing offline license");
-        this.mslClient.addRequest(new FetchLicenseRequest(FetchLicenseRequest$LicenseReqType.OFFLINE, build, true, bladeRunnerClient$2));
+        this.mslClient.addRequest(new FetchLicenseRequest(FetchLicenseRequest$LicenseReqType.OFFLINE, build, true, bladeRunnerClient$3));
     }
     
     @Override

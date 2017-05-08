@@ -4,10 +4,6 @@
 
 package com.netflix.mediaclient.ui.offline;
 
-import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
@@ -208,6 +204,12 @@ public class DownloadButton extends LinearLayout
         return this.buttonState;
     }
     
+    public void refreshDownloadButton(final String s, final NetflixActivity netflixActivity) {
+        if (s != null && s.equals(this.playableId)) {
+            this.setStateFromPlayable(this.playable, netflixActivity);
+        }
+    }
+    
     public void setProgress(final int progress) {
         if (this.progressBar != null) {
             this.progressBar.setProgress(progress);
@@ -243,7 +245,7 @@ public class DownloadButton extends LinearLayout
         }
         Log.i("download_button", "setStateFromPlayable hasOfflinePlayableData=%b", b);
         if (offlinePlayableViewData != null) {
-            if (offlinePlayableViewData.getLastPersistentErrorStatus().isError()) {
+            if (OfflineUiHelper.hasErrorOrWarning(offlinePlayableViewData)) {
                 this.setState(DownloadButton$ButtonState.ERROR, playable.getPlayableId());
                 return;
             }
@@ -308,26 +310,6 @@ public class DownloadButton extends LinearLayout
                 return;
             }
             this.setState(DownloadButton$ButtonState.QUEUED, playable.getPlayableId());
-        }
-    }
-    
-    public void showWarningDialog(final String s, final Status status, final NetflixActivity netflixActivity) {
-        if (this.playable != null) {
-            this.playableId = this.playable.getPlayableId();
-            VideoType videoType;
-            if (this.playable.isPlayableEpisode()) {
-                videoType = VideoType.EPISODE;
-            }
-            else {
-                videoType = VideoType.MOVIE;
-            }
-            final OfflineAgentInterface offlineAgentOrNull = NetflixActivity.getOfflineAgentOrNull(netflixActivity);
-            if (offlineAgentOrNull != null) {
-                final OfflinePlayableViewData offlinePlayableViewData = offlineAgentOrNull.getLatestOfflinePlayableList().getOfflinePlayableViewData(s);
-                if (offlinePlayableViewData != null) {
-                    netflixActivity.showDialog(OfflineErrorDialog.createOfflineWarningDialog(videoType, offlinePlayableViewData, offlineAgentOrNull, status));
-                }
-            }
         }
     }
 }

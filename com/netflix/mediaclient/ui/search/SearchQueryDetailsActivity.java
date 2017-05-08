@@ -87,9 +87,9 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     
     private void findViews() {
         this.titleView = (TextView)this.findViewById(2131689666);
-        this.gridView = (StaticGridView)this.findViewById(2131690317);
-        this.loadingWrapper = this.findViewById(2131690301);
-        this.content = (LoggingScrollView)this.findViewById(2131690302);
+        this.gridView = (StaticGridView)this.findViewById(2131690318);
+        this.loadingWrapper = this.findViewById(2131690302);
+        this.content = (LoggingScrollView)this.findViewById(2131690303);
     }
     
     private String getTitleForType(final SearchQueryDetailsActivity$SearchQueryDetailsType searchQueryDetailsActivity$SearchQueryDetailsType, final String s) {
@@ -97,7 +97,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
             return s;
         }
         if (searchQueryDetailsActivity$SearchQueryDetailsType == SearchQueryDetailsActivity$SearchQueryDetailsType.SEARCH_SUGGESTION) {
-            return this.getString(2131231275, new Object[] { s });
+            return this.getString(2131231272, new Object[] { s });
         }
         throw new IllegalStateException("Bad type");
     }

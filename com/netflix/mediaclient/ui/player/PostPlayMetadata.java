@@ -56,18 +56,18 @@ public class PostPlayMetadata extends LinearLayout
     }
     
     private void findViews() {
-        this.countdown = (PostPlayCountDown)this.findViewById(2131690160);
-        this.logo = (AdvancedImageView)this.findViewById(2131690191);
-        this.titleBar = (LinearLayout)this.findViewById(2131690192);
-        this.episodeBadge = (TextView)this.findViewById(2131690193);
-        this.postPlayTitle = (TextView)this.findViewById(2131689890);
-        this.metadataBar = (LinearLayout)this.findViewById(2131690186);
+        this.countdown = (PostPlayCountDown)this.findViewById(2131690161);
+        this.logo = (AdvancedImageView)this.findViewById(2131690192);
+        this.titleBar = (LinearLayout)this.findViewById(2131690193);
+        this.episodeBadge = (TextView)this.findViewById(2131690194);
+        this.postPlayTitle = (TextView)this.findViewById(2131689891);
+        this.metadataBar = (LinearLayout)this.findViewById(2131690187);
         this.ratingBar = (NetflixRatingBar)this.findViewById(2131689625);
-        this.year = (TextView)this.findViewById(2131690187);
-        this.maturityRating = (TextView)this.findViewById(2131690188);
-        this.contentLength = (TextView)this.findViewById(2131690189);
-        this.synopsis = (TextView)this.findViewById(2131690169);
-        this.buttonsContainer = (LinearLayout)this.findViewById(2131690190);
+        this.year = (TextView)this.findViewById(2131690188);
+        this.maturityRating = (TextView)this.findViewById(2131690189);
+        this.contentLength = (TextView)this.findViewById(2131690190);
+        this.synopsis = (TextView)this.findViewById(2131690170);
+        this.buttonsContainer = (LinearLayout)this.findViewById(2131690191);
     }
     
     private String getContentLength(final PostPlayItem postPlayItem) {
@@ -95,7 +95,7 @@ public class PostPlayMetadata extends LinearLayout
             String s;
             if (postPlayItem.getType().equals("episode") && postPlayItem.getPlayAction() != null) {
                 final PostPlayAction playAction = postPlayItem.getPlayAction();
-                s = this.getContext().getResources().getString(2131231186, new Object[] { postPlayItem.getAncestorTitle(), playAction.getSeasonSequenceAbbr(), playAction.getEpisode(), postPlayItem.getTitle() });
+                s = this.getContext().getResources().getString(2131231187, new Object[] { postPlayItem.getAncestorTitle(), playAction.getSeasonSequenceAbbr(), playAction.getEpisode(), postPlayItem.getTitle() });
             }
             else {
                 s = postPlayItem.getTitle();

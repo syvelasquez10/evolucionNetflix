@@ -690,6 +690,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public ABTestConfig$Cell getMemento2Config() {
+        return this.mABTestConfigOverride.getMemento2Config();
+    }
+    
+    @Override
     public ABTestConfig$Cell getMementoConfig() {
         return this.mABTestConfigOverride.getMementoConfig();
     }

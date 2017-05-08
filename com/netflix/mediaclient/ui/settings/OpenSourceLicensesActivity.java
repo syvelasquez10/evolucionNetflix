@@ -33,7 +33,7 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     }
     
     private String createHeaderText(final String s) {
-        return String.format(this.getString(2131231172), s);
+        return String.format(this.getString(2131231173), s);
     }
     
     private void createOslInfo() {
@@ -67,7 +67,7 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         this.createOslInfo();
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getString(2131231170));
+            netflixActionBar.setTitle(this.getString(2131231171));
         }
         final ListView contentView = new ListView((Context)this);
         contentView.setDividerHeight(0);

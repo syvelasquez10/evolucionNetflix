@@ -33,6 +33,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -95,7 +96,7 @@ class FalkorAgent$13 implements Runnable
                         final FalkorAgent this$0 = this.this$0;
                         if (this.val$jobSchedulerCountdown.getCount() == 0L) {
                             final boolean b = true;
-                            this$0.notifyJobFinished(b, false, true);
+                            this$0.notifyJobFinished(b, false, true, "notifyJobSchedulerFinishedAsync");
                             return;
                         }
                     }

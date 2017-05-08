@@ -25,7 +25,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "4.12.1";
+    private static final String CRITTER_VERSION_NAME = "4.12.2";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -80,7 +80,7 @@ public final class ErrorLoggingManager
         return isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig && Crittercism.didCrashOnLastLoad();
     }
     
-    private static void initCrittercism(final Context context) {
+    private static void initCrittercism(final Context context, final String s) {
         while (true) {
             Label_0044: {
                 synchronized (ErrorLoggingManager.class) {
@@ -103,7 +103,7 @@ public final class ErrorLoggingManager
                 crittercismConfig.setNdkCrashReportingEnabled(false);
                 crittercismConfig.setServiceMonitoringEnabled(false);
                 crittercismConfig.setLogcatReportingEnabled(false);
-                crittercismConfig.setCustomVersionName("4.12.1");
+                crittercismConfig.setCustomVersionName("4.12.2");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
@@ -112,6 +112,7 @@ public final class ErrorLoggingManager
                     metadata.put("android", Build$VERSION.SDK_INT);
                     putValueOrNotAvailable(metadata, "oem", Build.MANUFACTURER);
                     putValueOrNotAvailable(metadata, "model", Build.MODEL);
+                    putValueOrNotAvailable(metadata, "appsessionid", s);
                     Crittercism.setMetadata(metadata);
                     ErrorLoggingManager.sCrittercismReady = true;
                     Log.d("nf_log_crit", "Init Crittercism done.");
@@ -169,11 +170,11 @@ public final class ErrorLoggingManager
         }
     }
     
-    public static void onConfigurationChanged(final Context context, final ErrorLoggingSpecification errorLoggingSpecification, final BreadcrumbLoggingSpecification breadcrumbLoggingSpecification) {
+    public static void onConfigurationChanged(final Context context, final String s, final ErrorLoggingSpecification errorLoggingSpecification, final BreadcrumbLoggingSpecification breadcrumbLoggingSpecification) {
         synchronized (ErrorLoggingManager.class) {
             configureErrorLogging(context, errorLoggingSpecification);
             configureBreadcrumbLogging(context, breadcrumbLoggingSpecification);
-            initCrittercism(context);
+            initCrittercism(context, s);
         }
     }
     

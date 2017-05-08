@@ -37,17 +37,17 @@ public final class MdxUtils
             return null;
         }
         final View inflate = netflixActivity.getLayoutInflater().inflate(2130903186, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131689951)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
-        final TextView textView = (TextView)inflate.findViewById(2131689952);
-        final TextView textView2 = (TextView)inflate.findViewById(2131689953);
+        ((TextView)inflate.findViewById(2131689952)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
+        final TextView textView = (TextView)inflate.findViewById(2131689953);
+        final TextView textView2 = (TextView)inflate.findViewById(2131689954);
         final Playable playable = mdxUtils$MdxTargetSelectionDialogInterface.getPlayable();
         String string2;
         if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && playable != null) {
-            final String string = netflixActivity.getResources().getString(2131231306, new Object[] { "" });
+            final String string = netflixActivity.getResources().getString(2131231303, new Object[] { "" });
             textView2.setVisibility(0);
             String text;
             if (playable.isPlayableEpisode()) {
-                text = netflixActivity.getResources().getString(2131231297, new Object[] { playable.getParentTitle(), playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
+                text = netflixActivity.getResources().getString(2131231294, new Object[] { playable.getParentTitle(), playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
             }
             else {
                 text = playable.getPlayableTitle();
@@ -56,11 +56,11 @@ public final class MdxUtils
             string2 = string;
         }
         else {
-            string2 = netflixActivity.getResources().getString(2131231296);
+            string2 = netflixActivity.getResources().getString(2131231293);
             textView2.setVisibility(8);
         }
         textView.setText((CharSequence)string2);
-        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131231295, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
+        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131231292, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
         create.setCanceledOnTouchOutside(true);
         return create;
     }
@@ -93,7 +93,7 @@ public final class MdxUtils
         if (mdxUtils$MdxTargetSelectionDialogInterface.getPlayable() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle())) {
-                format = String.format(netflixActivity.getString(2131231306), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
+                format = String.format(netflixActivity.getString(2131231303), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
             }
         }
         mdxTargetSelectionDialog$Builder.setSelection(devicePositionByUUID, format);

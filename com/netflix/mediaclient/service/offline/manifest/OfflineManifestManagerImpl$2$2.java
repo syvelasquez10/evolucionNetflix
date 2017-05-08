@@ -9,14 +9,14 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQualit
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import java.io.File;
+import com.netflix.mediaclient.android.app.BaseStatus;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
 import java.util.List;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.player.exoplayback.logblob.OfflineErrorLogblob;
-import org.json.JSONException;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.Log;
 import java.util.HashMap;
 import android.os.HandlerThread;

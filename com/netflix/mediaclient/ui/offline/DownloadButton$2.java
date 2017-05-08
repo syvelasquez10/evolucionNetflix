@@ -4,10 +4,6 @@
 
 package com.netflix.mediaclient.ui.offline;
 
-import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;

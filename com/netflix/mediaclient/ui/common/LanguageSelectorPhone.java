@@ -83,7 +83,7 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
     
     private View getTabIndicator(final Context context, final TabHost tabHost, final int text, final boolean b) {
         final View inflate = LayoutInflater.from(context).inflate(2130903175, (ViewGroup)null, false);
-        final TextView textView = (TextView)inflate.findViewById(2131689938);
+        final TextView textView = (TextView)inflate.findViewById(2131689939);
         textView.setText(text);
         if (b) {
             Log.d("nf_language_selector", "Set audio tab label");
@@ -138,10 +138,10 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
     protected void init(final View view, final Language language) {
         super.init(view, language);
         Log.d("nf_language_selector", "Add tabhost");
-        (this.mTabHost = (TabHost)view.findViewById(2131689937)).setOnTabChangedListener((TabHost$OnTabChangeListener)this);
+        (this.mTabHost = (TabHost)view.findViewById(2131689938)).setOnTabChangedListener((TabHost$OnTabChangeListener)this);
         this.mTabHost.setup();
-        this.setNewTab((Context)this.mController, this.mTabHost, "ListAudios", 2131230983, 2131689912, true);
-        this.setNewTab((Context)this.mController, this.mTabHost, "ListSubtitles", 2131231266, 2131689914, false);
+        this.setNewTab((Context)this.mController, this.mTabHost, "ListAudios", 2131230983, 2131689913, true);
+        this.setNewTab((Context)this.mController, this.mTabHost, "ListSubtitles", 2131231263, 2131689915, false);
         this.mTabHost.setCurrentTab(0);
         this.mAudioTabLabel.setTypeface(this.mAudioTabLabel.getTypeface(), 1);
         this.mSubtitleTabLabel.setTypeface(this.mSubtitleTabLabel.getTypeface(), 0);

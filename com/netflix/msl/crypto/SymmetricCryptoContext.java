@@ -216,11 +216,11 @@ public class SymmetricCryptoContext implements ICryptoContext
             throw new MslCryptoException(MslError.CIPHERTEXT_ILLEGAL_BLOCK_SIZE, "data.length " + msb.length);
         }
         while (true) {
-        Label_0218_Outer:
+        Label_0115_Outer:
             while (true) {
-                int n2 = 0;
-            Label_0115_Outer:
+                int n2;
                 while (true) {
+                Label_0115:
                     while (true) {
                         int n;
                         try {
@@ -232,22 +232,25 @@ public class SymmetricCryptoContext implements ICryptoContext
                             n2 = 5;
                             msb = copy;
                             break Label_0337;
+                            // iftrue(Label_0240:, !MslUtils.safeEquals(msb, SymmetricCryptoContext.AESKW_AIV) || copyOfRange.length % 8 != 0)
+                            // iftrue(Label_0347:, n3 < 1)
+                            while (true) {
+                                final int n3;
+                                xor(msb, n * n2 + n3);
+                                final byte[] copyOfRange2 = Arrays.copyOfRange(copyOfRange, (n3 - 1) * 8, n3 * 8);
+                                final byte[] copy2 = Arrays.copyOf(msb, msb.length + copyOfRange2.length);
+                                System.arraycopy(copyOfRange2, 0, copy2, msb.length, copyOfRange2.length);
+                                final byte[] doFinal = cipher.doFinal(copy2);
+                                msb = msb(8, doFinal);
+                                System.arraycopy(lsb(8, doFinal), 0, copyOfRange, (n3 - 1) * 8, 8);
+                                --n3;
+                                break Label_0115;
+                                return copyOfRange;
+                                continue Label_0115_Outer;
+                            }
                             Label_0240: {
                                 throw new MslCryptoException(MslError.UNWRAP_ERROR, "initial value " + Arrays.toString(msb));
                             }
-                            // iftrue(Label_0240:, !MslUtils.safeEquals(msb, SymmetricCryptoContext.AESKW_AIV) || copyOfRange.length % 8 != 0)
-                            return copyOfRange;
-                            // iftrue(Label_0347:, n3 < 1)
-                            final int n3;
-                            xor(msb, n * n2 + n3);
-                            final byte[] copyOfRange2 = Arrays.copyOfRange(copyOfRange, (n3 - 1) * 8, n3 * 8);
-                            final byte[] copy2 = Arrays.copyOf(msb, msb.length + copyOfRange2.length);
-                            System.arraycopy(copyOfRange2, 0, copy2, msb.length, copyOfRange2.length);
-                            final byte[] doFinal = cipher.doFinal(copy2);
-                            msb = msb(8, doFinal);
-                            System.arraycopy(lsb(8, doFinal), 0, copyOfRange, (n3 - 1) * 8, 8);
-                            --n3;
-                            continue;
                         }
                         catch (NoSuchPaddingException ex) {
                             throw new MslInternalException("Unsupported padding exception.", ex);
@@ -266,16 +269,16 @@ public class SymmetricCryptoContext implements ICryptoContext
                         }
                         if (n2 >= 0) {
                             final int n3 = n;
-                            continue;
+                            continue Label_0115;
                         }
                         break;
                     }
-                    continue Label_0115_Outer;
+                    continue;
                 }
                 Label_0347: {
                     --n2;
                 }
-                continue Label_0218_Outer;
+                continue Label_0115_Outer;
             }
         }
     }
@@ -331,10 +334,10 @@ public class SymmetricCryptoContext implements ICryptoContext
             int n;
             int n2;
             int n3;
-            byte[] array3;
             byte[] copyOfRange;
             byte[] copy;
             byte[] doFinal;
+            byte[] array3;
             Label_0114_Outer:Label_0218_Outer:
             while (true) {
                 while (true) {
@@ -347,13 +350,6 @@ public class SymmetricCryptoContext implements ICryptoContext
                             msb = array;
                             break Label_0322;
                             // iftrue(Label_0333:, n3 > n)
-                            Block_6: {
-                                break Block_6;
-                                array3 = new byte[msb.length + array2.length];
-                                System.arraycopy(msb, 0, array3, 0, msb.length);
-                                System.arraycopy(array2, 0, array3, msb.length, array2.length);
-                                return array3;
-                            }
                             copyOfRange = Arrays.copyOfRange(array2, (n3 - 1) * 8, n3 * 8);
                             copy = Arrays.copyOf(msb, msb.length + copyOfRange.length);
                             System.arraycopy(copyOfRange, 0, copy, msb.length, copyOfRange.length);
@@ -363,6 +359,10 @@ public class SymmetricCryptoContext implements ICryptoContext
                             System.arraycopy(lsb(8, doFinal), 0, array2, (n3 - 1) * 8, 8);
                             ++n3;
                             continue Label_0218_Outer;
+                            array3 = new byte[msb.length + array2.length];
+                            System.arraycopy(msb, 0, array3, 0, msb.length);
+                            System.arraycopy(array2, 0, array3, msb.length, array2.length);
+                            return array3;
                         }
                         catch (NoSuchAlgorithmException ex) {
                             throw new MslInternalException("Invalid cipher algorithm specified.", ex);

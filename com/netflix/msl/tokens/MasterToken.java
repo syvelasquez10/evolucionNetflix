@@ -765,32 +765,16 @@ public class MasterToken implements JSONString
     @Override
     public String toString() {
         try {
-            JSONObject jsonObject;
-            if (this.isDecrypted()) {
-                jsonObject = new JSONObject();
-                if (this.issuerData != null) {
-                    jsonObject.put("issuerdata", this.issuerData);
-                }
-                jsonObject.put("identity", this.identity);
-                jsonObject.put("encryptionkey", this.encryptionKey);
-                jsonObject.put("encryptionalgorithm", this.encryptionKey.getAlgorithm());
-                jsonObject.put("hmackey", this.signatureKey);
-                jsonObject.put("signaturekey", this.signatureKey);
-                jsonObject.put("signaturealgorithm", this.signatureKey.getAlgorithm());
-            }
-            else {
-                jsonObject = null;
-            }
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("renewalwindow", this.renewalWindow);
+            jsonObject.put("expiration", this.expiration);
+            jsonObject.put("sequencenumber", this.sequenceNumber);
+            jsonObject.put("serialnumber", this.serialNumber);
+            jsonObject.put("sessiondata", "(redacted)");
             final JSONObject jsonObject2 = new JSONObject();
-            jsonObject2.put("renewalwindow", this.renewalWindow);
-            jsonObject2.put("expiration", this.expiration);
-            jsonObject2.put("sequencenumber", this.sequenceNumber);
-            jsonObject2.put("serialnumber", this.serialNumber);
-            jsonObject2.put("sessiondata", jsonObject);
-            final JSONObject jsonObject3 = new JSONObject();
-            jsonObject3.put("tokendata", jsonObject2);
-            jsonObject3.put("signature", Base64.encode(this.signature));
-            return jsonObject3.toString();
+            jsonObject2.put("tokendata", jsonObject);
+            jsonObject2.put("signature", Base64.encode(this.signature));
+            return jsonObject2.toString();
         }
         catch (JSONException ex) {
             throw new MslInternalException("Error encoding " + this.getClass().getName() + " JSON.", ex);

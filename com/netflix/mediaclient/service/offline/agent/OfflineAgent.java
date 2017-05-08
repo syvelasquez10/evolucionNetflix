@@ -20,6 +20,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.log.OfflineLogUtils;
@@ -80,6 +83,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private static final String TAG = "nf_offlineAgent";
     private static final long VIEW_TIME_TO_QUALIFY_FIRST_VIEW = 30000L;
     private final OfflineAgentListenerHelper mAgentListenerHelper;
+    private boolean mAvailable;
     private OfflineAgent$BackGroundHandler mBackGroundHandler;
     private HandlerThread mBackgroundThread;
     private BroadcastReceiverHelper mBroadcastReceiverHelper;
@@ -89,10 +93,8 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private DownloadNotificationManager mDownloadNotificationManager;
     private final OfflinePlayableListener mMainThreadOfflinePlayableListener;
     private MaintenanceJobHandler mMaintenanceJobHandler;
-    private OfflineAgentInterface$OfflineFeatureAvailability mOfflineFeatureAvailability;
     private OfflineLicenseManager mOfflineLicenseManager;
     private OfflineManifestManager mOfflineManifestManager;
-    private OfflineNrdpLogger mOfflineNrdpLogger;
     private final Map<Long, OfflinePlaybackInterface$ManifestCallback> mOfflinePlayManifestRequestMap;
     private final List<OfflinePlayable> mOfflinePlayableList;
     private final OfflinePlayableUiListImpl mOfflinePlayableUiList;
@@ -109,7 +111,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.mOfflinePlayableUiList = new OfflinePlayableUiListImpl();
         this.mRegistryDirty = false;
         this.mOfflinePlayManifestRequestMap = new HashMap<Long, OfflinePlaybackInterface$ManifestCallback>();
-        this.mOfflineFeatureAvailability = OfflineAgentInterface$OfflineFeatureAvailability.NOT_INITIALIZED;
+        this.mAvailable = false;
         this.mAgentListenerHelper = new OfflineAgentListenerHelper();
         this.mMainThreadOfflinePlayableListener = new OfflineAgent$1(this);
         this.mDownloadControllerListener = new OfflineAgent$15(this);
@@ -171,7 +173,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     private OfflinePlayable createOfflineViewable(final String s, final OfflinePlayablePersistentData offlinePlayablePersistentData) {
-        return new OfflinePlayableImpl(this.getContext(), offlinePlayablePersistentData, new PlayableProgressInfo(), OfflinePathUtils.getDirectoryPathForViewable(s, offlinePlayablePersistentData.mPlayableId), this.mRequestQueue, this.mOfflineManifestManager, this.mOfflineLicenseManager, this.mMainThreadOfflinePlayableListener, this.mBackgroundThread, this.mOfflineNrdpLogger, this.getService().getClientLogging());
+        return new OfflinePlayableImpl(this.getContext(), offlinePlayablePersistentData, new PlayableProgressInfo(), OfflinePathUtils.getDirectoryPathForViewable(s, offlinePlayablePersistentData.mPlayableId), this.mRequestQueue, this.mOfflineManifestManager, this.mOfflineLicenseManager, this.mMainThreadOfflinePlayableListener, this.mBackgroundThread, this.getService().getClientLogging());
     }
     
     private void doSaveToRegistryInBGThread(final Context context) {
@@ -223,39 +225,37 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     
     private void handleAgentInitRequest() {
         if (!this.getService().getMSLClient().enabled()) {
-            this.mOfflineFeatureAvailability = OfflineAgentInterface$OfflineFeatureAvailability.NA_MSL_CLIENT_DISABLED;
+            Log.i("nf_offlineAgent", "MSLClient not enabled");
+            OfflineAgentHelper.sendOfflineNotAvailableLogblob(this.getNrdController(), OfflineUnavailableReason.NA_MSL_CLIENT_DISABLED);
             this.initCompleted(CommonStatus.OK);
             return;
         }
         if (this.mConfigurationAgent.getOfflineConfig().isOfflineFeatureDisabled()) {
-            this.mOfflineFeatureAvailability = OfflineAgentInterface$OfflineFeatureAvailability.NA_DISABLED_FROM_END_POINT;
+            OfflineAgentHelper.sendOfflineNotAvailableLogblob(this.getNrdController(), OfflineUnavailableReason.NA_DISABLED_FROM_END_POINT);
             this.initCompleted(CommonStatus.OK);
             return;
         }
-        this.mOfflineNrdpLogger = new OfflineNrdpLoggerNoOp(this.getNrdController().getNrdp());
         this.mAgentListenerHelper.setNetflixPowerManager(this.getService().getNetflixPowerManager());
         final BladeRunnerClient bladeRunnerClient = new BladeRunnerClient(this.getContext(), this.getMSLClient(), this.getConfigurationAgent(), this.getUserAgent());
         this.mOfflineManifestManager = new OfflineManifestManagerImpl(bladeRunnerClient, this.mBackgroundThread, this.getPdsAgentForDownload(), this.getLoggingAgent());
         try {
-            this.mOfflineLicenseManager = new OfflineLicenseManagerImpl(this.mBackgroundThread.getLooper(), bladeRunnerClient);
+            this.mOfflineLicenseManager = new OfflineLicenseManagerImpl(this.getContext(), this.mBackgroundThread.getLooper(), bladeRunnerClient, this.getLoggingAgent());
             try {
                 if (!this.buildFalkorDataAndPlayableListFromPersistentStore()) {
-                    this.initCompleted(new NetflixStatus(StatusCode.OK));
-                    this.mOfflineFeatureAvailability = OfflineAgentInterface$OfflineFeatureAvailability.NA_OFFLINE_STORAGE_NOT_AVAILABLE;
+                    OfflineAgentHelper.sendOfflineNotAvailableLogblob(this.getNrdController(), OfflineUnavailableReason.NA_OFFLINE_STORAGE_NOT_AVAILABLE);
+                    this.initCompleted(CommonStatus.OK);
                     return;
                 }
-                goto Label_0240;
+                goto Label_0235;
             }
             catch (ChecksumException ex) {
-                if (Log.isLoggable()) {
-                    Log.e("nf_offlineAgent", ex, "ChecksumException", new Object[0]);
-                }
+                Log.e("nf_offlineAgent", ex, "ChecksumException", new Object[0]);
                 this.initCompleted(new NetflixStatus(StatusCode.DL_REGISTRY_CHECKSUM_FAILED));
             }
         }
         catch (NotProvisionedException ex2) {}
         catch (UnsupportedSchemeException ex3) {
-            goto Label_0225;
+            goto Label_0220;
         }
     }
     
@@ -293,9 +293,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     private void handleDeleteAllRequest(final boolean b) {
-        if (Log.isLoggable()) {
-            Log.i("nf_offlineAgent", "handleDeleteAllRequest " + b);
-        }
+        Log.i("nf_offlineAgent", "handleDeleteAllRequest deletePermanently=%b", b);
         NetflixImmutableStatus ok = CommonStatus.OK;
         for (final OfflinePlayable offlinePlayable : this.mOfflinePlayableList) {
             if (offlinePlayable.getPlayableId().equals(this.mPlayableIdInFlight)) {
@@ -327,9 +325,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     private void handleDeleteRequest(final String s) {
-        if (Log.isLoggable()) {
-            Log.i("nf_offlineAgent", "handleDeleteRequest playableId=" + s);
-        }
+        Log.i("nf_offlineAgent", "handleDeleteRequest playableId=%s", s);
         final OfflinePlayable offlineViewableByPlayableId = OfflineAgentHelper.getOfflineViewableByPlayableId(s, this.mOfflinePlayableList);
         if (offlineViewableByPlayableId == null) {
             Log.e("nf_offlineAgent", "handleDeleteRequest offlinePlayable not found");
@@ -358,13 +354,21 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (this.mMaintenanceJobHandler != null) {
             this.mMaintenanceJobHandler.terminate();
         }
+        OfflineErrorLogblob.sendNetflixJobStartLogBlob(this.getLoggingAgent().getLogblobLogging(), NetflixJob$NetflixJobId.DOWNLOAD_MAINTENANCE);
         (this.mMaintenanceJobHandler = new MaintenanceJobHandler(this, this.mOfflineLicenseManager, this.mOfflinePlayableList, this.mOfflineRegistry)).startMaintenanceJob();
     }
     
     private void handleDownloadResumeJob() {
         Log.i("nf_offlineAgent", "handleDownloadResumeJob");
+        OfflineErrorLogblob.sendNetflixJobStartLogBlob(this.getLoggingAgent().getLogblobLogging(), NetflixJob$NetflixJobId.DOWNLOAD_RESUME);
         this.startDownloadIfAllowed();
         this.mDownloadController.onDownloadResumeJobDone();
+    }
+    
+    private static void handleFetchDetailsError(final Status status) {
+        final String string = "serializeMetadataToDisc() got an error: " + status;
+        Log.w("nf_offlineAgent", string);
+        ErrorLoggingManager.logHandledException(string);
     }
     
     private void handleGeoPlayabilityUpdated(final Map<String, Boolean> map) {
@@ -399,23 +403,19 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     private void handlePauseRequest(final String s) {
-        if (Log.isLoggable()) {
-            Log.i("nf_offlineAgent", "handlePauseRequest playableId=" + s);
-        }
+        Log.i("nf_offlineAgent", "handlePauseRequest playableId=%s", s);
         final OfflinePlayable offlineViewableByPlayableId = OfflineAgentHelper.getOfflineViewableByPlayableId(s, this.mOfflinePlayableList);
-        if (offlineViewableByPlayableId != null) {
-            if (offlineViewableByPlayableId.getDownloadState() != DownloadState.Complete) {
-                offlineViewableByPlayableId.stopDownload(StopReason.StoppedFromAgentAPI);
-                this.saveToRegistry();
-                this.sendDownloadStopped(offlineViewableByPlayableId);
-            }
-            else if (Log.isLoggable()) {
-                Log.e("nf_offlineAgent", "handlePauseRequest trying to pause a completed item" + s);
-            }
+        if (offlineViewableByPlayableId == null) {
+            Log.e("nf_offlineAgent", "handlePauseRequest playableId=%s not found", s);
+            return;
         }
-        else if (Log.isLoggable()) {
-            Log.e("nf_offlineAgent", "handlePauseRequest playableId not found " + s);
+        if (offlineViewableByPlayableId.getDownloadState() != DownloadState.Complete) {
+            offlineViewableByPlayableId.stopDownload(StopReason.StoppedFromAgentAPI);
+            this.saveToRegistry();
+            this.sendDownloadStopped(offlineViewableByPlayableId);
+            return;
         }
+        Log.e("nf_offlineAgent", "handlePauseRequest trying to pause a completed item");
     }
     
     private void handleRequestForGeoPlayability() {
@@ -423,28 +423,28 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.sendGeoPlayabilityRequest();
     }
     
-    private void handleResumeRequest(final String s, final boolean b) {
+    private void handleResumeRequest(final String s) {
         this.saveToRegistry();
         final OfflinePlayable offlineViewableByPlayableId = OfflineAgentHelper.getOfflineViewableByPlayableId(s, this.mOfflinePlayableList);
         if (offlineViewableByPlayableId == null) {
             Log.e("nf_offlineAgent", "handleResumeRequest not found playableId=%s", s);
         }
-        else if (offlineViewableByPlayableId.getDownloadState() != DownloadState.Stopped) {
-            if (Log.isLoggable()) {
-                Log.e("nf_offlineAgent", "handleResumeRequest not stopped, state=" + offlineViewableByPlayableId.getDownloadState());
-            }
-        }
         else {
-            offlineViewableByPlayableId.getOfflineViewablePersistentData().setDownloadStateStopped(StopReason.WaitingToBeStarted);
-            if (!this.mDownloadController.canThisPlayableBeResumedByUser(offlineViewableByPlayableId)) {
-                Log.i("nf_offlineAgent", "handleResumeRequest not starting playableId=%s", s);
-                this.sendDownloadStopped(offlineViewableByPlayableId);
+            if (offlineViewableByPlayableId.getDownloadState() == DownloadState.Stopped) {
+                offlineViewableByPlayableId.getOfflineViewablePersistentData().setDownloadStateStopped(StopReason.WaitingToBeStarted);
+                offlineViewableByPlayableId.getOfflineViewablePersistentData().resetPersistentStatus();
+                final boolean tryResumingPlayable = this.tryResumingPlayable(offlineViewableByPlayableId);
+                if (tryResumingPlayable) {
+                    this.sendDownloadResumedByUser(offlineViewableByPlayableId);
+                }
+                else {
+                    this.sendDownloadStopped(offlineViewableByPlayableId);
+                }
+                Log.i("nf_offlineAgent", "handleResumeRequest playableId=%s resumed=%b", offlineViewableByPlayableId.getPlayableId(), tryResumingPlayable);
                 return;
             }
-            Log.i("nf_offlineAgent", "handleResumeRequest starting playableId=%s", s);
-            offlineViewableByPlayableId.startDownload();
-            if (b) {
-                this.sendDownloadResumedByUser(offlineViewableByPlayableId);
+            if (Log.isLoggable()) {
+                Log.e("nf_offlineAgent", "handleResumeRequest not stopped, state=" + offlineViewableByPlayableId.getDownloadState());
             }
         }
     }
@@ -475,7 +475,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     private boolean isOfflineFeatureDisabled() {
-        return this.mOfflineFeatureAvailability != OfflineAgentInterface$OfflineFeatureAvailability.AVAILABLE || this.mConfigurationAgent.getOfflineConfig().isOfflineFeatureDisabled();
+        return !this.mAvailable || this.mConfigurationAgent.getOfflineConfig().isOfflineFeatureDisabled();
     }
     
     private void onDownloadPauseOrResumeByUser(final boolean b) {
@@ -554,6 +554,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     private void sendDownloadStopped(final OfflinePlayableViewData offlinePlayableViewData) {
+        OfflineErrorLogblob.sendDownloadStopError(this.getLoggingAgent().getLogblobLogging(), offlinePlayableViewData.getPlayableId(), offlinePlayableViewData.getOxId(), offlinePlayableViewData.getDxId(), offlinePlayableViewData.getStopReason());
         this.mAgentListenerHelper.onDownloadStopped(this.getMainHandler(), offlinePlayableViewData, offlinePlayableViewData.getStopReason());
     }
     
@@ -584,7 +585,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.mAgentListenerHelper.onOfflinePlayableProgress(this.getMainHandler(), offlinePlayableViewData, n);
     }
     
-    private void sendResponseForCreate(final String s, final Status persistentError) {
+    private void sendResponseForCreate(final String s, final Status status) {
         Log.i("nf_offlineAgent", "sendResponseForCreate");
         this.mPlayableIdInFlight = null;
         final OfflinePlayable offlineViewableByPlayableId = OfflineAgentHelper.getOfflineViewableByPlayableId(s, this.mOfflinePlayableList);
@@ -594,21 +595,27 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             }
         }
         else {
-            if (persistentError.isSucces()) {
+            if (status.isSucces()) {
                 OfflineLogUtils.reportAddCachedVideoEnded(this.getContext(), offlineViewableByPlayableId.getOfflineViewablePersistentData().mOxId, IClientLogging$ModalView.addCachedVideoButton, IClientLogging$CompletionReason.success, null);
-                offlineViewableByPlayableId.getOfflineViewablePersistentData().setDownloadStateStopped(StopReason.WaitingToBeStarted);
+                if (status.getStatusCode() == StatusCode.DL_WARNING_DL_N_TIMES_BEFORE_DATE) {
+                    offlineViewableByPlayableId.getOfflineViewablePersistentData().setWarningStatus(status);
+                    offlineViewableByPlayableId.getOfflineViewablePersistentData().setDownloadStateStopped(StopReason.DownloadLimitRequiresManualResume);
+                }
+                else {
+                    offlineViewableByPlayableId.getOfflineViewablePersistentData().setDownloadStateStopped(StopReason.WaitingToBeStarted);
+                }
             }
             else {
-                offlineViewableByPlayableId.getOfflineViewablePersistentData().setPersistentError(persistentError);
-                OfflineLogUtils.reportAddCachedVideoEnded(this.getContext(), offlineViewableByPlayableId.getOfflineViewablePersistentData().mOxId, IClientLogging$ModalView.addCachedVideoButton, IClientLogging$CompletionReason.failed, persistentError.getError());
+                offlineViewableByPlayableId.getOfflineViewablePersistentData().setPersistentStatus(status);
+                OfflineLogUtils.reportAddCachedVideoEnded(this.getContext(), offlineViewableByPlayableId.getOfflineViewablePersistentData().mOxId, IClientLogging$ModalView.addCachedVideoButton, IClientLogging$CompletionReason.failed, status.getError());
                 offlineViewableByPlayableId.getOfflineViewablePersistentData().setCreateFailedState();
             }
             this.doSaveToRegistryInBGThread(this.getContext());
             this.buildNewUiList();
-            this.mAgentListenerHelper.onCreateRequestResponse(this.getMainHandler(), s, persistentError);
+            this.mAgentListenerHelper.onCreateRequestResponse(this.getMainHandler(), s, status);
             this.processNextCreateRequest();
-            if (persistentError.isSucces()) {
-                this.handleResumeRequest(s, false);
+            if (status.isSucces()) {
+                Log.i("nf_offlineAgent", "sendResponseForCreate playableId=%s resumed=%b", s, this.tryResumingPlayable(offlineViewableByPlayableId));
             }
         }
     }
@@ -629,20 +636,19 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     private void startDownloadIfAllowed() {
-        if (this.mUserAgent.isUserLoggedIn()) {
-            final OfflinePlayable nextPlayableForDownload = this.mDownloadController.getNextPlayableForDownload();
-            if (nextPlayableForDownload != null) {
-                if (Log.isLoggable()) {
-                    Log.i("nf_offlineAgent", "starting the download for " + nextPlayableForDownload.getPlayableId());
-                }
-                nextPlayableForDownload.startDownload();
-            }
-            else if (Log.isLoggable()) {
-                Log.i("nf_offlineAgent", "no downloadable item found, count=" + this.mOfflinePlayableList.size());
-            }
+        if (!this.mUserAgent.isUserLoggedIn()) {
+            Log.e("nf_offlineAgent", "startDownloadIfAllowed user is not logged in");
             return;
         }
-        Log.e("nf_offlineAgent", "startDownloadIfAllowed user is not logged in");
+        final OfflinePlayable nextPlayableForDownload = this.mDownloadController.getNextPlayableForDownload();
+        if (nextPlayableForDownload != null) {
+            if (Log.isLoggable()) {
+                Log.i("nf_offlineAgent", "starting the download for " + nextPlayableForDownload.getPlayableId());
+            }
+            nextPlayableForDownload.startDownload();
+            return;
+        }
+        Log.i("nf_offlineAgent", "no downloadable item found, count=%d", this.mOfflinePlayableList.size());
     }
     
     private void startQueueIfRequired() {
@@ -689,6 +695,14 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         }
     }
     
+    private boolean tryResumingPlayable(final OfflinePlayable offlinePlayable) {
+        if (this.mDownloadController.canThisPlayableBeResumedByUser(offlinePlayable)) {
+            offlinePlayable.startDownload();
+            return true;
+        }
+        return false;
+    }
+    
     private void updatePrimaryProfileGuidIfMissing() {
         final String primaryProfileGuid = this.mUserAgent.getPrimaryProfileGuid();
         final String primaryProfileGuid2 = this.mOfflineRegistry.getPrimaryProfileGuid();
@@ -732,7 +746,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     @Override
     public void destroy() {
         Log.i("nf_offlineAgent", "destroy");
-        this.mOfflineFeatureAvailability = OfflineAgentInterface$OfflineFeatureAvailability.NOT_INITIALIZED;
+        this.mAvailable = false;
         this.mAgentListenerHelper.agentDestroying();
         if (this.mBackGroundHandler != null) {
             this.addRequestToHandler(5);
@@ -745,6 +759,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     @Override
     protected void doInit() {
         Log.i("nf_offlineAgent", "OfflineAgent doInit");
+        this.mAvailable = false;
         this.getMainHandler().post((Runnable)new OfflineAgent$7(this));
         this.stopBackgroundThread();
         this.startBackgroundThread();

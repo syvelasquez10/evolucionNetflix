@@ -119,7 +119,9 @@ public interface PreferenceKeys
     public static final String PREF_DEBUG_SETTINGS_FORCE_PIN_CHECK = "prefs_debug_settings_force_pin_check";
     public static final String PREF_DISABLE_ANDROID_JOB_SCHEDULER = "disableAndroidJobScheduler";
     public static final String PREF_DISABLE_ANDROID_JOB_SCHEDULER_JOB_FINISH = "disableJobFinishAndroidJobScheduler";
+    public static final String PREF_IS_APP_UPGRADED = "appUpgraded";
     public static final String PREF_LAST_SUCCESSFUL_USER_PIN = "prefs_last_successful_user_pin";
+    public static final String PREF_MANIFEST_VERSION_CODE = "manifestVersionCode";
     public static final String PREF_OFFLINE_SNACKBAR_DOWNLOAD_COMPLETE_COUNT = "prefs_offline_snackbar_dl_complete_count";
     public static final String PREF_OFFLINE_SNACKBAR_USER_SWIPED = "prefs_offline_snackbar_user_swiped";
     public static final String SHOULD_SHOWN_DATA_SAVER_NOTIFICATION = "should_show_ftc_data_saver_notification";

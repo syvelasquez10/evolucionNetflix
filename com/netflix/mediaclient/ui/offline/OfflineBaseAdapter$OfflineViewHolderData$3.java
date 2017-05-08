@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.offline;
 
+import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnLongClickListener;
 
@@ -17,8 +18,12 @@ class OfflineBaseAdapter$OfflineViewHolderData$3 implements View$OnLongClickList
     
     public boolean onLongClick(final View view) {
         final int adapterPosition = this.this$1.getAdapterPosition();
-        this.this$1.this$0.toggleChecked(adapterPosition, this.this$1.this$0.getPlayableId(adapterPosition));
-        this.this$1.this$0.setSelectionMode(true);
+        if (adapterPosition != -1) {
+            this.this$1.this$0.toggleChecked(adapterPosition, this.this$1.this$0.getPlayableId(adapterPosition));
+            this.this$1.this$0.setSelectionMode(true);
+            return true;
+        }
+        Log.i("OfflineBaseAdapter", "longClickListener clickedPosition=%d", adapterPosition);
         return true;
     }
 }

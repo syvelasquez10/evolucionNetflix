@@ -9,9 +9,9 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.SharedPreferences$Editor;
-import com.netflix.android.tooltips.Tooltip$Callback;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.android.tooltips.Tooltip$Callback;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.app.Activity;
@@ -36,13 +36,12 @@ class TutorialHelper$1 extends RecyclerView$OnScrollListener
     
     @Override
     public void onScrollStateChanged(final RecyclerView recyclerView, final int n) {
-        if (2 == n) {
+        if (n == 0) {
             this.val$recyclerView.removeOnScrollListener(this);
             this.this$0.tooltip = null;
             this.this$0.createTooltip(this.val$tutor);
             if (this.this$0.tooltip != null) {
                 this.this$0.scrollToDownloadButton(this.val$recyclerView, this.this$0.tooltip.getTarget());
-                this.this$0.tooltip.show();
             }
         }
     }

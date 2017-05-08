@@ -63,7 +63,7 @@ public class ErrorWrapper
         this.viewMyDownloads.applyFrom(2131427596);
         this.viewMyDownloads.getLayoutParams().height = resources.getDimensionPixelOffset(2131362188);
         this.viewMyDownloads.setAllCaps(false);
-        this.viewMyDownloads.setText(2131231325);
+        this.viewMyDownloads.setText(2131231322);
         ViewUtils.setTextViewSizeByRes((TextView)this.viewMyDownloads, 2131361875);
         this.errorGroup.setBackgroundColor(-1);
     }

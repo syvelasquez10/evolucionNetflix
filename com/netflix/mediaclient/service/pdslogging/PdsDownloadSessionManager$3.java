@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.service.pdslogging;
 
-import com.netflix.mediaclient.service.player.exoplayback.logblob.OfflineErrorLogblob;
-import com.netflix.mediaclient.servicemgr.Logblob$Severity;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;

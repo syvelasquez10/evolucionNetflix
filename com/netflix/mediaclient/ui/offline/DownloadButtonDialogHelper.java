@@ -21,62 +21,62 @@ import android.content.Context;
 public class DownloadButtonDialogHelper
 {
     public static Dialog createDownloadDeleteAllDialog(final Context context, final DialogInterface$OnClickListener dialogInterface$OnClickListener, final String s, final String s2) {
-        return new AlertDialog$Builder(context).setTitle(2131231360).setMessage(context.getResources().getString(2131231359, new Object[] { s, s2 })).setPositiveButton(2131231308, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$15(dialogInterface$OnClickListener)).setNegativeButton(2131231008, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$14()).create();
+        return new AlertDialog$Builder(context).setTitle(2131231357).setMessage(context.getResources().getString(2131231356, new Object[] { s, s2 })).setPositiveButton(2131231305, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$15(dialogInterface$OnClickListener)).setNegativeButton(2131231008, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$14()).create();
     }
     
     static Dialog createDownloadFailedDialog(final Context context, final String s) {
-        return new AlertDialog$Builder(context).setTitle(2131231333).setMessage(context.getResources().getString(2131231332, new Object[] { s })).setNegativeButton(2131231008, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$13()).setPositiveButton(2131231144, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$12()).create();
+        return new AlertDialog$Builder(context).setTitle(2131231330).setMessage(context.getResources().getString(2131231329, new Object[] { s })).setNegativeButton(2131231008, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$13()).setPositiveButton(2131231144, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$12()).create();
     }
     
     static PopupMenu createDownloadingMenu(final Context context, final DownloadButton downloadButton, final String s, final boolean b) {
         final boolean b2 = true;
         final PopupMenu popupMenu = new PopupMenu(context, (View)downloadButton);
         popupMenu.inflate(2131755008);
-        popupMenu.getMenu().findItem(2131690413).setVisible(true);
-        popupMenu.getMenu().findItem(2131690416).setVisible(true);
-        popupMenu.getMenu().findItem(2131690417).setVisible(!isInMyDownloadsActivity(context) && b && b2);
+        popupMenu.getMenu().findItem(2131690414).setVisible(true);
+        popupMenu.getMenu().findItem(2131690417).setVisible(true);
+        popupMenu.getMenu().findItem(2131690418).setVisible(!isInMyDownloadsActivity(context) && b && b2);
         popupMenu.setOnMenuItemClickListener((PopupMenu$OnMenuItemClickListener)new DownloadButtonDialogHelper$2(context, s, downloadButton));
         return popupMenu;
     }
     
     public static Dialog createNoInternetDialog(final Context context, final String s, final boolean b) {
-        final AlertDialog$Builder setPositiveButton = new AlertDialog$Builder(context).setTitle(2131231344).setMessage(2131231343).setPositiveButton(2131231167, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$7());
+        final AlertDialog$Builder setPositiveButton = new AlertDialog$Builder(context).setTitle(2131231341).setMessage(2131231340).setPositiveButton(2131231168, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$7());
         if (b) {
-            setPositiveButton.setNegativeButton(2131231307, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$8(context, s));
+            setPositiveButton.setNegativeButton(2131231304, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$8(context, s));
         }
         return setPositiveButton.create();
     }
     
     static Dialog createNoStorageDialog(final Context context, final boolean b) {
-        final AlertDialog$Builder setTitle = new AlertDialog$Builder(context).setTitle(2131231347);
+        final AlertDialog$Builder setTitle = new AlertDialog$Builder(context).setTitle(2131231344);
         if (b) {
-            setTitle.setMessage(2131231345).setNegativeButton(2131231314, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$5(context)).setPositiveButton(2131231008, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$4());
+            setTitle.setMessage(2131231342).setNegativeButton(2131231311, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$5(context)).setPositiveButton(2131231008, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$4());
         }
         else {
-            setTitle.setMessage(2131231346).setPositiveButton(2131231167, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$6());
+            setTitle.setMessage(2131231343).setPositiveButton(2131231168, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$6());
         }
         return setTitle.create();
     }
     
     static Dialog createNoWifiDialog(final Context context, final String s, final VideoType videoType, final boolean b) {
-        final AlertDialog$Builder setPositiveButton = new AlertDialog$Builder(context).setTitle(2131231349).setMessage(2131231348).setNeutralButton(2131231167, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$10()).setPositiveButton(2131231311, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$9(context, s, videoType));
+        final AlertDialog$Builder setPositiveButton = new AlertDialog$Builder(context).setTitle(2131231346).setMessage(2131231345).setNeutralButton(2131231168, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$10()).setPositiveButton(2131231308, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$9(context, s, videoType));
         if (b) {
-            setPositiveButton.setNegativeButton(2131231307, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$11(context, s));
+            setPositiveButton.setNegativeButton(2131231304, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$11(context, s));
         }
         return setPositiveButton.create();
     }
     
     public static Dialog createNotAvailableDialog(final Context context) {
-        return new AlertDialog$Builder(context).setTitle(2131231351).setMessage(2131231350).setPositiveButton(2131231167, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$17()).setNeutralButton(2131231322, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$16(context)).create();
+        return new AlertDialog$Builder(context).setTitle(2131231348).setMessage(2131231347).setPositiveButton(2131231168, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$17()).setNeutralButton(2131231319, (DialogInterface$OnClickListener)new DownloadButtonDialogHelper$16(context)).create();
     }
     
     static PopupMenu createPausedMenu(final Context context, final DownloadButton downloadButton, final String s, final boolean b, final boolean visible) {
         final boolean b2 = true;
         final PopupMenu popupMenu = new PopupMenu(context, (View)downloadButton);
         popupMenu.inflate(2131755008);
-        popupMenu.getMenu().findItem(2131690415).setVisible(visible);
-        popupMenu.getMenu().findItem(2131690416).setVisible(true);
-        popupMenu.getMenu().findItem(2131690417).setVisible(b && !isInMyDownloadsActivity(context) && b2);
+        popupMenu.getMenu().findItem(2131690416).setVisible(visible);
+        popupMenu.getMenu().findItem(2131690417).setVisible(true);
+        popupMenu.getMenu().findItem(2131690418).setVisible(b && !isInMyDownloadsActivity(context) && b2);
         popupMenu.setOnMenuItemClickListener((PopupMenu$OnMenuItemClickListener)new DownloadButtonDialogHelper$3(context, s));
         return popupMenu;
     }
@@ -85,9 +85,9 @@ public class DownloadButtonDialogHelper
         final boolean b2 = true;
         final PopupMenu popupMenu = new PopupMenu(context, (View)downloadButton);
         popupMenu.inflate(2131755008);
-        popupMenu.getMenu().findItem(2131690412).setVisible(true);
-        popupMenu.getMenu().findItem(2131690414).setVisible(true);
-        popupMenu.getMenu().findItem(2131690417).setVisible(b && !isInMyDownloadsActivity(context) && b2);
+        popupMenu.getMenu().findItem(2131690413).setVisible(true);
+        popupMenu.getMenu().findItem(2131690415).setVisible(true);
+        popupMenu.getMenu().findItem(2131690418).setVisible(b && !isInMyDownloadsActivity(context) && b2);
         popupMenu.setOnMenuItemClickListener((PopupMenu$OnMenuItemClickListener)new DownloadButtonDialogHelper$1(context, s, videoType, playContext));
         return popupMenu;
     }

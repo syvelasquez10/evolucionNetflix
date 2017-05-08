@@ -113,7 +113,7 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
             return;
         }
         DeviceUtils.lockScreenToSensorOrientation(this.getActivity());
-        this.mStatusMessageView.setText(2131231294);
+        this.mStatusMessageView.setText(2131231291);
         this.showProgress(true);
         SignInLogUtils.reportSignInRequestSessionStarted((Context)this.getNetflixActivity(), SignInLogging$SignInType.emailPassword);
         if (serviceManager.isUserLoggedIn()) {
@@ -135,10 +135,9 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
             if (googleApiClient != null) {
                 break Label_0023;
             }
-        Block_7_Outer:
             while (true) {
-                Object o;
-                String string;
+                Object o = null;
+                String string = null;
                 try {
                     if (Log.isLoggable()) {
                         Log.d("LoginBaseFragment", "GPS client is null, unable to try to save credentials");
@@ -146,26 +145,34 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
                     Label_0020: {
                         return;
                     }
-                    // iftrue(Label_0119:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
-                    // iftrue(Label_0020:, !this.mSaveCredentials)
-                    // iftrue(Label_0045:, !Log.isLoggable())
+                Block_7_Outer:
                     while (true) {
-                    Label_0096:
+                    Label_0045_Outer:
                         while (true) {
-                            SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
-                            this.mSaveCredentials = false;
-                            o = this.mEmailEditText.getText().toString();
-                            string = this.mPasswordEditText.getText().toString();
-                            break Label_0096;
-                            Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
-                            return;
-                            Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
-                            continue Block_7_Outer;
+                        Label_0096:
+                            while (true) {
+                                Block_5: {
+                                    break Block_5;
+                                    Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
+                                    return;
+                                    SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
+                                    this.mSaveCredentials = false;
+                                    o = this.mEmailEditText.getText().toString();
+                                    string = this.mPasswordEditText.getText().toString();
+                                    break Label_0096;
+                                }
+                                Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
+                                continue;
+                            }
+                            continue Label_0045_Outer;
                         }
-                        continue;
+                        continue Block_7_Outer;
                     }
                 }
+                // iftrue(Label_0045:, !Log.isLoggable())
+                // iftrue(Label_0119:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
                 // iftrue(Label_0020:, !Log.isLoggable())
+                // iftrue(Label_0020:, !this.mSaveCredentials)
                 finally {
                 }
                 // monitorexit(this)
@@ -232,7 +239,7 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
         this.getNetflixActivity().setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this.getNetflixActivity(), SignInLogging$SignInType.emailPassword, IClientLogging$CompletionReason.success, null);
-            this.getNetflixActivity().showDebugToast(this.getString(2131231238));
+            this.getNetflixActivity().showDebugToast(this.getString(2131231235));
             this.saveCredentials();
             return;
         }
@@ -253,13 +260,13 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
             return string;
         }
         if (statusCode == StatusCode.NRD_LOGIN_ACTIONID_2) {
-            final String string2 = this.getString(2131231291) + " (" + statusCode.getValue() + ")";
+            final String string2 = this.getString(2131231288) + " (" + statusCode.getValue() + ")";
             this.getNetflixActivity().displayServiceAgentDialog(string2, null, false);
             this.reportError(status, string2);
             return string2;
         }
         if (statusCode == StatusCode.NETWORK_ERROR) {
-            final String string3 = this.getString(2131231293) + " (" + statusCode.getValue() + ")";
+            final String string3 = this.getString(2131231290) + " (" + statusCode.getValue() + ")";
             this.getNetflixActivity().displayServiceAgentDialog(string3, null, true);
             this.reportError(status, string3);
             return string3;
@@ -286,7 +293,7 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
             this.startActivityForResult(setData, 0);
             return;
         }
-        this.getNetflixActivity().displayServiceAgentDialog(this.getString(2131231283, new Object[] { "https://signup.netflix.com/loginhelp" }), null, false);
+        this.getNetflixActivity().displayServiceAgentDialog(this.getString(2131231280, new Object[] { "https://signup.netflix.com/loginhelp" }), null, false);
     }
     
     private boolean passwordIsInvalid(final ServiceManager serviceManager, final String s) {
@@ -498,18 +505,18 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
     @Override
     protected void setupViews(final View view) {
         super.setupViews(view);
-        (this.mEmailEditText = (EditText)view.findViewById(2131689945)).requestFocus();
-        this.mPasswordEditText = (EditText)view.findViewById(2131689946);
-        this.mLoginForm = view.findViewById(2131689943);
-        this.mLoginButton = view.findViewById(2131689941);
+        (this.mEmailEditText = (EditText)view.findViewById(2131689946)).requestFocus();
+        this.mPasswordEditText = (EditText)view.findViewById(2131689947);
+        this.mLoginForm = view.findViewById(2131689944);
+        this.mLoginButton = view.findViewById(2131689942);
         this.mStatusGroup = view.findViewById(2131689775);
-        this.mStatusMessageView = (TextView)view.findViewById(2131689944);
+        this.mStatusMessageView = (TextView)view.findViewById(2131689945);
         if (LocalizationUtils.isLocaleRTL(Locale.getDefault())) {
             this.mPasswordEditText.setGravity(5);
             this.mPasswordEditText.setOnFocusChangeListener((View$OnFocusChangeListener)new EmailPasswordFragment$1(this));
         }
         this.mPasswordEditText.setOnEditorActionListener((TextView$OnEditorActionListener)new EmailPasswordFragment$2(this));
-        view.findViewById(2131689941).setOnClickListener((View$OnClickListener)new EmailPasswordFragment$3(this));
-        view.findViewById(2131689942).setOnClickListener((View$OnClickListener)new EmailPasswordFragment$4(this));
+        view.findViewById(2131689942).setOnClickListener((View$OnClickListener)new EmailPasswordFragment$3(this));
+        view.findViewById(2131689943).setOnClickListener((View$OnClickListener)new EmailPasswordFragment$4(this));
     }
 }

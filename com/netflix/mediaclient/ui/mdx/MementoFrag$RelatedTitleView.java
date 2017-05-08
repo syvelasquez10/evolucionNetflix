@@ -62,7 +62,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     
     private void updateInsetImage(final int n) {
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
-        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689979);
+        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689980);
         if (advancedImageView != null && mementoVideoSwatch != null) {
             NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(advancedImageView, mementoVideoSwatch.boxArtUrl, IClientLogging$AssetType.boxArt, "MementoRelatedTitleView", BrowseExperience.getImageLoaderConfig(), true);
             this.adjustInsetHeight(advancedImageView);
@@ -74,7 +74,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     
     private void updateMainImage(final int n) {
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
-        final TopCropImageView topCropImageView = (TopCropImageView)this.findViewById(2131689977);
+        final TopCropImageView topCropImageView = (TopCropImageView)this.findViewById(2131689978);
         if (!DeviceUtils.isLandscape((Context)this.this$0.getActivity())) {
             topCropImageView.setScaleType(ImageView$ScaleType.CENTER_CROP);
         }
@@ -99,7 +99,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     }
     
     void updateMoreInfo(final int n) {
-        final TextView textView = (TextView)this.findViewById(2131689978);
+        final TextView textView = (TextView)this.findViewById(2131689979);
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
         if (textView != null && mementoVideoSwatch != null) {
             textView.setText((CharSequence)textView.getResources().getString(2131231132, new Object[] { mementoVideoSwatch.collectionName }));

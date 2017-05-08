@@ -259,30 +259,30 @@ public class MessageHeader extends Header
                     this.signature = this.messageCryptoContext.sign(this.headerdata);
                     this.verified = true;
                     return;
+                    try {
+                        final EntityAuthenticationScheme scheme = this.entityAuthData.getScheme();
+                        if (mslContext.getEntityAuthenticationFactory(scheme) == null) {
+                            throw new MslEntityAuthException(MslError.ENTITYAUTH_FACTORY_NOT_FOUND, scheme.name());
+                        }
+                        goto Label_1339;
+                    }
+                    catch (MslCryptoException ex2) {
+                        ex2.setEntityAuthenticationData(this.entityAuthData);
+                        ex2.setUserIdToken(this.userIdToken);
+                        ex2.setUserAuthenticationData(this.userAuthData);
+                        ex2.setMessageId(this.messageId);
+                        throw ex2;
+                    }
+                    catch (MslEntityAuthException ex3) {
+                        ex3.setEntityAuthenticationData(this.entityAuthData);
+                        ex3.setUserIdToken(this.userIdToken);
+                        ex3.setUserAuthenticationData(this.userAuthData);
+                        ex3.setMessageId(this.messageId);
+                        throw ex3;
+                    }
                     final ICryptoContext cryptoContext;
                     this.messageCryptoContext = cryptoContext;
                     continue;
-                }
-                try {
-                    final EntityAuthenticationScheme scheme = this.entityAuthData.getScheme();
-                    if (mslContext.getEntityAuthenticationFactory(scheme) == null) {
-                        throw new MslEntityAuthException(MslError.ENTITYAUTH_FACTORY_NOT_FOUND, scheme.name());
-                    }
-                    goto Label_1339;
-                }
-                catch (MslCryptoException ex2) {
-                    ex2.setEntityAuthenticationData(this.entityAuthData);
-                    ex2.setUserIdToken(this.userIdToken);
-                    ex2.setUserAuthenticationData(this.userAuthData);
-                    ex2.setMessageId(this.messageId);
-                    throw ex2;
-                }
-                catch (MslEntityAuthException ex3) {
-                    ex3.setEntityAuthenticationData(this.entityAuthData);
-                    ex3.setUserIdToken(this.userIdToken);
-                    ex3.setUserAuthenticationData(this.userAuthData);
-                    ex3.setMessageId(this.messageId);
-                    throw ex3;
                 }
             }
             catch (MslCryptoException ex4) {

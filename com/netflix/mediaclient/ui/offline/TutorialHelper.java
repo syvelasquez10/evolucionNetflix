@@ -10,9 +10,9 @@ import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.SharedPreferences$Editor;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.android.tooltips.Tooltip$Callback;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.android.tooltips.Tooltip$Callback;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.app.Activity;
@@ -26,6 +26,7 @@ public class TutorialHelper
 {
     public static final TutorialHelper EMPTY;
     private static final String PREFS = "com.netflix.android.fullscreen_tutorial";
+    private static final String TAG = "TutorialHelper";
     private static final String USER_TUTORIAL_DOWNLOAD_BUTTON = "USER_TUTORIAL_DOWNLOAD_BUTTON";
     private static final String USER_TUTORIAL_DOWNLOAD_GENRE = "USER_TUTORIAL_DOWNLOADS_GENRE";
     public static final String USER_TUTORIAL_FULLSCREEN = "USER_TUTORIAL_FULLSCREEN";
@@ -49,7 +50,7 @@ public class TutorialHelper
         }
         final CoordinatorLayout coordinatorLayout = (CoordinatorLayout)activity.findViewById(2131689780);
         if (coordinatorLayout != null) {
-            final Tooltip tooltip = Tooltip.makeTooltip((Context)activity, coordinatorLayout, view, 2131231382, 2131231376);
+            final Tooltip tooltip = Tooltip.makeTooltip((Context)activity, coordinatorLayout, view, 2131231378, 2131231373);
             tooltip.setOneTime(getTutorialPrefKey("USER_TUTORIAL_DOWNLOAD_BUTTON", userProfile));
             return tooltip;
         }
@@ -62,7 +63,7 @@ public class TutorialHelper
         }
         final CoordinatorLayout coordinatorLayout = (CoordinatorLayout)activity.findViewById(2131689780);
         if (coordinatorLayout != null) {
-            final Tooltip tooltip = Tooltip.makeTooltip((Context)activity, coordinatorLayout, view, 2131231382, 2131231381);
+            final Tooltip tooltip = Tooltip.makeTooltip((Context)activity, coordinatorLayout, view, 2131231378, 2131231377);
             tooltip.setOneTime(getTutorialPrefKey("USER_TUTORIAL_MY_DOWNLOADS_BUTTON", userProfile));
             return tooltip;
         }
@@ -100,11 +101,14 @@ public class TutorialHelper
     }
     
     private void scrollToDownloadButton(final RecyclerView recyclerView, final View view) {
+        this.tooltip.setCallback(new TutorialHelper$2(this, recyclerView));
         final int n = ViewUtils.getLocationOnScreen(view).bottom - DeviceUtils.getScreenHeightInPixels(this.context);
         if (n > 0) {
-            recyclerView.smoothScrollBy(0, n);
+            recyclerView.setOnScrollListener(new TutorialHelper$3(this, recyclerView));
+            recyclerView.smoothScrollBy(0, n + this.context.getResources().getDimensionPixelSize(2131362274));
+            return;
         }
-        this.tooltip.setCallback(new TutorialHelper$2(this, recyclerView));
+        this.tooltip.show();
     }
     
     private void scrollToFindDownloadButton(final RecyclerView recyclerView, final TutorialHelper$Tutorialable tutorialHelper$Tutorialable) {
@@ -153,9 +157,9 @@ public class TutorialHelper
     }
     
     public void showTutorialForVideoWithScroll(final TutorialHelper$Tutorialable tutorialHelper$Tutorialable, final VideoDetails videoDetails, final RecyclerView recyclerView, final ServiceManager serviceManager) {
-        if (!NetflixActivity.isTutorialOn() || !PersistentConfig.isGuidanceTutorial(this.context) || videoDetails == null || videoDetails.getPlayable() == null || !videoDetails.getPlayable().isAvailableOffline() || !isOfflineFeatureEnabled(serviceManager)) {
+        if (!NetflixActivity.isTutorialOn() || !PersistentConfig.isGuidanceTutorial(this.context) || videoDetails == null || videoDetails.getPlayable() == null || !videoDetails.getPlayable().isAvailableOffline() || !isOfflineFeatureEnabled(serviceManager) || Tooltip.isConsumed(recyclerView.getContext(), getTutorialPrefKey("USER_TUTORIAL_DOWNLOAD_BUTTON", this.profile))) {
             return;
         }
-        recyclerView.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new TutorialHelper$3(this, recyclerView, tutorialHelper$Tutorialable));
+        recyclerView.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new TutorialHelper$4(this, recyclerView, tutorialHelper$Tutorialable));
     }
 }

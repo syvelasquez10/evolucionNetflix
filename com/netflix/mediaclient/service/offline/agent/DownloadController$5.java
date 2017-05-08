@@ -28,6 +28,7 @@ import com.netflix.mediaclient.service.job.NetflixJob;
 import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.util.AndroidUtils;
 
 class DownloadController$5 implements Runnable

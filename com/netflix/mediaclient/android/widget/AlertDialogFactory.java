@@ -44,7 +44,7 @@ public final class AlertDialogFactory
         updateDialog$Builder.setTitle(noNull(s));
         updateDialog$Builder.setMessage((CharSequence)processMessage(s2));
         if (string == null) {
-            string = context.getString(2131231167);
+            string = context.getString(2131231168);
         }
         if (string2 == null) {
             string2 = context.getString(2131231008);

@@ -194,6 +194,10 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
+    public AddToListData$StateListener createMementoAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n) {
+        return this.addToMyListWrapper.createMementoAddToMyListWrapper(netflixActivity, textView, s, videoType, n);
+    }
+    
     public void doOnRampEligibilityAction(final OnRampEligibility$Action onRampEligibility$Action, final ManagerCallback managerCallback) {
         if (this.validateService()) {
             this.mService.doOnRampEligibilityAction(onRampEligibility$Action, this.mClientId, this.addCallback(managerCallback));
@@ -221,26 +225,28 @@ public final class ServiceManager implements IServiceManagerAccess
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
                 // iftrue(Label_0073:, !Log.isLoggable())
-                // iftrue(Label_0103:, !this.validateService())
                 while (true) {
-                Label_0073:
-                    while (true) {
-                        final int addCallback;
-                        Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                        break Label_0073;
+                    Label_0073: {
+                        while (true) {
+                            final int addCallback;
+                            Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
+                            break Label_0073;
+                            addCallback = this.addCallback(managerCallback);
+                            continue;
+                        }
+                        Label_0103: {
+                            Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
+                        }
+                        return b;
+                        int addCallback = 0;
                         this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
                         b = true;
                         return b;
-                        addCallback = this.addCallback(managerCallback);
-                        continue;
                     }
                     continue;
                 }
-                Label_0103: {
-                    Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
-                }
-                return b;
             }
+            // iftrue(Label_0103:, !this.validateService())
             finally {
             }
             // monitorexit(this)

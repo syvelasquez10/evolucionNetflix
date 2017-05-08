@@ -13,7 +13,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDet
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
-import com.netflix.mediaclient.StatusCode;
 import java.util.Iterator;
 import java.util.ArrayList;
 import android.view.View;
@@ -65,7 +64,7 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
         if (spannableString.toString().contains("\ud83d\udca5")) {
             if (this.bangIconInSnackbar == null) {
                 DrawableCompat.setTint(this.bangIconInSnackbar = DrawableCompat.wrap(ContextCompat.getDrawable(this.content.getContext(), 2130837742).mutate()), -1);
-                final int dimensionPixelSize = this.content.getResources().getDimensionPixelSize(2131362272);
+                final int dimensionPixelSize = this.content.getResources().getDimensionPixelSize(2131362273);
                 this.bangIconInSnackbar.setBounds(0, 0, dimensionPixelSize, dimensionPixelSize);
             }
             final ImageSpan imageSpan = new ImageSpan(this.bangIconInSnackbar, 1);
@@ -176,8 +175,8 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
                 return;
             }
             this.updateSnackbar();
-            if (StatusCode.isWarning(status.getStatusCode().getValue()) && downloadButton != null) {
-                downloadButton.showWarningDialog(s, status, (NetflixActivity)this.content.getContext());
+            if (status.isWarning() && downloadButton != null) {
+                downloadButton.setState(DownloadButton$ButtonState.ERROR, s);
             }
         }
     }
@@ -287,6 +286,15 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
         this.handlePlayRightsRenewDone(offlinePlayableViewData.getPlayableId(), status);
     }
     
+    public void refreshDownloadButton(final String s, final NetflixActivity netflixActivity) {
+        if (this.content != null) {
+            final DownloadButton downloadButton = (DownloadButton)this.content.findViewWithTag((Object)("download_btn" + s));
+            if (downloadButton != null) {
+                downloadButton.refreshDownloadButton(s, netflixActivity);
+            }
+        }
+    }
+    
     public void updateSnackbar(final boolean b) {
         final NetflixActivity netflixActivity = AndroidUtils.getContextAs(this.content.getContext(), NetflixActivity.class);
         if (netflixActivity != null && netflixActivity.canShowSnackBar() && this.showMessages) {
@@ -312,10 +320,10 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
                     final BuffetBar buffetBar = this.buffetBar;
                     int n2;
                     if (this.content.getLayoutDirection() == 1) {
-                        n2 = 2131231490;
+                        n2 = 2131231488;
                     }
                     else {
-                        n2 = 2131231491;
+                        n2 = 2131231489;
                     }
                     buffetBar.setAction(n2, this.launchMyDownloads);
                     this.buffetBar.show(b);

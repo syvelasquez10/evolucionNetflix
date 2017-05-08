@@ -35,7 +35,7 @@ public final class SecurityRepository
     public static final String NCCP_VERSION = "NCCP/2.15";
     private static final String NRDAPP_VERSION_VALUE = "2013.2";
     private static final String NRDLIB_VERSION_VALUE = "2013.2";
-    private static final String NRD_SDK_VERSION_VALUE = "4.1";
+    private static final String NRD_SDK_VERSION_VALUE = "4.0.4";
     public static final String SENDER_ID = "484286080282";
     private static final String TAG = "SEC";
     private static String crittercismAppId;
@@ -168,7 +168,7 @@ public final class SecurityRepository
     }
     
     public static String getNrdSdkVersion() {
-        return "4.1";
+        return "4.0.4";
     }
     
     public static String getSystemPropety(final String s) {

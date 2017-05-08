@@ -47,6 +47,10 @@ public final class Tooltip
         return this.mParent.getContext().getSharedPreferences("com.netflix.android.tooltips", 0);
     }
     
+    public static boolean isConsumed(final Context context, final String s) {
+        return context.getSharedPreferences("com.netflix.android.tooltips", 0).getBoolean("consumed." + s, false);
+    }
+    
     public static Tooltip makeTooltip(final Context context, final CoordinatorLayout coordinatorLayout, final View view, final int n, final int n2) {
         return new Tooltip(context, coordinatorLayout, view, (CharSequence)Html.fromHtml(context.getResources().getString(n)), (CharSequence)Html.fromHtml(context.getResources().getString(n2)));
     }

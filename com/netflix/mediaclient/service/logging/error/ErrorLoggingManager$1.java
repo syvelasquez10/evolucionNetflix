@@ -42,6 +42,9 @@ final class ErrorLoggingManager$1 implements UncaughtExceptionHandler
                 if (PersistentConfig.inMementoTest(this.val$globalContext)) {
                     t2 = wrapThrowableWithPrefix(String.format("Memento_%d ", PersistentConfig.getMemento(this.val$globalContext).getCellId()), t);
                 }
+                else if (PersistentConfig.inMemento2Test(this.val$globalContext)) {
+                    t2 = wrapThrowableWithPrefix(String.format("Memento2_%d ", PersistentConfig.getMemento2(this.val$globalContext).getCellId()), t);
+                }
                 else if (PrefetchLolomoABTestUtils.isInTest(this.val$globalContext)) {
                     final String format = String.format("AimLow7480_%d ", PersistentConfig.getPrefetchLolomoConfig(this.val$globalContext).getCellId());
                     if (Log.isLoggable()) {

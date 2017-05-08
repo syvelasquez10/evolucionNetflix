@@ -509,10 +509,10 @@ public class MessageBuilder
                     UserIdToken peerUserIdToken = this.peerUserIdToken;
                     try {
                         return this.addPeerServiceToken(new ServiceToken(this.ctx, s, MessageBuilder.EMPTY_DATA, peerMasterToken, peerUserIdToken, false, null, new NullCryptoContext()));
-                        peerMasterToken = null;
-                        continue;
                         peerUserIdToken = null;
                         return this.addPeerServiceToken(new ServiceToken(this.ctx, s, MessageBuilder.EMPTY_DATA, peerMasterToken, peerUserIdToken, false, null, new NullCryptoContext()));
+                        peerMasterToken = null;
+                        continue;
                     }
                     catch (MslException ex) {
                         throw new MslInternalException("Failed to create and add empty peer service token to message.", ex);

@@ -34,6 +34,10 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
         return (Fragment)new AboutFragment();
     }
     
+    private Intent createViewCookiesPolicyIntent() {
+        return new Intent("android.intent.action.VIEW").setData(Uri.parse("http://www.netflix.com/privacy#cookies"));
+    }
+    
     private Intent createViewLegalTermsOfUseIntent() {
         return new Intent("android.intent.action.VIEW").setData(Uri.parse("http://www.netflix.com/termsofuse"));
     }
@@ -45,16 +49,16 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     private void updateAboutDevice() {
         String s;
         if ((s = AndroidManifestUtils.getVersion(this.activity.getApplicationContext())) == null) {
-            s = this.getString(2131231279);
+            s = this.getString(2131231276);
         }
         final int versionCode = AndroidManifestUtils.getVersionCode(this.activity.getApplicationContext());
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getString(2131231277)).append(": ").append(s);
+        sb.append(this.getString(2131231274)).append(": ").append(s);
         if (versionCode > 0) {
             sb.append(" (");
-            sb.append(this.getString(2131231278)).append(" ").append(versionCode).append("), ");
+            sb.append(this.getString(2131231275)).append(" ").append(versionCode).append("), ");
         }
-        sb.append(this.getString(2131231171)).append(": ").append(AndroidUtils.getAndroidVersion());
+        sb.append(this.getString(2131231172)).append(": ").append(AndroidUtils.getAndroidVersion());
         sb.append("\n");
         sb.append(this.getString(2131231131)).append(": ").append(Build.MODEL);
         sb.append("\n");
@@ -86,16 +90,19 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
         super.onCreate(bundle);
         this.activity = this.getActivity();
         this.addPreferencesFromResource(2131099648);
-        this.findPreference((CharSequence)this.getString(2131231534)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.findPreference((CharSequence)this.getString(2131231532)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));
-        final Preference preference2 = this.findPreference((CharSequence)"pref.terms");
-        preference2.setIntent(this.createViewLegalTermsOfUseIntent());
+        final Preference preference2 = this.findPreference((CharSequence)"pref.privacy.cookies");
+        preference2.setIntent(this.createViewCookiesPolicyIntent());
         preference2.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$2(this));
-        final Preference preference3 = this.findPreference((CharSequence)"ui.diagnosis");
-        preference3.setIntent(DiagnosisActivity.createStartIntent((Context)this.activity));
+        final Preference preference3 = this.findPreference((CharSequence)"pref.terms");
+        preference3.setIntent(this.createViewLegalTermsOfUseIntent());
         preference3.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$3(this));
+        final Preference preference4 = this.findPreference((CharSequence)"ui.diagnosis");
+        preference4.setIntent(DiagnosisActivity.createStartIntent((Context)this.activity));
+        preference4.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$4(this));
         this.updateAboutDevice();
     }
     

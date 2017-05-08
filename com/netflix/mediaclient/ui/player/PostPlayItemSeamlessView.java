@@ -46,13 +46,13 @@ public final class PostPlayItemSeamlessView extends PostPlayItemView
         }
         this.mWatchCredits.setAlpha(1.0f);
         this.mNextEpisode.setAlpha(1.0f);
-        this.mNextEpisode.setText((CharSequence)this.getResources().getString(2131231196, new Object[] { this.mCountdownSeconds }));
+        this.mNextEpisode.setText((CharSequence)this.getResources().getString(2131231197, new Object[] { this.mCountdownSeconds }));
     }
     
     @Override
     protected void findViews() {
-        this.mWatchCredits = (Button)this.findViewById(2131690179);
-        this.mNextEpisode = (Button)this.findViewById(2131690159);
+        this.mWatchCredits = (Button)this.findViewById(2131690180);
+        this.mNextEpisode = (Button)this.findViewById(2131690160);
         this.mWatchCredits.setOnClickListener((View$OnClickListener)new PostPlayItemSeamlessView$1(this));
     }
     

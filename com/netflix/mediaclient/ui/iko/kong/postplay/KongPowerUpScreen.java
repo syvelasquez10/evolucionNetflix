@@ -76,9 +76,9 @@ public class KongPowerUpScreen extends KongBaseScreen
     void initViews(final View view) {
         this.powerUpViewsContainer = (ViewGroup)view;
         this.context = this.postPlayManager.getActivity();
-        this.powerUpContainer = (ViewGroup)this.powerUpViewsContainer.findViewById(2131690105);
+        this.powerUpContainer = (ViewGroup)this.powerUpViewsContainer.findViewById(2131690106);
         this.powerUpParams = new FrameLayout$LayoutParams(-2, this.context.getResources().getDimensionPixelSize(2131361924), 17);
-        this.powerUpTitleView = (TextView)this.powerUpViewsContainer.findViewById(2131690104);
+        this.powerUpTitleView = (TextView)this.powerUpViewsContainer.findViewById(2131690105);
         (this.smAvatarImage = new ImageView((Context)this.postPlayManager.getActivity())).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);
         (this.whiteFlareImage = new ImageView((Context)this.context)).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);
         (this.emptyBadgeImage = new ImageView((Context)this.context)).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);

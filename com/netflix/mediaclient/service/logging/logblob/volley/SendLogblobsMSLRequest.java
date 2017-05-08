@@ -53,7 +53,7 @@ public class SendLogblobsMSLRequest extends ApiFalkorMSLVolleyRequest<String>
             json.put("esn", (Object)logblob$CommonParams.esn);
             json.put("devmod", (Object)logblob$CommonParams.deviceModel);
             json.put("lver", (Object)"2013.2");
-            json.put("sdkver", (Object)"4.1");
+            json.put("sdkver", (Object)"4.0.4");
             json.put("platformVersion", (Object)AndroidManifestUtils.getVersion(context));
             json.put("platformBuildNum", AndroidManifestUtils.getVersionCode(context));
             json.put("platformType", (Object)"Android Sidecar");

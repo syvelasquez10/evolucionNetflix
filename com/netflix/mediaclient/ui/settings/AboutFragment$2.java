@@ -35,7 +35,7 @@ class AboutFragment$2 implements Preference$OnPreferenceClickListener
     }
     
     public boolean onPreferenceClick(final Preference preference) {
-        ApmLogUtils.reportUiModalViewChanged((Context)this.this$0.activity, IClientLogging$ModalView.legalTerms);
+        ApmLogUtils.reportUiModalViewChanged((Context)this.this$0.activity, IClientLogging$ModalView.privacyPolicy);
         return false;
     }
 }

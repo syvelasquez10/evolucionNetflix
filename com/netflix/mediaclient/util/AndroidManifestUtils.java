@@ -7,7 +7,7 @@ package com.netflix.mediaclient.util;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager$NameNotFoundException;
 import com.netflix.mediaclient.media.PlayerType;
-import android.util.Log;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import android.content.Context;
 
@@ -77,6 +77,33 @@ public final class AndroidManifestUtils
         }
         catch (PackageManager$NameNotFoundException ex) {
             return null;
+        }
+    }
+    
+    public static boolean isAppUpgraded(final Context context) {
+        return PreferenceUtils.getBooleanPref(context, "appUpgraded", false);
+    }
+    
+    private static void setAppUpgradedPrefBool(final Context context, final boolean b) {
+        PreferenceUtils.putBooleanPref(context, "appUpgraded", b);
+    }
+    
+    public static void updateAppUpgradedPrefs(final Context context) {
+        final int intPref = PreferenceUtils.getIntPref(context, "manifestVersionCode", -1);
+        final int versionCode = getVersionCode(context);
+        final boolean b = versionCode > intPref && intPref != -1;
+        final boolean b2 = versionCode != intPref;
+        Log.i("nf_utils", "onApplicationStart lastVersionCode=%d currentVersionCode=%d appUpgraded=%b updateManifestVersionCode=%b", intPref, versionCode, b, b2);
+        if (b) {
+            Log.i("nf_utils", "setting app upgraded pref");
+            setAppUpgradedPrefBool(context, true);
+        }
+        else if (isAppUpgraded(context)) {
+            Log.i("nf_utils", "resetting app upgraded pref");
+            setAppUpgradedPrefBool(context, false);
+        }
+        if (b2) {
+            PreferenceUtils.putIntPref(context, "manifestVersionCode", versionCode);
         }
     }
 }

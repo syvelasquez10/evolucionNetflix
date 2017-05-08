@@ -162,9 +162,9 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     @Override
     protected void findViews() {
         super.findViews();
-        this.characterView = (AdvancedImageView)this.findViewById(2131689868);
-        this.playView = (ImageView)this.findViewById(2131689871);
-        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131689869);
+        this.characterView = (AdvancedImageView)this.findViewById(2131689869);
+        this.playView = (ImageView)this.findViewById(2131689872);
+        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131689870);
     }
     
     @Override

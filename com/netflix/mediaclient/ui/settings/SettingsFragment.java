@@ -321,22 +321,22 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private void populateDownloadsVideoQualityConfig(final ListPreference listPreference) {
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(StringUtils.generateTitleAndSubtitles(this.getString(2131231356), this.getString(2131231357)));
+        list.add(StringUtils.generateTitleAndSubtitles(this.getString(2131231353), this.getString(2131231354)));
         list2.add(DownloadVideoQuality.DEFAULT.getValue());
-        list.add(StringUtils.generateTitleAndSubtitles(this.getString(2131231354), this.getString(2131231355)));
+        list.add(StringUtils.generateTitleAndSubtitles(this.getString(2131231351), this.getString(2131231352)));
         list2.add(DownloadVideoQuality.BEST.getValue());
         final DownloadVideoQuality currentDownloadVideoQuality = ((NetflixActivity)this.getActivity()).getServiceManager().getOfflineAgent().getCurrentDownloadVideoQuality();
         final Preference preference = this.findPreference((CharSequence)"pref.downloads.video_quality");
         switch (SettingsFragment$13.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$DownloadVideoQuality[currentDownloadVideoQuality.ordinal()]) {
             case 1: {
                 listPreference.setValue(DownloadVideoQuality.BEST.getValue());
-                preference.setSummary(this.getText(2131231354));
+                preference.setSummary(this.getText(2131231351));
                 break;
             }
             case 2:
             case 3: {
                 listPreference.setValue(DownloadVideoQuality.DEFAULT.getValue());
-                preference.setSummary(this.getText(2131231356));
+                preference.setSummary(this.getText(2131231353));
                 break;
             }
         }
@@ -348,11 +348,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131231522));
+        list.add(this.getText(2131231520));
         list2.add("DEFAULT");
-        list.add(this.getText(2131231523));
+        list.add(this.getText(2131231521));
         list2.add("ENHANCED_XML");
-        list.add(this.getText(2131231525));
+        list.add(this.getText(2131231523));
         list2.add("SIMPLE_XML");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_XML) {

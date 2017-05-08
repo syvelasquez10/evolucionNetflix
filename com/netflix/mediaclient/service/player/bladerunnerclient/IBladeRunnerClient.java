@@ -13,6 +13,8 @@ public interface IBladeRunnerClient
 {
     public static final int BLADERUNNER_VERSION = 2;
     
+    void activateOfflineLicense(final String p0);
+    
     void deactivateOfflineLicense(final String p0, final String p1, final boolean p2, final BladeRunnerWebCallback p3);
     
     void downloadComplete(final String p0, final BladeRunnerWebCallback p1);

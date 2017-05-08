@@ -68,11 +68,11 @@ public class UserMessageAreaView extends LinearLayout
         this.mReceiver = new UserMessageAreaView$1(this);
         inflate(context, 2130903307, (ViewGroup)this);
         (this.mTitle = (TextView)this.findViewById(2131689574)).setMovementMethod(LinkMovementMethod.getInstance());
-        (this.mBody = (TextView)this.findViewById(2131690377)).setMovementMethod(LinkMovementMethod.getInstance());
-        this.mCtaContainer = (ViewGroup)this.findViewById(2131690378);
+        (this.mBody = (TextView)this.findViewById(2131690378)).setMovementMethod(LinkMovementMethod.getInstance());
+        this.mCtaContainer = (ViewGroup)this.findViewById(2131690379);
         this.mIcon = (IconFontTextView)this.findViewById(2131689573);
-        this.mAlertView = this.findViewById(2131690375);
-        this.mDimSpace = (Space)this.findViewById(2131690376);
+        this.mAlertView = this.findViewById(2131690376);
+        this.mDimSpace = (Space)this.findViewById(2131690377);
         this.setOnTouchListener((View$OnTouchListener)new UserMessageAreaView$2(this));
         LocalizationUtils.setLayoutDirection((View)this.mCtaContainer);
         (this.mAlphaAnimation = this.animate()).setDuration((long)this.getResources().getInteger(17694721));
@@ -139,19 +139,19 @@ public class UserMessageAreaView extends LinearLayout
         }
         if ("INFO".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231477);
+            this.mIcon.setText(2131231474);
             this.mIcon.setTextColor(this.getResources().getColor(2131624052));
             return;
         }
         if ("WARN".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231489);
+            this.mIcon.setText(2131231487);
             this.mIcon.setTextColor(this.getResources().getColor(2131624053));
             return;
         }
         if ("ERROR".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231474);
+            this.mIcon.setText(2131231471);
             this.mIcon.setTextColor(this.getResources().getColor(2131624054));
             return;
         }

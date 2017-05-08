@@ -173,10 +173,9 @@ class MslControl$RespondService implements Callable<MslControl$MslChannel>
                             }
                             this.this$0.streamFactory.createOutputStream(this.ctx, this.out, MslConstants.DEFAULT_CHARSET, errorResponse).close();
                             return null;
+                            // iftrue(Label_0498:, !this.msgCtx.isEncrypted() || messageBuilder.willEncryptPayloads())
                             mslError = MslError.RESPONSE_REQUIRES_ENCRYPTION;
-                            continue;
                         }
-                        // iftrue(Label_0498:, !this.msgCtx.isEncrypted() || messageBuilder.willEncryptPayloads())
                         catch (Throwable debugContext) {
                             if (MslControl.cancelled((Throwable)debugContext)) {
                                 return null;

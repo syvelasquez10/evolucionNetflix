@@ -69,13 +69,13 @@ public class LogblobLoggingImpl implements LogblobLogging
                     Log.w("nf_logblob", "We are already trying to deliver %s deliveryRequestId, skip");
                 }
                 else {
+                    this.mPendingCachedLogPayloads.add(key);
                     if (b) {
                         this.mExecutor.schedule(new LogblobLoggingImpl$2(this, key), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
                     }
                     else {
                         this.mExecutor.execute(new LogblobLoggingImpl$3(this, key));
                     }
-                    this.mPendingCachedLogPayloads.add(key);
                 }
             }
         }
@@ -159,6 +159,12 @@ public class LogblobLoggingImpl implements LogblobLogging
         }
         catch (JSONException ex) {
             Log.e("nf_logblob", (Throwable)ex, "Failed to add common parameters to JSON logbob?!", new Object[0]);
+        }
+    }
+    
+    public void checkState() {
+        if (this.mEventQueue.flushIfCriteriaIsFulfilled()) {
+            Log.d("nf_logblob", "LogBlog events were sent recently. We reached timeout, force send");
         }
     }
     

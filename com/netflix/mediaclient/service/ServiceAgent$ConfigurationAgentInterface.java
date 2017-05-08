@@ -115,6 +115,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     MdxConfiguration getMdxConfiguration();
     
+    ABTestConfig$Cell getMemento2Config();
+    
     ABTestConfig$Cell getMementoConfig();
     
     ABTestConfig$Cell getMotionBBTestConfig();

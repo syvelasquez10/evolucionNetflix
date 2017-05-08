@@ -16,7 +16,6 @@ import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.text.TextUtils;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.offline.OfflineUiHelper;
 import com.netflix.mediaclient.ui.offline.ActivityPageOfflineAgentListener$SnackbarMessage;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import java.util.Collection;
@@ -29,9 +28,11 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
+import com.netflix.mediaclient.ui.offline.OfflineUiHelper;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Context;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
@@ -39,7 +40,12 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
 {
     private static final String TAG = "OfflinePlayableUiListImpl";
     private List<OfflineAdapterData> mOfflinePlayableUiItemList;
+    private final Map<String, String> mPlayableToTitleMap;
     private Map<String, OfflinePlayableViewData> mVideoIdToOfflineData;
+    
+    public OfflinePlayableUiListImpl() {
+        this.mPlayableToTitleMap = new HashMap<String, String>();
+    }
     
     private String buildShowCompositeStatus(final Context context, int n) {
         final RealmVideoDetails[] episodes = this.mOfflinePlayableUiItemList.get(n).getEpisodes();
@@ -92,13 +98,13 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
             i = n11;
         }
         if (n > 0) {
-            return context.getString(2131231369, new Object[] { n, n4 });
+            return context.getString(2131231366, new Object[] { n, n4 });
         }
         if (n3 > 0) {
-            return context.getString(2131231373, new Object[] { n2 + n3 });
+            return context.getString(2131231370, new Object[] { n2 + n3 });
         }
         if (n2 > 0) {
-            return context.getString(2131231375, new Object[] { n2 });
+            return context.getString(2131231372, new Object[] { n2 });
         }
         return null;
     }
@@ -107,12 +113,8 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         return offlinePlayableViewData.getDownloadState() == DownloadState.Complete;
     }
     
-    private static boolean downloadHasError(final OfflinePlayableViewData offlinePlayableViewData) {
-        return offlinePlayableViewData.getLastPersistentErrorStatus().isError() || (offlinePlayableViewData.getDownloadState() == DownloadState.Stopped && offlinePlayableViewData.getStopReason().showBangIconErrorInUi());
-    }
-    
     private static boolean downloadPaused(final OfflinePlayableViewData offlinePlayableViewData) {
-        return !downloadHasError(offlinePlayableViewData) && offlinePlayableViewData.getDownloadState() == DownloadState.Stopped;
+        return !OfflineUiHelper.hasErrorOrWarning(offlinePlayableViewData) && offlinePlayableViewData.getDownloadState() == DownloadState.Stopped;
     }
     
     private OfflinePlayableViewData getCurrentlyDownloading() {
@@ -126,28 +128,43 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         return null;
     }
     
-    private static String getDownloadProgress(final Context context, final boolean b, final OfflinePlayableViewData offlinePlayableViewData) {
+    private String getDownloadProgress(final Context context, final boolean b, final OfflinePlayableViewData offlinePlayableViewData) {
+        final StringBuilder sb = new StringBuilder();
         final String string = "(" + StringUtils.getAsPercentString(context, offlinePlayableViewData.getPercentageDownloaded()) + ")";
         if (b) {
-            return string + " " + getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId());
+            sb.append(string).append(" ").append(this.getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId()));
         }
-        return getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId()) + " " + string;
+        else {
+            sb.append(this.getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId())).append(" ").append(string);
+        }
+        return sb.toString();
     }
     
-    private static String getTitleOrEmpty(final Context context, final String s) {
+    private String getTitleOrEmpty(final Context context, final String s) {
+        final String s2 = this.mPlayableToTitleMap.get(s);
+        if (s2 != null) {
+            return s2;
+        }
         final RealmVideoDetails offlineVideoDetails = RealmUtils.getOfflineVideoDetails(s);
         if (offlineVideoDetails == null) {
             return "";
         }
-        if (offlineVideoDetails.getType() != VideoType.EPISODE || offlineVideoDetails.getPlayable() == null) {
-            return offlineVideoDetails.getTitle();
+        String s3;
+        if (offlineVideoDetails.getType() == VideoType.EPISODE && offlineVideoDetails.getPlayable() != null) {
+            final RealmVideoDetails offlineVideoDetails2 = RealmUtils.getOfflineVideoDetails(offlineVideoDetails.getPlayable().getParentId());
+            if (offlineVideoDetails2 != null) {
+                s3 = context.getString(2131231231, new Object[] { offlineVideoDetails2.getTitle(), offlineVideoDetails.getPlayable().getSeasonAbbrSeqLabel(), offlineVideoDetails.getPlayable().getEpisodeNumber(), offlineVideoDetails.getTitle() });
+            }
+            else {
+                ErrorLoggingManager.logHandledException("No show found for episode: playableId=" + s + "/parent=" + offlineVideoDetails.getPlayable().getParentId());
+                s3 = context.getString(2131231088, new Object[] { offlineVideoDetails.getPlayable().getSeasonAbbrSeqLabel(), offlineVideoDetails.getPlayable().getEpisodeNumber(), offlineVideoDetails.getTitle() });
+            }
         }
-        final RealmVideoDetails offlineVideoDetails2 = RealmUtils.getOfflineVideoDetails(offlineVideoDetails.getPlayable().getParentId());
-        if (offlineVideoDetails2 != null) {
-            return context.getString(2131231234, new Object[] { offlineVideoDetails2.getTitle(), offlineVideoDetails.getPlayable().getSeasonAbbrSeqLabel(), offlineVideoDetails.getPlayable().getEpisodeNumber(), offlineVideoDetails.getTitle() });
+        else {
+            s3 = offlineVideoDetails.getTitle();
         }
-        ErrorLoggingManager.logHandledException("No show found for episode: playableId=" + s + "/parent=" + offlineVideoDetails.getPlayable().getParentId());
-        return context.getString(2131231088, new Object[] { offlineVideoDetails.getPlayable().getSeasonAbbrSeqLabel(), offlineVideoDetails.getPlayable().getEpisodeNumber(), offlineVideoDetails.getTitle() });
+        this.mPlayableToTitleMap.put(s, s3);
+        return s3;
     }
     
     @Override
@@ -175,7 +192,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
             n = n2;
             switch (OfflinePlayableUiListImpl$2.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$DownloadState[downloadState.ordinal()]) {
                 case 4: {
-                    s = context.getString(2131231374);
+                    s = context.getString(2131231371);
                     n = n2;
                     break;
                 }
@@ -187,7 +204,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                         case 3:
                         case 4:
                         case 5: {
-                            s = context.getString(2131231370);
+                            s = context.getString(2131231367);
                             n = 2131624053;
                         }
                         case 1:
@@ -223,14 +240,14 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                         }
                         case 7: {
                             n = 2131624053;
-                            s = context.getString(2131231371);
+                            s = context.getString(2131231368);
                             break;
                         }
                     }
                     break;
                 }
                 case 1: {
-                    s = context.getString(2131231368);
+                    s = context.getString(2131231365);
                     n = n2;
                 }
                 case 5:
@@ -248,10 +265,10 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                     n = n2;
                     if (!offlinePlayableViewData.getStopReason().showBangIconErrorInUi()) {
                         if (percentageDownloaded > 0) {
-                            s = context.getString(2131231372);
+                            s = context.getString(2131231369);
                         }
                         else {
-                            s = context.getString(2131231374);
+                            s = context.getString(2131231371);
                         }
                         n = n2;
                         break;
@@ -324,38 +341,38 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         final boolean b3 = !ConnectivityUtils.isConnected(context);
         String s = null;
         if (requiresUnmeteredNetwork && b2) {
-            s = context.getString(2131231367);
+            s = context.getString(2131231364);
         }
         else if (b3) {
-            s = context.getString(2131231366);
+            s = context.getString(2131231363);
         }
         final Collection<OfflinePlayableViewData> values = this.mVideoIdToOfflineData.values();
         if (values.size() == 1) {
             final OfflinePlayableViewData offlinePlayableViewData = values.iterator().next();
-            final String titleOrEmpty = getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId());
-            if (downloadHasError(offlinePlayableViewData)) {
+            final String titleOrEmpty = this.getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId());
+            if (OfflineUiHelper.hasErrorOrWarning(offlinePlayableViewData)) {
                 if (s == null) {
                     s = titleOrEmpty;
                 }
-                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131231365, new Object[] { s }), 1);
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131231362, new Object[] { s }), 1);
             }
             if (downloadCompleted(offlinePlayableViewData)) {
                 if (snackBarDownloadCompleteCount == 1) {
-                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131231363, new Object[] { titleOrEmpty }), 0);
+                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131231360, new Object[] { titleOrEmpty }), 0);
                 }
             }
             else {
                 if (downloadPaused(offlinePlayableViewData)) {
                     if (s == null) {
-                        s = context.getResources().getString(2131231372);
+                        s = context.getResources().getString(2131231369);
                     }
-                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131231364, new Object[] { s }), 0);
+                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131231361, new Object[] { s }), 0);
                 }
                 if (this.getCurrentlyDownloading() != null || s != null) {
                     if (s == null) {
-                        s = getDownloadProgress(context, b, offlinePlayableViewData);
+                        s = this.getDownloadProgress(context, b, offlinePlayableViewData);
                     }
-                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131231364, new Object[] { s }), 0);
+                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131231361, new Object[] { s }), 0);
                 }
             }
         }
@@ -373,7 +390,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                 int n10;
                 int n11;
                 int n12;
-                if (downloadHasError(offlinePlayableViewData2)) {
+                if (OfflineUiHelper.hasErrorOrWarning(offlinePlayableViewData2)) {
                     final int n7 = n5;
                     final int n8 = n4;
                     n9 = n2 + 1;
@@ -428,14 +445,14 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
             }
             final OfflinePlayableViewData currentlyDownloading = this.getCurrentlyDownloading();
             if (n4 == n) {
-                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131296264, n4, new Object[] { context.getResources().getString(2131231372), n4 }), n2);
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131296264, n4, new Object[] { context.getResources().getString(2131231369), n4 }), n2);
             }
             if (n2 == n) {
                 return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131296265, n2, new Object[] { n2 }), n2);
             }
             if (s == null) {
                 if (n23 > 0) {
-                    s = context.getResources().getString(2131231372);
+                    s = context.getResources().getString(2131231369);
                 }
                 else {
                     s = "";
@@ -444,7 +461,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                     s = context.getResources().getQuantityString(2131296266, n2, new Object[] { n2, "\ud83d\udca5" });
                 }
                 else if (currentlyDownloading != null) {
-                    s = getDownloadProgress(context, b, currentlyDownloading);
+                    s = this.getDownloadProgress(context, b, currentlyDownloading);
                 }
             }
             if (n23 > 0) {
@@ -588,6 +605,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         }
         this.mVideoIdToOfflineData = mVideoIdToOfflineData;
         this.mOfflinePlayableUiItemList = (List<OfflineAdapterData>)mOfflinePlayableUiItemList;
+        this.mPlayableToTitleMap.clear();
     }
     
     @Override

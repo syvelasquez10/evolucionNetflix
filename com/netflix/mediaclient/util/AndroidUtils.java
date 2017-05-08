@@ -30,7 +30,6 @@ import android.graphics.Rect;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.graphics.Bitmap$Config;
-import android.graphics.Bitmap;
 import android.content.ContextWrapper;
 import android.text.format.Formatter;
 import android.os.StatFs;
@@ -48,6 +47,7 @@ import android.os.StrictMode$ThreadPolicy$Builder;
 import java.io.IOException;
 import android.os.Debug;
 import android.os.Environment;
+import android.graphics.Bitmap;
 import com.netflix.mediaclient.Log;
 import java.io.File;
 import android.content.Context;
@@ -81,6 +81,27 @@ public final class AndroidUtils
                 }
             }
         }
+    }
+    
+    public static Bitmap createScaledBitmapWithAspectRatio(final Bitmap bitmap, final int n, final int n2, final boolean b) {
+        ThreadUtils.assertNotOnMain();
+        final int width = bitmap.getWidth();
+        final int height = bitmap.getHeight();
+        if (width > 0 && height > 0 && n > 0 && n2 > 0) {
+            int n3;
+            int n4;
+            if (width > height) {
+                n3 = n2 * height / width;
+                n4 = n;
+            }
+            else {
+                n4 = width * n2 / height;
+                n3 = n2;
+            }
+            Log.i("nf_utils", "originalW=%d originalH=%d dstWidth=%d dstHeight=%d newWidth=%d newHeight=%d", width, height, n, n2, n4, n3);
+            return Bitmap.createScaledBitmap(bitmap, n4, n3, b);
+        }
+        return bitmap;
     }
     
     public static boolean deleteDir(final File file) {

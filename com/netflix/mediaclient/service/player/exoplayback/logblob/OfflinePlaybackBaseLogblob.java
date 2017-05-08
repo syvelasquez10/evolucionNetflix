@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.player.exoplayback.logblob;
 
 import com.netflix.mediaclient.servicemgr.Logblob$Severity;
 import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
+import com.netflix.mediaclient.service.logging.offline.OfflineBaseLogblob;
 
 public abstract class OfflinePlaybackBaseLogblob extends OfflineBaseLogblob
 {

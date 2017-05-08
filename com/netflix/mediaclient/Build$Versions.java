@@ -10,5 +10,5 @@ public interface Build$Versions
     public static final String MDXLIB_VERSION_VALUE = "2013.3";
     public static final String NRDAPP_VERSION_VALUE = "2013.2";
     public static final String NRDLIB_VERSION_VALUE = "2013.2";
-    public static final String NRD_SDK_VERSION_VALUE = "4.1";
+    public static final String NRD_SDK_VERSION_VALUE = "4.0.4";
 }

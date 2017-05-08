@@ -32,8 +32,8 @@ public class MdxTargetSelectionDialog$Builder extends AlertDialog$Builder
         this.activity = activity;
         final LayoutInflater layoutInflater = activity.getLayoutInflater();
         this.content = layoutInflater.inflate(2130903206, (ViewGroup)null);
-        this.title = (TextView)this.content.findViewById(2131689951);
-        this.listView = (ListView)this.content.findViewById(2131690008);
+        this.title = (TextView)this.content.findViewById(2131689952);
+        this.listView = (ListView)this.content.findViewById(2131690009);
         this.adapterWrapper = new MdxTargetSelectionDialog$TargetsAdapter(layoutInflater);
         this.listView.setAdapter((ListAdapter)this.adapterWrapper);
         this.setCancelable(true);

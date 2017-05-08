@@ -21,8 +21,10 @@ public class OfflineLicenseResponse
     private static String TAG;
     private String drmLicenseContextId;
     private byte[] licenseData;
+    private int mAllocationsRemaining;
     private long mExpirationTimeInMs;
     private byte[] mKeySetId;
+    private OfflineLicenseResponse$LimitationType mLimitationType;
     public String mLinkActivate;
     public String mLinkDeactivate;
     public String mLinkDownloadAndActivate;
@@ -35,6 +37,7 @@ public class OfflineLicenseResponse
     private boolean mShouldRefreshByTimestamp;
     private boolean mShouldUsePlayWindowLimits;
     private long mViewingWindow;
+    public long mYearlyLimitExpiryDateMillis;
     private String providerSessionToken;
     
     static {
@@ -80,6 +83,9 @@ public class OfflineLicenseResponse
                 this.mShouldRefresh = optJSONObject2.optBoolean("ALLOWAUTOLICENSEREFRESH");
                 this.mShouldRefreshByTimestamp = optJSONObject2.optBoolean("APPLYLICENSEREFRESHLIMIT");
                 this.mRefreshLicenseTimeStamp = optJSONObject2.optLong("REFRESHLICENSETIMESTAMP");
+                this.mLimitationType = OfflineLicenseResponse$LimitationType.create(optJSONObject2.optString("YEARLYLIMITATIONTYPE"));
+                this.mYearlyLimitExpiryDateMillis = optJSONObject2.optLong("YEARLYLIMITEXPIRYDATEMILLIS");
+                this.mAllocationsRemaining = optJSONObject2.optInt("ALLOCATIONSREMAINING");
             }
             optJSONObject = optJSONObject.optJSONObject("links");
             if (optJSONObject != null) {
@@ -117,6 +123,10 @@ public class OfflineLicenseResponse
     
     @Override
     public String toString() {
-        return "OfflineLicenseResponse{mExpirationTimeInMs=" + this.mExpirationTimeInMs + ", mPlayableWindowInHour=" + this.mPlayableWindowInHour + ", mPlayWindowResetLimit=" + this.mPlayWindowResetLimit + ", mRefreshLicenseTimeStamp=" + this.mRefreshLicenseTimeStamp + ", mShouldUsePlayWindowLimits=" + this.mShouldUsePlayWindowLimits + ", mPwResettable=" + this.mPwResettable + ", mShouldRefresh=" + this.mShouldRefresh + ", mShouldRefreshByTimestamp=" + this.mShouldRefreshByTimestamp + ", mViewingWindow=" + this.mViewingWindow + ", mKeySetId=" + Arrays.toString(this.mKeySetId) + ", mLinkActivate='" + this.mLinkActivate + '\'' + ", mLinkDownloadAndActivate='" + this.mLinkDownloadAndActivate + '\'' + ", mLinkDeactivate='" + this.mLinkDeactivate + '\'' + ", mLinkRefresh='" + this.mLinkRefresh + '\'' + ", drmLicenseContextId='" + this.drmLicenseContextId + '\'' + ", providerSessionToken='" + this.providerSessionToken + '\'' + '}';
+        return "OfflineLicenseResponse{mExpirationTimeInMs=" + this.mExpirationTimeInMs + ", mPlayableWindowInHour=" + this.mPlayableWindowInHour + ", mPlayWindowResetLimit=" + this.mPlayWindowResetLimit + ", mRefreshLicenseTimeStamp=" + this.mRefreshLicenseTimeStamp + ", mLimitationType=" + this.mLimitationType + ", mAllocationsRemaining=" + this.mAllocationsRemaining + ", mYearlyLimitExpiryDateMillis=" + this.mYearlyLimitExpiryDateMillis + ", mShouldUsePlayWindowLimits=" + this.mShouldUsePlayWindowLimits + ", mPwResettable=" + this.mPwResettable + ", mShouldRefresh=" + this.mShouldRefresh + ", mShouldRefreshByTimestamp=" + this.mShouldRefreshByTimestamp + ", mViewingWindow=" + this.mViewingWindow + ", mKeySetId=" + Arrays.toString(this.mKeySetId) + ", mLinkActivate='" + this.mLinkActivate + '\'' + ", mLinkDownloadAndActivate='" + this.mLinkDownloadAndActivate + '\'' + ", mLinkDeactivate='" + this.mLinkDeactivate + '\'' + ", mLinkRefresh='" + this.mLinkRefresh + '\'' + ", drmLicenseContextId='" + this.drmLicenseContextId + '\'' + ", providerSessionToken='" + this.providerSessionToken + '\'' + '}';
+    }
+    
+    public boolean willTiggerYearlyLimit() {
+        return (OfflineLicenseResponse$LimitationType.License == this.mLimitationType || OfflineLicenseResponse$LimitationType.Download == this.mLimitationType) && this.mAllocationsRemaining == 1 && this.mYearlyLimitExpiryDateMillis != -1L;
     }
 }

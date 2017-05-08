@@ -442,7 +442,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements IMiniPlayerFrag
             this.log("Activity is null or destroyed - bailing early");
             return;
         }
-        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131690020);
+        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131690021);
         if (mementoFrag != null) {
             mementoFrag.onManagerReady(serviceManager, status);
         }

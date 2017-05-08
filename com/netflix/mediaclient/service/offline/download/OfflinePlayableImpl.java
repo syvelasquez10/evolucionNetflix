@@ -15,6 +15,7 @@ import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.service.offline.manifest.OfflinePlayableManifestImpl;
 import com.netflix.mediaclient.service.pdslogging.DownloadContext;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$DownloadCompleteAndActivateCallback;
 import com.netflix.mediaclient.service.offline.agent.PlayabilityEnforcer;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -38,7 +39,6 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import java.util.ArrayList;
 import com.android.volley.RequestQueue;
-import com.netflix.mediaclient.service.offline.agent.OfflineNrdpLogger;
 import com.netflix.mediaclient.service.offline.manifest.OfflineManifestManager;
 import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager;
 import java.io.File;
@@ -70,14 +70,13 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     private boolean mLicenseRefreshing;
     private final OfflineLicenseManager mOfflineLicenseManager;
     private final OfflineManifestManager mOfflineManifestManager;
-    private final OfflineNrdpLogger mOfflineNrdpLogger;
     private final OfflinePlayableListener mOfflinePlayableListener;
     private final OfflinePlayablePersistentData mOfflinePlayablePersistentData;
     private final PlayableProgressInfo mPlayableProgressInfo;
     private final OfflinePlayableImpl$ProgressWatchRunnable mProgressWatchRunnable;
     private final RequestQueue mRequestQueue;
     
-    public OfflinePlayableImpl(final Context mContext, final OfflinePlayablePersistentData mOfflinePlayablePersistentData, final PlayableProgressInfo mPlayableProgressInfo, final String mDirPathOfPlayable, final RequestQueue mRequestQueue, final OfflineManifestManager mOfflineManifestManager, final OfflineLicenseManager mOfflineLicenseManager, final OfflinePlayableListener mOfflinePlayableListener, final HandlerThread mBackgroundThread, final OfflineNrdpLogger mOfflineNrdpLogger, final IClientLogging mClientLogging) {
+    public OfflinePlayableImpl(final Context mContext, final OfflinePlayablePersistentData mOfflinePlayablePersistentData, final PlayableProgressInfo mPlayableProgressInfo, final String mDirPathOfPlayable, final RequestQueue mRequestQueue, final OfflineManifestManager mOfflineManifestManager, final OfflineLicenseManager mOfflineLicenseManager, final OfflinePlayableListener mOfflinePlayableListener, final HandlerThread mBackgroundThread, final IClientLogging mClientLogging) {
         this.mCdnUrlDownloaderList = new ArrayList<CdnUrlDownloader>();
         this.mProgressWatchRunnable = new OfflinePlayableImpl$ProgressWatchRunnable(this, null);
         this.mContext = mContext;
@@ -91,15 +90,22 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         this.mOfflinePlayableListener = mOfflinePlayableListener;
         this.mBackGroundMessageHandler = new OfflinePlayableImpl$BackGroundMessageHandler(this, mBackgroundThread.getLooper());
         this.mBackgroundThread = mBackgroundThread;
-        this.mOfflineNrdpLogger = mOfflineNrdpLogger;
         this.mClientLogging = mClientLogging;
         if (this.mOfflinePlayablePersistentData.getDownloadState() == DownloadState.InProgress) {
             Log.i("nf_offlinePlayable", "OfflinePlayableImpl constructor marking item stopped");
             this.mOfflinePlayablePersistentData.setDownloadStateStopped(StopReason.WaitingToBeStarted);
         }
-        if (!this.checkAllDownloadablesExists()) {
+        boolean b = false;
+        if (this.mOfflinePlayablePersistentData.getDownloadState() == DownloadState.Stopped) {
+            b = b;
+            if (this.mOfflinePlayablePersistentData.getStopReason() == StopReason.DownloadLimitRequiresManualResume) {
+                b = true;
+            }
+        }
+        if (!b && !this.checkAllDownloadablesExists()) {
             Log.e("nf_offlinePlayable", "OfflinePlayableImpl checkAllDownloadablesExists false");
             this.mOfflinePlayablePersistentData.setDownloadStateStopped(StopReason.WaitingToBeStarted);
+            this.mOfflinePlayablePersistentData.resetPersistentStatus();
         }
         this.buildDownloadableProgressInfoMap();
         if (this.mOfflineManifestManager == null || this.mOfflineLicenseManager == null) {
@@ -280,7 +286,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         return FileUtils.createDirectoryIfRequired(this.mDirPathOfPlayable);
     }
     
-    public static void deleteLicense(final OfflineLicenseManager offlineLicenseManager, final OfflinePlayablePersistentData offlinePlayablePersistentData, final OfflinePlayable$PlayableDeleteCompleteCallBack offlinePlayable$PlayableDeleteCompleteCallBack) {
+    public static void deleteLicense(final OfflineLicenseManager offlineLicenseManager, final OfflinePlayablePersistentData offlinePlayablePersistentData, final OfflinePlayable$PlayableDeleteCompleteCallBack offlinePlayable$PlayableDeleteCompleteCallBack, final OfflinePlayableListener offlinePlayableListener) {
         final byte[] keySetIdOrNull = OfflineUtils.getKeySetIdOrNull(offlinePlayablePersistentData);
         if (keySetIdOrNull == null || keySetIdOrNull.length == 0) {
             if (offlinePlayable$PlayableDeleteCompleteCallBack != null) {
@@ -288,7 +294,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
             }
             return;
         }
-        offlineLicenseManager.deleteLicense(offlinePlayablePersistentData.mPlayableId, keySetIdOrNull, offlinePlayablePersistentData.getDlStateBeforeDelete() == DownloadState.Complete, offlinePlayablePersistentData.mLicenseData.mLinkDeactivate, new OfflinePlayableImpl$12(offlinePlayable$PlayableDeleteCompleteCallBack, offlinePlayablePersistentData));
+        offlineLicenseManager.deleteLicense(offlinePlayablePersistentData.mPlayableId, keySetIdOrNull, offlinePlayablePersistentData.getDlStateBeforeDelete() == DownloadState.Complete, offlinePlayablePersistentData.mLicenseData.mLinkDeactivate, offlinePlayablePersistentData.mOxId, offlinePlayablePersistentData.mDxId, new OfflinePlayableImpl$12(offlinePlayable$PlayableDeleteCompleteCallBack, offlinePlayablePersistentData, offlinePlayableListener));
     }
     
     private Status doDeleteDownload() {
@@ -297,7 +303,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         this.mOfflineManifestManager.notifyDeletingPlayable(this.getPlayableId());
         this.mOfflinePlayablePersistentData.setDownloadStateDeleted();
         if (this.canRefreshOrDeleteLicense()) {
-            deleteLicense(this.mOfflineLicenseManager, this.mOfflinePlayablePersistentData, null);
+            deleteLicense(this.mOfflineLicenseManager, this.mOfflinePlayablePersistentData, null, this.mOfflinePlayableListener);
         }
         if (OfflineUtils.deletePlayableDirectory(this.mDirPathOfPlayable)) {
             return CommonStatus.OK;
@@ -319,9 +325,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         final long n = this.getTotalEstimatedSpace() - this.getCurrentEstimatedSpace() + 10000000L;
         final long freeSpaceOnFileSystem = AndroidUtils.getFreeSpaceOnFileSystem(this.mDirPathOfPlayableFileObject);
         if (n > freeSpaceOnFileSystem) {
-            if (Log.isLoggable()) {
-                Log.e("nf_offlinePlayable", "ensureEnoughDiskSpace freeSpaceNeeded=" + n + " freeSpaceOnFileSystem=" + freeSpaceOnFileSystem);
-            }
+            Log.e("nf_offlinePlayable", "ensureEnoughDiskSpace freeSpaceNeeded=%d freeSpaceOnFileSystem=%d", n, freeSpaceOnFileSystem);
             return false;
         }
         return true;
@@ -329,7 +333,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     
     private void fetchFreshLicenseOnRefreshFailure(final NfManifest nfManifest, final OfflineAgentInterface$PlayableRefreshLicenseCallBack offlineAgentInterface$PlayableRefreshLicenseCallBack) {
         Log.d("nf_offlinePlayable", "Fetching fresh license on refresh failure");
-        this.mOfflineLicenseManager.requestNewLicense(this.getPlayableId(), nfManifest.getDrmHeader(), nfManifest.getLicenseLinkJson().toString(), new OfflinePlayableImpl$11(this, offlineAgentInterface$PlayableRefreshLicenseCallBack));
+        this.mOfflineLicenseManager.requestNewLicense(this.getPlayableId(), nfManifest.getDrmHeader(), nfManifest.getLicenseLinkJson().toString(), this.getOxId(), this.getDxId(), new OfflinePlayableImpl$11(this, offlineAgentInterface$PlayableRefreshLicenseCallBack));
     }
     
     private DownloadableInfo getDownloadInfo(final List<? extends DownloadableInfo> list, final String s) {
@@ -349,38 +353,30 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         downloadableProgressInfo.mBytesOnTheDisk = OfflinePathUtils.getFileObjectForDownloadable(this.mDirPathOfPlayable, downloadablePersistentData.mDownloadableId, downloadableType).length();
         if (downloadablePersistentData.mIsComplete) {
             downloadableProgressInfo.mTotalBytesToDownload = downloadableProgressInfo.mBytesOnTheDisk;
-            if (Log.isLoggable()) {
-                Log.e("nf_offlinePlayable", "getProgressInfoForDownloadable complete downloadableId=" + downloadablePersistentData.mDownloadableId + " mBytesOnTheDisk=" + downloadableProgressInfo.mBytesOnTheDisk + " mTotalBytesToDownload=" + downloadableProgressInfo.mTotalBytesToDownload);
-            }
         }
         else {
             downloadableProgressInfo.mTotalBytesToDownload = downloadablePersistentData.mSizeOfDownloadable;
-            if (Log.isLoggable()) {
-                Log.e("nf_offlinePlayable", "getProgressInfoForDownloadable notComplete downloadableId " + downloadablePersistentData.mDownloadableId + " mBytesOnTheDisk=" + downloadableProgressInfo.mBytesOnTheDisk + " mTotalBytesToDownload=" + downloadableProgressInfo.mTotalBytesToDownload);
-            }
         }
+        Log.e("nf_offlinePlayable", "getProgressInfoForDownloadable complete=%b downloadableId=%s  mBytesOnTheDisk=%d mTotalBytesToDownload=%d", downloadablePersistentData.mIsComplete, downloadablePersistentData.mDownloadableId, downloadableProgressInfo.mBytesOnTheDisk, downloadableProgressInfo.mTotalBytesToDownload);
         this.mPlayableProgressInfo.mDownloadableProgressInfoMap.put(downloadablePersistentData.mDownloadableId, downloadableProgressInfo);
         return downloadableProgressInfo;
     }
     
     private void handleCdnUrlDownloadSessionEnd(final CdnUrlDownloader cdnUrlDownloader) {
         this.updateActiveAndCompleteDownloadableCount();
-        if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", " completeTrackCount=" + this.mCompletedDownloadableCount + " activeTrackCount=" + this.mActiveDownloadableCount + " downloadableId=" + cdnUrlDownloader.getDownloadableId());
-        }
+        Log.i("nf_offlinePlayable", " completeTrackCount=%d activeTrackCount=%d downloadableId=%s", this.mCompletedDownloadableCount, this.mActiveDownloadableCount, cdnUrlDownloader.getDownloadableId());
         if (this.mCompletedDownloadableCount == this.mCdnUrlDownloaderList.size()) {
             Log.i("nf_offlinePlayable", "all tracks downloaded");
             this.handleDownloadComplete();
             this.mOfflinePlayablePersistentData.setDownloadStateComplete();
-            this.mOfflineNrdpLogger.onDownloadFinished(this.mOfflinePlayablePersistentData);
             this.mPlayableProgressInfo.markComplete();
             this.mOfflinePlayableListener.onDownloadCompletedSuccess(this);
         }
         else if (this.mActiveDownloadableCount > 0) {
             Log.i("nf_offlinePlayable", "still waiting for other tracks to download");
         }
-        else if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "completeTrackCount=" + this.mCompletedDownloadableCount + " activeTrackCount=" + this.mActiveDownloadableCount);
+        else {
+            Log.i("nf_offlinePlayable", "completeTrackCount=%d activeTrackCount=%d", this.mCompletedDownloadableCount, this.mActiveDownloadableCount);
         }
         this.mOfflinePlayableListener.requestSaveToRegistry();
         PlayabilityEnforcer.updateLastContactNetflix(this.mContext);
@@ -390,7 +386,6 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         if (Log.isLoggable()) {
             Log.e("nf_offlinePlayable", "handleCdnUrlExpiredOrMoved status=" + status);
         }
-        this.mOfflineNrdpLogger.onCdnUrlExpiredOrMoved(this.mOfflinePlayablePersistentData, status);
         this.doStopDownload();
         this.refreshManifestFromServerAndContinue();
     }
@@ -399,7 +394,6 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         if (Log.isLoggable()) {
             Log.e("nf_offlinePlayable", "handleCdnUrlGeoCheckError status=" + status);
         }
-        this.mOfflineNrdpLogger.onCdnUrlGeoCheckError(this.mOfflinePlayablePersistentData, status);
         this.stopAndSendNetworkError(status, StopReason.GeoCheckError);
     }
     
@@ -413,61 +407,62 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         this.mOfflinePlayableListener.onInitialized(this, CommonStatus.OK);
     }
     
-    private void handleFirstTimeLicenseReceived(final String s, final OfflineLicenseResponse offlineLicenseResponse, final Status persistentError) {
+    private void handleFirstTimeLicenseReceived(final String s, final OfflineLicenseResponse offlineLicenseResponse, final Status persistentStatus) {
         if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "handleFirstTimeLicenseReceived playable=" + s + " status=" + persistentError);
+            Log.i("nf_offlinePlayable", "handleFirstTimeLicenseReceived playable=" + s + " status=" + persistentStatus);
         }
-        if (persistentError.isSucces()) {
+        if (persistentStatus.isSucces()) {
             this.mOfflinePlayablePersistentData.setDownloadStateStopped(StopReason.WaitingToBeStarted);
             offlineLicenseResponse.populateLicenseData(this.mOfflinePlayablePersistentData.mLicenseData);
-            this.mOfflinePlayablePersistentData.resetPersistentError();
-            this.mOfflineNrdpLogger.onFirstTimeLicenseReceived(this.mOfflinePlayablePersistentData);
+            this.mOfflinePlayablePersistentData.resetPersistentStatus();
         }
         else {
-            this.mOfflineNrdpLogger.onFirstTimeLicenseError(this.mOfflinePlayablePersistentData, persistentError);
-            this.mOfflinePlayablePersistentData.setPersistentError(persistentError);
+            this.mOfflinePlayablePersistentData.setPersistentStatus(persistentStatus);
         }
-        this.mOfflinePlayableListener.onInitialized(this, persistentError);
+        this.mOfflinePlayableListener.onInitialized(this, persistentStatus);
     }
     
     private void handleFirstTimeManifestReceived(final NfManifest nfManifest, Status status) {
         if (Log.isLoggable()) {
             Log.i("nf_offlinePlayable", "handleFirstTimeManifestReceived status=" + status);
         }
+        Status status2;
         if (status.isSucces()) {
-            final Status freshCdnUrlDownloadersFromManifest = this.createFreshCdnUrlDownloadersFromManifest(nfManifest);
-            if (freshCdnUrlDownloadersFromManifest.isSucces()) {
-                this.mOfflineNrdpLogger.onFirstTimeManifestReceived(this.mOfflinePlayablePersistentData);
+            status = this.createFreshCdnUrlDownloadersFromManifest(nfManifest);
+            if (status.isSucces()) {
                 if (this.ensureEnoughDiskSpace()) {
                     this.setManifestNetwork();
                     if (nfManifest.hasDrm()) {
-                        this.mOfflineLicenseManager.requestNewLicense(this.getPlayableId(), nfManifest.getDrmHeader(), nfManifest.getLicenseLinkJson().toString(), new OfflinePlayableImpl$1(this));
+                        this.mOfflineLicenseManager.requestNewLicense(this.getPlayableId(), nfManifest.getDrmHeader(), nfManifest.getLicenseLinkJson().toString(), this.getOxId(), this.getOxId(), new OfflinePlayableImpl$1(this));
                         return;
                     }
                     this.handleFirstTimeClearContent();
                     return;
                 }
                 else {
-                    status = new NetflixStatus(StatusCode.DL_NOT_ENOUGH_FREE_SPACE);
+                    status2 = new NetflixStatus(StatusCode.DL_NOT_ENOUGH_FREE_SPACE);
+                    OfflineErrorLogblob.sendNotEnoughSpaceLogBlob(this.mClientLogging.getLogblobLogging(), this.getPlayableId(), this.getOxId(), this.getDxId(), status2);
                     Log.e("nf_offlinePlayable", "handleFirstTimeManifestReceived not enough space");
                 }
             }
             else {
-                status = freshCdnUrlDownloadersFromManifest;
+                status2 = status;
                 if (Log.isLoggable()) {
-                    Log.e("nf_offlinePlayable", "handleFirstTimeManifestReceived failed to create downloaders status=" + freshCdnUrlDownloadersFromManifest);
-                    status = freshCdnUrlDownloadersFromManifest;
+                    Log.e("nf_offlinePlayable", "handleFirstTimeManifestReceived failed to create downloaders status=" + status);
+                    status2 = status;
                 }
             }
         }
         else {
+            status2 = status;
             if (Log.isLoggable()) {
                 Log.e("nf_offlinePlayable", "handleFirstTimeManifestReceived failed to get initial manifest status=" + status);
+                status2 = status;
             }
-            this.mOfflineNrdpLogger.onFirstTimeManifestFailed(this.mOfflinePlayablePersistentData, status);
         }
-        Log.e("nf_offlinePlayable", "handleFirstTimeManifestReceived deleting downloads status=" + this.doDeleteDownload());
-        this.mOfflinePlayableListener.onInitialized(this, status);
+        status = this.doDeleteDownload();
+        Log.e("nf_offlinePlayable", "handleFirstTimeManifestReceived deleting downloads status=" + status);
+        this.mOfflinePlayableListener.onInitialized(this, status2);
     }
     
     private void handleManifestForPlayback(final NfManifest nfManifest, final Status status, final OfflinePlayable$PlayableManifestCallBack offlinePlayable$PlayableManifestCallBack) {
@@ -484,17 +479,17 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         offlinePlayable$PlayableManifestCallBack.onPlayableManifestReady(offlinePlayableManifestImpl, status2);
     }
     
-    private void handleManifestRefreshedFromServer(final NfManifest nfManifest, final Status persistentError) {
+    private void handleManifestRefreshedFromServer(final NfManifest nfManifest, final Status persistentStatus) {
         if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "handleManifestRefreshedFromServer res=" + persistentError);
+            Log.i("nf_offlinePlayable", "handleManifestRefreshedFromServer res=" + persistentStatus);
         }
-        if (persistentError.isSucces()) {
+        if (persistentStatus.isSucces()) {
             this.setManifestNetwork();
             this.handleManifestUpdated(nfManifest);
             return;
         }
-        this.stopAndSendNetworkError(persistentError, StopReason.ManifestError);
-        this.mOfflinePlayablePersistentData.setPersistentError(persistentError);
+        this.stopAndSendNetworkError(persistentStatus, StopReason.ManifestError);
+        this.mOfflinePlayablePersistentData.setPersistentStatus(persistentStatus);
     }
     
     private void handleManifestUpdated(final NfManifest nfManifest) {
@@ -511,7 +506,6 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     }
     
     private void handleNetworkError(final CdnUrlDownloader cdnUrlDownloader, final Status status) {
-        this.mOfflineNrdpLogger.onCdnUrlNetworkError(this.mOfflinePlayablePersistentData, status);
         final StopReason networkError = StopReason.NetworkError;
         this.updateActiveAndCompleteDownloadableCount();
         if (Log.isLoggable()) {
@@ -535,26 +529,25 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         this.stopAndSendNetworkError(status, noNetworkConnectivity);
     }
     
-    private void handleRefreshLicenseResponse(final OfflineLicenseResponse offlineLicenseResponse, final Status persistentError, final OfflineAgentInterface$PlayableRefreshLicenseCallBack offlineAgentInterface$PlayableRefreshLicenseCallBack) {
-        if (persistentError.isSucces()) {
+    private void handleRefreshLicenseResponse(final OfflineLicenseResponse offlineLicenseResponse, final Status persistentStatus, final OfflineAgentInterface$PlayableRefreshLicenseCallBack offlineAgentInterface$PlayableRefreshLicenseCallBack) {
+        if (persistentStatus.isSucces()) {
             offlineLicenseResponse.populateLicenseData(this.mOfflinePlayablePersistentData.mLicenseData);
-            this.mOfflinePlayablePersistentData.resetPersistentError();
+            this.mOfflinePlayablePersistentData.resetPersistentStatus();
         }
         else {
-            Log.i("nf_offlinePlayable", "refreshLicense failed %s", persistentError);
+            Log.i("nf_offlinePlayable", "refreshLicense failed %s", persistentStatus);
             if (PlayabilityEnforcer.isLicenseExpired(this.mOfflinePlayablePersistentData.mLicenseData)) {
-                this.mOfflinePlayablePersistentData.setPersistentError(persistentError);
+                this.mOfflinePlayablePersistentData.setPersistentStatus(persistentStatus);
             }
         }
         this.setLicenseRefreshing(false);
         this.mOfflinePlayableListener.requestSaveToRegistry();
         if (offlineAgentInterface$PlayableRefreshLicenseCallBack != null) {
-            offlineAgentInterface$PlayableRefreshLicenseCallBack.onLicenseRefreshDone(persistentError);
+            offlineAgentInterface$PlayableRefreshLicenseCallBack.onLicenseRefreshDone(persistentStatus);
         }
     }
     
     private void handleUrlDownloadDiskIOError() {
-        this.mOfflineNrdpLogger.onUrlDownloadDiskIOError(this.mOfflinePlayablePersistentData);
         this.stopAndSendStorageError(new NetflixStatus(StatusCode.DL_URL_DOWNLOAD_DISK_IO_ERROR), StopReason.StorageError);
     }
     
@@ -582,9 +575,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
                 break;
             }
         }
-        if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "ProgressWatchRunnable playableId=" + this.getPlayableId() + " mPlayablePercentageProgress=" + this.mPlayableProgressInfo.getPercentageDownloaded());
-        }
+        Log.i("nf_offlinePlayable", "ProgressWatchRunnable playableId=%s PlayablePercentageProgress=%d", this.getPlayableId(), this.mPlayableProgressInfo.getPercentageDownloaded());
     }
     
     private void refreshLicense(final IBladeRunnerClient$OfflineRefreshInvoke bladeRunnerClient$OfflineRefreshInvoke, final NfManifest nfManifest, final OfflineAgentInterface$PlayableRefreshLicenseCallBack offlineAgentInterface$PlayableRefreshLicenseCallBack) {
@@ -596,12 +587,11 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         }
         Log.d("nf_offlinePlayable", "refreshing license for %s", this.getPlayableId());
         this.setLicenseRefreshing(true);
-        this.mOfflineLicenseManager.refreshLicense(bladeRunnerClient$OfflineRefreshInvoke, this.getPlayableId(), nfManifest.getDrmHeader(), OfflineUtils.getKeySetIdOrNull(this.mOfflinePlayablePersistentData), this.mOfflinePlayablePersistentData.mLicenseData.mLinkRefresh, new OfflinePlayableImpl$10(this, nfManifest, offlineAgentInterface$PlayableRefreshLicenseCallBack));
+        this.mOfflineLicenseManager.refreshLicense(bladeRunnerClient$OfflineRefreshInvoke, this.getPlayableId(), nfManifest.getDrmHeader(), OfflineUtils.getKeySetIdOrNull(this.mOfflinePlayablePersistentData), this.mOfflinePlayablePersistentData.mLicenseData.mLinkRefresh, this.getOxId(), this.getOxId(), new OfflinePlayableImpl$10(this, nfManifest, offlineAgentInterface$PlayableRefreshLicenseCallBack));
     }
     
     private void refreshManifestFromServerAndContinue() {
         Log.i("nf_offlinePlayable", "refreshManifestFromServerAndContinue");
-        this.mOfflineNrdpLogger.onRequestingNewManifestFromServer(this.mOfflinePlayablePersistentData);
         this.mOfflineManifestManager.requestOfflineManifestRefreshFromServer(this.getPlayableId(), this.getOxId(), this.getDxId(), this.mDirPathOfPlayable, DownloadVideoQuality.create(this.mOfflinePlayablePersistentData.getDownloadVideoQuality()), new OfflinePlayableImpl$7(this));
     }
     
@@ -692,7 +682,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
                 b = true;
             }
             else {
-                Log.i("nf_offlinePlayable", "download was complete downloadableId=" + cdnUrlDownloader.getDownloadableId());
+                Log.i("nf_offlinePlayable", "download was complete downloadableId=%s", cdnUrlDownloader.getDownloadableId());
             }
         }
         if (b) {
@@ -740,7 +730,6 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     
     @Override
     public Status deleteDownload() {
-        this.mOfflineNrdpLogger.onOfflinePlayableDownloadDelete(this.mOfflinePlayablePersistentData);
         ThreadUtils.assertNotOnMain();
         return this.doDeleteDownload();
     }
@@ -757,15 +746,9 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     @Override
     public void doMaintenanceWork(final OfflinePlayable$PlayableMaintenanceCallBack offlinePlayable$PlayableMaintenanceCallBack) {
         if (this.mOfflinePlayablePersistentData.mLicenseData.mShouldRefresh) {
-            if (Log.isLoggable()) {
-                Log.d("nf_offlinePlayable", "attempt auto refresh " + this.getPlayableId());
-            }
+            Log.d("nf_offlinePlayable", "attempt auto refresh playableId=%s", this.getPlayableId());
             this.refreshLicenseIfNeeded(IBladeRunnerClient$OfflineRefreshInvoke.MAINTENANCE, new OfflinePlayableImpl$5(this, offlinePlayable$PlayableMaintenanceCallBack));
-        }
-        else {
-            if (Log.isLoggable()) {
-                Log.d("nf_offlinePlayable", "does not allow auto refresh " + this.getPlayableId());
-            }
+            Log.d("nf_offlinePlayable", "does not allow auto refresh playableId=%s", this.getPlayableId());
             if (offlinePlayable$PlayableMaintenanceCallBack != null) {
                 offlinePlayable$PlayableMaintenanceCallBack.onMaintenanceJobDone(this);
             }
@@ -829,7 +812,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     }
     
     @Override
-    public Status getLastPersistentErrorStatus() {
+    public Status getLastPersistentStatus() {
         if (this.mOfflinePlayablePersistentData.mErrorCode != 0) {
             final NetflixStatus netflixStatus = new NetflixStatus(StatusCode.getStatusCodeByValue(this.mOfflinePlayablePersistentData.mErrorCode));
             if (this.mOfflinePlayablePersistentData.mErrorString != null) {
@@ -941,16 +924,13 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     
     @Override
     public void initialize() {
-        if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "initialize " + this.mOfflinePlayablePersistentData.mPlayableId);
-        }
+        Log.i("nf_offlinePlayable", "initialize playableId=%s", this.mOfflinePlayablePersistentData.mPlayableId);
         ThreadUtils.assertNotOnMain();
         if (!this.createPlayableDirectoryIfRequired()) {
             this.mOfflinePlayableListener.onInitialized(this, new NetflixStatus(StatusCode.DL_CANT_CREATE_VIEWABLE_DIRECTORY));
             return;
         }
         OfflineLogUtils.reportDownloadStart(this.mContext, this.mOfflinePlayablePersistentData.mDxId, false);
-        this.mOfflineNrdpLogger.onOfflinePlayableInitialize(this.mOfflinePlayablePersistentData);
         this.mOfflineManifestManager.requestOfflineManifestFromServer(this.mOfflinePlayablePersistentData.mPlayableId, this.mOfflinePlayablePersistentData.mOxId, this.mOfflinePlayablePersistentData.mDxId, DownloadContext.createDownloadContext(this.mOfflinePlayablePersistentData), this.mDirPathOfPlayable, DownloadVideoQuality.create(this.mOfflinePlayablePersistentData.getDownloadVideoQuality()), new OfflinePlayableImpl$2(this));
     }
     
@@ -962,7 +942,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         synchronized (this.mOfflinePlayablePersistentData) {
             this.mOfflinePlayablePersistentData.mPlayStartTime = System.currentTimeMillis();
             if (Log.isLoggable()) {
-                Log.i("nf_offlinePlayable", "start playwindow " + this.mOfflinePlayablePersistentData.mPlayStartTime);
+                Log.i("nf_offlinePlayable", "start playWindow " + this.mOfflinePlayablePersistentData.mPlayStartTime);
             }
             // monitorexit(this.mOfflinePlayablePersistentData)
             if (this.mOfflinePlayablePersistentData.mLicenseData.mShouldUsePlayWindowLimits) {
@@ -973,25 +953,19 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     
     @Override
     public void onCdnUrlDownloadSessionEnd(final CdnUrlDownloader cdnUrlDownloader) {
-        if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "onCdnUrlDownloadSessionEnd downloadableId=" + cdnUrlDownloader.getDownloadableId());
-        }
+        Log.i("nf_offlinePlayable", "onCdnUrlDownloadSessionEnd downloadableId=%s", cdnUrlDownloader.getDownloadableId());
         this.sendMessageToHandler(4, new OfflinePlayableImpl$CdnUrlDownloaderResponse(this, CommonStatus.OK, cdnUrlDownloader));
     }
     
     @Override
     public void onCdnUrlExpiredOrMoved(final CdnUrlDownloader cdnUrlDownloader, final Status status) {
-        if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "onCdnUrlExpiredOrMoved downloadableId=" + cdnUrlDownloader.getDownloadableId());
-        }
+        Log.i("nf_offlinePlayable", "onCdnUrlExpiredOrMoved downloadableId=%s", cdnUrlDownloader.getDownloadableId());
         this.sendMessageToHandler(3, new OfflinePlayableImpl$CdnUrlDownloaderResponse(this, status, cdnUrlDownloader));
     }
     
     @Override
     public void onCdnUrlGeoCheckFailure(final CdnUrlDownloader cdnUrlDownloader, final Status status) {
-        if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "onCdnUrlExpiredOrMoved downloadableId=" + cdnUrlDownloader.getDownloadableId());
-        }
+        Log.i("nf_offlinePlayable", "onCdnUrlExpiredOrMoved downloadableId=%s", cdnUrlDownloader.getDownloadableId());
         this.sendMessageToHandler(5, new OfflinePlayableImpl$CdnUrlDownloaderResponse(this, status, cdnUrlDownloader));
     }
     
@@ -1012,9 +986,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     @Override
     public void refreshLicenseIfNeeded(final IBladeRunnerClient$OfflineRefreshInvoke bladeRunnerClient$OfflineRefreshInvoke, final OfflineAgentInterface$PlayableRefreshLicenseCallBack offlineAgentInterface$PlayableRefreshLicenseCallBack) {
         if (PlayabilityEnforcer.shouldRefreshLicense(this.mOfflinePlayablePersistentData.mLicenseData) && this.canRefreshOrDeleteLicense()) {
-            if (Log.isLoggable()) {
-                Log.i("nf_offlinePlayable", "refreshLicenseIfNeeded " + this.getPlayableId());
-            }
+            Log.i("nf_offlinePlayable", "refreshLicenseIfNeeded playableId=%s", this.getPlayableId());
             this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$9(this, bladeRunnerClient$OfflineRefreshInvoke, offlineAgentInterface$PlayableRefreshLicenseCallBack));
         }
         else {
@@ -1034,7 +1006,6 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     public void startDownload() {
         ThreadUtils.assertNotOnMain();
         Log.i("nf_offlinePlayable", "startDownload");
-        this.mOfflineNrdpLogger.onOfflinePlayableDownloadStart(this.mOfflinePlayablePersistentData);
         if (this.mOfflinePlayablePersistentData.getDownloadState() == DownloadState.Complete) {
             Log.e("nf_offlinePlayable", "Download is already complete. This shouldn't be called.");
             return;
@@ -1055,7 +1026,6 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     @Override
     public void stopDownload(final StopReason downloadStateStopped) {
         ThreadUtils.assertNotOnMain();
-        this.mOfflineNrdpLogger.onOfflinePlayableDownloadStop(this.mOfflinePlayablePersistentData, downloadStateStopped);
         this.doStopDownload();
         this.mOfflinePlayablePersistentData.setDownloadStateStopped(downloadStateStopped);
     }

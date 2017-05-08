@@ -67,8 +67,8 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends 
     @Override
     protected void findViews() {
         super.findViews();
-        this.playButton = (Button)this.findViewById(2131690388);
-        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131690385)));
+        this.playButton = (Button)this.findViewById(2131690389);
+        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131690386)));
     }
     
     @Override

@@ -10,6 +10,7 @@ import android.os.Process;
 import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
+import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
@@ -44,6 +45,8 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.service.pservice.logging.PServiceLogging;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import java.util.Iterator;
+import com.crittercism.app.Crittercism;
+import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import android.content.IntentFilter;
@@ -140,6 +143,7 @@ public final class NetflixService extends Service implements INetflixService
     private ResourceFetcher mResourceFetcher;
     private long mServiceStartedTimeInMs;
     private UserAgent mUserAgent;
+    private String mUserFlowTag;
     private WhistleVoipAgent mVoipAgent;
     
     static {
@@ -154,6 +158,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mInitCallbacks = new ArrayList<NetflixService$InitCallback>();
         this.mMdxEnabled = false;
         this.mPostedNotificationSet = new HashSet<Integer>();
+        this.mUserFlowTag = null;
         this.agentContext = new NetflixService$4(this);
         this.mBinder = (IBinder)new NetflixService$LocalBinder(this);
         this.initTimeoutRunnable = new NetflixService$5(this);
@@ -286,6 +291,21 @@ public final class NetflixService extends Service implements INetflixService
             intent.putExtra("status_code", (Serializable)this.mInitStatusCode.getStatusCode());
             intent.addCategory("com.netflix.mediaclient.intent.category.NETFLIX_SERVICE");
             LocalBroadcastManager.getInstance((Context)this).sendBroadcast(intent);
+            String mUserFlowTag;
+            if (PrefetchLolomoABTestUtils.isInTest((Context)this)) {
+                mUserFlowTag = "user_flow_aim_low";
+            }
+            else if (this.mOfflineAgent.isOfflineFeatureEnabled()) {
+                mUserFlowTag = "user_flow_offline";
+            }
+            else {
+                mUserFlowTag = null;
+            }
+            this.mUserFlowTag = mUserFlowTag;
+            if (this.mUserFlowTag != null) {
+                Log.d("NetflixService", "begin user flow %s", this.mUserFlowTag);
+                Crittercism.beginUserflow(this.mUserFlowTag);
+            }
         }
         Log.i("NetflixService", "StopService runnable posted - service will die in " + 60 + " seconds unless bound to or started...");
         this.stopSelfInMs(60000);
@@ -660,6 +680,7 @@ public final class NetflixService extends Service implements INetflixService
         NetflixService.isCreated = true;
         this.mServiceStartedTimeInMs = System.currentTimeMillis();
         this.handler = new Handler();
+        AndroidManifestUtils.updateAppUpgradedPrefs(this.getApplicationContext());
         this.mNetflixJobScheduler = NetflixJobSchedulerSelector.createNetflixJobScheduler(this.getApplicationContext());
         this.mConfigurationAgent = new ConfigurationAgent();
         this.mMslAgent = new MSLAgent();

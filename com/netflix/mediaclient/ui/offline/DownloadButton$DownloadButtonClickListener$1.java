@@ -12,7 +12,6 @@ import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.verifyplay.PinAndAgeVerifier;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
-import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
@@ -23,6 +22,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View$OnClickListener;
+import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -44,7 +44,14 @@ class DownloadButton$DownloadButtonClickListener$1 implements PinAndAgeVerifier$
             Log.i("download_button", "onOfflineDownloadPinAndAgeVerified verified=" + b);
         }
         if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$1.netflixActivity) && b) {
-            this.this$1.netflixActivity.getServiceManager().getOfflineAgent().requestOfflineViewing(this.this$1.playableId, this.this$1.videoType, ((PlayContextProvider)this.this$1.netflixActivity).getPlayContext());
+            PlayContext playContext;
+            if (this.this$1.netflixActivity instanceof PlayContextProvider) {
+                playContext = ((PlayContextProvider)this.this$1.netflixActivity).getPlayContext();
+            }
+            else {
+                playContext = PlayContext.EMPTY_CONTEXT;
+            }
+            this.this$1.netflixActivity.getServiceManager().getOfflineAgent().requestOfflineViewing(this.this$1.playableId, this.this$1.videoType, playContext);
         }
     }
     

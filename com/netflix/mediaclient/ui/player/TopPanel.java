@@ -59,9 +59,9 @@ public final class TopPanel extends PlayerSection
         this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
         this.mListeners = mListeners;
         (this.mActionBar = playerFragment.getNetflixActivity().getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131690133);
-        this.mTopGradient = playerFragment.getView().findViewById(2131690130);
-        this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131690132);
+        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131690134);
+        this.mTopGradient = playerFragment.getView().findViewById(2131690131);
+        this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131690133);
     }
     
     private void changeControlsVisibility(final boolean gradientVisibility) {
@@ -91,7 +91,7 @@ public final class TopPanel extends PlayerSection
         mdxTargetSelectionDialog$Builder.setCancelable(false);
         mdxTargetSelectionDialog$Builder.setTitle(2131231118);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerFragment.getActivity()));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231306), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231303), this.getCurrentTitle()));
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerFragment, b));
         mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerFragment));
         return mdxTargetSelectionDialog$Builder.create();

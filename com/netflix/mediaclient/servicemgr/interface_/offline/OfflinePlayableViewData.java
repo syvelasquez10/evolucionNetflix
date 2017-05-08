@@ -26,7 +26,7 @@ public interface OfflinePlayableViewData
     
     long getExpiringInMillis();
     
-    Status getLastPersistentErrorStatus();
+    Status getLastPersistentStatus();
     
     String getOxId();
     

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -33,10 +32,12 @@ public class SettingsActivity extends FragmentHostActivity implements BandwidthP
     }
     
     private void setupStorageIndicator() {
-        final ListView listView = (ListView)this.findViewById(16908298);
-        if (listView != null) {
-            listView.addFooterView((View)new SettingsActivity$StorageIndicatorViewHolder(this, (Context)this));
-            listView.addFooterView(ViewUtils.createActionBarDummyView(this));
+        if (this.getServiceManager() != null && this.getServiceManager().isOfflineFeatureAvailable()) {
+            final ListView listView = (ListView)this.findViewById(16908298);
+            if (listView != null) {
+                listView.addFooterView((View)new SettingsActivity$StorageIndicatorViewHolder(this, (Context)this));
+                listView.addFooterView(ViewUtils.createActionBarDummyView(this));
+            }
         }
     }
     
@@ -68,12 +69,6 @@ public class SettingsActivity extends FragmentHostActivity implements BandwidthP
     @Override
     public void onBandwidthSettingsDone(final Context context) {
         ((SettingsFragment)this.getPrimaryFrag()).onBandwidthSettingsDone(context);
-    }
-    
-    @Override
-    protected void onPostCreate(final Bundle bundle) {
-        super.onPostCreate(bundle);
-        this.setupStorageIndicator();
     }
     
     public void refreshStorageIndicator() {

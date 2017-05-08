@@ -2,7 +2,7 @@
 // Decompiled by Procyon v0.5.30
 // 
 
-package com.netflix.mediaclient.service.player.exoplayback.logblob;
+package com.netflix.mediaclient.service.logging.offline;
 
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.logblob.BaseLogblob;

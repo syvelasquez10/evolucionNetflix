@@ -65,8 +65,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131690303);
-        this.title = (TextView)this.findViewById(2131690304);
+        this.img = (AdvancedImageView)this.findViewById(2131690304);
+        this.title = (TextView)this.findViewById(2131690305);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {

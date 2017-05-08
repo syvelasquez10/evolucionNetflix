@@ -56,6 +56,7 @@ public class PostPlayExperience implements JsonMerger, JsonPopulator, FalkorObje
     
     private void populateCTA(final JsonElement jsonElement, final List<PostPlayAction> list) {
         if (!jsonElement.isJsonNull()) {
+            list.clear();
             final JsonArray asJsonArray = jsonElement.getAsJsonArray();
             for (int i = 0; i < asJsonArray.size(); ++i) {
                 list.add(new PostPlayAction(asJsonArray.get(i), this.proxy));
@@ -348,6 +349,7 @@ public class PostPlayExperience implements JsonMerger, JsonPopulator, FalkorObje
                     }
                     case 13: {
                         if (!jsonElement2.isJsonNull()) {
+                            this.items.clear();
                             final JsonArray asJsonArray = jsonElement2.getAsJsonArray();
                             for (int i = 0; i < asJsonArray.size(); ++i) {
                                 this.items.add(new PostPlayItem(asJsonArray.get(i), this.proxy));

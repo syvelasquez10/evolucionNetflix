@@ -702,7 +702,7 @@ public final class BrowseManager implements IBrowseManager
             try {
                 boolean b4;
                 if (StringUtils.isEmpty(loMo.getId())) {
-                    LogUtils.reportErrorSafely("SPY-10830 LoLoMo refresh crash", null);
+                    LogUtils.reportErrorSafely("SPY-10830 LoLoMo refresh crash, lomo is null = " + (loMo == null), null);
                     b4 = false;
                 }
                 else {

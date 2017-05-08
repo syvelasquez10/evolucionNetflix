@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData$
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.OfflineDialogLogblob;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.app.Status;
@@ -44,9 +45,9 @@ class OfflineErrorDialog$5 implements DialogInterface$OnClickListener
     }
     
     public void onClick(final DialogInterface dialogInterface, final int n) {
-        final NetflixActivity access$300 = this.this$0.getNetflixActivity();
-        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)access$300)) {
-            access$300.startActivity(OfflineActivity.showAllDownloads(this.this$0.getNetflixActivity()));
+        final NetflixActivity access$500 = this.this$0.getNetflixActivity();
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)access$500)) {
+            access$500.startActivity(OfflineActivity.showAllDownloads(this.this$0.getNetflixActivity()));
         }
         dialogInterface.dismiss();
     }

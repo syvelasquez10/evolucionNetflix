@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.service.pdslogging;
 
-import com.netflix.mediaclient.service.player.exoplayback.logblob.OfflineErrorLogblob;
-import com.netflix.mediaclient.servicemgr.Logblob$Severity;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.IntentUtils;
@@ -179,61 +177,31 @@ public class PdsDownloadSessionManager implements OfflineAgentListener
     
     @Override
     public void onDownloadStopped(final OfflinePlayableViewData offlinePlayableViewData, final StopReason stopReason) {
-        int n = 0;
         final PdsDownloadSession downloadSession = this.getDownloadSession(offlinePlayableViewData.getPlayableId());
         if (downloadSession != null) {
-            Logblob$Severity logblob$Severity = Logblob$Severity.error;
             switch (PdsDownloadSessionManager$5.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$StopReason[stopReason.ordinal()]) {
-                default: {
-                    Log.d(PdsDownloadSessionManager.TAG, " onDownlodStopped stopReason: %s, no-op", stopReason);
-                    break;
-                }
                 case 1:
                 case 2:
                 case 3:
-                case 4: {
-                    break;
-                }
+                case 4:
                 case 5:
                 case 6:
-                case 7: {
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14: {
+                    break;
+                }
+                default: {
+                    Log.d(PdsDownloadSessionManager.TAG, " onDownloadStopped stopReason: %s, no-op", stopReason);
+                }
+                case 7:
+                case 8:
+                case 9: {
                     downloadSession.setPaused(true);
                     downloadSession.sendDownloadPauseMessage();
-                    break;
                 }
-                case 8: {
-                    logblob$Severity = Logblob$Severity.error;
-                    n = 1;
-                    break;
-                }
-                case 9: {
-                    logblob$Severity = Logblob$Severity.warn;
-                    n = 1;
-                    break;
-                }
-                case 10: {
-                    logblob$Severity = Logblob$Severity.info;
-                    n = 1;
-                    break;
-                }
-                case 11: {
-                    logblob$Severity = Logblob$Severity.error;
-                    n = 1;
-                    break;
-                }
-                case 12: {
-                    logblob$Severity = Logblob$Severity.error;
-                    n = 1;
-                    break;
-                }
-                case 13: {
-                    logblob$Severity = Logblob$Severity.error;
-                    n = 1;
-                    break;
-                }
-            }
-            if (n != 0) {
-                OfflineErrorLogblob.sendDownloadStopError(this.mLogblobLogging, logblob$Severity, downloadSession.getPlayableId(), downloadSession.getOxId(), downloadSession.getDxId(), stopReason);
             }
         }
     }

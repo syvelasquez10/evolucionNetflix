@@ -71,18 +71,18 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     }
     
     private void findViews(final View view) {
-        this.episodeTitle = (TextView)view.findViewById(2131690168);
-        this.showTitle = (TextView)view.findViewById(2131690164);
-        this.targetName = (TextView)view.findViewById(2131690167);
-        this.countdown = (TextView)view.findViewById(2131690160);
-        this.synopsis = (TextView)view.findViewById(2131690169);
-        this.playButton = (Button)view.findViewById(2131690170);
-        this.stopButton = (ImageView)view.findViewById(2131690171);
-        this.episodesButton = (ImageView)view.findViewById(2131690172);
-        this.backToBrowsingButton = (TextView)view.findViewById(2131690163);
-        this.postPlayForTitleEndContainer = (ViewGroup)view.findViewById(2131690162);
-        this.postPlayForNextContainer = (ViewGroup)view.findViewById(2131690166);
-        this.rating = (NetflixRatingBar)view.findViewById(2131690165);
+        this.episodeTitle = (TextView)view.findViewById(2131690169);
+        this.showTitle = (TextView)view.findViewById(2131690165);
+        this.targetName = (TextView)view.findViewById(2131690168);
+        this.countdown = (TextView)view.findViewById(2131690161);
+        this.synopsis = (TextView)view.findViewById(2131690170);
+        this.playButton = (Button)view.findViewById(2131690171);
+        this.stopButton = (ImageView)view.findViewById(2131690172);
+        this.episodesButton = (ImageView)view.findViewById(2131690173);
+        this.backToBrowsingButton = (TextView)view.findViewById(2131690164);
+        this.postPlayForTitleEndContainer = (ViewGroup)view.findViewById(2131690163);
+        this.postPlayForNextContainer = (ViewGroup)view.findViewById(2131690167);
+        this.rating = (NetflixRatingBar)view.findViewById(2131690166);
     }
     
     private void handlePlayNow() {
@@ -136,7 +136,7 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
             if (serviceManager != null && ServiceManagerUtils.isMdxAgentAvailable(serviceManager)) {
                 final String currentDeviceFriendlyName = ServiceManagerUtils.getCurrentDeviceFriendlyName(serviceManager);
                 if (!TextUtils.isEmpty((CharSequence)currentDeviceFriendlyName)) {
-                    this.targetName.setText((CharSequence)Html.fromHtml(this.getString(2131231188, new Object[] { String.valueOf(currentDeviceFriendlyName) })));
+                    this.targetName.setText((CharSequence)Html.fromHtml(this.getString(2131231189, new Object[] { String.valueOf(currentDeviceFriendlyName) })));
                 }
             }
         }
@@ -246,10 +246,10 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
             final int time = this.countdownTimer.getTime();
             int n;
             if (this.countdownTimer.getTime() > 1) {
-                n = 2131231191;
+                n = 2131231192;
             }
             else {
-                n = 2131231189;
+                n = 2131231190;
             }
             if (this.countdown != null) {
                 this.countdown.setText((CharSequence)Html.fromHtml(this.getString(n, new Object[] { String.valueOf(time) })));

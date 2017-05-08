@@ -33,19 +33,19 @@ final class DownloadButtonDialogHelper$1 implements PopupMenu$OnMenuItemClickLis
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        if (menuItem.getItemId() == 2131690412) {
+        if (menuItem.getItemId() == 2131690413) {
             UIViewLogUtils.reportUIViewCommand(this.val$context, UIViewLogging$UIViewCommandName.StartCachedPlay, IClientLogging$ModalView.offlineShows, CommandEndedEvent$InputMethod.gesture, null);
             if (this.val$context instanceof PlayerActivity) {
                 ((PlayerActivity)this.val$context).finish();
             }
             OfflineUiHelper.startOfflinePlayback(this.val$context, this.val$playableId, this.val$videoType, this.val$playContext);
         }
-        else if (menuItem.getItemId() == 2131690414) {
+        else if (menuItem.getItemId() == 2131690415) {
             UIViewLogUtils.reportUIViewCommand(this.val$context, UIViewLogging$UIViewCommandName.RemoveCachedVideoCommand, IClientLogging$ModalView.removeCachedVideoButton, CommandEndedEvent$InputMethod.gesture, null);
             ((NetflixActivity)this.val$context).getServiceManager().getOfflineAgent().deleteOfflinePlayable(this.val$playableId);
             DownloadButton.removePreQueued(this.val$playableId);
         }
-        else if (menuItem.getItemId() == 2131690417) {
+        else if (menuItem.getItemId() == 2131690418) {
             this.val$context.startActivity(OfflineActivity.showAllDownloads((Activity)this.val$context));
         }
         return true;

@@ -79,7 +79,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
             create.getView().setVisibility(0);
             return;
         }
-        this.adapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131362331)));
+        this.adapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131362333)));
     }
     
     public static MovieDetailsFrag create(final String s) {
@@ -136,7 +136,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     protected void findViews(final View view) {
         this.recyclerView = (RecyclerView)this.primaryView;
-        this.rootContainer = view.findViewById(2131689896);
+        this.rootContainer = view.findViewById(2131689897);
     }
     
     @Override

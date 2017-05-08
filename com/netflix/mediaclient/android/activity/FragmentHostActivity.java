@@ -40,18 +40,18 @@ public abstract class FragmentHostActivity extends NetflixActivity
     private ViewGroup secondaryFragContainer;
     
     private void setupMiniPlayerFrag(final Bundle bundle) {
-        final View viewById = this.findViewById(2131689971);
+        final View viewById = this.findViewById(2131689972);
         if (viewById == null) {
             return;
         }
-        if (viewById != null && PersistentConfig.inMementoTest((Context)this)) {
+        if (viewById != null && PersistentConfig.inAnyMementoTest((Context)this)) {
             viewById.getLayoutParams().width = BarkerUtils.getDetailsPageContentWidth((Context)this);
         }
         if (!BrowseExperience.shouldShowMemento((Context)this) || (BrowseExperience.shouldShowMemento((Context)this) && bundle == null)) {
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
             this.miniPlayerFrag = MiniPlayerFactory.createMiniPlayer((Context)this);
             if (this.miniPlayerFrag != null) {
-                beginTransaction.replace(2131689971, this.miniPlayerFrag, "mini_player");
+                beginTransaction.replace(2131689972, this.miniPlayerFrag, "mini_player");
             }
             beginTransaction.commit();
             return;

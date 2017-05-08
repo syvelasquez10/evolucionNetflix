@@ -76,8 +76,8 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     
     @Override
     public void onTabSelected(final TabLayout$Tab pagerPositionOnTabSelect) {
-        pagerPositionOnTabSelect.getCustomView().findViewById(2131690013).setVisibility(0);
-        final TextView textView = (TextView)pagerPositionOnTabSelect.getCustomView().findViewById(2131690014);
+        pagerPositionOnTabSelect.getCustomView().findViewById(2131690014).setVisibility(0);
+        final TextView textView = (TextView)pagerPositionOnTabSelect.getCustomView().findViewById(2131690015);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         this.setPagerPositionOnTabSelect(pagerPositionOnTabSelect);
         if (this.this$0.isActivityValid()) {
@@ -93,7 +93,7 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     
     @Override
     public void onTabUnselected(final TabLayout$Tab tabLayout$Tab) {
-        tabLayout$Tab.getCustomView().findViewById(2131690013).setVisibility(4);
-        ((TextView)tabLayout$Tab.getCustomView().findViewById(2131690014)).setTypeface(Typeface.DEFAULT);
+        tabLayout$Tab.getCustomView().findViewById(2131690014).setVisibility(4);
+        ((TextView)tabLayout$Tab.getCustomView().findViewById(2131690015)).setTypeface(Typeface.DEFAULT);
     }
 }

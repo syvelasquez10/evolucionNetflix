@@ -92,17 +92,17 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void findViews() {
-        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690274);
-        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690275);
-        this.knownFor = (TextView)this.findViewById(2131690279);
-        this.knownForLabel = (TextView)this.findViewById(2131690278);
-        this.spouse = (TextView)this.findViewById(2131690283);
-        this.spouseLabel = (TextView)this.findViewById(2131690282);
-        this.name = (TextView)this.findViewById(2131690277);
-        this.born = (TextView)this.findViewById(2131690281);
-        this.bornLabel = (TextView)this.findViewById(2131690280);
-        this.onNetFlixLabel = this.findViewById(2131690276);
-        this.this$0.caret = this.findViewById(2131690284);
+        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690275);
+        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690276);
+        this.knownFor = (TextView)this.findViewById(2131690280);
+        this.knownForLabel = (TextView)this.findViewById(2131690279);
+        this.spouse = (TextView)this.findViewById(2131690284);
+        this.spouseLabel = (TextView)this.findViewById(2131690283);
+        this.name = (TextView)this.findViewById(2131690278);
+        this.born = (TextView)this.findViewById(2131690282);
+        this.bornLabel = (TextView)this.findViewById(2131690281);
+        this.onNetFlixLabel = this.findViewById(2131690277);
+        this.this$0.caret = this.findViewById(2131690285);
     }
     
     private void init() {
@@ -130,7 +130,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void updateActorStillImage(final FalkorPerson falkorPerson) {
-        final View viewById = this.findViewById(2131689973);
+        final View viewById = this.findViewById(2131689974);
         if (this.actorStillImg != null) {
             this.adjustHeight(this.actorStillImg);
             this.actorStillImg.setImageLoaderInfo(null);

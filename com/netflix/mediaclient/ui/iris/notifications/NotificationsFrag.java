@@ -300,7 +300,7 @@ public class NotificationsFrag extends NetflixFrag
         Log.v(NotificationsFrag.TAG, "Creating new frag view...");
         this.mAreViewsCreated = true;
         final View inflate = layoutInflater.inflate(2130903293, viewGroup, false);
-        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131690318)).setItemsCanFocus(true);
+        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131690319)).setItemsCanFocus(true);
         this.mNotificationsList.setAsStatic(this.isListViewStatic());
         this.mIsLoadingData = true;
         this.completeInitIfPossible();

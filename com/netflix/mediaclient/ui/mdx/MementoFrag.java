@@ -85,9 +85,9 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     private void findViews(final View view) {
-        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131690010);
-        this.tabLayout = (TabLayout)view.findViewById(2131690011);
-        this.pager = (ViewPager)view.findViewById(2131690009);
+        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131690011);
+        this.tabLayout = (TabLayout)view.findViewById(2131690012);
+        this.pager = (ViewPager)view.findViewById(2131690010);
     }
     
     private void hideStandardViews() {
@@ -135,14 +135,14 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
             this.tabLayout.removeAllTabs();
             this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903209), 0, true);
             this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903209), 1, true);
-            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131690014)).setText(2131231071);
-            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131690014)).setText(2131231073);
+            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131690015)).setText(2131231071);
+            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131690015)).setText(2131231073);
             this.tabLayout.setOnTabSelectedListener(new MementoFrag$TabListener(this));
         }
     }
     
     private boolean isRDPShowing() {
-        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690025);
+        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690026);
         return roleDetailsFrag != null && !roleDetailsFrag.isHidden();
     }
     
@@ -151,8 +151,8 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
             final View viewWithTag = this.pager.findViewWithTag((Object)("POS_TAG" + String.valueOf(n)));
             if (viewWithTag != null) {
                 View view;
-                if ((view = viewWithTag.findViewById(2131689972)) == null) {
-                    view = viewWithTag.findViewById(2131689977);
+                if ((view = viewWithTag.findViewById(2131689973)) == null) {
+                    view = viewWithTag.findViewById(2131689978);
                 }
                 if (view != null) {
                     view.setTranslationX(0.0f);
@@ -169,7 +169,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     
     private void showRDP(final String actorId) {
         if (this.isActivityValid() && this.getNetflixActivity().isPanelExpanded()) {
-            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690025);
+            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690026);
             if (roleDetailsFrag != null) {
                 final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
                 beginTransaction.setCustomAnimations(2131034114, 2131034115);

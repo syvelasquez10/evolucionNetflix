@@ -21,6 +21,7 @@ public class ABTestConfigData
     public static final String COPPOLA_2_AB_TEST_ID = "6941";
     public static final String CW_PROGRESS_BAR_TEST_ID = "7151";
     public static final String DISPLAY_PAGE_REFRESH_TEST_ID = "7196";
+    public static final String MEMENTO2_TEST_ID = "7827";
     public static final String MEMENTO_TEST_ID = "7131";
     public static final String MOTION_BB_AB_TEST_ID = "6930";
     public static final String OFFLINE_TUTORIAL_TEST_ID = "7756";
@@ -42,6 +43,8 @@ public class ABTestConfigData
     private ABTestConfig cwProgressBarConfig;
     @SerializedName("7196")
     private ABTestConfig displayPageRefresh;
+    @SerializedName("7827")
+    private ABTestConfig memento2Config;
     @SerializedName("7131")
     private ABTestConfig mementoConfig;
     @SerializedName("6930")
@@ -79,6 +82,7 @@ public class ABTestConfigData
         ABTestConfigData.testIds.add("7151");
         ABTestConfigData.testIds.add("7141");
         ABTestConfigData.testIds.add("7131");
+        ABTestConfigData.testIds.add("7827");
         ABTestConfigData.testIds.add("7714");
         ABTestConfigData.testIds.add("7756");
         ABTestConfigData.testIds.add("7480");
@@ -117,6 +121,10 @@ public class ABTestConfigData
     
     public ABTestConfig getDisplayPageRefreshConfig() {
         return this.displayPageRefresh;
+    }
+    
+    public ABTestConfig getMemento2Config() {
+        return this.memento2Config;
     }
     
     public ABTestConfig getMementoConfig() {

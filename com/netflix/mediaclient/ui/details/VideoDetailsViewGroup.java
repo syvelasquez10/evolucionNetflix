@@ -255,25 +255,25 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void findViews() {
         this.ratingBar = (NetflixRatingBar)this.findViewById(2131689625);
-        this.addToMyListGroup = this.findViewById(2131690041);
+        this.addToMyListGroup = this.findViewById(2131690042);
         this.addToMyList = (TextView)this.findViewById(2131689762);
-        this.addToMyListLabel = (TextView)this.findViewById(2131690042);
-        this.mMovieDownloadButton = (DownloadButton)this.findViewById(2131689909);
+        this.addToMyListLabel = (TextView)this.findViewById(2131690043);
+        this.mMovieDownloadButton = (DownloadButton)this.findViewById(2131689910);
         this.basicInfo = (TextView)this.findViewById(2131689760);
-        this.episodeBadge = (TextView)this.findViewById(2131689933);
-        this.episodeTitle = (TextView)this.findViewById(2131689934);
+        this.episodeBadge = (TextView)this.findViewById(2131689934);
+        this.episodeTitle = (TextView)this.findViewById(2131689935);
         this.supplemental = (TextView)this.findViewById(2131689656);
         this.synopsis = (TextView)this.findViewById(2131689658);
-        this.starring = (TextView)this.findViewById(2131689935);
-        this.creators = (TextView)this.findViewById(2131689936);
+        this.starring = (TextView)this.findViewById(2131689936);
+        this.creators = (TextView)this.findViewById(2131689937);
         this.horzDispImg = (AdvancedImageView)this.findViewById(2131689649);
         this.title = (TextView)this.findViewById(2131689663);
         this.imgGroup = (ViewGroup)this.findViewById(2131689763);
-        this.backgroundImg = (ImageView)this.findViewById(2131689867);
+        this.backgroundImg = (ImageView)this.findViewById(2131689868);
         this.relatedTitle = (TextView)this.findViewById(2131689666);
         this.basicInfoBadges = (TextView)this.findViewById(2131689761);
         this.footerViewGroup = (ViewGroup)this.findViewById(2131689665);
-        this.copyright = (ViewGroup)this.findViewById(2131690379);
+        this.copyright = (ViewGroup)this.findViewById(2131690380);
         this.play = this.findViewById(2131689664);
         LocalizationUtils.setLayoutDirection((View)this.ratingBar);
         LocalizationUtils.setLayoutDirection((View)this.addToMyList);
@@ -496,7 +496,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231242, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231239, new Object[] { videoDetails.getTitle() }));
         }
     }
     

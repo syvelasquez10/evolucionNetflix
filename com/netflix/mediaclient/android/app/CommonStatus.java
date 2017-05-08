@@ -12,6 +12,12 @@ public interface CommonStatus
     public static final NetflixImmutableStatus BLADERUNNER_FAILURE = new NetflixImmutableStatus(StatusCode.BLADERUNNER_FAILURE);
     public static final NetflixImmutableStatus CONFIG_DOWNLOAD_FAILED = new NetflixImmutableStatus(StatusCode.CONFIG_DOWNLOAD_FAILED);
     public static final NetflixImmutableStatus DRM_FAILURE_CDM = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM);
+    public static final NetflixImmutableStatus DRM_FAILURE_CDM_EXCEPTION = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM_EXCEPTION);
+    public static final NetflixImmutableStatus DRM_FAILURE_CDM_KEY_SET_EMPTY = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM_KEY_SET_EMPTY);
+    public static final NetflixImmutableStatus DRM_FAILURE_CDM_LICENSE_EMPTY = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM_LICENSE_EMPTY);
+    public static final NetflixImmutableStatus DRM_FAILURE_CDM_NOT_PROVISIONED = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM_NOT_PROVISIONED);
+    public static final NetflixImmutableStatus DRM_FAILURE_CDM_RESOURCE_BUSY = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM_RESOURCE_BUSY);
+    public static final NetflixImmutableStatus DRM_FAILURE_CDM_SERVER_DENIED = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM_SERVER_DENIED);
     public static final NetflixImmutableStatus DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED);
     public static final NetflixImmutableStatus DRM_FAILURE_GOOGLE_DECLINED_PROVISIONING = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_GOOGLE_DECLINED_PROVISIONING);
     public static final NetflixImmutableStatus FATAL_CONFIG_DOWNLOAD_FAILED = new NetflixImmutableStatus(StatusCode.FATAL_CONFIG_DOWNLOAD_FAILED);

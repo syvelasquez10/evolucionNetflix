@@ -11,9 +11,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.StatusCode;
 import org.json.JSONObject;
-import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.BaseStatus;
 
-public class BladerunnerErrorStatus implements Status
+public class BladerunnerErrorStatus extends BaseStatus
 {
     private static final int BLADERUNNER_UNKNOWN_ERROR = -1;
     private static final int EXCEPTION_LOG_SIZE = 200;
@@ -23,7 +23,6 @@ public class BladerunnerErrorStatus implements Status
     private int mErrorCode;
     private String mRawErrorCodeString;
     private BladerunnerErrorStatus$BrRequestType mRequestType;
-    private StatusCode mStatusCode;
     private String mUserDisplayErrorMessage;
     
     public BladerunnerErrorStatus(final JSONObject jsonObject, final BladerunnerErrorStatus$BrRequestType mRequestType) {
@@ -190,21 +189,6 @@ public class BladerunnerErrorStatus implements Status
     @Override
     public int getRequestId() {
         return 0;
-    }
-    
-    @Override
-    public StatusCode getStatusCode() {
-        return this.mStatusCode;
-    }
-    
-    @Override
-    public boolean isError() {
-        return this.mStatusCode != StatusCode.OK;
-    }
-    
-    @Override
-    public boolean isSucces() {
-        return !this.isError();
     }
     
     @Override

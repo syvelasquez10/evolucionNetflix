@@ -753,27 +753,16 @@ public class UserIdToken implements JSONString
     @Override
     public String toString() {
         try {
-            JSONObject jsonObject;
-            if (this.isDecrypted()) {
-                jsonObject = new JSONObject();
-                if (this.issuerData != null) {
-                    jsonObject.put("issuerdata", this.issuerData);
-                }
-                jsonObject.put("identity", this.user);
-            }
-            else {
-                jsonObject = null;
-            }
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("renewalwindow", this.renewalWindow);
+            jsonObject.put("expiration", this.expiration);
+            jsonObject.put("mtserialnumber", this.mtSerialNumber);
+            jsonObject.put("serialnumber", this.serialNumber);
+            jsonObject.put("userdata", "(redacted)");
             final JSONObject jsonObject2 = new JSONObject();
-            jsonObject2.put("renewalwindow", this.renewalWindow);
-            jsonObject2.put("expiration", this.expiration);
-            jsonObject2.put("mtserialnumber", this.mtSerialNumber);
-            jsonObject2.put("serialnumber", this.serialNumber);
-            jsonObject2.put("userdata", jsonObject);
-            final JSONObject jsonObject3 = new JSONObject();
-            jsonObject3.put("tokendata", jsonObject2);
-            jsonObject3.put("signature", Base64.encode(this.signature));
-            return jsonObject3.toString();
+            jsonObject2.put("tokendata", jsonObject);
+            jsonObject2.put("signature", Base64.encode(this.signature));
+            return jsonObject2.toString();
         }
         catch (JSONException ex) {
             throw new MslInternalException("Error encoding " + this.getClass().getName() + " JSON.", ex);

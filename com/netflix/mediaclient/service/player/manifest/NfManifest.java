@@ -14,6 +14,7 @@ import com.netflix.mediaclient.ui.player.NccpAudioSource;
 import com.netflix.mediaclient.media.AudioSource;
 import android.util.Pair;
 import java.util.Iterator;
+import com.netflix.mediaclient.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;
@@ -29,6 +30,7 @@ public class NfManifest implements Comparable<NfManifest>
 {
     private static final long DEFAULT_MANIFEST_LIFE_MS = 7200000L;
     private static final long DRM_MANIFEST_LIFE_MS = 900000L;
+    public static final String EXPIRATION = "expiration";
     public static final String LOCAL_TIMESTAMP = "timestamp";
     private static final int MAX_NUM_STREAMS_PER_TRACK = 30;
     private static final String TAG;
@@ -56,9 +58,9 @@ public class NfManifest implements Comparable<NfManifest>
         NfManifest.sManifestLifeFromConfig = 0L;
     }
     
-    public NfManifest(final String s, long n) {
-        this.mManifestFetchedTimeInMs = n;
+    public NfManifest(final String s) {
         this.manifest = new JSONObject(s);
+        this.mManifestFetchedTimeInMs = this.manifest.optLong("timestamp", System.currentTimeMillis());
         this.movieId = this.manifest.getLong("movieId");
         this.playbackContextId = this.manifest.getString("playbackContextId");
         this.drmContextId = this.manifest.getString("drmContextId");
@@ -105,13 +107,14 @@ public class NfManifest implements Comparable<NfManifest>
                 Log.d(NfManifest.TAG, "defaultTrackOrderList has " + this.mDefaultTrackOrderList.length);
             }
         }
+        long defaultLifeMs;
         if (this.hasDrmProfile) {
-            n = 900000L;
+            defaultLifeMs = 900000L;
         }
         else {
-            n = 7200000L;
+            defaultLifeMs = 7200000L;
         }
-        this.defaultLifeMs = n;
+        this.defaultLifeMs = defaultLifeMs;
         this.birthTimeMs = System.currentTimeMillis();
         this.mPdsDownloadIds = new HashMap<Integer, String>();
         this.buildPdsDownloadIdList();
@@ -157,27 +160,42 @@ public class NfManifest implements Comparable<NfManifest>
     }
     
     public static List<NfManifest> parseManifestResponse(final JSONObject jsonObject) {
-        final ArrayList<NfManifest> list = new ArrayList<NfManifest>();
-        Log.d(NfManifest.TAG, "parsing manifest response start ...");
-        final long optLong = jsonObject.optLong("timestamp", 0L);
-        try {
-            final Iterator keys = jsonObject.keys();
-            while (keys.hasNext()) {
-                final String s = keys.next();
+        ArrayList<NfManifest> list;
+        while (true) {
+            list = new ArrayList<NfManifest>();
+            Log.d(NfManifest.TAG, "parsing manifest response start ...");
+            while (true) {
+                String s = null;
+                Label_0081: {
+                    try {
+                        final Iterator keys = jsonObject.keys();
+                        while (keys.hasNext()) {
+                            s = keys.next();
+                            if (!StringUtils.safeEquals(s, "timestamp")) {
+                                break Label_0081;
+                            }
+                            Log.d(NfManifest.TAG, "skip bad entry to break manifest fetch loop");
+                        }
+                    }
+                    catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                }
                 if (Log.isLoggable()) {
                     Log.d(NfManifest.TAG, "manifest response has movieId: " + s);
                 }
                 final String string = jsonObject.getString(s);
                 try {
-                    list.add(new NfManifest(string, optLong));
+                    list.add(new NfManifest(string));
+                    continue;
                 }
                 catch (JSONException ex2) {
                     Log.d(NfManifest.TAG, "parsing error.");
+                    continue;
                 }
+                continue;
             }
-        }
-        catch (JSONException ex) {
-            ex.printStackTrace();
         }
         Log.d(NfManifest.TAG, "parsing manifest response end.");
         return list;

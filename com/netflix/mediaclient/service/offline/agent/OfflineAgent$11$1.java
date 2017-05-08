@@ -20,6 +20,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.log.OfflineLogUtils;
@@ -85,9 +88,9 @@ class OfflineAgent$11$1 extends OfflineAgentInterface$PlayableRefreshLicenseCall
     }
     
     @Override
-    public void onLicenseRefreshDone(final Status persistentError) {
-        this.val$offlinePlayable.getOfflineViewablePersistentData().setPersistentError(persistentError);
+    public void onLicenseRefreshDone(final Status persistentStatus) {
+        this.val$offlinePlayable.getOfflineViewablePersistentData().setPersistentStatus(persistentStatus);
         this.this$1.this$0.doSaveToRegistryInBGThread(this.this$1.this$0.getContext());
-        this.this$1.this$0.sendLicenseRefreshDone(this.val$offlinePlayable, persistentError);
+        this.this$1.this$0.sendLicenseRefreshDone(this.val$offlinePlayable, persistentStatus);
     }
 }

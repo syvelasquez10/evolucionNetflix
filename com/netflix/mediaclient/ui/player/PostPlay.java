@@ -307,14 +307,14 @@ public abstract class PostPlay
     protected abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131690085);
-        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131690084);
-        this.mBackgroundContainer = (LinearLayout)this.mNetflixActivity.findViewById(2131690156);
-        this.mItemsContainer = (LinearLayout)this.mNetflixActivity.findViewById(2131690152);
-        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131690086);
-        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131690150);
-        this.mInterrupter = this.mNetflixActivity.findViewById(2131690083);
-        this.mPostPlay = this.mNetflixActivity.findViewById(2131690148);
+        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131690086);
+        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131690085);
+        this.mBackgroundContainer = (LinearLayout)this.mNetflixActivity.findViewById(2131690157);
+        this.mItemsContainer = (LinearLayout)this.mNetflixActivity.findViewById(2131690153);
+        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131690087);
+        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131690151);
+        this.mInterrupter = this.mNetflixActivity.findViewById(2131690084);
+        this.mPostPlay = this.mNetflixActivity.findViewById(2131690149);
     }
     
     public PlayerFragment getController() {

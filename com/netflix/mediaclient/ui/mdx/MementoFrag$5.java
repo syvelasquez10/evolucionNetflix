@@ -51,8 +51,8 @@ class MementoFrag$5 implements ViewPager$PageTransformer
         view.setAlpha(Math.max(Math.abs(Math.abs(n) - 1.0f), 0.75f));
         if (n <= 1.0f) {
             View view2;
-            if ((view2 = view.findViewById(2131689972)) == null) {
-                view2 = view.findViewById(2131689977);
+            if ((view2 = view.findViewById(2131689973)) == null) {
+                view2 = view.findViewById(2131689978);
             }
             if (view2 != null) {
                 view2.setTranslationX(-n * (BarkerUtils.getDetailsPageContentWidth(this.this$0.pager.getContext()) / 2));

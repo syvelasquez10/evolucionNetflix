@@ -35,13 +35,13 @@ public class MdxErrorHandler
     private AlertDialog$Builder getDialogBuilder(final int n, final String s) {
         switch (n) {
             default: {
-                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231167, null);
+                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231168, null);
             }
             case 100: {
-                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231167, null).setNegativeButton(2131231077, this.kblaunch_16001);
+                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231168, null).setNegativeButton(2131231077, this.kblaunch_16001);
             }
             case 105: {
-                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231167, null).setNegativeButton(2131231077, this.kblaunch_16003);
+                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231168, null).setNegativeButton(2131231077, this.kblaunch_16003);
             }
         }
     }

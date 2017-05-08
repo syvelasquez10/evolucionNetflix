@@ -297,9 +297,9 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         this.shadow = this.findViewById(2131689651);
         this.rate = this.findViewById(2131689625);
         this.bookmarkGroup = (ViewGroup)this.findViewById(2131689657);
-        this.bookmarkDuration = (TextView)this.findViewById(2131689931);
-        this.bookmarkValue = (TextView)this.findViewById(2131689930);
-        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131689932);
+        this.bookmarkDuration = (TextView)this.findViewById(2131689932);
+        this.bookmarkValue = (TextView)this.findViewById(2131689931);
+        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131689933);
         this.credits = this.findViewById(2131689660);
         this.actions = this.findViewById(2131689630);
         this.detailFlipper = (LinearLayout)this.findViewById(2131689654);

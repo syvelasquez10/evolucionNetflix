@@ -29,8 +29,8 @@ public class PostPlayItemBasic extends PostPlayItemView
     
     @Override
     protected void findViews() {
-        this.displayArt = (AdvancedImageView)this.findViewById(2131690178);
-        this.playButton = (ImageView)this.findViewById(2131690159);
+        this.displayArt = (AdvancedImageView)this.findViewById(2131690179);
+        this.playButton = (ImageView)this.findViewById(2131690160);
     }
     
     @Override

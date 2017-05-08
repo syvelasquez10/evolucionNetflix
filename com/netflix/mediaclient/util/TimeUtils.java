@@ -58,8 +58,8 @@ public class TimeUtils
         final int n2 = n / 3600;
         n = (n - n2 * 3600) / 60;
         if (n2 > 0) {
-            return context.getResources().getString(2131231162, new Object[] { n2, n });
+            return context.getResources().getString(2131231163, new Object[] { n2, n });
         }
-        return context.getResources().getString(2131231163, new Object[] { n });
+        return context.getResources().getString(2131231164, new Object[] { n });
     }
 }

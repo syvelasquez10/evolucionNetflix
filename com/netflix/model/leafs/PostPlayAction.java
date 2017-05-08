@@ -17,6 +17,7 @@ import com.netflix.falkor.PQL;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
 import java.util.HashMap;
 import com.google.gson.JsonElement;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
     private int trackId;
     private PostPlayAction$CallToActionType type;
     private int videoId;
-    private String videoType;
+    private VideoType videoType;
     
     public PostPlayAction() {
         this(null, null);
@@ -173,7 +174,7 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
         return this.videoId;
     }
     
-    public String getVideoType() {
+    public VideoType getVideoType() {
         return this.videoType;
     }
     
@@ -399,7 +400,7 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
                         continue;
                     }
                     case 11: {
-                        this.videoType = jsonElement2.getAsString();
+                        this.videoType = VideoType.create(jsonElement2.getAsString());
                         continue;
                     }
                     case 12: {
@@ -533,7 +534,7 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
         this.videoId = videoId;
     }
     
-    public void setVideoType(final String videoType) {
+    public void setVideoType(final VideoType videoType) {
         this.videoType = videoType;
     }
 }

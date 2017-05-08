@@ -174,17 +174,17 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     private void findViews(final View view) {
-        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131690311);
-        this.layoutSuggestions = (FlowLayout)view.findViewById(2131690312);
-        this.gridViewVideos = (StaticGridView)view.findViewById(2131690307);
-        this.gridViewPeople = (StaticGridView)view.findViewById(2131690309);
-        this.labelSuggestions = (TextView)view.findViewById(2131690310);
-        this.scrollView2 = (LoggingScrollView)view.findViewById(2131690314);
-        this.layoutPeople = (FlowLayout)view.findViewById(2131690313);
-        this.scrollView = (LoggingScrollView)view.findViewById(2131690305);
+        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131690312);
+        this.layoutSuggestions = (FlowLayout)view.findViewById(2131690313);
+        this.gridViewVideos = (StaticGridView)view.findViewById(2131690308);
+        this.gridViewPeople = (StaticGridView)view.findViewById(2131690310);
+        this.labelSuggestions = (TextView)view.findViewById(2131690311);
+        this.scrollView2 = (LoggingScrollView)view.findViewById(2131690315);
+        this.layoutPeople = (FlowLayout)view.findViewById(2131690314);
+        this.scrollView = (LoggingScrollView)view.findViewById(2131690306);
         this.relatedlabel = (TextView)view.findViewById(2131689666);
-        this.labelVideos = (TextView)view.findViewById(2131690306);
-        this.labelPeople = (TextView)view.findViewById(2131690308);
+        this.labelVideos = (TextView)view.findViewById(2131690307);
+        this.labelPeople = (TextView)view.findViewById(2131690309);
         this.progressBar = (ProgressBar)view.findViewById(2131689737);
     }
     
@@ -369,7 +369,7 @@ public class SearchResultsFrag extends NetflixFrag
             final int numPeopleGridCols = SearchUtils.getNumPeopleGridCols((Context)this.getActivity());
             if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.PHONE && numPeopleGridCols > 0) {
                 this.imgHeightPeople = (int)(n / numPeopleGridCols * SearchUtils.getPeopleImageAspectRatio() + 0.5);
-                this.imgHeightPeople += (int)this.getActivity().getResources().getDimension(2131362326);
+                this.imgHeightPeople += (int)this.getActivity().getResources().getDimension(2131362328);
                 Log.v("SearchResultsFrag", "imgHeightPeople: " + this.imgHeightPeople);
             }
         }
@@ -381,10 +381,10 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelSuggestions = this.labelSuggestions;
             String text;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text = this.getString(2131231267).toUpperCase(default1);
+                text = this.getString(2131231264).toUpperCase(default1);
             }
             else {
-                text = this.getString(2131231267);
+                text = this.getString(2131231264);
             }
             labelSuggestions.setText((CharSequence)text);
         }
@@ -392,10 +392,10 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelPeople = this.labelPeople;
             String text2;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text2 = this.getString(2131231173).toUpperCase(default1);
+                text2 = this.getString(2131231174).toUpperCase(default1);
             }
             else {
-                text2 = this.getString(2131231173);
+                text2 = this.getString(2131231174);
             }
             labelPeople.setText((CharSequence)text2);
         }

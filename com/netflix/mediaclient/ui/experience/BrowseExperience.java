@@ -828,7 +828,7 @@ public enum BrowseExperience implements IExperience
     }
     
     public static boolean shouldForcePortraitInMemento(final Context context) {
-        return DeviceUtils.isNotTabletByContext(context) && PersistentConfig.inMementoTest(context);
+        return DeviceUtils.isNotTabletByContext(context) && PersistentConfig.inAnyMementoTest(context);
     }
     
     public static boolean shouldLoadExtraCharacterLeaves() {
@@ -848,7 +848,7 @@ public enum BrowseExperience implements IExperience
     }
     
     public static boolean shouldShowMemento(final Context context) {
-        return PersistentConfig.getMemento(context).ordinal() == ABTestConfig$Cell.CELL_THREE.ordinal();
+        return PersistentConfig.getMemento(context).ordinal() == ABTestConfig$Cell.CELL_THREE.ordinal() || PersistentConfig.getMemento2(context).ordinal() == ABTestConfig$Cell.CELL_THREE.ordinal();
     }
     
     public static boolean showKidsExperience() {

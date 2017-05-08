@@ -12,16 +12,20 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableView
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.content.res.Configuration;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
-import android.content.Context;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.android.widget.NetflixTextButton;
+import com.netflix.mediaclient.util.ViewUtils;
+import android.content.Context;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
 import android.support.v7.widget.RecyclerView$AdapterDataObserver;
 import com.netflix.mediaclient.Log;
@@ -34,7 +38,6 @@ import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import android.support.v7.widget.LinearLayoutManager;
-import com.netflix.mediaclient.android.widget.NetflixTextButton;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
@@ -42,9 +45,10 @@ import com.netflix.mediaclient.android.fragment.NetflixFrag;
 
 public class OfflineFragment extends NetflixFrag implements OfflineAgentListener, ManagerStatusListener
 {
+    private static final int SHOW_EMPTY_IMAGE_THRESHOLD_DP = 500;
     private static final String TAG = "OfflineFragment";
     private View mEmptyState;
-    private NetflixTextButton mFindSomethingToDownload;
+    private View mEmptyStateImage;
     private LinearLayoutManager mLayoutManager;
     private OfflineAgentInterface mOfflineAgentInterface;
     private OfflineBaseAdapter mOfflinePlayableAdapter;
@@ -144,34 +148,38 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
         return this.getServiceManager() != null && this.getServiceManager().getCurrentProfile() != null && this.getServiceManager().getCurrentProfile().isKidsProfile();
     }
     
+    private void manageEmptyButton() {
+        ViewUtils.setVisibleOrGone(this.mEmptyStateImage, DeviceUtils.getScreenHeightInDPs((Context)this.getActivity()) > 500);
+    }
+    
     private void setupClicks(final View view) {
         final boolean b = this.mOfflinePlayableAdapter instanceof OfflineEpisodesAdapter;
-        this.mFindSomethingToDownload = (NetflixTextButton)view.findViewById(2131689858);
-        if (this.mFindSomethingToDownload != null) {
+        final NetflixTextButton netflixTextButton = (NetflixTextButton)view.findViewById(2131689858);
+        if (netflixTextButton != null) {
             if (BrowseExperience.showKidsExperience()) {
-                this.mFindSomethingToDownload.applyFrom(2131427594);
+                netflixTextButton.applyFrom(2131427594);
             }
             if (b) {
-                this.mFindSomethingToDownload.setText((CharSequence)this.getResources().getString(2131231312));
+                netflixTextButton.setText((CharSequence)this.getResources().getString(2131231309));
             }
             else {
-                final NetflixTextButton mFindSomethingToDownload = this.mFindSomethingToDownload;
                 int text;
                 if (this.mOfflinePlayableAdapter.getItemCount() > 0) {
-                    text = 2131231313;
+                    text = 2131231310;
                 }
                 else {
-                    text = 2131231322;
+                    text = 2131231319;
                 }
-                mFindSomethingToDownload.setText(text);
+                netflixTextButton.setText(text);
             }
-            this.mFindSomethingToDownload.setOnClickListener((View$OnClickListener)new OfflineFragment$4(this, b));
+            netflixTextButton.setOnClickListener((View$OnClickListener)new OfflineFragment$4(this, b));
         }
     }
     
     private void setupMainView(final View view) {
-        this.mEmptyState = view.findViewById(2131689859);
-        this.mRecyclerView = (RecyclerView)view.findViewById(2131689860);
+        this.mEmptyState = view.findViewById(2131689860);
+        this.mEmptyStateImage = view.findViewById(2131689861);
+        this.mRecyclerView = (RecyclerView)view.findViewById(2131689859);
         this.mLayoutManager = new LinearLayoutManager(this.mRecyclerView.getContext());
         this.mRecyclerView.setLayoutManager(this.mLayoutManager);
     }
@@ -250,15 +258,16 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
                 mEmptyState.setVisibility(visibility);
                 this.mRecyclerView.setVisibility(0);
             }
-            return;
         }
-        if (itemCount == 0) {
+        else if (itemCount == 0) {
             this.mEmptyState.setVisibility(0);
             this.mRecyclerView.setVisibility(8);
-            return;
         }
-        this.mEmptyState.setVisibility(8);
-        this.mRecyclerView.setVisibility(0);
+        else {
+            this.mEmptyState.setVisibility(8);
+            this.mRecyclerView.setVisibility(0);
+        }
+        this.manageEmptyButton();
     }
     
     private void updatePlayableList() {
@@ -333,6 +342,11 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
         this.updatePlayableList();
     }
     
+    public void onConfigurationChanged(final Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        this.manageEmptyButton();
+    }
+    
     @Override
     public void onCreateRequestResponse(final String s, final Status status) {
         if (Log.isLoggable()) {
@@ -346,6 +360,7 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
         final View inflate = layoutInflater.inflate(this.getLayoutId(), viewGroup, false);
         this.setupMainView(inflate);
         this.handleInitIfReady();
+        this.manageEmptyButton();
         return inflate;
     }
     

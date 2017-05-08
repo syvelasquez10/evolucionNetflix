@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.offline.agent;
 
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import android.app.Notification$Builder;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
@@ -13,48 +14,38 @@ import android.os.Handler;
 
 class DownloadNotificationManagerPreN extends DownloadNotificationManager
 {
-    public DownloadNotificationManagerPreN(final Handler handler, final Context context, final INetflixService netflixService, final ImageLoader imageLoader, final OfflineAgentInterface offlineAgentInterface) {
-        super(handler, context, netflixService, imageLoader, offlineAgentInterface);
+    public DownloadNotificationManagerPreN(final Handler handler, final Context context, final INetflixService netflixService, final ImageLoader imageLoader, final boolean b, final OfflineAgentInterface offlineAgentInterface) {
+        super(handler, context, netflixService, imageLoader, b, offlineAgentInterface);
     }
     
     @Override
     protected void addCancelDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(2130837708, (CharSequence)this.mContext.getString(2131231150), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId()));
+        notification$Builder.addAction(2130837708, (CharSequence)this.mContext.getString(2131231151), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId()));
     }
     
     @Override
     protected void addResumeDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(2130837743, (CharSequence)this.mContext.getString(2131231157), this.getStartDownloadIntent(offlinePlayableViewData.getPlayableId()));
+        notification$Builder.addAction(2130837743, (CharSequence)this.mContext.getString(2131231158), this.getStartDownloadIntent(offlinePlayableViewData.getPlayableId()));
     }
     
     @Override
     protected void addStopDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(2130837778, (CharSequence)this.mContext.getString(2131231158), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId()));
+        notification$Builder.addAction(2130837778, (CharSequence)this.mContext.getString(2131231159), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId()));
     }
     
     @Override
-    protected void addWatchAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(2130837931, (CharSequence)this.mContext.getString(2131231159), this.getWatchPlayableIntent(offlinePlayableViewData.getPlayableId(), this.mVideoType));
+    protected void addWatchAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData, final VideoType videoType) {
+        notification$Builder.addAction(2130837931, (CharSequence)this.mContext.getString(2131231160), this.getWatchPlayableIntent(offlinePlayableViewData.getPlayableId(), videoType));
     }
     
     @Override
-    protected String getBigTextForInProgress(final OfflinePlayableViewData offlinePlayableViewData) {
-        return this.getSecondaryTitlePercentageSizeString(offlinePlayableViewData);
+    protected String getBigTextForInProgress(final OfflinePlayableViewData offlinePlayableViewData, final DownloadNotificationManager$NotificationData downloadNotificationManager$NotificationData) {
+        return this.getSecondaryTitlePercentageSizeString(offlinePlayableViewData, downloadNotificationManager$NotificationData);
     }
     
     @Override
-    protected String getBigTextForStoppedByUser(final OfflinePlayableViewData offlinePlayableViewData) {
-        return this.getSecondaryTitlePercentageSizeString(offlinePlayableViewData);
-    }
-    
-    @Override
-    protected String getBigTitleForInProgress() {
-        return this.mTitle;
-    }
-    
-    @Override
-    protected String getBigTitleForStoppedByUser() {
-        return this.mTitle;
+    protected String getBigTextForStoppedByUser(final OfflinePlayableViewData offlinePlayableViewData, final DownloadNotificationManager$NotificationData downloadNotificationManager$NotificationData) {
+        return this.getSecondaryTitlePercentageSizeString(offlinePlayableViewData, downloadNotificationManager$NotificationData);
     }
     
     @Override

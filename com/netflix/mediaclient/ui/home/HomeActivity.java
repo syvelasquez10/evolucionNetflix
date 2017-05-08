@@ -193,7 +193,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131231218, 1).show();
+        Toast.makeText((Context)this, 2131231215, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -218,7 +218,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131689865)).setDrawerListener(new HomeActivity$4(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131689866)).setDrawerListener(new HomeActivity$4(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
@@ -235,7 +235,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void showDialogsIfApplicable() {
-        if (this.hasCheckedOnRampEligibility && !this.mDialogManager.displayDialogsIfNeeded()) {
+        if (this.getGenre() == null && this.hasCheckedOnRampEligibility && !this.mDialogManager.displayDialogsIfNeeded()) {
             this.showDataSaverNotif();
         }
     }

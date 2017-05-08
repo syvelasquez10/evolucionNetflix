@@ -21,7 +21,7 @@ class BarkerKidsShowDetailsFrag$KubrickKidsEpisodeView extends BarkerShowDetails
     public BarkerKidsShowDetailsFrag$KubrickKidsEpisodeView(final BarkerKidsShowDetailsFrag this$0, final Context context, final int n) {
         this.this$0 = this$0;
         super(this$0, context, n);
-        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689869);
+        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689870);
         this.image.setPressedStateHandlerEnabled(false);
     }
     

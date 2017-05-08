@@ -10,6 +10,7 @@ import android.os.Process;
 import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
+import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
@@ -41,6 +42,8 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$T
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.service.pservice.logging.PServiceLogging;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
+import com.crittercism.app.Crittercism;
+import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import android.content.IntentFilter;

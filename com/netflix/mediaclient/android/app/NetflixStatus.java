@@ -7,14 +7,13 @@ package com.netflix.mediaclient.android.app;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 
-public class NetflixStatus implements Status
+public class NetflixStatus extends BaseStatus
 {
     private static final long serialVersionUID = 5121797712426793309L;
     protected boolean mDisplayMessage;
     protected transient Error mError;
     protected String mMessage;
     private int mRequestId;
-    protected StatusCode mStatusCode;
     
     public NetflixStatus(final StatusCode statusCode) {
         this(statusCode, Integer.MAX_VALUE);
@@ -41,21 +40,6 @@ public class NetflixStatus implements Status
     @Override
     public int getRequestId() {
         return this.mRequestId;
-    }
-    
-    @Override
-    public StatusCode getStatusCode() {
-        return this.mStatusCode;
-    }
-    
-    @Override
-    public boolean isError() {
-        return this.mStatusCode.isError();
-    }
-    
-    @Override
-    public boolean isSucces() {
-        return this.mStatusCode.isSucess();
     }
     
     public void setDisplayMessage(final boolean mDisplayMessage) {

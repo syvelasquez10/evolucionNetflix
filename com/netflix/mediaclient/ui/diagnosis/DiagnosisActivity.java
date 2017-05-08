@@ -74,7 +74,7 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
             n2 = n4;
         }
         if (n2 != 0 && n != 0) {
-            return this.getString(2131231288);
+            return this.getString(2131231285);
         }
         if (n != 0) {
             return this.getString(2131231017);
@@ -166,8 +166,8 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
             default: {}
             case 1: {
                 this.mNetworkStatus.setText(2131231012);
-                this.mTestInfo.setText(2131231274);
-                this.mTestButton.setText(2131231263);
+                this.mTestInfo.setText(2131231271);
+                this.mTestButton.setText(2131231260);
                 this.mTestButton.setVisibility(0);
                 this.mProgressBar.setVisibility(4);
             }
@@ -176,13 +176,13 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
                 this.mTestInfo.setVisibility(0);
                 this.mTestInfo.setText((CharSequence)this.getStringForFailure());
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131231273);
+                this.mTestButton.setText(2131231270);
                 this.mProgressBar.setVisibility(4);
             }
             case 3: {
                 this.mNetworkStatus.setText(2131231141);
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131231273);
+                this.mTestButton.setText(2131231270);
                 this.mProgressBar.setVisibility(4);
             }
             case 4: {

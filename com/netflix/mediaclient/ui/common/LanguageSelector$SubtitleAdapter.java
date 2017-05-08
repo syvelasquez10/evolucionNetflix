@@ -88,7 +88,7 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             equals = item.equals(subtitle);
         }
         else {
-            text = this.activity.getString(2131231147);
+            text = this.activity.getString(2131231148);
             if (subtitle == null) {
                 equals = true;
                 text = text;

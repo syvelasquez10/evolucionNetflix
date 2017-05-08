@@ -50,7 +50,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
                 return;
             }
             this.runtime.setVisibility(0);
-            this.runtime.setText((CharSequence)this.getResources().getString(2131231163, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
+            this.runtime.setText((CharSequence)this.getResources().getString(2131231164, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
         }
     }
     

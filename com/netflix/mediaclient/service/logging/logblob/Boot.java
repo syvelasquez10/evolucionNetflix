@@ -27,8 +27,8 @@ public class Boot extends BaseLogblob
         try {
             final JSONObject jsonObject = new JSONObject();
             jsonObject.put("appid", (Object)s);
-            jsonObject.put("buildDate", (Object)"20161130");
-            jsonObject.put("buildTime", (Object)"235512");
+            jsonObject.put("buildDate", (Object)"20161209");
+            jsonObject.put("buildTime", (Object)"192326");
             jsonObject.put("build_id", AndroidManifestUtils.getVersionCode(context));
             jsonObject.put("crashReportClient", (Object)"on");
             jsonObject.put("debug", false);
@@ -48,7 +48,7 @@ public class Boot extends BaseLogblob
             final JSONObject jsonObject3 = new JSONObject();
             jsonObject3.put("mdxlib", (Object)"2013.3");
             jsonObject3.put("nrdlib", (Object)"2013.2");
-            jsonObject3.put("nrdp", (Object)"4.1");
+            jsonObject3.put("nrdp", (Object)"4.0.4");
             final JSONObject jsonObject4 = new JSONObject();
             jsonObject3.put("platform", (Object)jsonObject4);
             jsonObject4.put("platformVersion", (Object)AndroidManifestUtils.getVersion(context));

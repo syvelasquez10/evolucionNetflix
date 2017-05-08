@@ -218,7 +218,7 @@ class MiniPlayerControlsFrag$7 implements RemotePlayer$RemoteTargetUiListener
         }
         this.this$0.isEndOfPlayback = false;
         MiniPlayerControlsFrag.state.mostRecentVolume = remotePlayer$RemoteTargetState.volume;
-        this.this$0.updateVisibility(remotePlayer$RemoteTargetState.showMiniPlayer, remotePlayer$RemoteTargetState.paused, PersistentConfig.inMementoTest((Context)this.this$0.getActivity()));
+        this.this$0.updateVisibility(remotePlayer$RemoteTargetState.showMiniPlayer, remotePlayer$RemoteTargetState.paused, PersistentConfig.inAnyMementoTest((Context)this.this$0.getActivity()));
         final MdxMiniPlayerViews access$600 = this.this$0.views;
         boolean controlsEnabled = b;
         if (!remotePlayer$RemoteTargetState.buffering) {

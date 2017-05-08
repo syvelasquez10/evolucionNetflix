@@ -24,7 +24,7 @@ public final class AndroidMessageRegistry implements ErrorMessageRegistry
         String s;
         if (mslError == null) {
             Log.e("nf_msl_error", "getUserMessage:: NULL");
-            s = this.context.getString(2131231508);
+            s = this.context.getString(2131231506);
         }
         else {
             final String s2 = s = mslError.getInternalCode() + " " + mslError.getResponseCode().name() + " " + mslError.getMessage();
@@ -42,7 +42,7 @@ public final class AndroidMessageRegistry implements ErrorMessageRegistry
             Log.e("nf_msl_error", t, "getUserMessage::", new Object[0]);
         }
         if (t == null) {
-            return this.context.getString(2131231508);
+            return this.context.getString(2131231506);
         }
         return t.getMessage();
     }

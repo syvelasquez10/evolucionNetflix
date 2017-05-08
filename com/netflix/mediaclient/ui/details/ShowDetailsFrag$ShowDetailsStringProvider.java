@@ -41,6 +41,6 @@ public class ShowDetailsFrag$ShowDetailsStringProvider implements VideoDetailsVi
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText(this.context, 2131231262, this.details.getActors());
+        return StringUtils.createBoldLabeledText(this.context, 2131231259, this.details.getActors());
     }
 }

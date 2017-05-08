@@ -105,7 +105,7 @@ class MiniPlayerControlsFrag$MementoRelatedView extends RelativeLayout implement
         if (trackable != null) {
             this.playContext = new PlayContextImp(trackable, n);
         }
-        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131690012);
+        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131690013);
         if (advancedImageView != null) {
             final String imageUrl = this.getImageUrl(video, b2);
             final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());

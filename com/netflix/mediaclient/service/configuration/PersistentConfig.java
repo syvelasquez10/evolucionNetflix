@@ -14,6 +14,7 @@ import com.netflix.mediaclient.service.configuration.persistent.PrefetchLolomoCo
 import com.netflix.mediaclient.service.configuration.persistent.BrandLoveSurvey;
 import com.netflix.mediaclient.service.configuration.persistent.OfflineTutorial;
 import com.netflix.mediaclient.service.configuration.persistent.OnRamp;
+import com.netflix.mediaclient.service.configuration.persistent.Memento2;
 import com.netflix.mediaclient.service.configuration.persistent.Memento;
 import com.netflix.mediaclient.service.configuration.persistent.PhoneOrientation;
 import com.netflix.mediaclient.service.configuration.persistent.ContinueWatchingProgBar;
@@ -39,6 +40,7 @@ public final class PersistentConfig
         PersistentConfig.mConfigs.put(ContinueWatchingProgBar.class, new ContinueWatchingProgBar());
         PersistentConfig.mConfigs.put(PhoneOrientation.class, new PhoneOrientation());
         PersistentConfig.mConfigs.put(Memento.class, new Memento());
+        PersistentConfig.mConfigs.put(Memento2.class, new Memento2());
         PersistentConfig.mConfigs.put(OnRamp.class, new OnRamp());
         PersistentConfig.mConfigs.put(OfflineTutorial.class, new OfflineTutorial());
         PersistentConfig.mConfigs.put(BrandLoveSurvey.class, new BrandLoveSurvey());
@@ -81,6 +83,10 @@ public final class PersistentConfig
         return PersistentConfig.mConfigs.get(Memento.class).getCell(context);
     }
     
+    public static ABTestConfig$Cell getMemento2(final Context context) {
+        return PersistentConfig.mConfigs.get(Memento2.class).getCell(context);
+    }
+    
     public static ABTestConfig$Cell getMotionBBTestCell(final Context context) {
         return PersistentConfig.mConfigs.get(MotionBB.class).getCell(context);
     }
@@ -101,6 +107,14 @@ public final class PersistentConfig
         return PersistentConfig.mConfigs.get(VoiceSearch.class).getCell(context);
     }
     
+    public static boolean inAnyMementoTest(final Context context) {
+        return getMemento(context) == ABTestConfig$Cell.CELL_TWO || getMemento(context) == ABTestConfig$Cell.CELL_THREE || getMemento2(context) == ABTestConfig$Cell.CELL_TWO || getMemento2(context) == ABTestConfig$Cell.CELL_THREE;
+    }
+    
+    public static boolean inMemento2Test(final Context context) {
+        return getMemento2(context) == ABTestConfig$Cell.CELL_TWO || getMemento2(context) == ABTestConfig$Cell.CELL_THREE;
+    }
+    
     public static boolean inMementoTest(final Context context) {
         return getMemento(context) == ABTestConfig$Cell.CELL_TWO || getMemento(context) == ABTestConfig$Cell.CELL_THREE;
     }
@@ -114,7 +128,7 @@ public final class PersistentConfig
     }
     
     public static boolean isOnRampTest(final Context context) {
-        return PersistentConfig.mConfigs.get(OnRamp.class).getCell(context) == ABTestConfig$Cell.CELL_ONE;
+        return PersistentConfig.mConfigs.get(OnRamp.class).getCell(context) == ABTestConfig$Cell.CELL_TWO;
     }
     
     public static void refresh() {

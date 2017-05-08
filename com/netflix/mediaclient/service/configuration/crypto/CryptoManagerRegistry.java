@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration.crypto;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.MediaDrmUtils;
@@ -63,6 +64,20 @@ public final class CryptoManagerRegistry
     public static CryptoManager getCryptoManager() {
         synchronized (CryptoManagerRegistry.class) {
             return CryptoManagerRegistry.sCryptoManager;
+        }
+    }
+    
+    public static CryptoProvider getCryptoProvider() {
+        synchronized (CryptoManagerRegistry.class) {
+            CryptoProvider cryptoProvider;
+            if (CryptoManagerRegistry.sCryptoManager == null) {
+                ErrorLoggingManager.logHandledException("CryptoManagerRegistry:: crypto manager is NULL!");
+                cryptoProvider = null;
+            }
+            else {
+                cryptoProvider = CryptoManagerRegistry.sCryptoManager.getCryptoProvider();
+            }
+            return cryptoProvider;
         }
     }
 }

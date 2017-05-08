@@ -98,10 +98,10 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         if (!this.mProfileChangeRequestWasSent) {
             int n;
             if (this.mNewProfileCreation) {
-                n = 2131231390;
+                n = 2131231386;
             }
             else {
-                n = 2131231400;
+                n = 2131231396;
             }
             Toast.makeText((Context)this, n, 1).show();
         }
@@ -120,12 +120,12 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         }
         final String string = this.mName.getText().toString();
         if (string.contains("\"") || string.contains("<") || string.contains(">")) {
-            this.mName.setError((CharSequence)this.getString(2131231409));
+            this.mName.setError((CharSequence)this.getString(2131231405));
             return true;
         }
         for (final UserProfile userProfile : this.mServiceManager.getAllProfiles()) {
             if (string.equalsIgnoreCase(userProfile.getProfileName()) && !userProfile.getProfileGuid().equals(this.mInputProfileId)) {
-                this.mName.setError((CharSequence)this.getString(2131231397));
+                this.mName.setError((CharSequence)this.getString(2131231393));
                 return true;
             }
         }
@@ -147,32 +147,32 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     private void initUI() {
         this.setContentView(2130903268);
         this.getSupportActionBar().hide();
-        this.mContentView = this.findViewById(2131690249);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131690248), this.errorCallback);
-        (this.mCancelButton = this.findViewById(2131690257)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
-        this.mDeleteSection = this.findViewById(2131690255);
-        (this.mDeleteButton = this.findViewById(2131690256)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
-        (this.mKidsSection = this.findViewById(2131690251)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
-        this.mKidsCheckBox = (CheckBox)this.findViewById(2131690252);
-        this.mSaveButtonText = this.findViewById(2131690259);
-        (this.mSaveButton = this.findViewById(2131690258)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
-        (this.mName = (EditText)this.findViewById(2131690250)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
+        this.mContentView = this.findViewById(2131690250);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131690249), this.errorCallback);
+        (this.mCancelButton = this.findViewById(2131690258)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
+        this.mDeleteSection = this.findViewById(2131690256);
+        (this.mDeleteButton = this.findViewById(2131690257)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
+        (this.mKidsSection = this.findViewById(2131690252)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
+        this.mKidsCheckBox = (CheckBox)this.findViewById(2131690253);
+        this.mSaveButtonText = this.findViewById(2131690260);
+        (this.mSaveButton = this.findViewById(2131690259)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
+        (this.mName = (EditText)this.findViewById(2131690251)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
         this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131689622);
         final ProfileDetailsActivity$9 profileDetailsActivity$9 = new ProfileDetailsActivity$9(this);
         this.mProfilePictureView.setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        (this.mProfilePictureSection = this.findViewById(2131690253)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        this.mPictureSelectorHint = this.findViewById(2131690254);
+        (this.mProfilePictureSection = this.findViewById(2131690254)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
+        this.mPictureSelectorHint = this.findViewById(2131690255);
         if (this.mNewProfileCreation) {
             this.mName.requestFocus();
         }
-        final TextView textView = (TextView)this.findViewById(2131690260);
+        final TextView textView = (TextView)this.findViewById(2131690261);
         if (textView != null) {
             int text;
             if (this.mNewProfileCreation) {
-                text = 2131231389;
+                text = 2131231385;
             }
             else {
-                text = 2131231401;
+                text = 2131231397;
             }
             textView.setText(text);
         }

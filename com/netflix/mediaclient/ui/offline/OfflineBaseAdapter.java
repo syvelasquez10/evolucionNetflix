@@ -219,13 +219,15 @@ public abstract class OfflineBaseAdapter extends RecyclerView$Adapter<RecyclerVi
             offlineBaseAdapter$OfflineViewHolderData.itemView.setClickable(false);
         }
         ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.checkmark, b && this.mSelectionController.isSelectable());
-        final RealmVideoDetails offlineVideoDetails = RealmUtils.getOfflineVideoDetails(s);
-        if (offlineVideoDetails != null) {
-            if (offlineVideoDetails.getType() == VideoType.SHOW) {
-                ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.showIndicator, !this.mSelectionController.isSelectable() && b3);
-            }
-            else if (offlineVideoDetails.getType() == VideoType.MOVIE || offlineVideoDetails.getType() == VideoType.EPISODE) {
-                ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.downloadButton, !this.mSelectionController.isSelectable() && b2);
+        if (s != null) {
+            final RealmVideoDetails offlineVideoDetails = RealmUtils.getOfflineVideoDetails(s);
+            if (offlineVideoDetails != null) {
+                if (offlineVideoDetails.getType() == VideoType.SHOW) {
+                    ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.showIndicator, !this.mSelectionController.isSelectable() && b3);
+                }
+                else if (offlineVideoDetails.getType() == VideoType.MOVIE || offlineVideoDetails.getType() == VideoType.EPISODE) {
+                    ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.downloadButton, !this.mSelectionController.isSelectable() && b2);
+                }
             }
         }
     }

@@ -61,16 +61,16 @@ public final class BottomPanel extends PlayerSection
     
     private void init(final PlayScreen$Listeners playScreen$Listeners) {
         final View view = this.playerFragment.getView();
-        this.durationLabel = (TextView)view.findViewById(2131690139);
-        this.bottomPanel = view.findViewById(2131690135);
-        this.bottomGradient = view.findViewById(2131690131);
-        this.timeline = (TimelineSeekBar)view.findViewById(2131690138);
+        this.durationLabel = (TextView)view.findViewById(2131690140);
+        this.bottomPanel = view.findViewById(2131690136);
+        this.bottomGradient = view.findViewById(2131690132);
+        this.timeline = (TimelineSeekBar)view.findViewById(2131690139);
         this.videoPositionListener = playScreen$Listeners.videoPositionListener;
         this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.playerFragment.getNetflixActivity(), this.playerFragment.getUiResources().timelineThumbOffsetInDip));
-        (this.media = (ImageButton)view.findViewById(2131690136)).setOnClickListener(playScreen$Listeners.playPauseListener);
-        (this.skipBack = (ImageButton)view.findViewById(2131690137)).setOnClickListener(playScreen$Listeners.skipBackListener);
-        (this.zoom = (ImageButton)view.findViewById(2131690140)).setOnClickListener(playScreen$Listeners.zoomListener);
-        this.extraSeekbarHandler = view.findViewById(2131690147);
+        (this.media = (ImageButton)view.findViewById(2131690137)).setOnClickListener(playScreen$Listeners.playPauseListener);
+        (this.skipBack = (ImageButton)view.findViewById(2131690138)).setOnClickListener(playScreen$Listeners.skipBackListener);
+        (this.zoom = (ImageButton)view.findViewById(2131690141)).setOnClickListener(playScreen$Listeners.zoomListener);
+        this.extraSeekbarHandler = view.findViewById(2131690148);
         this.currentTime = CurrentTime.newInstance(this.playerFragment);
     }
     

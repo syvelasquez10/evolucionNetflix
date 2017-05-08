@@ -145,7 +145,7 @@ public final class PostPlayForPlayer extends PostPlay
     
     @Override
     protected void findViews() {
-        this.experienceTitle = (TextView)this.mNetflixActivity.findViewById(2131690151);
+        this.experienceTitle = (TextView)this.mNetflixActivity.findViewById(2131690152);
     }
     
     @Override
@@ -221,7 +221,7 @@ public final class PostPlayForPlayer extends PostPlay
                     text = this.mPostPlayExperience.getExperienceTitle().get(0).getDisplayText();
                 }
                 else if ("recommendations".equals(this.mPostPlayExperience.getType())) {
-                    text = this.mNetflixActivity.getResources().getString(2131231194);
+                    text = this.mNetflixActivity.getResources().getString(2131231195);
                 }
                 else {
                     text = "";

@@ -73,7 +73,7 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
             return;
         }
         Log.v("NetflixRatingBar", "Rating has been updated");
-        Toast.makeText(this.this$0.getContext(), 2131231217, 1).show();
+        Toast.makeText(this.this$0.getContext(), 2131231214, 1).show();
         this.this$0.currRating = this.rating;
         if (this.this$0.ratableObject != null) {
             this.this$0.ratableObject.setUserRating(this.rating);

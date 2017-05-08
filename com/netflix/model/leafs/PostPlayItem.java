@@ -79,6 +79,7 @@ public class PostPlayItem implements JsonMerger, JsonPopulator, Ratable
     
     private void populateCTA(final JsonElement jsonElement, final List<PostPlayAction> list) {
         if (!jsonElement.isJsonNull()) {
+            list.clear();
             final JsonArray asJsonArray = jsonElement.getAsJsonArray();
             for (int i = 0; i < asJsonArray.size(); ++i) {
                 list.add(new PostPlayAction(asJsonArray.get(i), this.proxy));
@@ -512,6 +513,7 @@ public class PostPlayItem implements JsonMerger, JsonPopulator, Ratable
                     }
                     case 19: {
                         if (!jsonElement2.isJsonNull()) {
+                            this.badgeKeys.clear();
                             final JsonArray asJsonArray = jsonElement2.getAsJsonArray();
                             for (int i = 0; i < asJsonArray.size(); ++i) {
                                 this.badgeKeys.add(asJsonArray.get(i).getAsString());
@@ -524,26 +526,26 @@ public class PostPlayItem implements JsonMerger, JsonPopulator, Ratable
                         for (final Map.Entry<String, JsonElement> entry2 : jsonElement2.getAsJsonObject().entrySet()) {
                             final String s2 = entry2.getKey();
                             int n2 = 0;
-                            Label_1114: {
+                            Label_1122: {
                                 switch (s2.hashCode()) {
                                     case -847101650: {
                                         if (s2.equals("BACKGROUND")) {
                                             n2 = 0;
-                                            break Label_1114;
+                                            break Label_1122;
                                         }
                                         break;
                                     }
                                     case -426397402: {
                                         if (s2.equals("DISPLAY_ART")) {
                                             n2 = 1;
-                                            break Label_1114;
+                                            break Label_1122;
                                         }
                                         break;
                                     }
                                     case 2342315: {
                                         if (s2.equals("LOGO")) {
                                             n2 = 2;
-                                            break Label_1114;
+                                            break Label_1122;
                                         }
                                         break;
                                     }

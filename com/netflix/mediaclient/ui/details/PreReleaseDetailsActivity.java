@@ -21,7 +21,7 @@ public class PreReleaseDetailsActivity extends MovieDetailsActivity
     }
     
     private void showSnackBar() {
-        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131231425, 0);
+        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131231421, 0);
         make.getView().getLayoutParams().width = -1;
         final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131689767);
         textView.setTypeface(Typeface.DEFAULT_BOLD);

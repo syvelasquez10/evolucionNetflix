@@ -121,8 +121,8 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131689896);
-        this.fragBackground = view.findViewById(2131689908);
+        this.rootContainer = view.findViewById(2131689897);
+        this.fragBackground = view.findViewById(2131689909);
         if (this.rootContainer != null) {
             this.rootContainer.setBackgroundResource(this.getBackgroundResource());
         }

@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.DialogInterface;
+import android.widget.FrameLayout$LayoutParams;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
+import android.view.ViewGroup$LayoutParams;
+import android.view.WindowManager$LayoutParams;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.view.View;
 import android.view.ViewTreeObserver$OnPreDrawListener;
@@ -27,8 +30,7 @@ class OfflineTutorialDialogFrag$1 implements ViewTreeObserver$OnPreDrawListener
     }
     
     public boolean onPreDraw() {
-        this.val$view.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);
-        this.this$0.adjustModalWidthIfApplicable();
+        this.this$0.adjustModalWidthIfApplicable(this.val$view);
         return true;
     }
 }

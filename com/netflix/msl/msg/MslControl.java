@@ -106,10 +106,10 @@ public class MslControl
                                     this.executor = new MslControl$SynchronousExecutor(null);
                                     continue;
                                 }
-                                messageRegistry = new MslControl$DummyMessageRegistry(null);
-                                continue Label_0075_Outer;
                                 streamFactory = new MessageStreamFactory();
                                 continue Label_0058_Outer;
+                                messageRegistry = new MslControl$DummyMessageRegistry(null);
+                                continue Label_0075_Outer;
                             }
                             catch (MslEncodingException ex) {
                                 throw new MslInternalException("Unexpected exception when constructing dummy master token.", ex);
@@ -375,12 +375,12 @@ public class MslControl
                                 request.setNonReplayable(messageContext.isNonReplayable());
                                 return request;
                                 userIdToken = null;
-                                continue Label_0052_Outer;
-                                userIdToken = null;
                                 continue;
                                 userIdToken = null;
                                 continue;
                             }
+                            userIdToken = null;
+                            continue Label_0052_Outer;
                         }
                         catch (MslException ex) {
                             this.releaseMasterToken(mslContext, newestMasterToken);

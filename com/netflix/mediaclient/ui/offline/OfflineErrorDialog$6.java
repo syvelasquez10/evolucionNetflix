@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData$
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.OfflineDialogLogblob;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
@@ -45,15 +46,15 @@ class OfflineErrorDialog$6 implements DialogInterface$OnClickListener
     }
     
     public void onClick(final DialogInterface dialogInterface, final int n) {
-        final NetflixActivity access$500 = this.this$0.getNetflixActivity();
-        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)access$500)) {
-            if (!ConnectivityUtils.isConnected((Context)access$500)) {
-                Toast.makeText((Context)access$500, 2131231344, 0).show();
+        final NetflixActivity access$700 = this.this$0.getNetflixActivity();
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)access$700)) {
+            if (!ConnectivityUtils.isConnected((Context)access$700)) {
+                Toast.makeText((Context)access$700, 2131231341, 0).show();
             }
             else {
-                final OfflineErrorDialog$6$1 offlineErrorDialog$6$1 = new OfflineErrorDialog$6$1(this, access$500);
-                access$500.getHandler().postDelayed((Runnable)offlineErrorDialog$6$1, 10000L);
-                access$500.getServiceManager().createAutoLoginToken(3600000L, new OfflineErrorDialog$6$2(this, access$500, offlineErrorDialog$6$1));
+                final OfflineErrorDialog$6$1 offlineErrorDialog$6$1 = new OfflineErrorDialog$6$1(this, access$700);
+                access$700.getHandler().postDelayed((Runnable)offlineErrorDialog$6$1, 10000L);
+                access$700.getServiceManager().createAutoLoginToken(3600000L, new OfflineErrorDialog$6$2(this, access$700, offlineErrorDialog$6$1));
             }
         }
         dialogInterface.dismiss();

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.player.bladerunnerclient.volley;
 
+import java.util.Iterator;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -150,6 +151,32 @@ public class FetchManifestsRequest extends ApiFalkorMSLVolleyRequest<JSONObject>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
+    protected JSONObject insertClientSpecificFields(final JSONObject jsonObject) {
+        final JSONObject jsonObject2 = new JSONObject();
+        if (jsonObject != null) {
+            try {
+                final Iterator keys = jsonObject.keys();
+                while (keys.hasNext()) {
+                    final String s = keys.next();
+                    final JSONObject jsonObject3 = jsonObject.getJSONObject(s);
+                    if (jsonObject3 != null) {
+                        jsonObject3.put("timestamp", System.currentTimeMillis());
+                        final long optLong = jsonObject3.optLong("expiration", 0L);
+                        if (optLong < System.currentTimeMillis() + 3600000L) {
+                            Log.e("nf_msl_volley_FetchManifestsRequest", "server manifest expiring...  " + optLong);
+                            jsonObject3.put("expiration", System.currentTimeMillis() + 3600000L);
+                        }
+                        jsonObject2.put(s, (Object)jsonObject3);
+                    }
+                }
+            }
+            catch (JSONException ex) {
+                Log.e("nf_msl_volley_FetchManifestsRequest", "parsing manifest error", (Throwable)ex);
+            }
+        }
+        return jsonObject2;
+    }
+    
     @Override
     protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
@@ -160,11 +187,15 @@ public class FetchManifestsRequest extends ApiFalkorMSLVolleyRequest<JSONObject>
     }
     
     @Override
-    protected void onSuccess(JSONObject resultObject) {
-        resultObject = this.getResultObject(resultObject);
+    protected void onSuccess(JSONObject insertClientSpecificFields) {
+        final JSONObject resultObject = this.getResultObject(insertClientSpecificFields);
         final Status status = this.getStatus(resultObject);
+        insertClientSpecificFields = resultObject;
+        if (status.isSucces()) {
+            insertClientSpecificFields = this.insertClientSpecificFields(resultObject);
+        }
         if (this.responseCallback != null) {
-            this.responseCallback.onManifestsFetched(resultObject, status);
+            this.responseCallback.onManifestsFetched(insertClientSpecificFields, status);
             return;
         }
         Log.w("nf_msl_volley_FetchManifestsRequest", "callback null?");

@@ -33,6 +33,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -612,9 +613,13 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         new BackgroundTask().execute(new FalkorAgent$17(this, countDownLatch2, countDownLatch));
     }
     
-    private void notifyJobFinished(final boolean b, final boolean b2, final boolean b3) {
+    private void notifyJobFinished(final boolean b, final boolean b2, final boolean b3, final String s) {
         if (Log.isLoggable()) {
             Log.d("FalkorAgent", "notifyJobFinished: success - " + b + " cancelled - " + b2);
+        }
+        final IClientLogging loggingAgent = this.getLoggingAgent();
+        if (loggingAgent != null) {
+            loggingAgent.getBreadcrumbLogging().leaveBreadcrumb(s);
         }
         this.getService().getJobScheduler().onJobFinished(NetflixJob$NetflixJobId.FALKOR_METADATA, false);
         IClientLogging$CompletionReason clientLogging$CompletionReason = IClientLogging$CompletionReason.failed;

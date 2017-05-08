@@ -19,6 +19,8 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.player.bladerunnerclient.volley.BladerunnerErrorStatus;
+import com.netflix.mediaclient.android.app.Status;
 
 public final class LogUtils
 {
@@ -49,6 +51,22 @@ public final class LogUtils
     
     public static String getCurrMethodName() {
         return Thread.currentThread().getStackTrace()[LogUtils.CLIENT_CODE_STACK_INDEX].getMethodName();
+    }
+    
+    public static String getErrorCodeForServerLogs(final Status status) {
+        String s = String.valueOf(status.getStatusCode().getValue());
+        if (status instanceof BladerunnerErrorStatus) {
+            s = ((BladerunnerErrorStatus)status).getErrorCodeForLogging();
+        }
+        return s;
+    }
+    
+    public static String getErrorMessageForServerLogs(final Status status) {
+        String s = status.getMessage();
+        if (status instanceof BladerunnerErrorStatus) {
+            s = ((BladerunnerErrorStatus)status).getErrorMessageForLogging();
+        }
+        return s;
     }
     
     public static void logCurrentThreadName(final String s, final String s2) {

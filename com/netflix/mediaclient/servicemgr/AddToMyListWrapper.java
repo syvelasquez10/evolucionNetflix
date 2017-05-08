@@ -41,15 +41,19 @@ public class AddToMyListWrapper
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final TextView textView2, final String s, final VideoType videoType, final int n, final boolean b) {
-        return new KubrickTextViewWrapper(this, netflixActivity, textView, textView2, s, videoType, n, b);
+        return new MyListTextViewWrapper(this, netflixActivity, textView, textView2, s, videoType, n, b);
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n) {
-        return new KubrickTextViewWrapper(this, netflixActivity, textView, null, s, videoType, n, false);
+        return new MyListTextViewWrapper(this, netflixActivity, textView, null, s, videoType, n, false);
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n, final boolean b) {
         return new TextViewWrapper(this, netflixActivity, textView, s, videoType, n, b);
+    }
+    
+    public TextViewWrapper createMementoAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n) {
+        return new MementoMyListTextViewWrapper(this, netflixActivity, textView, null, s, videoType, n, false);
     }
     
     void register(final String s, final AddToListData$StateListener addToListData$StateListener) {

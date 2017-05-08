@@ -9,6 +9,7 @@ import com.netflix.mediaclient.ui.details.DetailsActivity$Action;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import android.content.Context;
@@ -22,7 +23,6 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.TextView;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.Button;
 import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -53,29 +53,6 @@ public class PostPlayCallToAction
                 this.setButtonText((Button)target);
             }
             this.attachAction(target);
-        }
-    }
-    
-    private VideoType actionVideoTypeToVideoType(final String s) {
-        if (s == null) {
-            return VideoType.UNKNOWN;
-        }
-        switch (s) {
-            default: {
-                return VideoType.UNKNOWN;
-            }
-            case "episode": {
-                return VideoType.EPISODE;
-            }
-            case "show": {
-                return VideoType.SHOW;
-            }
-            case "series": {
-                return VideoType.SHOW;
-            }
-            case "movie": {
-                return VideoType.MOVIE;
-            }
         }
     }
     
@@ -113,7 +90,7 @@ public class PostPlayCallToAction
         final ServiceManager serviceManager = this.netflixActivity.getServiceManager();
         final String value = String.valueOf(this.action.getVideoId());
         if (button != null && serviceManager != null) {
-            serviceManager.registerAddToMyListListener(value, serviceManager.createAddToMyListWrapper(this.netflixActivity, (TextView)button, value, this.actionVideoTypeToVideoType(this.action.getVideoType()), this.action.getTrackId(), false));
+            serviceManager.registerAddToMyListListener(value, serviceManager.createAddToMyListWrapper(this.netflixActivity, (TextView)button, value, this.action.getVideoType(), this.action.getTrackId(), false));
             serviceManager.updateMyListState(value, this.action.isInMyList());
         }
     }
@@ -174,12 +151,12 @@ public class PostPlayCallToAction
             }
             case 1: {
                 if (this.action.getName().equals("playTrailer")) {
-                    return this.getString(2131231180);
+                    return this.getString(2131231181);
                 }
                 return this.getString(2131230914);
             }
             case 2: {
-                if (this.action.getVideoType() != null && this.action.getVideoType().equals("episode")) {
+                if (this.action.getVideoType() != null && this.action.getVideoType().equals(VideoType.EPISODE)) {
                     return this.getString(2131230912);
                 }
                 return this.getString(2131231133);
@@ -190,7 +167,7 @@ public class PostPlayCallToAction
                     n = 2131230977;
                 }
                 else {
-                    n = 2131231220;
+                    n = 2131231217;
                 }
                 return this.getString(n);
             }
@@ -221,7 +198,7 @@ public class PostPlayCallToAction
     protected void playerDisplayPageAction() {
         final NetflixActivity netflixActivity = this.netflixActivity;
         VideoType videoType;
-        if (this.actionVideoTypeToVideoType(this.action.getVideoType()).equals(VideoType.MOVIE)) {
+        if (this.action.getVideoType().equals(VideoType.MOVIE)) {
             videoType = VideoType.MOVIE;
         }
         else {

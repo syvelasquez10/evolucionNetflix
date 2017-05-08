@@ -98,16 +98,16 @@ public final class PlayerSuspendNotification
             remoteViews = new RemoteViews(packageName, 2130903298);
         }
         if (bitmap != null) {
-            remoteViews.setImageViewBitmap(2131690325, bitmap);
+            remoteViews.setImageViewBitmap(2131690326, bitmap);
         }
         if (StringUtils.isNotEmpty(s)) {
-            remoteViews.setTextViewText(2131690326, (CharSequence)s);
+            remoteViews.setTextViewText(2131690327, (CharSequence)s);
         }
         else {
-            remoteViews.setTextViewText(2131690326, (CharSequence)"");
+            remoteViews.setTextViewText(2131690327, (CharSequence)"");
         }
         if (notEmpty) {
-            remoteViews.setTextViewText(2131690327, (CharSequence)s2);
+            remoteViews.setTextViewText(2131690328, (CharSequence)s2);
         }
         return remoteViews;
     }
@@ -144,9 +144,9 @@ public final class PlayerSuspendNotification
         }
         else {
             final int color = this.mActivity.getResources().getColor(2131624097);
-            String s = this.mActivity.getResources().getString(2131231269);
+            String s = this.mActivity.getResources().getString(2131231266);
             if (AndroidUtils.getAndroidVersion() >= 24) {
-                s = this.mActivity.getResources().getString(2131231270);
+                s = this.mActivity.getResources().getString(2131231267);
             }
             final Notification$Builder setVisibility = new Notification$Builder((Context)this.mActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837812).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (largeIcon != null) {

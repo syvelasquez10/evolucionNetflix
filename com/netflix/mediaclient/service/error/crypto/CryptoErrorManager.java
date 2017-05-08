@@ -231,7 +231,7 @@ public enum CryptoErrorManager
     
     public boolean handleCryptoFallback() {
         boolean shouldForceLegacyCrypto = true;
-        final CryptoProvider cryptoProvider = CryptoManagerRegistry.getCryptoManager().getCryptoProvider();
+        final CryptoProvider cryptoProvider = CryptoManagerRegistry.getCryptoProvider();
         String s;
         if (cryptoProvider == CryptoProvider.WIDEVINE_L1) {
             s = "MediaDrm failed for Widevine L1, fail back to legacy crypto scheme " + this.mConfiguration.shouldForceLegacyCrypto();

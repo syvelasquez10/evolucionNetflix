@@ -63,8 +63,8 @@ class PresentationTrackingManager implements PresentationTracking
                     Log.w("nf_presentation", "We are already trying to deliver %s deliveryRequestId, skip");
                 }
                 else {
-                    this.mExecutor.schedule(new PresentationTrackingManager$3(this, key), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
                     this.mPendingCachedLogPayloads.add(key);
+                    this.mExecutor.schedule(new PresentationTrackingManager$3(this, key), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
                 }
             }
         }

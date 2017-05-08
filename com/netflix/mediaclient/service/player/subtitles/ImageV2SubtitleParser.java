@@ -659,8 +659,11 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                                 }
                                 ++index;
                                 continue Label_0293_Outer;
-                                // iftrue(Label_0311:, !b)
-                                Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
+                                Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
+                                continue Label_0149_Outer;
+                                Label_0311: {
+                                    Log.e("nf_subtitles_imv2", "Failed to parse segment index", t);
+                                }
                                 return b;
                                 try {
                                     dataInputStream.close();
@@ -668,13 +671,9 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                                     return true;
                                 }
                                 catch (Throwable t2) {}
-                                continue;
-                                Label_0311: {
-                                    Log.e("nf_subtitles_imv2", "Failed to parse segment index", t);
-                                }
+                                // iftrue(Label_0311:, !b)
+                                Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
                                 return b;
-                                Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
-                                continue Label_0149_Outer;
                             }
                             catch (Throwable t) {
                                 b = false;

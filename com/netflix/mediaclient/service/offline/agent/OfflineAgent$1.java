@@ -20,6 +20,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.log.OfflineLogUtils;
@@ -44,7 +47,6 @@ import com.netflix.mediaclient.service.resfetcher.volley.ResourceHttpStack;
 import com.android.volley.toolbox.HttpStack;
 import android.os.Looper;
 import java.util.Iterator;
-import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import com.netflix.mediaclient.service.offline.registry.RegistryData;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
@@ -68,8 +70,7 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.service.pdslogging.PdsLoggingUtils;
-import com.netflix.mediaclient.service.player.exoplayback.logblob.OfflineErrorLogblob;
+import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.Log;
@@ -105,10 +106,12 @@ class OfflineAgent$1 implements OfflinePlayableListener
             Log.i("nf_offlineAgent", "onInitialized playableId=" + offlinePlayable.getPlayableId() + " status=" + status);
         }
         this.this$0.sendResponseForCreate(offlinePlayable.getPlayableId(), status);
-        if (status.isError()) {
-            OfflineErrorLogblob.sendBladerunnerError(this.this$0.getLoggingAgent(), offlinePlayable.getPlayableId(), offlinePlayable.getOxId(), offlinePlayable.getDxId(), status);
-            PdsLoggingUtils.downloadStoppedOnLicenseError(this.this$0.getContext(), offlinePlayable.getPlayableId(), status);
-        }
+    }
+    
+    @Override
+    public void onLicenseDeleteSuccessfully(final OfflinePlayablePersistentData offlinePlayablePersistentData) {
+        this.this$0.mOfflineRegistry.removeFromDeletedList(offlinePlayablePersistentData);
+        this.requestSaveToRegistry();
     }
     
     @Override

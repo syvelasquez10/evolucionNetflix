@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.offline.license;
 
+import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
+import android.media.NotProvisionedException;
 import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCallback;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.Log;

@@ -163,7 +163,7 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     private boolean inCancelProgressZone(final SeekBar seekBar, final float n) {
-        final float dimension = this.this$0.getResources().getDimension(2131362285);
+        final float dimension = this.this$0.getResources().getDimension(2131362287);
         int height;
         if (this.this$0.mIsTablet) {
             height = (int)(2.0f * dimension);
@@ -261,80 +261,74 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     public void onStopTrackingTouch(final SeekBar seekBar) {
-        boolean b;
-        TimelineSeekBar timelineSeekBar;
-        PlayScreen access$900;
-        boolean b2;
-        int access$901;
-        Label_0169_Outer:Label_0054_Outer:
+    Label_0169_Outer:
         while (true) {
-            b = true;
+            final boolean b = true;
         Label_0054:
             while (true) {
-                Label_0237: {
+            Label_0169:
+                while (true) {
+                Label_0097:
                     while (true) {
-                        Block_8_Outer:Label_0154_Outer:
-                        while (true) {
-                            Label_0208: {
-                                synchronized (this) {
-                                    this.this$0.mState.draggingInProgress = false;
-                                    Log.d("PlayerFragment", "onStopTrackingTouch called");
-                                    if (!(seekBar instanceof TimelineSeekBar)) {
-                                        Log.e("PlayerFragment", "PlayerFragment got not a Netflix seekbar!");
-                                        ErrorLoggingManager.logHandledException("PlayerFragment got not a Netflix seekbar!");
-                                        return;
+                        Label_0208: {
+                            synchronized (this) {
+                                this.this$0.mState.draggingInProgress = false;
+                                Log.d("PlayerFragment", "onStopTrackingTouch called");
+                                if (!(seekBar instanceof TimelineSeekBar)) {
+                                    Log.e("PlayerFragment", "PlayerFragment got not a Netflix seekbar!");
+                                    ErrorLoggingManager.logHandledException("PlayerFragment got not a Netflix seekbar!");
+                                    return;
+                                }
+                                final TimelineSeekBar timelineSeekBar = (TimelineSeekBar)seekBar;
+                                if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
+                                    break Label_0208;
+                                }
+                                break Label_0169;
+                                // iftrue(Label_0213:, b2)
+                                // iftrue(Label_0232:, b2)
+                                while (true) {
+                                    boolean b2;
+                                    PlayScreen access$1301;
+                                    while (true) {
+                                        b2 = b;
+                                        break Label_0169;
+                                        final int access$1300 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getCurrentTimelineProgress());
+                                        ((TimelineSeekBar)access$1301).setProgress(access$1300);
+                                        Log.d("PlayerFragment", "Seek!");
+                                        this.this$0.doSeek(access$1300);
+                                        break Label_0097;
+                                        Log.d("PlayerFragment", "Stop current time " + b2);
+                                        Label_0154: {
+                                            access$1301 = this.this$0.mScreen;
+                                        }
+                                        continue Label_0169_Outer;
                                     }
-                                    timelineSeekBar = (TimelineSeekBar)seekBar;
-                                    if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
-                                        break Label_0208;
-                                    }
-                                    break Label_0237;
+                                    access$1301.stopCurrentTime(b2);
+                                    this.this$0.mState.resetTimeline();
+                                    return;
                                     this.this$0.mScreen.finishDragging();
                                     this.this$0.mSubtitleManager.setSubtitleVisibility(true);
-                                    ((TimelineSeekBar)access$900).hideThumb(false);
-                                    // iftrue(Label_0154:, !Log.isLoggable())
-                                    // iftrue(Label_0232:, b2)
-                                    // iftrue(Label_0213:, b2)
-                                    while (true) {
-                                        Block_7: {
-                                            break Block_7;
-                                            while (true) {
-                                                while (true) {
-                                                    b2 = b;
-                                                    access$900.stopCurrentTime(b2);
-                                                    this.this$0.mState.resetTimeline();
-                                                    return;
-                                                    access$901 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getCurrentTimelineProgress());
-                                                    ((TimelineSeekBar)access$900).setProgress(access$901);
-                                                    Log.d("PlayerFragment", "Seek!");
-                                                    this.this$0.doSeek(access$901);
-                                                    continue Block_8_Outer;
-                                                    access$900 = this.this$0.mScreen;
-                                                    continue Label_0169_Outer;
-                                                }
-                                                continue Label_0154_Outer;
-                                            }
-                                        }
-                                        Log.d("PlayerFragment", "Stop current time " + b2);
-                                        continue Label_0054_Outer;
-                                    }
+                                    ((TimelineSeekBar)access$1301).hideThumb(false);
+                                    continue;
                                 }
                             }
-                            b2 = false;
-                            continue Label_0054;
-                            Label_0213: {
-                                Log.d("PlayerFragment", "Do not seek!");
-                            }
-                            ((TimelineSeekBar)access$900).setProgress(((TimelineSeekBar)access$900).getProgress());
-                            continue Label_0169_Outer;
+                            // iftrue(Label_0154:, !Log.isLoggable())
                         }
-                        Label_0232: {
-                            b2 = false;
+                        boolean b2 = false;
+                        continue Label_0054;
+                        Label_0213: {
+                            Log.d("PlayerFragment", "Do not seek!");
                         }
-                        continue Label_0054_Outer;
+                        PlayScreen access$1301 = null;
+                        ((TimelineSeekBar)access$1301).setProgress(((TimelineSeekBar)access$1301).getProgress());
+                        continue Label_0097;
                     }
+                    Label_0232: {
+                        final boolean b2 = false;
+                    }
+                    continue Label_0169;
                 }
-                b2 = true;
+                boolean b2 = true;
                 continue Label_0054;
             }
         }

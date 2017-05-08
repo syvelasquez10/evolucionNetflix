@@ -105,7 +105,7 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                     }
                     int i = 0;
                     int n = 0;
-                Label_0660_Outer:
+                Label_0643_Outer:
                     while (i < this.this$0.mPostPlayExperience.getItems().size()) {
                         final PostPlayItem postPlayItem2 = this.this$0.mPostPlayExperience.getItems().get(i);
                         if (postPlayItem2 != null) {
@@ -115,9 +115,6 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                                 postPlayAction.setItemIndex(i);
                                 postPlayAction.setRequestId(this.this$0.mPostPlayExperience.getRequestId());
                                 postPlayAction.setAncestorTitle(postPlayItem2.getAncestorTitle());
-                                if (postPlayAction.getVideoType() == null) {
-                                    postPlayAction.setVideoType(postPlayItem2.getType());
-                                }
                             }
                             if (this.this$0.hasValidPlayAction(postPlayItem2)) {
                                 ++n;
@@ -125,7 +122,7 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                         }
                         while (true) {
                             ++i;
-                            continue Label_0660_Outer;
+                            continue Label_0643_Outer;
                             continue;
                         }
                     }

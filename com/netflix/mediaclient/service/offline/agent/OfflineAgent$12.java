@@ -20,6 +20,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.log.OfflineLogUtils;
@@ -90,7 +93,7 @@ class OfflineAgent$12 implements Runnable
         if (offlineViewableByPlayableId != null) {
             final OfflinePlayablePersistentData offlineViewablePersistentData = offlineViewableByPlayableId.getOfflineViewablePersistentData();
             final Status forceResetPlayWindow = PlayabilityEnforcer.forceResetPlayWindow(this.this$0.getContext(), offlineViewablePersistentData);
-            offlineViewablePersistentData.setPersistentError(forceResetPlayWindow);
+            offlineViewablePersistentData.setPersistentStatus(forceResetPlayWindow);
             this.this$0.doSaveToRegistryInBGThread(this.this$0.getContext());
             this.this$0.sendPlayWindowRenewDone(offlineViewableByPlayableId, forceResetPlayWindow);
         }

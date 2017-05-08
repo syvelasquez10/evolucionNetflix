@@ -82,7 +82,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     private void addTopGradientIfNeeded() {
-        final FrameLayout frameLayout = (FrameLayout)this.detailsFrag.getView().findViewById(2131689896);
+        final FrameLayout frameLayout = (FrameLayout)this.detailsFrag.getView().findViewById(2131689897);
         if (frameLayout.findViewById(2131689483) == null) {
             final ImageView imageView = new ImageView((Context)this);
             imageView.setImageResource(2130837992);
@@ -217,7 +217,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     private void setupImageContainer() {
-        final TappableSurfaceView tappableSurfaceView = (TappableSurfaceView)this.playerFragment.getView().findViewById(2131690123);
+        final TappableSurfaceView tappableSurfaceView = (TappableSurfaceView)this.playerFragment.getView().findViewById(2131690124);
         if (this.bIsInPortrait) {
             this.getNetflixActionBar().show(false);
             final int n = (int)(DeviceUtils.getScreenHeightInPixels((Context)this) / 2.5f);

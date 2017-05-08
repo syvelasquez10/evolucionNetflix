@@ -55,6 +55,7 @@ public final class BuffetBar
     private BuffetBar$Callback mCallback;
     private final Context mContext;
     private int mDuration;
+    private int mLastBackgroundColor;
     final BuffetManager$Callback mManagerCallback;
     private final ViewGroup mTargetParent;
     final BuffetBar$BuffetLayout mView;
@@ -66,6 +67,7 @@ public final class BuffetBar
     }
     
     private BuffetBar(final ViewGroup mTargetParent) {
+        this.mLastBackgroundColor = -1;
         this.mManagerCallback = new BuffetBar$3(this);
         this.mTargetParent = mTargetParent;
         checkAppCompatTheme(this.mContext = mTargetParent.getContext());
@@ -238,8 +240,11 @@ public final class BuffetBar
         return this;
     }
     
-    public BuffetBar setBackgroundColor(final int backgroundColor) {
-        this.mView.setBackgroundColor(backgroundColor);
+    public BuffetBar setBackgroundColor(final int n) {
+        if (this.mLastBackgroundColor != n) {
+            this.mView.setBackgroundColor(n);
+            this.mLastBackgroundColor = n;
+        }
         return this;
     }
     

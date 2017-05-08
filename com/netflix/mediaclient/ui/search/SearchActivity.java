@@ -101,16 +101,16 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131690300);
-        this.loadingWrapper = this.findViewById(2131690298);
-        (this.mVoiceSearchBtn = this.findViewById(2131690299)).setOnClickListener((View$OnClickListener)new SearchActivity$1(this));
+        this.fragGroup = (ViewGroup)this.findViewById(2131690301);
+        this.loadingWrapper = this.findViewById(2131690299);
+        (this.mVoiceSearchBtn = this.findViewById(2131690300)).setOnClickListener((View$OnClickListener)new SearchActivity$1(this));
     }
     
     private int getSearchHintPlaceholderStringId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2131231227;
+            return 2131231224;
         }
-        return 2131231416;
+        return 2131231412;
     }
     
     private void handleKeyboardVisibility() {
@@ -246,7 +246,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             this.resultsFrag = SearchResultsFrag.create();
-            this.getFragmentManager().beginTransaction().add(2131690300, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131690301, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -258,7 +258,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131231145, false, false);
+        this.leWrapper.showErrorView(2131231146, false, false);
         this.fragGroup.setVisibility(4);
         this.setVoiceSearchVisibility(false);
         this.setSearchProgressVisibility(false);
@@ -323,9 +323,9 @@ public class SearchActivity extends NetflixActivity
     
     protected int getInitMessageStringId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2131231227;
+            return 2131231224;
         }
-        return 2131231415;
+        return 2131231411;
     }
     
     @Override

@@ -122,10 +122,10 @@ public class OfflineVideosAdapter extends OfflineBaseAdapter
             offlineBaseAdapter$FooterViewHolderData.allProfilesButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, text, 0);
             final TextView allProfilesButton = offlineBaseAdapter$FooterViewHolderData.allProfilesButton;
             if (this.mSkipAdultContent) {
-                text = 2131231235;
+                text = 2131231232;
             }
             else {
-                text = 2131231236;
+                text = 2131231233;
             }
             allProfilesButton.setText(text);
             if (BrowseExperience.showKidsExperience()) {
@@ -143,14 +143,14 @@ public class OfflineVideosAdapter extends OfflineBaseAdapter
         ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.downloadButton, videoAndProfileData.type == OfflineAdapterData$ViewType.MOVIE);
         ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.progress, false);
         if (videoAndProfileData.type != OfflineAdapterData$ViewType.PROFILE) {
-            offlineBaseAdapter$OfflineViewHolderData.itemView.getLayoutParams().height = (int)this.mActivity.getResources().getDimension(2131362275);
-            offlineBaseAdapter$OfflineViewHolderData.boxShot.getLayoutParams().width = (int)this.mActivity.getResources().getDimension(2131362274);
+            offlineBaseAdapter$OfflineViewHolderData.itemView.getLayoutParams().height = (int)this.mActivity.getResources().getDimension(2131362277);
+            offlineBaseAdapter$OfflineViewHolderData.boxShot.getLayoutParams().width = (int)this.mActivity.getResources().getDimension(2131362276);
             offlineBaseAdapter$OfflineViewHolderData.title.setText((CharSequence)videoAndProfileData.video.getTitle());
             NetflixActivity.getImageLoader((Context)this.mActivity).showImg(offlineBaseAdapter$OfflineViewHolderData.boxShot, videoAndProfileData.video.getRealmHorzDispUrl((Context)this.mActivity), IClientLogging$AssetType.boxArt, "icon", ImageLoader$StaticImgConfig.DARK, true);
         }
         else {
-            offlineBaseAdapter$OfflineViewHolderData.itemView.getLayoutParams().height = (int)this.mActivity.getResources().getDimension(2131362271);
-            offlineBaseAdapter$OfflineViewHolderData.boxShot.getLayoutParams().width = (int)this.mActivity.getResources().getDimension(2131362270);
+            offlineBaseAdapter$OfflineViewHolderData.itemView.getLayoutParams().height = (int)this.mActivity.getResources().getDimension(2131362272);
+            offlineBaseAdapter$OfflineViewHolderData.boxShot.getLayoutParams().width = (int)this.mActivity.getResources().getDimension(2131362271);
             offlineBaseAdapter$OfflineViewHolderData.profileName.setText((CharSequence)videoAndProfileData.profile.getName());
             NetflixActivity.getImageLoader((Context)this.mActivity).showImg(offlineBaseAdapter$OfflineViewHolderData.boxShot, videoAndProfileData.profile.getRealmProfileIconUrl((Context)this.mActivity), IClientLogging$AssetType.boxArt, "icon", ImageLoader$StaticImgConfig.DARK, true);
         }
@@ -165,7 +165,7 @@ public class OfflineVideosAdapter extends OfflineBaseAdapter
         this.setupRowForSelection(offlineBaseAdapter$OfflineViewHolderData, text, id, videoAndProfileData.type != OfflineAdapterData$ViewType.PROFILE);
         boolean fullyDownloadedAndWatchable;
         if (videoAndProfileData.type == OfflineAdapterData$ViewType.SHOW) {
-            offlineBaseAdapter$OfflineViewHolderData.info.setText((CharSequence)this.mActivity.getString(2131231166, new Object[] { this.mActivity.getResources().getQuantityString(2131296260, videoAndProfileData.numEpisodes, new Object[] { videoAndProfileData.numEpisodes }), this.getSpaceString(this.mOfflineAgent.getLatestOfflinePlayableList().getCurrentSpace(text)) }));
+            offlineBaseAdapter$OfflineViewHolderData.info.setText((CharSequence)this.mActivity.getString(2131231167, new Object[] { this.mActivity.getResources().getQuantityString(2131296260, videoAndProfileData.numEpisodes, new Object[] { videoAndProfileData.numEpisodes }), this.getSpaceString(this.mOfflineAgent.getLatestOfflinePlayableList().getCurrentSpace(text)) }));
             fullyDownloadedAndWatchable = b;
         }
         else {
@@ -177,7 +177,7 @@ public class OfflineVideosAdapter extends OfflineBaseAdapter
                     text2 = Formatter.formatShortFileSize((Context)this.mActivity, this.mOfflineAgent.getLatestOfflinePlayableList().getCurrentSpace(text));
                 }
                 else {
-                    text2 = this.mActivity.getString(2131231166, new Object[] { certification, Formatter.formatShortFileSize((Context)this.mActivity, this.mOfflineAgent.getLatestOfflinePlayableList().getCurrentSpace(text)) });
+                    text2 = this.mActivity.getString(2131231167, new Object[] { certification, Formatter.formatShortFileSize((Context)this.mActivity, this.mOfflineAgent.getLatestOfflinePlayableList().getCurrentSpace(text)) });
                 }
                 offlineBaseAdapter$OfflineViewHolderData.info.setText((CharSequence)text2);
                 offlineBaseAdapter$OfflineViewHolderData.downloadButton.setStateFromPlayable(videoAndProfileData.video.getPlayable(), this.mActivity);

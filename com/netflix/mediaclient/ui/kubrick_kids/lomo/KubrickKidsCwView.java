@@ -47,7 +47,7 @@ public class KubrickKidsCwView extends KubrickHighDensityCwView
     protected void init() {
         super.init();
         this.img.setPressedStateHandlerEnabled(false);
-        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689907);
+        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689908);
         if (this.infoIcon instanceof TextView) {
             ViewUtils.removeShadow((TextView)this.infoIcon);
         }

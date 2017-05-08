@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData$
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.util.ConnectivityUtils;
+import com.netflix.mediaclient.servicemgr.OfflineDialogLogblob;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
@@ -18,10 +18,8 @@ import com.netflix.mediaclient.util.UserVisibleErrorCodeGenerator;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.Log;
 import android.support.v7.app.AlertDialog;
-import android.content.Context;
 import android.support.v7.app.AlertDialog$Builder;
 import android.app.Dialog;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.interface_.offline.WatchState;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -30,6 +28,11 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.widget.Toast;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 
@@ -42,8 +45,16 @@ class OfflineErrorDialog$4 implements DialogInterface$OnClickListener
     }
     
     public void onClick(final DialogInterface dialogInterface, final int n) {
-        if (this.this$0.getOfflineAgent() != null) {
-            this.this$0.getDeleteAndRetryHelper().retry();
+        final NetflixActivity access$300 = this.this$0.getNetflixActivity();
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)access$300)) {
+            if (ConnectivityUtils.isConnected((Context)access$300)) {
+                if (this.this$0.getOfflineAgent() != null) {
+                    this.this$0.getDeleteAndRetryHelper().retry();
+                }
+            }
+            else {
+                Toast.makeText((Context)access$300, 2131231341, 0).show();
+            }
         }
         dialogInterface.dismiss();
     }

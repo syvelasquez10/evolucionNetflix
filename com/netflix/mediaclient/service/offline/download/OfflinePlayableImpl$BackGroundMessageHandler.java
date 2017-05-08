@@ -15,6 +15,7 @@ import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.service.offline.manifest.OfflinePlayableManifestImpl;
 import com.netflix.mediaclient.service.pdslogging.DownloadContext;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$DownloadCompleteAndActivateCallback;
 import com.netflix.mediaclient.service.offline.agent.PlayabilityEnforcer;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -37,7 +38,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import java.util.ArrayList;
 import com.android.volley.RequestQueue;
-import com.netflix.mediaclient.service.offline.agent.OfflineNrdpLogger;
 import com.netflix.mediaclient.service.offline.manifest.OfflineManifestManager;
 import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager;
 import java.io.File;
@@ -60,9 +60,7 @@ class OfflinePlayableImpl$BackGroundMessageHandler extends Handler
     }
     
     public void handleMessage(final Message message) {
-        if (Log.isLoggable()) {
-            Log.i("nf_offlinePlayable", "handleMessage cmd=" + message.what);
-        }
+        Log.i("nf_offlinePlayable", "handleMessage cmd=%d" + message.what);
         final OfflinePlayableImpl$CdnUrlDownloaderResponse offlinePlayableImpl$CdnUrlDownloaderResponse = (OfflinePlayableImpl$CdnUrlDownloaderResponse)message.obj;
         switch (message.what) {
             default: {}

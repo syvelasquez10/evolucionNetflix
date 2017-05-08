@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.offline;
 
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import android.view.View$OnLongClickListener;
 import com.netflix.mediaclient.Log;

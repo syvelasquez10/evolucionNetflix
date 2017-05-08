@@ -7,7 +7,6 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 import android.widget.SpinnerAdapter;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
-import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
@@ -31,6 +30,7 @@ import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag$HeroSlid
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
+import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 

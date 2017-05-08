@@ -123,7 +123,7 @@ public final class R$dimen
     public static final int item_touch_helper_max_drag_scroll_per_frame = 2131362183;
     public static final int item_touch_helper_swipe_escape_max_velocity = 2131362184;
     public static final int item_touch_helper_swipe_escape_velocity = 2131362185;
-    public static final int notification_large_icon_height = 2131362264;
-    public static final int notification_large_icon_width = 2131362265;
-    public static final int notification_subtext_size = 2131362266;
+    public static final int notification_large_icon_height = 2131362265;
+    public static final int notification_large_icon_width = 2131362266;
+    public static final int notification_subtext_size = 2131362267;
 }

@@ -41,16 +41,16 @@ public class OfflineBaseAdapter$OfflineViewHolderData extends RecyclerView$ViewH
         this.clickListener = (View$OnClickListener)new OfflineBaseAdapter$OfflineViewHolderData$1(this);
         this.checkmarkClickListener = (View$OnClickListener)new OfflineBaseAdapter$OfflineViewHolderData$2(this);
         this.longClickListener = (View$OnLongClickListener)new OfflineBaseAdapter$OfflineViewHolderData$3(this);
-        this.boxShot = (AdvancedImageView)view.findViewById(2131690058);
+        this.boxShot = (AdvancedImageView)view.findViewById(2131690059);
         this.title = (TextView)view.findViewById(2131689574);
-        this.info = (TextView)view.findViewById(2131690062);
-        this.profileName = (TextView)view.findViewById(2131690063);
-        this.showIndicator = (ImageView)view.findViewById(2131690065);
-        this.downloadStatus = (TextView)view.findViewById(2131690068);
-        this.playIcon = view.findViewById(2131690059);
-        this.downloadButton = (DownloadButton)view.findViewById(2131690066);
-        this.progress = (ProgressBar)view.findViewById(2131690060);
-        this.checkmark = (AppCompatCheckBox)view.findViewById(2131690067);
+        this.info = (TextView)view.findViewById(2131690063);
+        this.profileName = (TextView)view.findViewById(2131690065);
+        this.showIndicator = (ImageView)view.findViewById(2131690066);
+        this.downloadStatus = (TextView)view.findViewById(2131690069);
+        this.playIcon = view.findViewById(2131690060);
+        this.downloadButton = (DownloadButton)view.findViewById(2131690067);
+        this.progress = (ProgressBar)view.findViewById(2131690061);
+        this.checkmark = (AppCompatCheckBox)view.findViewById(2131690068);
         if (BrowseExperience.showKidsExperience()) {
             this.checkmark.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(view.getContext(), 2131624056)));
         }

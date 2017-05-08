@@ -26,10 +26,10 @@ class DetailsActivity$MyListCallback extends LoggingManagerCallback
         super.onQueueAdd(status);
         int n = 2131231095;
         if (CommonStatus.OK == status) {
-            n = 2131231168;
+            n = 2131231169;
         }
         else if (status.getStatusCode() == StatusCode.ALREADY_IN_QUEUE) {
-            n = 2131231285;
+            n = 2131231282;
         }
         else if (status.getStatusCode() == StatusCode.NOT_VALID) {
             n = 2131231094;
@@ -39,7 +39,7 @@ class DetailsActivity$MyListCallback extends LoggingManagerCallback
     
     @Override
     public void onQueueRemove(final Status status) {
-        int n = 2131231169;
+        int n = 2131231170;
         super.onQueueRemove(status);
         if (CommonStatus.OK != status) {
             if (status.getStatusCode() == StatusCode.NOT_IN_QUEUE) {

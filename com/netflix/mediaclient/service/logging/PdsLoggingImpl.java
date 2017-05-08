@@ -62,13 +62,13 @@ public class PdsLoggingImpl implements IPdsLogging
                     Log.w("nf_pds_logs", "We are already trying to deliver %s deliveryRequestId, skip", key);
                 }
                 else {
+                    this.mPendingCachedLogPayloads.add(key);
                     if (b) {
                         this.mExecutor.schedule(new PdsLoggingImpl$2(this, key), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
                     }
                     else {
                         this.mExecutor.execute(new PdsLoggingImpl$3(this, key));
                     }
-                    this.mPendingCachedLogPayloads.add(key);
                 }
             }
         }
@@ -248,6 +248,12 @@ public class PdsLoggingImpl implements IPdsLogging
                 break;
             }
             break;
+        }
+    }
+    
+    public void checkState() {
+        if (this.mEventQueue.flushIfCriteriaIsFulfilled()) {
+            Log.d("nf_pds_logs", "PdsLog events were sent recently. We reached timeout, force send");
         }
     }
     

@@ -87,7 +87,7 @@ public class OfflineBaseAdapter$SelectionController
         int n = -1;
         if (this.isSelectable) {
             if (this.selectedVideoIds.size() <= 0) {
-                this.this$0.setToolbarSmalltitle(this.this$0.mActivity.getResources().getString(2131231165), -1);
+                this.this$0.setToolbarSmalltitle(this.this$0.mActivity.getResources().getString(2131231166), -1);
                 return;
             }
             this.this$0.setToolbarTitle(String.format("%d (%s)", this.selectedVideoIds.size(), this.this$0.getSpaceString(this.estimateSpaceToFree)), -1);

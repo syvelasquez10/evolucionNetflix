@@ -65,13 +65,13 @@ class SettingsFragment$10 implements Preference$OnPreferenceChangeListener
             }
             case "BEST": {
                 Log.d("SettingsFragment", "Set downloads video quality to best");
-                this.val$customPrefs.setSummary(this.this$0.getText(2131231354));
+                this.val$customPrefs.setSummary(this.this$0.getText(2131231351));
                 this.this$0.updateDownloadsVideoQualityConfig(DownloadVideoQuality.BEST, this.val$manager);
                 return true;
             }
             case "DEFAULT": {
                 Log.d("SettingsFragment", "Set downloads video quality to default");
-                this.val$customPrefs.setSummary(this.this$0.getText(2131231356));
+                this.val$customPrefs.setSummary(this.this$0.getText(2131231353));
                 this.this$0.updateDownloadsVideoQualityConfig(DownloadVideoQuality.DEFAULT, this.val$manager);
                 return true;
             }

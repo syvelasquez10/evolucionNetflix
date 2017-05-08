@@ -82,6 +82,13 @@ public class ABTestConfiguration
         return this.mABTestConfigData.getDisplayPageRefreshConfig().getCell();
     }
     
+    public ABTestConfig$Cell getMemento2Config() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getMemento2Config() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getMemento2Config().getCell();
+    }
+    
     public ABTestConfig$Cell getMementoConfig() {
         if (this.mABTestConfigData == null || this.mABTestConfigData.getMementoConfig() == null) {
             return ABTestConfig$Cell.CELL_ONE;

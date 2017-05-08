@@ -6,38 +6,22 @@ package com.netflix.mediaclient.service.pdslogging;
 
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
-import com.netflix.mediaclient.service.player.bladerunnerclient.volley.BladerunnerErrorStatus;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.android.app.Status;
 import android.content.Context;
 
 public class PdsLoggingUtils
 {
     public static void downloadStoppedOnError(final Context context, final String s, final Status status) {
-        sendIntent(context, PdsDownloadSessionManager.STOP_DOWNLOAD_ERROR, s, getErrorCodeForLogging(status), getErrorMessageForLogging(status));
+        sendIntent(context, PdsDownloadSessionManager.STOP_DOWNLOAD_ERROR, s, LogUtils.getErrorCodeForServerLogs(status), LogUtils.getErrorMessageForServerLogs(status));
     }
     
     public static void downloadStoppedOnLicenseError(final Context context, final String s, final Status status) {
-        sendIntent(context, PdsDownloadSessionManager.STOP_DOWNLOAD_LICENSE_ERROR, s, getErrorCodeForLogging(status), getErrorMessageForLogging(status));
+        sendIntent(context, PdsDownloadSessionManager.STOP_DOWNLOAD_LICENSE_ERROR, s, LogUtils.getErrorCodeForServerLogs(status), LogUtils.getErrorMessageForServerLogs(status));
     }
     
     public static void downloadStoppedOnManifestExpiry(final Context context, final String s, final Status status) {
-        sendIntent(context, PdsDownloadSessionManager.STOP_DOWNLOAD_MANIFEST_EXPIRED, s, getErrorCodeForLogging(status), getErrorMessageForLogging(status));
-    }
-    
-    public static String getErrorCodeForLogging(final Status status) {
-        String s = String.valueOf(status.getStatusCode().getValue());
-        if (status instanceof BladerunnerErrorStatus) {
-            s = ((BladerunnerErrorStatus)status).getErrorCodeForLogging();
-        }
-        return s;
-    }
-    
-    public static String getErrorMessageForLogging(final Status status) {
-        String s = status.getMessage();
-        if (status instanceof BladerunnerErrorStatus) {
-            s = ((BladerunnerErrorStatus)status).getErrorMessageForLogging();
-        }
-        return s;
+        sendIntent(context, PdsDownloadSessionManager.STOP_DOWNLOAD_MANIFEST_EXPIRED, s, LogUtils.getErrorCodeForServerLogs(status), LogUtils.getErrorMessageForServerLogs(status));
     }
     
     private static void sendIntent(final Context context, final String s, final String s2, final String s3, final String s4) {

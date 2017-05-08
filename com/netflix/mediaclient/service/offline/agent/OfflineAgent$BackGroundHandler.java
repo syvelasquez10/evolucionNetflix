@@ -20,6 +20,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.log.OfflineLogUtils;
@@ -113,7 +116,7 @@ class OfflineAgent$BackGroundHandler extends Handler
                 this.this$0.handlePauseRequest((String)message.obj);
             }
             case 4: {
-                this.this$0.handleResumeRequest((String)message.obj, true);
+                this.this$0.handleResumeRequest((String)message.obj);
             }
             case 5: {
                 this.this$0.handleAgentDestroyRequest();

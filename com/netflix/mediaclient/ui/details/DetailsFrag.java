@@ -6,7 +6,6 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -81,7 +80,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     }
     
     protected int getPrimaryViewId() {
-        return 2131690382;
+        return 2131690383;
     }
     
     public String getTitle() {
@@ -175,13 +174,12 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
                 ViewUtils.setVisibleOrGone((View)this.mShowDownloadButton, false);
                 return;
             }
-            if (this.mVideoDetails.getType() == VideoType.MOVIE) {
-                this.mShowDownloadButton.setVisibility(0);
-                this.mShowDownloadButton.setEnabled(true);
-                this.mShowDownloadButton.setStateFromPlayable(mVideoDetails.getPlayable(), this.getNetflixActivity());
+            if (!mVideoDetails.getPlayable().isAvailableOffline()) {
+                ViewUtils.setVisibleOrGone((View)this.mShowDownloadButton, false);
                 return;
             }
-            this.mShowDownloadButton.setVisibility(8);
+            this.mShowDownloadButton.setStateFromPlayable(mVideoDetails.getPlayable(), this.getNetflixActivity());
+            ViewUtils.setVisibleOrGone((View)this.mShowDownloadButton, true);
         }
     }
     

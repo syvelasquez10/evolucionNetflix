@@ -27,7 +27,7 @@ class CdnUrlDownloadEventReceiver
     private void sendDlReportLogBlob(long n, final boolean b) {
         final long n2 = System.currentTimeMillis() - this.mDlStartTime;
         n -= this.mDlStartBytes;
-        if (n2 >= 0L && n >= 0L) {
+        if (n2 > 0L && n >= 0L) {
             final CdnUrlDownloadEventReceiver$CdnDownloadLogBlob cdnUrlDownloadEventReceiver$CdnDownloadLogBlob = new CdnUrlDownloadEventReceiver$CdnDownloadLogBlob(this, b);
             try {
                 cdnUrlDownloadEventReceiver$CdnDownloadLogBlob.populateJson(this.mCommonLogBlobData, this.mCurrentCdnUrl, this.mDlStartTime, this.mDlStartBytes, n2, n);
@@ -43,7 +43,7 @@ class CdnUrlDownloadEventReceiver
                 return;
             }
         }
-        Log.i("nf_cdnUrlDownloadEvent", "onDownloadComplete  not sending dl report because of time wrap or bytes negative.");
+        Log.i("nf_cdnUrlDownloadEvent", "onDownloadComplete not sending dl report.");
     }
     
     void onDownloadComplete(final long n) {

@@ -67,11 +67,11 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903153, (ViewGroup)this);
         this.title = (TextView)this.findViewById(2131689749);
-        this.seasonInfo = (TextView)this.findViewById(2131689893);
+        this.seasonInfo = (TextView)this.findViewById(2131689894);
         this.img = (AdvancedImageView)this.findViewById(2131689746);
         this.progress = (ProgressBar)this.findViewById(2131689748);
         this.infoIcon = this.findViewById(2131689750);
-        this.playIcon = this.findViewById(2131689892);
+        this.playIcon = this.findViewById(2131689893);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -104,7 +104,7 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
         final String format = String.format(this.getResources().getString(2131230897), cwVideo.getTitle());
         this.title.setText((CharSequence)cwVideo.getTitle());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.seasonInfo.setText((CharSequence)this.getContext().getString(2131231228, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            this.seasonInfo.setText((CharSequence)this.getContext().getString(2131231225, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
         }
         else {
             this.seasonInfo.setText((CharSequence)"");

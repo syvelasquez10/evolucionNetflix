@@ -6,7 +6,7 @@ package android.support.design;
 
 public final class R$id
 {
-    public static final int action0 = 2131690044;
+    public static final int action0 = 2131690045;
     public static final int action_bar = 2131689598;
     public static final int action_bar_activity_content = 2131689473;
     public static final int action_bar_container = 2131689597;
@@ -15,7 +15,7 @@ public final class R$id
     public static final int action_bar_subtitle = 2131689566;
     public static final int action_bar_title = 2131689565;
     public static final int action_context_bar = 2131689599;
-    public static final int action_divider = 2131690048;
+    public static final int action_divider = 2131690049;
     public static final int action_menu_divider = 2131689476;
     public static final int action_menu_presenter = 2131689477;
     public static final int action_mode_bar = 2131689595;
@@ -30,12 +30,12 @@ public final class R$id
     public static final int beginning = 2131689549;
     public static final int bottom = 2131689531;
     public static final int buttonPanel = 2131689575;
-    public static final int cancel_action = 2131690045;
+    public static final int cancel_action = 2131690046;
     public static final int center = 2131689532;
     public static final int center_horizontal = 2131689533;
     public static final int center_vertical = 2131689534;
     public static final int checkbox = 2131689589;
-    public static final int chronometer = 2131690051;
+    public static final int chronometer = 2131690052;
     public static final int clip_horizontal = 2131689543;
     public static final int clip_vertical = 2131689544;
     public static final int collapseActionView = 2131689557;
@@ -52,7 +52,7 @@ public final class R$id
     public static final int disableHome = 2131689509;
     public static final int edit_query = 2131689600;
     public static final int end = 2131689535;
-    public static final int end_padder = 2131690056;
+    public static final int end_padder = 2131690057;
     public static final int enterAlways = 2131689516;
     public static final int enterAlwaysCollapsed = 2131689517;
     public static final int exitUntilCollapsed = 2131689518;
@@ -67,14 +67,14 @@ public final class R$id
     public static final int icon = 2131689573;
     public static final int ifRoom = 2131689558;
     public static final int image = 2131689570;
-    public static final int info = 2131690055;
+    public static final int info = 2131690056;
     public static final int item_touch_helper_previous_elevation = 2131689489;
     public static final int left = 2131689537;
-    public static final int line1 = 2131690049;
-    public static final int line3 = 2131690053;
+    public static final int line1 = 2131690050;
+    public static final int line3 = 2131690054;
     public static final int listMode = 2131689506;
     public static final int list_item = 2131689572;
-    public static final int media_actions = 2131690047;
+    public static final int media_actions = 2131690048;
     public static final int middle = 2131689550;
     public static final int mini = 2131689548;
     public static final int multiply = 2131689522;
@@ -119,15 +119,15 @@ public final class R$id
     public static final int src_in = 2131689525;
     public static final int src_over = 2131689526;
     public static final int start = 2131689539;
-    public static final int status_bar_latest_event_content = 2131690046;
+    public static final int status_bar_latest_event_content = 2131690047;
     public static final int submenuarrow = 2131689592;
     public static final int submit_area = 2131689609;
     public static final int tabMode = 2131689508;
-    public static final int text = 2131690054;
-    public static final int text2 = 2131690052;
+    public static final int text = 2131690055;
+    public static final int text2 = 2131690053;
     public static final int textSpacerNoButtons = 2131689584;
     public static final int text_input_password_toggle = 2131689774;
-    public static final int time = 2131690050;
+    public static final int time = 2131690051;
     public static final int title = 2131689574;
     public static final int title_template = 2131689579;
     public static final int top = 2131689540;

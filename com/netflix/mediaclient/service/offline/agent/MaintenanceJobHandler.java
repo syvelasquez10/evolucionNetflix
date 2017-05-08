@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
+import com.netflix.mediaclient.service.offline.download.OfflinePlayableListener;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ class MaintenanceJobHandler implements OfflinePlayable$PlayableDeleteCompleteCal
             this.mPendingDeleteCount = list.size();
             final Iterator<Object> iterator2 = list.iterator();
             while (iterator2.hasNext()) {
-                OfflinePlayableImpl.deleteLicense(this.mOfflineLicenseManager, iterator2.next(), this);
+                OfflinePlayableImpl.deleteLicense(this.mOfflineLicenseManager, iterator2.next(), this, null);
             }
         }
         else {

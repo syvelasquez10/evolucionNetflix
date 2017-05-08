@@ -122,7 +122,7 @@ public class OfflineActivity extends FragmentHostActivity implements PlayContext
             }
         }
         else if (this.getPrimaryFrag() instanceof OfflineFragment && ((OfflineFragment)this.getPrimaryFrag()).areDownloadsPreset()) {
-            final MenuItem add2 = menu.add(2131231165);
+            final MenuItem add2 = menu.add(2131231166);
             Drawable icon = ContextCompat.getDrawable((Context)this, 2130837740);
             if (BrowseExperience.showKidsExperience()) {
                 icon = ViewUtils.tintAndGet(icon, ContextCompat.getColor((Context)this, 2131624056));

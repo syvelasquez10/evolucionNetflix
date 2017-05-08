@@ -17,8 +17,8 @@ public class StartPlay extends OfflinePlaybackBaseLogblob
         this.mJson.put("mid", n);
         this.mJson.put("soffms", n3);
         this.mJson.put("soff", n3 / 1000L);
-        this.mJson.put("moff", n4);
-        this.mJson.put("moffms", n4 / 1000L);
+        this.mJson.put("moffms", n4);
+        this.mJson.put("moff", n4 / 1000L);
         if (StringUtils.isNotEmpty(s4)) {
             this.mJson.put("vdlid", (Object)s4);
             this.mJson.put("vBitrate", n5);

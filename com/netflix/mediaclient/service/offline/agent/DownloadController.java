@@ -28,6 +28,7 @@ import com.netflix.mediaclient.service.job.NetflixJob;
 import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 
 class DownloadController
 {
@@ -45,6 +46,7 @@ class DownloadController
     private final Runnable mBackOffRunnable;
     private Runnable mCancelMtJobRunnable;
     private boolean mCancelMtJobRunnableScheduled;
+    private final IClientLogging mClientLogging;
     private int mCompletedCount;
     private final ServiceAgent$ConfigurationAgentInterface mConfigurationAgent;
     private ConnectivityUtils$NetType mConnectedNetType;
@@ -76,7 +78,7 @@ class DownloadController
         DL_WINDOW_BACK_OFF_TIMES = new long[] { 3600000L, 14400000L };
     }
     
-    public DownloadController(final Context mContext, final NetflixJobScheduler mNetflixJobScheduler, final List<OfflinePlayable> mOfflinePlayableList, final Looper looper, final DownloadController$DownloadControllerListener mDownloadContinueReceiver, final boolean mDownloadsAreStoppedByUser, final ServiceAgent$ConfigurationAgentInterface mConfigurationAgent) {
+    public DownloadController(final Context mContext, final NetflixJobScheduler mNetflixJobScheduler, final List<OfflinePlayable> mOfflinePlayableList, final Looper looper, final DownloadController$DownloadControllerListener mDownloadContinueReceiver, final boolean mDownloadsAreStoppedByUser, final ServiceAgent$ConfigurationAgentInterface mConfigurationAgent, final IClientLogging mClientLogging) {
         int n = 1;
         this.mNetworkChangeReceiver = new DownloadController$NetworkChangeReceiver(this, null);
         this.mPlayableNetworkErrorCountMap = new HashMap<String, Integer>();
@@ -95,16 +97,17 @@ class DownloadController
         this.mDownloadContinueReceiver = mDownloadContinueReceiver;
         this.mOfflinePlayableList = mOfflinePlayableList;
         this.mConfigurationAgent = mConfigurationAgent;
+        this.mClientLogging = mClientLogging;
         this.mDownloadResumeJob = NetflixJob.buildDownloadResumeJob(this.requiresUnmeteredConnectionForDownload());
         final long mtJobPeriodInMsFromOfflineConfig = this.getMtJobPeriodInMsFromOfflineConfig();
         while (true) {
-            Label_0252: {
+            Label_0258: {
                 if (mtJobPeriodInMsFromOfflineConfig <= 0L) {
-                    break Label_0252;
+                    break Label_0258;
                 }
                 this.mDownloadMaintenanceJob = NetflixJob.buildDownloadMaintenanceJob(false, mtJobPeriodInMsFromOfflineConfig);
                 if (mOfflinePlayableList.size() <= 0) {
-                    break Label_0252;
+                    break Label_0258;
                 }
                 if (n != 0) {
                     this.scheduleMaintenanceJobIfRequired();
@@ -230,7 +233,7 @@ class DownloadController
     private void scheduleBackOffTimer(long addRandomDelayToBackOffTime) {
         this.mWorkHandler.removeCallbacks(this.mBackOffRunnable);
         addRandomDelayToBackOffTime = this.addRandomDelayToBackOffTime(addRandomDelayToBackOffTime);
-        Log.e("nf_downloadController", "scheduleBackOffTimer for seconds=" + TimeUnit.MILLISECONDS.toSeconds(addRandomDelayToBackOffTime));
+        Log.e("nf_downloadController", "scheduleBackOffTimer for seconds=%d", TimeUnit.MILLISECONDS.toSeconds(addRandomDelayToBackOffTime));
         this.mWorkHandler.postDelayed(this.mBackOffRunnable, addRandomDelayToBackOffTime);
     }
     
@@ -240,7 +243,7 @@ class DownloadController
         }
         this.mDownloadResumeJob.setMinimumDelay(minimumDelay);
         this.mNetflixJobScheduler.scheduleJob(this.mDownloadResumeJob);
-        Log.i("nf_downloadController", "DownloadResumeJob scheduled minimumDelay=" + TimeUnit.MILLISECONDS.toSeconds(minimumDelay));
+        Log.i("nf_downloadController", "DownloadResumeJob scheduled minimumDelay=%d", TimeUnit.MILLISECONDS.toSeconds(minimumDelay));
     }
     
     private void scheduleDownloadResumeJobNoDelay() {
@@ -270,7 +273,7 @@ class DownloadController
             PreferenceUtils.putIntPref(this.mContext, "download_back_off_window_index", this.mIndexOfDlWindowBackOffTime);
             return;
         }
-        Log.e("nf_downloadController", "scheduleNextDLWindow exhausted all DL windows mIndexOfDlWindowBackOffTime=" + this.mIndexOfDlWindowBackOffTime);
+        Log.e("nf_downloadController", "scheduleNextDLWindow exhausted all DL windows mIndexOfDlWindowBackOffTime=%d", this.mIndexOfDlWindowBackOffTime);
     }
     
     private void updateConnectedNetworkType() {
@@ -306,7 +309,7 @@ class DownloadController
         }
         this.updateItemCounts();
         if (this.mInProgressCount > 0) {
-            Log.i("nf_downloadController", "canThisPlayableBeResumedByUser no, mInProgressCount=" + this.mInProgressCount);
+            Log.i("nf_downloadController", "canThisPlayableBeResumedByUser no, mInProgressCount=%d", this.mInProgressCount);
             return false;
         }
         if (!this.mDownloadResumeJob.canExecute(this.mContext)) {
@@ -333,7 +336,7 @@ class DownloadController
     }
     
     public OfflinePlayable getNextPlayableForDownload() {
-        Log.i("nf_downloadController", "getNextPlayableForDownload mIndexOfNextPlayable=" + this.mIndexOfNextPlayable);
+        Log.i("nf_downloadController", "getNextPlayableForDownload mIndexOfNextPlayable=%d", this.mIndexOfNextPlayable);
         if (this.mDownloadsAreStoppedByUser) {
             Log.i("nf_downloadController", "getNextPlayableForDownload mDownloadsAreStoppedByUser=true");
             return null;
@@ -343,16 +346,16 @@ class DownloadController
             return null;
         }
         if (this.mOfflinePlayableList.size() <= 0) {
-            Log.i("nf_downloadController", "getNextPlayableForDownload all done. mOfflinePlayableList.size=" + this.mOfflinePlayableList.size());
+            Log.i("nf_downloadController", "getNextPlayableForDownload all done. mOfflinePlayableList.size=%d", this.mOfflinePlayableList.size());
             return null;
         }
         this.updateItemCounts();
         if (this.mCompletedCount == this.mOfflinePlayableList.size()) {
-            Log.i("nf_downloadController", "getNextPlayableForDownload all downloaded, mCompletedCount=" + this.mCompletedCount);
+            Log.i("nf_downloadController", "getNextPlayableForDownload all downloaded, mCompletedCount=%d", this.mCompletedCount);
             return null;
         }
         if (this.mInProgressCount > 0) {
-            Log.i("nf_downloadController", "getNextPlayableForDownload already downloading, mInProgressCount=" + this.mInProgressCount);
+            Log.i("nf_downloadController", "getNextPlayableForDownload already downloading, mInProgressCount=%d", this.mInProgressCount);
             return null;
         }
         if (!this.mDownloadResumeJob.canExecute(this.mContext)) {
@@ -366,7 +369,7 @@ class DownloadController
             }
             if (OfflineUtils.canStartDownload(this.mOfflinePlayableList.get(this.mIndexOfNextPlayable))) {
                 final OfflinePlayable offlinePlayable = this.mOfflinePlayableList.get(this.mIndexOfNextPlayable);
-                Log.i("nf_downloadController", "getNextPlayableForDownload found with errorCount=" + this.getSafeNetworkErrorCount(offlinePlayable.getPlayableId()) + " playableId=" + offlinePlayable.getPlayableId());
+                Log.i("nf_downloadController", "getNextPlayableForDownload found with errorCount=%d playableId=%s", this.getSafeNetworkErrorCount(offlinePlayable.getPlayableId()), offlinePlayable.getPlayableId());
                 return offlinePlayable;
             }
             ++this.mIndexOfNextPlayable;
@@ -401,6 +404,7 @@ class DownloadController
     }
     
     public void onDownloadResumeJobDone() {
+        this.mClientLogging.getBreadcrumbLogging().leaveBreadcrumb("onDownloadResumeJobDone");
         this.mNetflixJobScheduler.onJobFinished(NetflixJob$NetflixJobId.DOWNLOAD_RESUME, false);
     }
     
@@ -427,6 +431,7 @@ class DownloadController
             this.scheduleMaintenanceJobIfRequired();
             return;
         }
+        this.mClientLogging.getBreadcrumbLogging().leaveBreadcrumb("onMaintenanceJobDone");
         this.mNetflixJobScheduler.onJobFinished(NetflixJob$NetflixJobId.DOWNLOAD_MAINTENANCE, false);
     }
     
@@ -446,7 +451,7 @@ class DownloadController
             return;
         }
         ++this.mNumberOfNetworkErrorsInCurrentDLWindow;
-        Log.i("nf_downloadController", "onNetworkError mNumberOfNetworkErrorsInCurrentDLWindow=" + this.mNumberOfNetworkErrorsInCurrentDLWindow);
+        Log.i("nf_downloadController", "onNetworkError mNumberOfNetworkErrorsInCurrentDLWindow=%d", this.mNumberOfNetworkErrorsInCurrentDLWindow);
         this.updateItemCounts();
         int max_NETWORK_ERRORS_IN_DL_WINDOW;
         if ((max_NETWORK_ERRORS_IN_DL_WINDOW = this.mIncompleteItems * (DownloadController.MAX_NETWORK_ERRORS_BEFORE_SELECTING_NEXT_PLAYABLE + 1) - 1) > DownloadController.MAX_NETWORK_ERRORS_IN_DL_WINDOW) {
@@ -455,7 +460,7 @@ class DownloadController
         if (max_NETWORK_ERRORS_IN_DL_WINDOW < 2) {
             max_NETWORK_ERRORS_IN_DL_WINDOW = n;
         }
-        Log.i("nf_downloadController", "maxErrorsInDlWindow=" + max_NETWORK_ERRORS_IN_DL_WINDOW);
+        Log.i("nf_downloadController", "maxErrorsInDlWindow=%d", max_NETWORK_ERRORS_IN_DL_WINDOW);
         if (this.mNumberOfNetworkErrorsInCurrentDLWindow <= max_NETWORK_ERRORS_IN_DL_WINDOW) {
             int incrementNetworkErrorCount;
             if ((incrementNetworkErrorCount = this.incrementNetworkErrorCount(s)) > DownloadController.MAX_NETWORK_ERRORS_BEFORE_SELECTING_NEXT_PLAYABLE) {
@@ -480,7 +485,9 @@ class DownloadController
     }
     
     public void onUnRecoverableError(final String s, final Status status) {
-        Log.i("nf_downloadController", "onUnRecoverableError playableId=" + s + " status=" + status);
+        if (Log.isLoggable()) {
+            Log.i("nf_downloadController", "onUnRecoverableError playableId=" + s + " status=" + status);
+        }
     }
     
     public boolean requiresUnmeteredConnectionForDownload() {
@@ -495,9 +502,7 @@ class DownloadController
     
     public void setRequiresUnmeteredNetwork(final boolean b) {
         final boolean requiresUnmeteredConnectionForDownload = this.requiresUnmeteredConnectionForDownload();
-        if (Log.isLoggable()) {
-            Log.i("nf_downloadController", "setRequiresUnmeteredNetwork oldValue=" + requiresUnmeteredConnectionForDownload + " newValue=" + b);
-        }
+        Log.i("nf_downloadController", "setRequiresUnmeteredNetwork oldValue=%b newValue=%b", requiresUnmeteredConnectionForDownload, b);
         if (requiresUnmeteredConnectionForDownload != b) {
             PreferenceUtils.putBooleanPref(this.mContext, "download_requires_unmetered_network", b);
             this.mDownloadResumeJob = NetflixJob.buildDownloadResumeJob(b);

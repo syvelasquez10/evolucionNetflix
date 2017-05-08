@@ -61,7 +61,7 @@ class GalleryGenresLoMoFrag$GenresVideoFetchCallback extends LoggingManagerCallb
             }
             if (list == null || list.size() <= 0) {
                 this.this$0.hasMoreData = false;
-                this.this$0.showErrorView();
+                this.this$0.leWrapper.showErrorView(2131231145, false, true);
                 return;
             }
             if (list.size() < this.numItems) {

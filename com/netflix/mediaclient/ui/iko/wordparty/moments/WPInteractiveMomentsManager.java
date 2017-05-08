@@ -220,14 +220,14 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             }
             return;
         }
-        this.bottomPanel = view.findViewById(2131690135);
-        this.loadingProgressBar = (ProgressBar)view.findViewById(2131690411);
-        this.pugContainer = (FrameLayout)view.findViewById(2131690392);
-        this.wpContainer = (RelativeLayout)view.findViewById(2131690391);
-        this.pugImageView = (ImageView)view.findViewById(2131690395);
-        this.pugRevealView = view.findViewById(2131690393);
-        this.progressBar = (ProgressBar)view.findViewById(2131690394);
-        (this.closeButton = (IconFontTextView)view.findViewById(2131690072)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
+        this.bottomPanel = view.findViewById(2131690136);
+        this.loadingProgressBar = (ProgressBar)view.findViewById(2131690412);
+        this.pugContainer = (FrameLayout)view.findViewById(2131690393);
+        this.wpContainer = (RelativeLayout)view.findViewById(2131690392);
+        this.pugImageView = (ImageView)view.findViewById(2131690396);
+        this.pugRevealView = view.findViewById(2131690394);
+        this.progressBar = (ProgressBar)view.findViewById(2131690395);
+        (this.closeButton = (IconFontTextView)view.findViewById(2131690073)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
         this.progressBar.setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$11(this));
         this.wpContainer.setOnTouchListener((View$OnTouchListener)null);
         this.momentScreen = new WPMomentScreen(this);
@@ -859,7 +859,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         }
         this.fragment = fragment;
         final View view = fragment.getView();
-        this.ikoContainer = (RelativeLayout)view.findViewById(2131689866);
+        this.ikoContainer = (RelativeLayout)view.findViewById(2131689867);
         if (this.ikoContainer == null) {
             Log.d("WPInteractiveMomentsManager", "No interactive moments view container. Exiting the decorator.");
             return;

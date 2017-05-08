@@ -14,9 +14,9 @@ import io.realm.internal.RealmObjectProxy;
 import java.util.Map;
 import java.util.Collections;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
-import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmPlayable;
-import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmSeason;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmPlayable;
 import java.util.HashSet;
 import java.util.Set;
 import io.realm.annotations.RealmModule;
@@ -28,11 +28,11 @@ class DefaultRealmModuleMediator extends RealmProxyMediator
     private static final Set<Class<? extends RealmModel>> MODEL_CLASSES;
     
     static {
-        final HashSet<Class<RealmSeason>> set = new HashSet<Class<RealmSeason>>();
-        set.add(RealmSeason.class);
-        set.add((Class<RealmSeason>)RealmProfile.class);
-        set.add((Class<RealmSeason>)RealmPlayable.class);
-        set.add((Class<RealmSeason>)RealmVideoDetails.class);
+        final HashSet<Class<RealmPlayable>> set = new HashSet<Class<RealmPlayable>>();
+        set.add(RealmPlayable.class);
+        set.add((Class<RealmPlayable>)RealmProfile.class);
+        set.add((Class<RealmPlayable>)RealmSeason.class);
+        set.add((Class<RealmPlayable>)RealmVideoDetails.class);
         MODEL_CLASSES = Collections.unmodifiableSet((Set<?>)set);
     }
     
@@ -44,14 +44,14 @@ class DefaultRealmModuleMediator extends RealmProxyMediator
         else {
             s = e.getClass();
         }
-        if (s.equals(RealmSeason.class)) {
-            return ((Class<E>)s).cast(RealmSeasonRealmProxy.copyOrUpdate(realm, (RealmSeason)e, b, map));
+        if (s.equals(RealmPlayable.class)) {
+            return ((Class<E>)s).cast(RealmPlayableRealmProxy.copyOrUpdate(realm, (RealmPlayable)e, b, map));
         }
         if (s.equals(RealmProfile.class)) {
             return ((Class<E>)s).cast(RealmProfileRealmProxy.copyOrUpdate(realm, (RealmProfile)e, b, map));
         }
-        if (s.equals(RealmPlayable.class)) {
-            return ((Class<E>)s).cast(RealmPlayableRealmProxy.copyOrUpdate(realm, (RealmPlayable)e, b, map));
+        if (s.equals(RealmSeason.class)) {
+            return ((Class<E>)s).cast(RealmSeasonRealmProxy.copyOrUpdate(realm, (RealmSeason)e, b, map));
         }
         if (s.equals(RealmVideoDetails.class)) {
             return ((Class<E>)s).cast(RealmVideoDetailsRealmProxy.copyOrUpdate(realm, (RealmVideoDetails)e, b, (Map)map));
@@ -61,14 +61,14 @@ class DefaultRealmModuleMediator extends RealmProxyMediator
     
     public RealmObjectSchema createRealmObjectSchema(final Class<? extends RealmModel> clazz, final RealmSchema realmSchema) {
         checkClass((Class)clazz);
-        if (clazz.equals(RealmSeason.class)) {
-            return RealmSeasonRealmProxy.createRealmObjectSchema(realmSchema);
+        if (clazz.equals(RealmPlayable.class)) {
+            return RealmPlayableRealmProxy.createRealmObjectSchema(realmSchema);
         }
         if (clazz.equals(RealmProfile.class)) {
             return RealmProfileRealmProxy.createRealmObjectSchema(realmSchema);
         }
-        if (clazz.equals(RealmPlayable.class)) {
-            return RealmPlayableRealmProxy.createRealmObjectSchema(realmSchema);
+        if (clazz.equals(RealmSeason.class)) {
+            return RealmSeasonRealmProxy.createRealmObjectSchema(realmSchema);
         }
         if (clazz.equals(RealmVideoDetails.class)) {
             return RealmVideoDetailsRealmProxy.createRealmObjectSchema(realmSchema);
@@ -78,14 +78,14 @@ class DefaultRealmModuleMediator extends RealmProxyMediator
     
     public Table createTable(final Class<? extends RealmModel> clazz, final SharedRealm sharedRealm) {
         checkClass((Class)clazz);
-        if (clazz.equals(RealmSeason.class)) {
-            return RealmSeasonRealmProxy.initTable(sharedRealm);
+        if (clazz.equals(RealmPlayable.class)) {
+            return RealmPlayableRealmProxy.initTable(sharedRealm);
         }
         if (clazz.equals(RealmProfile.class)) {
             return RealmProfileRealmProxy.initTable(sharedRealm);
         }
-        if (clazz.equals(RealmPlayable.class)) {
-            return RealmPlayableRealmProxy.initTable(sharedRealm);
+        if (clazz.equals(RealmSeason.class)) {
+            return RealmSeasonRealmProxy.initTable(sharedRealm);
         }
         if (clazz.equals(RealmVideoDetails.class)) {
             return RealmVideoDetailsRealmProxy.initTable(sharedRealm);
@@ -99,14 +99,14 @@ class DefaultRealmModuleMediator extends RealmProxyMediator
     
     public String getTableName(final Class<? extends RealmModel> clazz) {
         checkClass((Class)clazz);
-        if (clazz.equals(RealmSeason.class)) {
-            return RealmSeasonRealmProxy.getTableName();
+        if (clazz.equals(RealmPlayable.class)) {
+            return RealmPlayableRealmProxy.getTableName();
         }
         if (clazz.equals(RealmProfile.class)) {
             return RealmProfileRealmProxy.getTableName();
         }
-        if (clazz.equals(RealmPlayable.class)) {
-            return RealmPlayableRealmProxy.getTableName();
+        if (clazz.equals(RealmSeason.class)) {
+            return RealmSeasonRealmProxy.getTableName();
         }
         if (clazz.equals(RealmVideoDetails.class)) {
             return RealmVideoDetailsRealmProxy.getTableName();
@@ -119,14 +119,14 @@ class DefaultRealmModuleMediator extends RealmProxyMediator
         try {
             baseRealm$RealmObjectContext.set((BaseRealm)o, row, columnInfo, b, list);
             checkClass((Class)clazz);
-            if (clazz.equals(RealmSeason.class)) {
-                return clazz.cast(new RealmSeasonRealmProxy());
+            if (clazz.equals(RealmPlayable.class)) {
+                return clazz.cast(new RealmPlayableRealmProxy());
             }
             if (clazz.equals(RealmProfile.class)) {
                 return clazz.cast(new RealmProfileRealmProxy());
             }
-            if (clazz.equals(RealmPlayable.class)) {
-                return clazz.cast(new RealmPlayableRealmProxy());
+            if (clazz.equals(RealmSeason.class)) {
+                return clazz.cast(new RealmSeasonRealmProxy());
             }
             if (clazz.equals(RealmVideoDetails.class)) {
                 return clazz.cast(new RealmVideoDetailsRealmProxy());
@@ -144,14 +144,14 @@ class DefaultRealmModuleMediator extends RealmProxyMediator
     
     public ColumnInfo validateTable(final Class<? extends RealmModel> clazz, final SharedRealm sharedRealm, final boolean b) {
         checkClass((Class)clazz);
-        if (clazz.equals(RealmSeason.class)) {
-            return RealmSeasonRealmProxy.validateTable(sharedRealm, b);
+        if (clazz.equals(RealmPlayable.class)) {
+            return RealmPlayableRealmProxy.validateTable(sharedRealm, b);
         }
         if (clazz.equals(RealmProfile.class)) {
             return RealmProfileRealmProxy.validateTable(sharedRealm, b);
         }
-        if (clazz.equals(RealmPlayable.class)) {
-            return RealmPlayableRealmProxy.validateTable(sharedRealm, b);
+        if (clazz.equals(RealmSeason.class)) {
+            return RealmSeasonRealmProxy.validateTable(sharedRealm, b);
         }
         if (clazz.equals(RealmVideoDetails.class)) {
             return (ColumnInfo)RealmVideoDetailsRealmProxy.validateTable(sharedRealm, b);

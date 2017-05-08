@@ -26,6 +26,7 @@ import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import com.netflix.mediaclient.service.job.NetflixJob;
 import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;

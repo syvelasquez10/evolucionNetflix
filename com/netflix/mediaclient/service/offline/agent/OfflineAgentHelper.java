@@ -8,6 +8,11 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.interface_.PlaybackBookmark;
 import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.javabridge.ui.Nrdp;
+import com.netflix.mediaclient.javabridge.ui.LogArguments;
+import com.netflix.mediaclient.service.logging.logblob.LogBlobType;
+import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
+import com.netflix.mediaclient.service.NrdController;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry;
 import com.netflix.mediaclient.service.user.UserAgent;
@@ -110,6 +115,17 @@ class OfflineAgentHelper
             }
         }
         return false;
+    }
+    
+    static void sendOfflineNotAvailableLogblob(final NrdController nrdController, final OfflineUnavailableReason offlineUnavailableReason) {
+        if (nrdController != null) {
+            final Nrdp nrdp = nrdController.getNrdp();
+            if (nrdp != null) {
+                final LogArguments logArguments = new LogArguments(LogArguments$LogLevel.INFO, "offline feature n/a, code=" + offlineUnavailableReason.getCodeForLogblob(), LogBlobType.OFFLINE_LOGBLOB_TYPE.getValue(), null);
+                Log.i("nf_offlineAgent", "sending offline not available logblob=%s", offlineUnavailableReason.toString());
+                nrdp.getLog().log(logArguments);
+            }
+        }
     }
     
     static void setLastMaintenanceJobStartTime(final Context context, final long n) {

@@ -41,6 +41,12 @@ public enum StatusCode
     DL_USER_NOT_LOGGED_IN(-147), 
     DL_WARNING_DL_N_TIMES_BEFORE_DATE(13), 
     DRM_FAILURE_CDM(-100), 
+    DRM_FAILURE_CDM_EXCEPTION(-108), 
+    DRM_FAILURE_CDM_KEY_SET_EMPTY(-102), 
+    DRM_FAILURE_CDM_LICENSE_EMPTY(-104), 
+    DRM_FAILURE_CDM_NOT_PROVISIONED(-106), 
+    DRM_FAILURE_CDM_RESOURCE_BUSY(-103), 
+    DRM_FAILURE_CDM_SERVER_DENIED(-107), 
     DRM_FAILURE_FORCE_CRYPTO_FALLBACK(-105), 
     DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED(-101), 
     DRM_FAILURE_GOOGLE_DECLINED_PROVISIONING(-119), 
@@ -106,7 +112,6 @@ public enum StatusCode
     USER_SIGNIN_FAILURE(-57), 
     USER_SIGNIN_RETRY(-58), 
     VOIP_CONFIG_DOWNLOAD_FAILED(-15), 
-    WARNING_END(200), 
     WRONG_PATH(-60);
     
     private int mValue;
@@ -126,14 +131,6 @@ public enum StatusCode
         return null;
     }
     
-    public static boolean isSucess(final int n) {
-        return n >= 0 && n <= StatusCode.WARNING_END.getValue();
-    }
-    
-    public static boolean isWarning(final int n) {
-        return n >= StatusCode.NON_RECOMMENDED_APP_VERSION.getValue() && n <= StatusCode.WARNING_END.getValue();
-    }
-    
     public int getValue() {
         return this.mValue;
     }
@@ -143,7 +140,11 @@ public enum StatusCode
     }
     
     public boolean isSucess() {
-        return !this.isError();
+        return this.mValue >= 0;
+    }
+    
+    public boolean isWarning() {
+        return this.mValue > 0;
     }
     
     @Override

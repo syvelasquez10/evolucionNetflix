@@ -198,7 +198,6 @@ public final class AudioTrack
                     }
                 Label_0315_Outer:
                     while (true) {
-                    Block_14_Outer:
                         while (true) {
                             if (this.getLatencyMethod == null || this.passthrough) {
                                 break Label_0315;
@@ -212,37 +211,32 @@ public final class AudioTrack
                                 }
                                 this.lastTimestampSampleTimeUs = n;
                                 return;
-                                // iftrue(Label_0408:, !AudioTrack.failOnSpuriousAudioTimestamp)
-                                // iftrue(Label_0425:, Math.abs(n2 - n) <= 5000000L)
-                                String string;
-                                while (true) {
-                                    final long n2;
-                                    final long timestampFramePosition;
-                                    string = "Spurious audio timestamp (system clock mismatch): " + timestampFramePosition + ", " + n2 + ", " + n + ", " + playbackHeadPositionUs;
-                                    throw new AudioTrack$InvalidAudioTrackTimestampException(string);
-                                    continue Block_14_Outer;
-                                }
-                                Label_0408: {
+                                Label_0514: {
+                                    final String string;
                                     Log.w("AudioTrack", string);
                                 }
                                 this.audioTimestampSet = false;
                                 continue Label_0315_Outer;
-                                String string2 = null;
-                                Label_0514:
-                                Log.w("AudioTrack", string2);
-                                this.audioTimestampSet = false;
-                                continue Label_0315_Outer;
+                                // iftrue(Label_0514:, !AudioTrack.failOnSpuriousAudioTimestamp)
+                                // iftrue(Label_0208:, Math.abs(this.framesToDurationUs(timestampFramePosition) - playbackHeadPositionUs) <= 5000000L)
+                                final long n2;
+                                final long timestampFramePosition;
                                 while (true) {
-                                    final long n2;
-                                    final long timestampFramePosition;
-                                    string2 = "Spurious audio timestamp (frame position mismatch): " + timestampFramePosition + ", " + n2 + ", " + n + ", " + playbackHeadPositionUs;
-                                    throw new AudioTrack$InvalidAudioTrackTimestampException(string2);
+                                    final String string = "Spurious audio timestamp (frame position mismatch): " + timestampFramePosition + ", " + n2 + ", " + n + ", " + playbackHeadPositionUs;
+                                    throw new AudioTrack$InvalidAudioTrackTimestampException(string);
+                                    final String string2;
+                                    Label_0408:
+                                    Log.w("AudioTrack", string2);
+                                    this.audioTimestampSet = false;
+                                    continue Label_0315_Outer;
                                     Label_0425:
                                     continue;
                                 }
+                                // iftrue(Label_0425:, Math.abs(n2 - n) <= 5000000L)
+                                final String string2 = "Spurious audio timestamp (system clock mismatch): " + timestampFramePosition + ", " + n2 + ", " + n + ", " + playbackHeadPositionUs;
+                                // iftrue(Label_0408:, !AudioTrack.failOnSpuriousAudioTimestamp)
+                                throw new AudioTrack$InvalidAudioTrackTimestampException(string2);
                             }
-                            // iftrue(Label_0514:, !AudioTrack.failOnSpuriousAudioTimestamp)
-                            // iftrue(Label_0208:, Math.abs(this.framesToDurationUs(timestampFramePosition) - playbackHeadPositionUs) <= 5000000L)
                             catch (Exception ex) {
                                 this.getLatencyMethod = null;
                                 continue;

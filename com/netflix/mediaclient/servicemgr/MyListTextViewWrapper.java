@@ -8,11 +8,11 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.TextView;
 
-public class KubrickTextViewWrapper extends TextViewWrapper
+public class MyListTextViewWrapper extends TextViewWrapper
 {
     private TextView label;
     
-    public KubrickTextViewWrapper(final AddToMyListWrapper addToMyListWrapper, final NetflixActivity netflixActivity, final TextView textView, final TextView label, final String s, final VideoType videoType, final int n, final boolean b) {
+    public MyListTextViewWrapper(final AddToMyListWrapper addToMyListWrapper, final NetflixActivity netflixActivity, final TextView textView, final TextView label, final String s, final VideoType videoType, final int n, final boolean b) {
         super(addToMyListWrapper, netflixActivity, textView, s, videoType, n, b);
         this.label = label;
     }
@@ -30,14 +30,14 @@ public class KubrickTextViewWrapper extends TextViewWrapper
     @Override
     protected void setAsInList() {
         if (this.textView != null) {
-            this.textView.setText(2131231487);
+            this.textView.setText(2131231484);
         }
     }
     
     @Override
     protected void setAsNotInList() {
         if (this.textView != null) {
-            this.textView.setText(2131231470);
+            this.textView.setText(2131231466);
         }
     }
     

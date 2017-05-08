@@ -135,7 +135,7 @@ public class OfflinePlayablePersistentData
     }
     
     public StopReason getStopReason() {
-        if (this.getDownloadState() == DownloadState.Stopped) {
+        if (this.getDownloadState() == DownloadState.Stopped && this.mStopReason != null) {
             return this.mStopReason;
         }
         return StopReason.Unknown;
@@ -149,7 +149,7 @@ public class OfflinePlayablePersistentData
         return this.mGeoBlocked;
     }
     
-    public void resetPersistentError() {
+    public void resetPersistentStatus() {
         this.mErrorCode = 0;
         this.mErrorString = null;
     }
@@ -160,23 +160,21 @@ public class OfflinePlayablePersistentData
     
     public void setDownloadStateComplete() {
         this.setDownloadState(DownloadState.Complete);
-        this.mStopReason = null;
     }
     
     public void setDownloadStateDeleteComplete() {
         this.setDownloadState(DownloadState.DeleteComplete);
-        this.mStopReason = null;
     }
     
     public void setDownloadStateDeleted() {
         this.mDlStateBeforeDelete = this.mDownloadState;
+        this.mDlStateBeforeDeleteValue = this.mDlStateBeforeDelete.getIntValue();
         this.setDownloadState(DownloadState.Deleted);
-        this.mStopReason = null;
     }
     
     public void setDownloadStateInProgress() {
         this.setDownloadState(DownloadState.InProgress);
-        this.mStopReason = null;
+        this.resetPersistentStatus();
     }
     
     public void setDownloadStateStopped(final StopReason stopReason) {
@@ -192,9 +190,13 @@ public class OfflinePlayablePersistentData
         this.mManifestNetworkType = mManifestNetworkType;
     }
     
-    public void setPersistentError(final Status status) {
+    public void setPersistentStatus(final Status status) {
         this.mErrorCode = status.getStatusCode().getValue();
         this.mErrorString = status.getMessage();
+    }
+    
+    public void setWarningStatus(final Status persistentStatus) {
+        this.setPersistentStatus(persistentStatus);
     }
     
     public void setWiFiSsidOrNetworkOperatorName(final String mWiFiSsidOrNetworkOperatorName) {

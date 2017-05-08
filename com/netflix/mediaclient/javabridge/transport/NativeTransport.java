@@ -365,14 +365,11 @@ public class NativeTransport implements Transport
                     this.native_invokeMethod(string, s, s3);
                     return;
                     // iftrue(Label_0103:, !string.startsWith("nrdp"))
-                    Block_5: {
-                        break Block_5;
-                        Label_0103: {
-                            string = "nrdp." + string;
-                        }
-                        continue;
-                    }
                     Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
+                    Label_0103: {
+                        string = "nrdp." + string;
+                    }
                     continue;
                 }
                 catch (Throwable t) {
@@ -395,15 +392,19 @@ public class NativeTransport implements Transport
             string = "nrdp";
             try {
                 // iftrue(Label_0090:, !string.startsWith("nrdp"))
+            Block_4_Outer:
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
+                    while (true) {
+                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue Block_4_Outer;
+                        continue;
+                    }
                     Label_0090: {
                         string = "nrdp." + string;
                     }
-                    continue;
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
+                    continue Block_4_Outer;
                 }
             }
             catch (Throwable t) {

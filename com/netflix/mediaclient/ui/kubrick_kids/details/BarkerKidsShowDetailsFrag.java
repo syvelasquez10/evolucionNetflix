@@ -7,7 +7,6 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 import android.widget.SpinnerAdapter;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
-import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -32,6 +31,7 @@ import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag$HeroSlid
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
+import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 
 public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
@@ -39,6 +39,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     private static final String EXTRA_SHOW_ID = "extra_show_id";
     private static final String TAG = "KubrickKidsShowDetailsFrag";
     boolean isSeasonUserSelected;
+    protected ItemDecorationUniformPadding itemDecoration;
     protected RecyclerViewHeaderAdapter$IViewCreator viewCreatorEpisodes;
     
     public BarkerKidsShowDetailsFrag() {
@@ -157,7 +158,10 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362190), this.getNumColumns()));
+        if (this.itemDecoration == null) {
+            this.itemDecoration = new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362190), this.getNumColumns());
+            this.recyclerView.addItemDecoration(this.itemDecoration);
+        }
     }
     
     @Override

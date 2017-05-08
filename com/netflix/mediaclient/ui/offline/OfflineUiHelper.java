@@ -19,9 +19,9 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 
@@ -31,6 +31,10 @@ public class OfflineUiHelper
     
     public static int getSnackBarDownloadCompleteCount(final Context context) {
         return PreferenceUtils.getIntPref(context, "prefs_offline_snackbar_dl_complete_count", 0);
+    }
+    
+    public static boolean hasErrorOrWarning(final OfflinePlayableViewData offlinePlayableViewData) {
+        return offlinePlayableViewData.getLastPersistentStatus().isErrorOrWarning() || (offlinePlayableViewData.getDownloadState() == DownloadState.Stopped && offlinePlayableViewData.getStopReason().showBangIconErrorInUi());
     }
     
     public static void incrementSnackBarDownloadCompleteCount(final Context context) {

@@ -215,16 +215,16 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131689896);
+        this.rootContainer = view.findViewById(2131689897);
         if (this.rootContainer != null) {
             this.rootContainer.setBackgroundResource(this.getBackgroundResource());
         }
         if (!this.showDetailsOnLaunch) {
-            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131689895);
-            this.fragBackground = view.findViewById(2131689896);
+            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131689896);
+            this.fragBackground = view.findViewById(2131689897);
             return;
         }
-        this.fragBackground = view.findViewById(2131689908);
+        this.fragBackground = view.findViewById(2131689909);
     }
     
     protected int getBackgroundResource() {

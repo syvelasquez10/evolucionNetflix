@@ -189,7 +189,7 @@ class ExportDebugData
                 if (file2.exists()) {
                     final Intent intent = new Intent("android.intent.action.SEND_MULTIPLE");
                     intent.setType("text/plain");
-                    intent.putExtra("android.intent.extra.SUBJECT", "Netflix Android Bug Report : com.netflix.mediaclient 4.12.1 build 14299 14299");
+                    intent.putExtra("android.intent.extra.SUBJECT", "Netflix Android Bug Report : com.netflix.mediaclient 4.12.2 build 14444 14444");
                     intent.putExtra("android.intent.extra.TEXT", "\n\n\n[" + Build$VERSION.SDK_INT + " " + Build.BRAND + " " + Build.MANUFACTURER + " " + Build.MODEL + " " + Build.DEVICE + " " + Locale.getDefault().getCountry() + " " + Locale.getDefault().getLanguage() + "]");
                     final ArrayList<Uri> list = new ArrayList<Uri>();
                     final Uri parse = Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + "debug_data.zip");

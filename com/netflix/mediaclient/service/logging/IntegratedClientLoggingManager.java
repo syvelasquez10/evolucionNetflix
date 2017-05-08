@@ -159,13 +159,13 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
                     Log.w("nf_log", "We are already trying to deliver %s deliveryRequestId, skip");
                 }
                 else {
+                    this.mPendingCachedLogPayloads.add(key);
                     if (b) {
                         this.mExecutor.schedule(new IntegratedClientLoggingManager$3(this, key), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
                     }
                     else {
                         this.mExecutor.execute(new IntegratedClientLoggingManager$4(this, key));
                     }
-                    this.mPendingCachedLogPayloads.add(key);
                 }
             }
         }

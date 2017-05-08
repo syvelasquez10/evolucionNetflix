@@ -208,7 +208,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         this.mLogblobLogging.init(this.mExecutor);
         this.mPdsLogging.init(this.mExecutor);
         this.registerReceiver();
-        ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
+        ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getApplicationId(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
         this.addConfigurationChangeListener();
         (this.mNrdpLog = this.getNrdController().getNrdp().getLog()).setAppIdChangedListener(this);
         this.initCompleted(CommonStatus.OK);
@@ -354,7 +354,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         }
         if (status.isSucces()) {
             com.netflix.mediaclient.Log.v("nf_log", "Refresh configuration for error and breadcrumb logging");
-            ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
+            ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getApplicationId(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
         }
     }
     

@@ -71,6 +71,14 @@ public class TargetManager implements EventListener, CommandInterface
             }
             ErrorLoggingManager.logHandledException(String.format("Memento_%d MDX error %s", cellId, s2));
         }
+        else if (PersistentConfig.inMemento2Test(NetflixApplication.getContext())) {
+            final int cellId2 = PersistentConfig.getMemento2(NetflixApplication.getContext()).getCellId();
+            String s3 = s;
+            if (TextUtils.isEmpty((CharSequence)s)) {
+                s3 = "NO ERROR CODE";
+            }
+            ErrorLoggingManager.logHandledException(String.format("Memento2_%d MDX error %s", cellId2, s3));
+        }
     }
     
     public MdxTargetCapabilities getTargetCapabilities() {

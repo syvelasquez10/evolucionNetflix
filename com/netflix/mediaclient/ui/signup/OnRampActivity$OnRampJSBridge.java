@@ -45,6 +45,7 @@ public class OnRampActivity$OnRampJSBridge
     public void onRampCompleted(final int n) {
         Log.d("OnRampActivity", "onRampCompleted");
         if (n > 0) {
+            OnRampActivity.onRampLatch.onRampSelectionMade = true;
             this.this$0.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO"));
         }
         this.this$0.finish();

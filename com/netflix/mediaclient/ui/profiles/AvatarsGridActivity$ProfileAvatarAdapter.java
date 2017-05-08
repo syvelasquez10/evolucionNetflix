@@ -107,8 +107,8 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         final int width = this.this$0.mGridView.getWidth();
         if (width > 0) {
             final Resources resources = this.this$0.getResources();
-            final float dimension = resources.getDimension(2131362317);
-            final float n = resources.getDimension(2131362316) + dimension;
+            final float dimension = resources.getDimension(2131362319);
+            final float n = resources.getDimension(2131362318) + dimension;
             final int numColumns = (int)(width / n);
             this.this$0.mGridView.setNumColumns(numColumns);
             this.adjustGridViewPaddings(width, numColumns, n, dimension);

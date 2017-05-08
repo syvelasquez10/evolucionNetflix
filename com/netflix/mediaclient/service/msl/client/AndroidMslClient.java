@@ -8,8 +8,8 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.msl.util.JsonUtil;
 import com.netflix.android.org.json.JSONArray;
 import com.netflix.msl.client.ApiHttpWrapper;
-import com.netflix.msl.msg.ErrorHeader;
 import com.netflix.msl.msg.MessageInputStream;
+import com.netflix.msl.msg.ErrorHeader;
 import java.io.InputStream;
 import com.netflix.msl.util.IoUtil;
 import java.util.concurrent.ExecutionException;
@@ -264,24 +264,22 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
                     throw (RuntimeException)cause;
                 }
                 throw new RuntimeException(cause);
-                final MslControl$MslChannel mslControl$MslChannel;
-                input = mslControl$MslChannel.input;
-                Log.d("nf_msl", "processRequest:: check input stream for error... ");
-                final ErrorHeader errorHeader = input.getErrorHeader();
                 // iftrue(Label_0187:, errorHeader == null)
+                // iftrue(Label_0124:, !Log.isLoggable())
+                ErrorHeader errorHeader = null;
                 while (true) {
-                    Block_5: {
-                        break Block_5;
-                        Label_0124: {
-                            throw new MslErrorException(errorHeader);
-                        }
-                        Log.e("nf_msl", "processRequest:: Error found: " + errorHeader.getErrorMessage());
-                        throw new MslErrorException(errorHeader);
-                    }
+                    Log.e("nf_msl", "processRequest:: Error found: " + errorHeader.getErrorMessage());
+                    throw new MslErrorException(errorHeader);
+                    final MslControl$MslChannel mslControl$MslChannel;
+                    input = mslControl$MslChannel.input;
+                    Log.d("nf_msl", "processRequest:: check input stream for error... ");
+                    errorHeader = input.getErrorHeader();
                     continue;
                 }
+                Label_0124: {
+                    throw new MslErrorException(errorHeader);
+                }
             }
-            // iftrue(Label_0124:, !Log.isLoggable())
             catch (InterruptedException ex2) {
                 Log.e("nf_msl", ex2, "Interrupted exception found ", new Object[0]);
                 throw new RuntimeException(ex2);

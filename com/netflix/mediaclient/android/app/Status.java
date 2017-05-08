@@ -22,7 +22,11 @@ public interface Status extends Serializable
     
     boolean isError();
     
+    boolean isErrorOrWarning();
+    
     boolean isSucces();
+    
+    boolean isWarning();
     
     boolean shouldDisplayMessage();
 }

@@ -12,7 +12,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDet
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
-import com.netflix.mediaclient.StatusCode;
 import java.util.Iterator;
 import java.util.ArrayList;
 import android.view.View;

@@ -164,7 +164,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     private static void showConnectivityErrorDialog(final NetflixActivity netflixActivity, final Status status) {
-        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage(String.format("%s (%d)", netflixActivity.getString(2131231302), status.getStatusCode().getValue())).setPositiveButton(2131231167, (DialogInterface$OnClickListener)new PinDialog$2()).show();
+        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage(String.format("%s (%d)", netflixActivity.getString(2131231299), status.getStatusCode().getValue())).setPositiveButton(2131231168, (DialogInterface$OnClickListener)new PinDialog$2()).show();
     }
     
     private void showErrorIcon(final boolean mInError) {
@@ -211,7 +211,7 @@ public class PinDialog extends NetflixDialogFrag
         }
         mPinForgotView.setVisibility(visibility3);
         if (mInProgress) {
-            this.mPinMessage.setText(2131231178);
+            this.mPinMessage.setText(2131231179);
         }
     }
     
@@ -263,13 +263,13 @@ public class PinDialog extends NetflixDialogFrag
         this.mVault = (PlayVerifierVault)this.getArguments().getParcelable(PlayVerifierVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
         final View inflate = this.getActivity().getLayoutInflater().inflate(2130903235, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131690082);
-        (this.mPinEditText = (EditText)inflate.findViewById(2131690079)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialog$PinDialogOnDone(this, null));
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131690083);
+        (this.mPinEditText = (EditText)inflate.findViewById(2131690080)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialog$PinDialogOnDone(this, null));
         this.mPinEditText.setOnKeyListener((View$OnKeyListener)new PinDialog$PinDialogOnKeyPress(this, null));
-        this.mPinMessage = (TextView)inflate.findViewById(2131690078);
-        (this.mPinForgotView = (TextView)inflate.findViewById(2131690081)).setMovementMethod((MovementMethod)new PinDialog$1(this));
+        this.mPinMessage = (TextView)inflate.findViewById(2131690079);
+        (this.mPinForgotView = (TextView)inflate.findViewById(2131690082)).setMovementMethod((MovementMethod)new PinDialog$1(this));
         this.mPinForgotView.setFocusable(false);
-        this.mErrorIcon = (ImageView)inflate.findViewById(2131690080);
+        this.mErrorIcon = (ImageView)inflate.findViewById(2131690081);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             mDialogWidthInDp = 400;
@@ -325,7 +325,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     public void retryOnPinFailure() {
-        this.mPinMessage.setText(2131231174);
+        this.mPinMessage.setText(2131231175);
         this.mPinEditText.getText().clear();
         this.showErrorIcon(true);
         this.showSoftKeyboard(this.getServiceManager(), this.mPinEditText);

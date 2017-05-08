@@ -121,15 +121,15 @@ public final class R$dimen
     public static final int item_touch_helper_max_drag_scroll_per_frame = 2131362183;
     public static final int item_touch_helper_swipe_escape_max_velocity = 2131362184;
     public static final int item_touch_helper_swipe_escape_velocity = 2131362185;
-    public static final int notification_large_icon_height = 2131362264;
-    public static final int notification_large_icon_width = 2131362265;
-    public static final int notification_subtext_size = 2131362266;
-    public static final int tooltip_arrow_height = 2131362348;
-    public static final int tooltip_arrow_width = 2131362349;
-    public static final int tooltip_elevation = 2131362350;
-    public static final int tooltip_height = 2131362351;
-    public static final int tooltip_horizontal_padding = 2131362352;
-    public static final int tooltip_max_width = 2131362353;
-    public static final int tooltip_radius = 2131362354;
-    public static final int tooltip_total_height = 2131362355;
+    public static final int notification_large_icon_height = 2131362265;
+    public static final int notification_large_icon_width = 2131362266;
+    public static final int notification_subtext_size = 2131362267;
+    public static final int tooltip_arrow_height = 2131362350;
+    public static final int tooltip_arrow_width = 2131362351;
+    public static final int tooltip_elevation = 2131362352;
+    public static final int tooltip_height = 2131362353;
+    public static final int tooltip_horizontal_padding = 2131362354;
+    public static final int tooltip_max_width = 2131362355;
+    public static final int tooltip_radius = 2131362356;
+    public static final int tooltip_total_height = 2131362357;
 }

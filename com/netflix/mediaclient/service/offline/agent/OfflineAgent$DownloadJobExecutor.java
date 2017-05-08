@@ -19,6 +19,8 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.log.OfflineLogUtils;
@@ -93,7 +95,6 @@ class OfflineAgent$DownloadJobExecutor implements NetflixJobExecutor
         if (!this.this$0.mUserAgent.isUserLoggedIn()) {
             return;
         }
-        this.this$0.mOfflineNrdpLogger.onNetflixStartJob(netflixJob$NetflixJobId);
         switch (OfflineAgent$21.$SwitchMap$com$netflix$mediaclient$service$job$NetflixJob$NetflixJobId[netflixJob$NetflixJobId.ordinal()]) {
             default: {}
             case 1: {
@@ -122,9 +123,6 @@ class OfflineAgent$DownloadJobExecutor implements NetflixJobExecutor
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "onNetflixStopJob jobId=" + netflixJob$NetflixJobId);
         }
-        if (!this.this$0.mUserAgent.isUserLoggedIn()) {
-            return;
-        }
-        this.this$0.mOfflineNrdpLogger.onNetflixStopJob(netflixJob$NetflixJobId);
+        if (!this.this$0.mUserAgent.isUserLoggedIn()) {}
     }
 }

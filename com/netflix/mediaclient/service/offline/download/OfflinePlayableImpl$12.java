@@ -12,11 +12,13 @@ import com.netflix.mediaclient.service.offline.license.OfflineLicenseManagerCall
 final class OfflinePlayableImpl$12 implements OfflineLicenseManagerCallback
 {
     final /* synthetic */ OfflinePlayable$PlayableDeleteCompleteCallBack val$listener;
+    final /* synthetic */ OfflinePlayableListener val$offlinePlayableListener;
     final /* synthetic */ OfflinePlayablePersistentData val$playablePersistentData;
     
-    OfflinePlayableImpl$12(final OfflinePlayable$PlayableDeleteCompleteCallBack val$listener, final OfflinePlayablePersistentData val$playablePersistentData) {
+    OfflinePlayableImpl$12(final OfflinePlayable$PlayableDeleteCompleteCallBack val$listener, final OfflinePlayablePersistentData val$playablePersistentData, final OfflinePlayableListener val$offlinePlayableListener) {
         this.val$listener = val$listener;
         this.val$playablePersistentData = val$playablePersistentData;
+        this.val$offlinePlayableListener = val$offlinePlayableListener;
     }
     
     @Override
@@ -28,11 +30,14 @@ final class OfflinePlayableImpl$12 implements OfflineLicenseManagerCallback
         else {
             b = false;
         }
-        if (b && !status.getStatusCode().equals(StatusCode.NETWORK_ERROR)) {
+        if (status.isSucces() || (b && !status.getStatusCode().equals(StatusCode.NETWORK_ERROR))) {
             this.val$playablePersistentData.setDownloadStateDeleteComplete();
         }
         if (this.val$listener != null) {
             this.val$listener.onDeleteCompleted(this.val$playablePersistentData);
+        }
+        if (this.val$offlinePlayableListener != null && status.isSucces()) {
+            this.val$offlinePlayableListener.onLicenseDeleteSuccessfully(this.val$playablePersistentData);
         }
     }
 }

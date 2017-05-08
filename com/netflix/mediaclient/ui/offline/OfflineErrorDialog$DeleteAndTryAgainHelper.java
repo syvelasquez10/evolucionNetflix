@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData$
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.OfflineDialogLogblob;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;

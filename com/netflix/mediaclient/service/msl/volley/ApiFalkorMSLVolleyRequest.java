@@ -18,7 +18,7 @@ public abstract class ApiFalkorMSLVolleyRequest<T> extends FalkorMSLVolleyReques
     
     @Override
     public String getMSLUri() {
-        return "/android/4.12/api";
+        return "/android/4.12.2/api";
     }
     
     @Override

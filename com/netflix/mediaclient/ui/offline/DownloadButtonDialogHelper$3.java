@@ -28,7 +28,7 @@ final class DownloadButtonDialogHelper$3 implements PopupMenu$OnMenuItemClickLis
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        if (menuItem.getItemId() == 2131690415) {
+        if (menuItem.getItemId() == 2131690416) {
             if (!ConnectivityUtils.hasInternet(this.val$context)) {
                 DownloadButtonDialogHelper.createNoInternetDialog(this.val$context, this.val$playableId, true).show();
                 return true;
@@ -49,12 +49,12 @@ final class DownloadButtonDialogHelper$3 implements PopupMenu$OnMenuItemClickLis
             DownloadButtonDialogHelper.createNoWifiDialog(this.val$context, this.val$playableId, RealmUtils.getOfflineVideoDetails(this.val$playableId).getType(), true).show();
         }
         else {
-            if (menuItem.getItemId() == 2131690416) {
+            if (menuItem.getItemId() == 2131690417) {
                 ((NetflixActivity)this.val$context).getServiceManager().getOfflineAgent().deleteOfflinePlayable(this.val$playableId);
                 DownloadButton.removePreQueued(this.val$playableId);
                 return true;
             }
-            if (menuItem.getItemId() == 2131690417) {
+            if (menuItem.getItemId() == 2131690418) {
                 this.val$context.startActivity(OfflineActivity.showAllDownloads((Activity)this.val$context));
                 return true;
             }

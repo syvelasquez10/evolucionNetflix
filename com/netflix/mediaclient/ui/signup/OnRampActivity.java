@@ -26,7 +26,9 @@ public class OnRampActivity extends WebViewAccountActivity
 {
     private static final String BOOT_URL = "https://www.netflix.com/welcome/onramp?isProfilesOnRamp=true";
     private static final long PAGE_LOAD_TIMEOUT;
+    public static final String PARAM_FIRST_LOLOMO_AFTER_ONRAMP = "isFirstLolomoAfterOnRamp";
     private static final String TAG = "OnRampActivity";
+    private static OnRampActivity$Latch onRampLatch;
     Runnable mAbortOnRamp;
     private String mBootUrl;
     Runnable mHandleError;
@@ -34,11 +36,16 @@ public class OnRampActivity extends WebViewAccountActivity
     
     static {
         PAGE_LOAD_TIMEOUT = TimeUnit.SECONDS.toMillis(5L);
+        OnRampActivity.onRampLatch = new OnRampActivity$Latch();
     }
     
     public OnRampActivity() {
         this.mAbortOnRamp = new OnRampActivity$1(this);
         this.mHandleError = new OnRampActivity$3(this);
+    }
+    
+    public static OnRampActivity$Latch getOnRampLatch() {
+        return OnRampActivity.onRampLatch;
     }
     
     public static boolean shouldShowOnRamp(final ServiceManager serviceManager, final Activity activity) {
@@ -108,12 +115,12 @@ public class OnRampActivity extends WebViewAccountActivity
     
     @Override
     public void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231167), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231168), runnable)));
     }
     
     @Override
     public void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231167), runnable, this.getString(2131231008), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231168), runnable, this.getString(2131231008), null)));
     }
     
     @Override

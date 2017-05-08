@@ -117,20 +117,20 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     private void findViews() {
-        this.synopsis = (TextView)this.findViewById(2131690295);
-        this.duration = (TextView)this.findViewById(2131690296);
-        this.titleExpanded = (TextView)this.findViewById(2131690292);
-        this.title = (TextView)this.findViewById(2131690288);
-        this.genre = (TextView)this.findViewById(2131690297);
-        this.storyArtImage = (AdvancedImageView)this.findViewById(2131690274);
-        this.storyArtImageExpanded = (AdvancedImageView)this.findViewById(2131690291);
-        this.titleImage = (AdvancedImageView)this.findViewById(2131690287);
-        this.addToQueue = (TextView)this.findViewById(2131690294);
-        this.expand = this.findViewById(2131690289);
-        this.showDP = this.findViewById(2131690293);
-        this.expandedGroup = (ViewGroup)this.findViewById(2131690290);
-        this.unExpandedGroup = (ViewGroup)this.findViewById(2131690286);
-        this.flipper = (ViewFlipper)this.findViewById(2131690285);
+        this.synopsis = (TextView)this.findViewById(2131690296);
+        this.duration = (TextView)this.findViewById(2131690297);
+        this.titleExpanded = (TextView)this.findViewById(2131690293);
+        this.title = (TextView)this.findViewById(2131690289);
+        this.genre = (TextView)this.findViewById(2131690298);
+        this.storyArtImage = (AdvancedImageView)this.findViewById(2131690275);
+        this.storyArtImageExpanded = (AdvancedImageView)this.findViewById(2131690292);
+        this.titleImage = (AdvancedImageView)this.findViewById(2131690288);
+        this.addToQueue = (TextView)this.findViewById(2131690295);
+        this.expand = this.findViewById(2131690290);
+        this.showDP = this.findViewById(2131690294);
+        this.expandedGroup = (ViewGroup)this.findViewById(2131690291);
+        this.unExpandedGroup = (ViewGroup)this.findViewById(2131690287);
+        this.flipper = (ViewFlipper)this.findViewById(2131690286);
     }
     
     private void init() {
@@ -228,7 +228,7 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
                 ErrorLoggingManager.logHandledException("SPY-8691 - current profile is null");
             }
             else {
-                this.addToListWrapper = serviceManager.createAddToMyListWrapper(this.this$0.getNetflixActivity(), this.addToQueue, video.getId(), video.getType(), PlayContext.NFLX_MDX_CONTEXT.getTrackId());
+                this.addToListWrapper = serviceManager.createMementoAddToMyListWrapper(this.this$0.getNetflixActivity(), this.addToQueue, video.getId(), video.getType(), PlayContext.NFLX_MDX_CONTEXT.getTrackId());
                 serviceManager.registerAddToMyListListener(video.getId(), this.addToListWrapper);
             }
         }

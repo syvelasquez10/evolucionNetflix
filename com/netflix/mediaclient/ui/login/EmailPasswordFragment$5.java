@@ -70,6 +70,6 @@ class EmailPasswordFragment$5 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.getNetflixActivity().displayDialog(AlertDialogFactory.createDialog((Context)this.this$0.getNetflixActivity(), this.this$0.mHandler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131231146), this.this$0.getString(2131231167), null)));
+        this.this$0.getNetflixActivity().displayDialog(AlertDialogFactory.createDialog((Context)this.this$0.getNetflixActivity(), this.this$0.mHandler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131231147), this.this$0.getString(2131231168), null)));
     }
 }

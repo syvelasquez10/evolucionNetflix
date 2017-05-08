@@ -15,10 +15,16 @@ import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLice
 import com.netflix.mediaclient.service.player.drm.BaseLicenseContext;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchDownloadComplete;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.OfflineLicenseDeactivate;
-import org.json.JSONException;
-import org.json.JSONObject;
 import com.netflix.mediaclient.service.msl.volley.MSLVolleyRequest;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLinkRequest;
+import com.netflix.mediaclient.util.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.StatusCode;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import android.content.Context;
@@ -40,9 +46,14 @@ class BladeRunnerClient$1 extends SimpleBladeRunnerWebCallback
     public void onOfflineLicenseFetched(final OfflineLicenseResponse offlineLicenseResponse, final Status status) {
         super.onOfflineLicenseFetched(offlineLicenseResponse, status);
         Log.d(BladeRunnerClient.TAG, " license fetched status: %s", status);
-        this.val$callback.onOfflineLicenseFetched(offlineLicenseResponse, status);
+        Status access$300 = status;
         if (status.isSucces()) {
-            this.this$0.activateLicense(offlineLicenseResponse);
+            access$300 = status;
+            if (offlineLicenseResponse.willTiggerYearlyLimit()) {
+                access$300 = this.this$0.buildYearlyWarningStatusCode(this.this$0.context, offlineLicenseResponse.mYearlyLimitExpiryDateMillis, this.this$0.mUser.getCurrentAppLocale().getLocale());
+                Log.d(BladeRunnerClient.TAG, " license fetched status: %s", access$300);
+            }
         }
+        this.val$callback.onOfflineLicenseFetched(offlineLicenseResponse, access$300);
     }
 }
