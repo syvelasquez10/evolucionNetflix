@@ -10,6 +10,9 @@ import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import java.util.Map;
 import java.util.HashMap;
 import com.netflix.mediaclient.servicemgr.interface_.PlaybackBookmark;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
@@ -17,9 +20,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import java.util.List;
 import android.content.Context;
 import java.io.File;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.FileUtils;
-import com.netflix.mediaclient.NetflixApplication;
 
 class BookmarkStore$2 implements Runnable
 {
@@ -31,11 +31,6 @@ class BookmarkStore$2 implements Runnable
     
     @Override
     public void run() {
-        synchronized (BookmarkStore.class) {
-            final boolean writeBytesToFile = FileUtils.writeBytesToFile(this.this$0.mBookmarkStoreFile.getAbsolutePath(), NetflixApplication.getGson().toJson(this.this$0.mBookmarkData).getBytes());
-            if (Log.isLoggable()) {
-                Log.i("nf_BookmarkStore", "setBookmark saving to file result=" + writeBytesToFile);
-            }
-        }
+        this.this$0.saveBookmarkToFile();
     }
 }

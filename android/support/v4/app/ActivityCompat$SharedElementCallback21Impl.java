@@ -12,7 +12,7 @@ import android.graphics.RectF;
 import android.graphics.Matrix;
 import android.view.View;
 
-class ActivityCompat$SharedElementCallback21Impl extends ActivityCompat21$SharedElementCallback21
+class ActivityCompat$SharedElementCallback21Impl extends ActivityCompatApi21$SharedElementCallback21
 {
     private SharedElementCallback mCallback;
     

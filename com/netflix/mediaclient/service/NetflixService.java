@@ -696,7 +696,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mPreAppAgent = new PreAppAgent();
         this.mErrorAgent = new ErrorAgent();
         this.mVoipAgent = new WhistleVoipAgent(this.getApplicationContext(), this.mUserAgent);
-        this.mOfflineAgent = new OfflineAgent(this.mConfigurationAgent, this.mUserAgent);
+        this.mOfflineAgent = new OfflineAgent(this.getApplicationContext(), this.mConfigurationAgent, this.mUserAgent);
         this.mOfflinePlayerAgent = new ExoPlayback(this.getApplicationContext(), this.getHandler(), this.mOfflineAgent, this.mClientLoggingAgent);
         this.mPdsAgent = new PdsAgent(this.mOfflineAgent);
         this.mNetflixPowerManager = new NetflixPowerManager(this.getApplicationContext());

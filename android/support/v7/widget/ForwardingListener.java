@@ -8,7 +8,11 @@ import android.os.SystemClock;
 import android.support.v7.view.menu.ShowableListMenu;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.annotation.TargetApi;
+import android.view.View$OnAttachStateChangeListener;
 import android.view.ViewConfiguration;
+import android.os.Build$VERSION;
 import android.view.View;
 import android.view.View$OnTouchListener;
 
@@ -26,16 +30,39 @@ public abstract class ForwardingListener implements View$OnTouchListener
     
     public ForwardingListener(final View mSrc) {
         this.mTmpLocation = new int[2];
-        this.mSrc = mSrc;
+        (this.mSrc = mSrc).setLongClickable(true);
+        if (Build$VERSION.SDK_INT >= 12) {
+            this.addDetachListenerApi12(mSrc);
+        }
+        else {
+            this.addDetachListenerBase(mSrc);
+        }
         this.mScaledTouchSlop = ViewConfiguration.get(mSrc.getContext()).getScaledTouchSlop();
         this.mTapTimeout = ViewConfiguration.getTapTimeout();
         this.mLongPressTimeout = (this.mTapTimeout + ViewConfiguration.getLongPressTimeout()) / 2;
+    }
+    
+    @TargetApi(12)
+    private void addDetachListenerApi12(final View view) {
+        view.addOnAttachStateChangeListener((View$OnAttachStateChangeListener)new ForwardingListener$1(this));
+    }
+    
+    private void addDetachListenerBase(final View view) {
+        view.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ForwardingListener$2(this));
     }
     
     private void clearCallbacks() {
         if (this.mTriggerLongPress != null) {
             this.mSrc.removeCallbacks(this.mTriggerLongPress);
         }
+        if (this.mDisallowIntercept != null) {
+            this.mSrc.removeCallbacks(this.mDisallowIntercept);
+        }
+    }
+    
+    private void onDetachedFromWindow() {
+        this.mForwarding = false;
+        this.mActivePointerId = -1;
         if (this.mDisallowIntercept != null) {
             this.mSrc.removeCallbacks(this.mDisallowIntercept);
         }

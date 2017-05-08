@@ -6,7 +6,9 @@ package android.support.v4.widget;
 
 import android.widget.PopupMenu;
 import android.view.View$OnTouchListener;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class PopupMenuCompatKitKat
 {
     public static View$OnTouchListener getDragToOpenListener(final Object o) {

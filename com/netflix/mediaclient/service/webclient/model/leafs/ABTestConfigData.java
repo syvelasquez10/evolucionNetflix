@@ -16,11 +16,12 @@ import java.util.List;
 public class ABTestConfigData
 {
     public static final String AIM_LOW_PREFETCH_DP_TEST_ID = "7722";
-    public static final String AIM_LOW_PREFETCH_LOLOMO_TEST_ID = "7480";
+    public static final String AIM_LOW_PREFETCH_LOLOMO_TEST_ID = "7882";
+    public static final String AIM_LOW_TEXT_PLACEHOLDER = "7858";
     public static final String COPPOLA_1_AB_TEST_ID = "6729";
     public static final String COPPOLA_2_AB_TEST_ID = "6941";
     public static final String CW_PROGRESS_BAR_TEST_ID = "7151";
-    public static final String DISPLAY_PAGE_REFRESH_TEST_ID = "7196";
+    public static final String DISPLAY_PAGE_REFRESH_TEST_ID = "7842";
     public static final String MEMENTO2_TEST_ID = "7827";
     public static final String MEMENTO_TEST_ID = "7131";
     public static final String MOTION_BB_AB_TEST_ID = "6930";
@@ -30,18 +31,21 @@ public class ABTestConfigData
     public static final String SURVEY_TEST_ID = "7141";
     private static final String TAG = "nf_config";
     public static final String VOICE_SEARCH_AB_TEST_ID = "6786";
+    private static ABTestConfigData mAbTestConfigData;
     private static List<String> testIds;
     @SerializedName("7722")
     private ABTestConfig aimLowPrefetchDPConfig;
-    @SerializedName("7480")
+    @SerializedName("7882")
     private ABTestConfig aimLowPrefetchLolomoConfig;
+    @SerializedName("7858")
+    private ABTestConfig aimLowTextPlaceholderConfig;
     @SerializedName("6729")
     private ABTestConfig coppola1Config;
     @SerializedName("6941")
     private ABTestConfig coppola2Config;
     @SerializedName("7151")
     private ABTestConfig cwProgressBarConfig;
-    @SerializedName("7196")
+    @SerializedName("7842")
     private ABTestConfig displayPageRefresh;
     @SerializedName("7827")
     private ABTestConfig memento2Config;
@@ -78,15 +82,16 @@ public class ABTestConfigData
         ABTestConfigData.testIds.clear();
         ABTestConfigData.testIds.add("6786");
         ABTestConfigData.testIds.add("6930");
-        ABTestConfigData.testIds.add("7196");
+        ABTestConfigData.testIds.add("7842");
         ABTestConfigData.testIds.add("7151");
         ABTestConfigData.testIds.add("7141");
         ABTestConfigData.testIds.add("7131");
         ABTestConfigData.testIds.add("7827");
         ABTestConfigData.testIds.add("7714");
         ABTestConfigData.testIds.add("7756");
-        ABTestConfigData.testIds.add("7480");
+        ABTestConfigData.testIds.add("7882");
         ABTestConfigData.testIds.add("7722");
+        ABTestConfigData.testIds.add("7858");
         if (DeviceUtils.isNotTabletByContext(context)) {
             ABTestConfigData.testIds.add("6729");
             ABTestConfigData.testIds.add("6941");
@@ -95,12 +100,20 @@ public class ABTestConfigData
         return StringUtils.joinArray(ABTestConfigData.testIds.toArray(new String[ABTestConfigData.testIds.size()]));
     }
     
+    public static ABTestConfigData getRawABConfig() {
+        return ABTestConfigData.mAbTestConfigData;
+    }
+    
     public ABTestConfig getAimLowPrefetchDPConfig() {
         return this.aimLowPrefetchDPConfig;
     }
     
     public ABTestConfig getAimLowPrefetchLolomoConfig() {
         return this.aimLowPrefetchLolomoConfig;
+    }
+    
+    public ABTestConfig getAimLowTextPlaceholderConfig() {
+        return this.aimLowTextPlaceholderConfig;
     }
     
     public ABTestConfig getBrandLoveSurveyConfig() {
@@ -149,6 +162,10 @@ public class ABTestConfigData
     
     public ABTestConfig getVoiceSearchABTestConfig() {
         return this.voiceSearchConfig;
+    }
+    
+    public void setRawABConfig(final ABTestConfigData mAbTestConfigData) {
+        ABTestConfigData.mAbTestConfigData = mAbTestConfigData;
     }
     
     public String toJsonString() {

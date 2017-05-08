@@ -23,12 +23,24 @@ class VectorDrawableCompat$VPath
         this.mNodes = PathParser.deepCopyNodes(vectorDrawableCompat$VPath.mNodes);
     }
     
+    public PathParser$PathDataNode[] getPathData() {
+        return this.mNodes;
+    }
+    
     public String getPathName() {
         return this.mPathName;
     }
     
     public boolean isClipPath() {
         return false;
+    }
+    
+    public void setPathData(final PathParser$PathDataNode[] array) {
+        if (!PathParser.canMorph(this.mNodes, array)) {
+            this.mNodes = PathParser.deepCopyNodes(array);
+            return;
+        }
+        PathParser.updateNodes(this.mNodes, array);
     }
     
     public void toPath(final Path path) {

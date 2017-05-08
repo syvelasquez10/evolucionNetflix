@@ -9,7 +9,9 @@ import android.view.animation.Interpolator;
 import android.animation.ValueAnimator$AnimatorUpdateListener;
 import android.animation.Animator$AnimatorListener;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 
+@TargetApi(12)
 class ValueAnimatorCompatImplHoneycombMr1 extends ValueAnimatorCompat$Impl
 {
     private final ValueAnimator mValueAnimator;

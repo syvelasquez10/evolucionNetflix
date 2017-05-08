@@ -22,7 +22,9 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
+import java.util.List;
 import com.netflix.mediaclient.Log;
+import java.util.ArrayList;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
@@ -87,7 +89,7 @@ public class OfflineBaseAdapter$SelectionController
         int n = -1;
         if (this.isSelectable) {
             if (this.selectedVideoIds.size() <= 0) {
-                this.this$0.setToolbarSmalltitle(this.this$0.mActivity.getResources().getString(2131231166), -1);
+                this.this$0.setToolbarSmalltitle(this.this$0.mActivity.getResources().getString(2131296722), -1);
                 return;
             }
             this.this$0.setToolbarTitle(String.format("%d (%s)", this.selectedVideoIds.size(), this.this$0.getSpaceString(this.estimateSpaceToFree)), -1);
@@ -103,6 +105,7 @@ public class OfflineBaseAdapter$SelectionController
     }
     
     public void deleteSelected() {
+        final ArrayList<String> list = new ArrayList<String>();
         final OfflineAgentInterface offlineAgent = this.this$0.mActivity.getServiceManager().getOfflineAgent();
         final int size = this.selectedVideoIds.size();
         for (int i = 0; i < size; ++i) {
@@ -114,15 +117,17 @@ public class OfflineBaseAdapter$SelectionController
                     final VideoType type = realmVideoDetails.getType();
                     Log.i("OfflineBaseAdapter", "details id=%s videoType=%s", realmVideoDetails.getId(), type);
                     if (type == VideoType.EPISODE) {
-                        offlineAgent.deleteOfflinePlayable(realmVideoDetails.getPlayable().getPlayableId());
-                        DownloadButton.removePreQueued(realmVideoDetails.getPlayable().getPlayableId());
+                        list.add(realmVideoDetails.getPlayable().getPlayableId());
                     }
                 }
             }
             else {
-                offlineAgent.deleteOfflinePlayable(videoId);
-                DownloadButton.removePreQueued(videoId);
+                list.add(videoId);
             }
+        }
+        if (list.size() > 0) {
+            offlineAgent.deleteOfflinePlayables(list);
+            DownloadButton.removePlayablesFromPreQueued(list);
         }
         this.selectedVideoIds.clear();
         this.updateToolbarTitle();
@@ -155,26 +160,26 @@ public class OfflineBaseAdapter$SelectionController
         }
         String quantityString;
         if (n2 > 0) {
-            quantityString = this.this$0.mActivity.getResources().getQuantityString(2131296261, n2, new Object[] { n2 });
+            quantityString = this.this$0.mActivity.getResources().getQuantityString(2131361797, n2, new Object[] { n2 });
         }
         else {
             quantityString = null;
         }
         String quantityString2;
         if (n > 0) {
-            quantityString2 = this.this$0.mActivity.getResources().getQuantityString(2131296259, n, new Object[] { n });
+            quantityString2 = this.this$0.mActivity.getResources().getQuantityString(2131361795, n, new Object[] { n });
         }
         else {
             quantityString2 = null;
         }
         if (quantityString != null && quantityString2 != null) {
-            return this.this$0.mActivity.getString(2131230947, new Object[] { quantityString, quantityString2, this.this$0.getSpaceString(this.estimateSpaceToFree) });
+            return this.this$0.mActivity.getString(2131296502, new Object[] { quantityString, quantityString2, this.this$0.getSpaceString(this.estimateSpaceToFree) });
         }
         final NetflixActivity mActivity = this.this$0.mActivity;
         if (quantityString == null) {
             quantityString = quantityString2;
         }
-        return mActivity.getString(2131230946, new Object[] { quantityString, this.this$0.getSpaceString(this.estimateSpaceToFree) });
+        return mActivity.getString(2131296501, new Object[] { quantityString, this.this$0.getSpaceString(this.estimateSpaceToFree) });
     }
     
     public int getItemsCheckedCount() {

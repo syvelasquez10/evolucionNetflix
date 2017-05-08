@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.util;
 
 import java.util.Random;
+import android.graphics.Rect;
 
 public class MathUtils
 {
@@ -24,6 +25,12 @@ public class MathUtils
     
     public static int divideIntsWithRounding(final int n, final int n2) {
         return (int)(n / n2 + 0.5f);
+    }
+    
+    public static void expandRect(final Rect rect, final int n) {
+        rect.offset(-n, -n);
+        rect.right += n * 2;
+        rect.bottom += n * 2;
     }
     
     public static boolean isEven(final int n) {

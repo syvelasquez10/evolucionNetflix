@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.search;
 
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.ui.kubrick_kids.search.KubrickKidsSearchActionBar;
+import com.netflix.mediaclient.ui.barker_kids.search.BarkerKidsSearchActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
 import android.view.View$OnFocusChangeListener;
@@ -70,7 +70,7 @@ class SearchActivity$FetchSearchResultsHandler extends LoggingManagerCallback
         if (status.isError()) {
             Log.w("SearchActivity", "Invalid status code");
             this.this$0.showError();
-            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)this.this$0, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getString(2131231022), ActionOnUIError.displayedError));
+            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)this.this$0, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getString(2131296578), ActionOnUIError.displayedError));
             return;
         }
         if (searchResults == null || !searchResults.hasResults()) {

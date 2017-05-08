@@ -62,6 +62,7 @@ public class MenuBuilder implements SupportMenu
     private boolean mQwertyMode;
     private final Resources mResources;
     private boolean mShortcutsVisible;
+    private boolean mStructureChangedWhileDispatchPrevented;
     private ArrayList<MenuItemImpl> mTempShortcutItemList;
     private ArrayList<MenuItemImpl> mVisibleItems;
     
@@ -73,6 +74,7 @@ public class MenuBuilder implements SupportMenu
         this.mDefaultShowAsAction = 0;
         this.mPreventDispatchingItemsChanged = false;
         this.mItemsChangedWhileDispatchPrevented = false;
+        this.mStructureChangedWhileDispatchPrevented = false;
         this.mOptionalIconsVisible = false;
         this.mIsClosing = false;
         this.mTempShortcutItemList = new ArrayList<MenuItemImpl>();
@@ -346,6 +348,7 @@ public class MenuBuilder implements SupportMenu
         this.clearHeader();
         this.mPreventDispatchingItemsChanged = false;
         this.mItemsChangedWhileDispatchPrevented = false;
+        this.mStructureChangedWhileDispatchPrevented = false;
         this.onItemsChanged(true);
     }
     
@@ -707,9 +710,13 @@ public class MenuBuilder implements SupportMenu
                 this.mIsActionItemsStale = true;
             }
             this.dispatchPresenterUpdate(b);
-            return;
         }
-        this.mItemsChangedWhileDispatchPrevented = true;
+        else {
+            this.mItemsChangedWhileDispatchPrevented = true;
+            if (b) {
+                this.mStructureChangedWhileDispatchPrevented = true;
+            }
+        }
     }
     
     public boolean performIdentifierAction(final int n, final int n2) {
@@ -886,12 +893,15 @@ public class MenuBuilder implements SupportMenu
     
     void setExclusiveItemChecked(final MenuItem menuItem) {
         final int groupId = menuItem.getGroupId();
-        for (int size = this.mItems.size(), i = 0; i < size; ++i) {
+        final int size = this.mItems.size();
+        this.stopDispatchingItemsChanged();
+        for (int i = 0; i < size; ++i) {
             final MenuItemImpl menuItemImpl = this.mItems.get(i);
             if (menuItemImpl.getGroupId() == groupId && menuItemImpl.isExclusiveCheckable() && menuItemImpl.isCheckable()) {
                 menuItemImpl.setCheckedInt(menuItemImpl == menuItem);
             }
         }
+        this.startDispatchingItemsChanged();
     }
     
     public void setGroupCheckable(final int n, final boolean checkable, final boolean exclusiveCheckable) {
@@ -983,7 +993,7 @@ public class MenuBuilder implements SupportMenu
         this.mPreventDispatchingItemsChanged = false;
         if (this.mItemsChangedWhileDispatchPrevented) {
             this.mItemsChangedWhileDispatchPrevented = false;
-            this.onItemsChanged(true);
+            this.onItemsChanged(this.mStructureChangedWhileDispatchPrevented);
         }
     }
     
@@ -991,6 +1001,7 @@ public class MenuBuilder implements SupportMenu
         if (!this.mPreventDispatchingItemsChanged) {
             this.mPreventDispatchingItemsChanged = true;
             this.mItemsChangedWhileDispatchPrevented = false;
+            this.mStructureChangedWhileDispatchPrevented = false;
         }
     }
 }

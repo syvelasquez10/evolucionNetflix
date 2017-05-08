@@ -755,7 +755,7 @@ public class UserAgentStateManager implements Callback
                 }
                 catch (JSONException ex) {
                     Log.e("nf_service_useragentstate", "profileSwitched failed with userBoundCookies " + acccountKeyFromProfileId);
-                    this.mUserAgent.selectProfileResult(CommonStatus.INTERNAL_ERROR);
+                    this.mUserAgent.selectProfileResult(CommonStatus.INT_ERR_BAD_COOKIES);
                     if (!this.fallbackToPrimaryAccount()) {
                         this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
                     }

@@ -48,4 +48,9 @@ public class Pair<F, S>
         }
         return hashCode2 ^ hashCode;
     }
+    
+    @Override
+    public String toString() {
+        return "Pair{" + String.valueOf(this.first) + " " + String.valueOf(this.second) + "}";
+    }
 }

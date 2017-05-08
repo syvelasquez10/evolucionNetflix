@@ -5,15 +5,26 @@
 package com.netflix.mediaclient.ui.common;
 
 import java.util.Hashtable;
+import android.view.View;
+import android.graphics.Bitmap$CompressFormat;
+import android.graphics.Bitmap;
+import java.io.Closeable;
+import com.netflix.mediaclient.util.IoUtil;
+import java.io.FileWriter;
+import java.io.Reader;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import android.os.Process;
 import android.content.pm.ResolveInfo;
+import java.util.concurrent.TimeUnit;
+import android.os.SystemClock;
 import android.widget.Toast;
-import android.net.Uri;
 import java.util.Locale;
 import android.os.Build;
 import android.os.Build$VERSION;
 import android.content.Intent;
+import android.net.Uri;
 import java.io.FileOutputStream;
-import android.app.Activity;
 import java.util.Map;
 import java.io.PrintStream;
 import java.util.Properties;
@@ -21,24 +32,53 @@ import java.util.Iterator;
 import java.io.FilenameFilter;
 import java.util.List;
 import java.util.ArrayList;
-import com.netflix.mediaclient.util.AndroidUtils;
 import java.io.IOException;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.util.zip.ZipEntry;
 import com.netflix.mediaclient.Log;
 import java.io.File;
-import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.zip.ZipOutputStream;
 import android.content.Context;
+import android.app.Activity;
 
-class ExportDebugData
+public class ExportDebugData
 {
     private static final String AUTHORITY = "com.netflix.mediaclient.debugdata.fileprovider";
     private static final String PATH = "debug_data";
+    private static final String PREFS_NAMES = "ExportDebugData.PREFS_NAMES";
+    private static final String PREF_CRASHED_PID = "ExportDebugData.PREF_CRASHED_PID";
     private static final long SIZE_LIMIT = 5242880L;
     private static final String TAG = "ExportDebugData";
+    private static long lastReportTime;
+    
+    static {
+        ExportDebugData.lastReportTime = 0L;
+    }
+    
+    private static void addFalkorMemCache(final Context context, final ZipOutputStream zipOutputStream) {
+        final NetflixActivity netflixActivity = AndroidUtils.getContextAs(context, NetflixActivity.class);
+        if (netflixActivity != null) {
+            final ServiceManager serviceManager = netflixActivity.getServiceManager();
+            if (serviceManager != null) {
+                final File file = new File(netflixActivity.getFilesDir() + "/cache.txt");
+                serviceManager.getBrowse().dumpCacheToDisk(file);
+                if (!file.exists()) {
+                    Log.i("ExportDebugData", "Expected file not found " + file.getAbsolutePath());
+                    return;
+                }
+                Log.i("ExportDebugData", "Adding " + file.getAbsolutePath());
+                zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+                copyFile(new FileInputStream(file), zipOutputStream);
+                zipOutputStream.closeEntry();
+            }
+        }
+    }
     
     private static void addOfflineRealm(final Context context, final ZipOutputStream zipOutputStream) {
         final File file = new File(context.getFilesDir(), RealmUtils.sCurrentConfig.getRealmFileName());
@@ -55,7 +95,7 @@ class ExportDebugData
     private static void addOfflineRegistry(final Context context, final ZipOutputStream zipOutputStream) {
         final File file = new File(AndroidUtils.getExternalDownloadDirIfAvailable(context).getAbsolutePath() + "/.of");
         final ArrayList<Object> list = new ArrayList<Object>();
-        file.list(new ExportDebugData$1(list));
+        file.list(new ExportDebugData$2(list));
         for (final File file2 : list) {
             Log.i("ExportDebugData", "Adding " + file2.getAbsolutePath());
             zipOutputStream.putNextEntry(new ZipEntry(file2.getName()));
@@ -111,39 +151,39 @@ class ExportDebugData
         //    37: new             Ljava/lang/StringBuilder;
         //    40: dup            
         //    41: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    44: ldc             "Wrote "
-        //    46: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    49: iload_2        
-        //    50: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //    53: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    56: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //    59: pop            
-        //    60: aload_0        
-        //    61: ifnull          68
-        //    64: aload_0        
-        //    65: invokevirtual   java/io/InputStream.close:()V
-        //    68: return         
-        //    69: astore_1       
-        //    70: aload_0        
-        //    71: ifnull          78
-        //    74: aload_0        
-        //    75: invokevirtual   java/io/InputStream.close:()V
-        //    78: aload_1        
-        //    79: athrow         
-        //    80: astore_0       
-        //    81: return         
-        //    82: astore_0       
-        //    83: goto            78
+        //    44: ldc_w           "Wrote "
+        //    47: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    50: iload_2        
+        //    51: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //    54: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    57: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //    60: pop            
+        //    61: aload_0        
+        //    62: ifnull          69
+        //    65: aload_0        
+        //    66: invokevirtual   java/io/InputStream.close:()V
+        //    69: return         
+        //    70: astore_1       
+        //    71: aload_0        
+        //    72: ifnull          79
+        //    75: aload_0        
+        //    76: invokevirtual   java/io/InputStream.close:()V
+        //    79: aload_1        
+        //    80: athrow         
+        //    81: astore_0       
+        //    82: return         
+        //    83: astore_0       
+        //    84: goto            79
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  2      9      69     80     Any
-        //  9      16     69     80     Any
-        //  20     28     69     80     Any
-        //  35     60     69     80     Any
-        //  64     68     80     82     Ljava/io/IOException;
-        //  74     78     82     86     Ljava/io/IOException;
+        //  2      9      70     81     Any
+        //  9      16     70     81     Any
+        //  20     28     70     81     Any
+        //  35     61     70     81     Any
+        //  65     69     81     83     Ljava/io/IOException;
+        //  75     79     83     87     Ljava/io/IOException;
         // 
         // The error that occurred was:
         // 
@@ -170,51 +210,157 @@ class ExportDebugData
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public static void export(final Activity activity) {
-        File file2;
-        try {
-            final File file = new File(activity.getFilesDir(), "debug_data");
-            if (!file.exists() && (file.exists() || !file.mkdirs())) {
-                throw new IOException("Unable to create directories: " + file.getAbsolutePath());
-            }
-            Log.i("ExportDebugData", "Preparing " + "debug_data.zip" + " in " + file.getAbsolutePath());
-            file2 = new File(file, "debug_data.zip");
-            if (!file2.exists() || file2.delete()) {
-                final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file2));
-                zipOutputStream.setLevel(9);
-                addOfflineRealm((Context)activity, zipOutputStream);
-                addOfflineRegistry((Context)activity, zipOutputStream);
-                addPreferences((Context)activity, zipOutputStream, "nfxpref");
-                zipOutputStream.close();
-                if (file2.exists()) {
-                    final Intent intent = new Intent("android.intent.action.SEND_MULTIPLE");
-                    intent.setType("text/plain");
-                    intent.putExtra("android.intent.extra.SUBJECT", "Netflix Android Bug Report : com.netflix.mediaclient 4.12.2 build 14444 14444");
-                    intent.putExtra("android.intent.extra.TEXT", "\n\n\n[" + Build$VERSION.SDK_INT + " " + Build.BRAND + " " + Build.MANUFACTURER + " " + Build.MODEL + " " + Build.DEVICE + " " + Locale.getDefault().getCountry() + " " + Locale.getDefault().getLanguage() + "]");
-                    final ArrayList<Uri> list = new ArrayList<Uri>();
-                    final Uri parse = Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + "debug_data.zip");
-                    list.add(parse);
-                    grantRead((Context)activity, intent, parse);
-                    intent.putParcelableArrayListExtra("android.intent.extra.STREAM", (ArrayList)list);
-                    intent.addFlags(1);
-                    activity.startActivity(Intent.createChooser(intent, (CharSequence)"Send email..."));
-                    return;
+    private static void createBugReport(final Activity activity) {
+        while (true) {
+            ArrayList<Uri> list = null;
+            Intent intent = null;
+        Label_0631:
+            while (true) {
+                Label_0751: {
+                    try {
+                        final File file = new File(activity.getFilesDir(), "debug_data");
+                        if (!file.exists() && (file.exists() || !file.mkdirs())) {
+                            throw new IOException("Unable to create directories: " + file.getAbsolutePath());
+                        }
+                        Log.i("ExportDebugData", "Preparing " + "debug_data.zip" + " in " + file.getAbsolutePath());
+                        final File file2 = new File(file, "debug_data.zip");
+                        if (file2.exists() && !file2.delete()) {
+                            throw new IOException("Unable to write: " + file2.getAbsolutePath());
+                        }
+                        final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file2));
+                        zipOutputStream.setLevel(9);
+                        addFalkorMemCache((Context)activity, zipOutputStream);
+                        addOfflineRealm((Context)activity, zipOutputStream);
+                        addOfflineRegistry((Context)activity, zipOutputStream);
+                        addPreferences((Context)activity, zipOutputStream, "nfxpref");
+                        zipOutputStream.close();
+                        list = new ArrayList<Uri>();
+                        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)activity)) {
+                            final File screenshot = screenshot(activity, file);
+                            if (screenshot != null) {
+                                list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + screenshot.getName()));
+                            }
+                        }
+                        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)activity)) {
+                            final File logcat = logcat((Context)activity, file);
+                            if (logcat != null) {
+                                list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + logcat.getName()));
+                            }
+                        }
+                        if (!file2.exists()) {
+                            throw new IOException("Unable to create: " + file2.getAbsolutePath());
+                        }
+                        list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + "debug_data.zip"));
+                        final NetflixActivity netflixActivity = AndroidUtils.getContextAs((Context)activity, NetflixActivity.class);
+                        if (netflixActivity == null || netflixActivity.getServiceManager() == null || netflixActivity.getServiceManager().getCurrentProfile() == null) {
+                            break Label_0751;
+                        }
+                        final String string = "user=" + netflixActivity.getServiceManager().getCurrentProfile().getEmail() + " (" + netflixActivity.getServiceManager().getCurrentProfile().getLanguagesInCsv() + ")\n";
+                        intent = new Intent("android.intent.action.SEND_MULTIPLE");
+                        intent.setType("text/plain");
+                        intent.putExtra("android.intent.extra.EMAIL", new String[] { "spy-issues@netflix.com" });
+                        intent.putExtra("android.intent.extra.SUBJECT", "Enter_JIRA_summary_here");
+                        intent.putExtra("android.intent.extra.TEXT", "\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.13.0 build 14540\ncode=14540\nandroid=" + Build$VERSION.SDK_INT + "\nbrand=" + Build.BRAND + "\nmanufacturer=" + Build.MANUFACTURER + "\nmodel=" + Build.MODEL + "\ndevice=" + Build.DEVICE + "\ndevice.locale=" + Locale.getDefault().getCountry() + "_" + Locale.getDefault().getLanguage() + "\n" + string);
+                        final Iterator<Uri> iterator = list.iterator();
+                        while (iterator.hasNext()) {
+                            grantRead((Context)activity, intent, iterator.next());
+                        }
+                    }
+                    catch (Throwable t) {
+                        Log.e("ExportDebugData", "Oops, cannot createBugReport data", t);
+                        Toast.makeText((Context)activity, (CharSequence)("Oops, cannot createBugReport data, see error in logs (" + t.toString() + ")"), 1).show();
+                        return;
+                    }
+                    break Label_0631;
                 }
-                throw new IOException("Unable to create: " + file2.getAbsolutePath());
+                final String string = "";
+                continue;
             }
+            intent.putParcelableArrayListExtra("android.intent.extra.STREAM", (ArrayList)list);
+            intent.addFlags(1);
+            activity.startActivity(Intent.createChooser(intent, (CharSequence)"Send email..."));
         }
-        catch (Throwable t) {
-            Log.e("ExportDebugData", "Oops, cannot export data", t);
-            Toast.makeText((Context)activity, (CharSequence)("Oops, cannot export data, see error in logs (" + t.toString() + ")"), 1).show();
-            return;
+    }
+    
+    public static void createBugReportWithFeedback(final NetflixActivity netflixActivity) {
+        final long uptimeMillis = SystemClock.uptimeMillis();
+        if (uptimeMillis > ExportDebugData.lastReportTime + TimeUnit.SECONDS.toMillis(10L)) {
+            final Toast text = Toast.makeText((Context)netflixActivity, (CharSequence)"Taking screenshot...", 0);
+            text.show();
+            netflixActivity.getHandler().postDelayed((Runnable)new ExportDebugData$1(text, netflixActivity), 200L);
+            ExportDebugData.lastReportTime = uptimeMillis;
         }
-        throw new IOException("Unable to write: " + file2.getAbsolutePath());
     }
     
     private static void grantRead(final Context context, final Intent intent, final Uri uri) {
         final Iterator<ResolveInfo> iterator = context.getPackageManager().queryIntentActivities(intent, 65536).iterator();
         while (iterator.hasNext()) {
             context.grantUriPermission(iterator.next().activityInfo.packageName, uri, 1);
+        }
+    }
+    
+    private static File logcat(final Context context, File file) {
+        Label_0196: {
+            BufferedReader bufferedReader;
+            FileWriter fileWriter;
+            try {
+                file = new File(file, "logcat.txt");
+                if (file.exists() && !file.delete()) {
+                    break Label_0196;
+                }
+                final int int1 = context.getSharedPreferences("ExportDebugData.PREFS_NAMES", 0).getInt("ExportDebugData.PREF_CRASHED_PID", 0);
+                final StringBuilder append = new StringBuilder("logcat -d | grep \"").append(Process.myPid());
+                if (int1 != 0) {
+                    append.append("\\|").append(int1);
+                }
+                append.append("\"");
+                Log.e("ExportDebugData", "Capture logcat using $" + (Object)append);
+                bufferedReader = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(append.toString()).getInputStream()));
+                fileWriter = new FileWriter(file);
+                while (true) {
+                    final String line = bufferedReader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    fileWriter.append((CharSequence)line).append((CharSequence)"\n");
+                }
+            }
+            catch (Throwable t) {
+                Log.e("ExportDebugData", "Unable to capture logcat", t);
+                return null;
+            }
+            IoUtil.safeClose(bufferedReader);
+            IoUtil.safeClose(fileWriter);
+            return file;
+        }
+        Log.e("ExportDebugData", "Unable to capture logcat, " + file.getAbsolutePath() + " cannot be used");
+        return null;
+    }
+    
+    public static void markCrashed(final Context context) {
+        Log.e("ExportDebugData", "Mark session as crashed");
+        context.getSharedPreferences("ExportDebugData.PREFS_NAMES", 0).edit().putInt("ExportDebugData.PREF_CRASHED_PID", Process.myPid()).apply();
+    }
+    
+    private static File screenshot(final Activity activity, File file) {
+        try {
+            file = new File(file, "screenshot.jpeg");
+            if (!file.exists() || file.delete()) {
+                final View rootView = activity.getWindow().getDecorView().getRootView();
+                rootView.setDrawingCacheEnabled(true);
+                final Bitmap bitmap = Bitmap.createBitmap(rootView.getDrawingCache());
+                rootView.setDrawingCacheEnabled(false);
+                final FileOutputStream fileOutputStream = new FileOutputStream(file);
+                bitmap.compress(Bitmap$CompressFormat.JPEG, 100, (OutputStream)fileOutputStream);
+                IoUtil.safeClose(fileOutputStream);
+                return file;
+            }
+            Log.e("ExportDebugData", "Unable to capture screenshot, " + file.getAbsolutePath() + " cannot be used");
+            return null;
+        }
+        catch (Throwable t) {
+            Log.e("ExportDebugData", "Unable to capture screenshot", t);
+            return null;
         }
     }
 }

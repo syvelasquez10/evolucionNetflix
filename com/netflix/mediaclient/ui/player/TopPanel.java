@@ -59,9 +59,9 @@ public final class TopPanel extends PlayerSection
         this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
         this.mListeners = mListeners;
         (this.mActionBar = playerFragment.getNetflixActivity().getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131690134);
-        this.mTopGradient = playerFragment.getView().findViewById(2131690131);
-        this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131690133);
+        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131755702);
+        this.mTopGradient = playerFragment.getView().findViewById(2131755698);
+        this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131755701);
     }
     
     private void changeControlsVisibility(final boolean gradientVisibility) {
@@ -89,9 +89,9 @@ public final class TopPanel extends PlayerSection
         this.mdxTargetSelector.setTarget(localDevicePosition);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerFragment.getActivity());
         mdxTargetSelectionDialog$Builder.setCancelable(false);
-        mdxTargetSelectionDialog$Builder.setTitle(2131231118);
+        mdxTargetSelectionDialog$Builder.setTitle(2131296674);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerFragment.getActivity()));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231303), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131296859), this.getCurrentTitle()));
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerFragment, b));
         mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerFragment));
         return mdxTargetSelectionDialog$Builder.create();
@@ -115,22 +115,22 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initGeneric(final Menu menu) {
-        (this.mEpisodeSelector = menu.add(2131230882)).setVisible(this.mEpisodeSelectorEnabled);
-        this.mEpisodeSelector.setIcon(2130837741);
+        (this.mEpisodeSelector = menu.add(2131296432)).setVisible(this.mEpisodeSelectorEnabled);
+        this.mEpisodeSelector.setIcon(2130837743);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
     }
     
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.playerFragment.getNetflixActivity(), this.playerFragment.getNetflixActivity().isTablet(), new TopPanel$3(this));
-        (this.mLanguage = menu.add(2131230883)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837830);
+        (this.mLanguage = menu.add(2131296433)).setVisible(this.showLanguageMenuItem());
+        this.mLanguage.setIcon(2130837951);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131230884)).setIcon(2130837716);
+        (this.mMdxTarget = menu.add(2131296434)).setIcon(2130837721);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
         this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
@@ -140,7 +140,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu) {
-        (this.mSound = menu.add(2131230902)).setIcon(2130837835);
+        (this.mSound = menu.add(2131296452)).setIcon(2130837962);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }

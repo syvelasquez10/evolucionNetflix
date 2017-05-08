@@ -6,7 +6,9 @@ package android.support.v4.app;
 
 import android.graphics.drawable.Drawable;
 import android.app.Activity;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class ActionBarDrawerToggle$ActionBarDrawerToggleImplHC implements ActionBarDrawerToggle$ActionBarDrawerToggleImpl
 {
     @Override

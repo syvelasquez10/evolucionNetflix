@@ -57,7 +57,7 @@ class OfflineErrorDialog$3 implements DialogInterface$OnClickListener
                 }
             }
             else {
-                Toast.makeText((Context)access$200, 2131231341, 0).show();
+                Toast.makeText((Context)access$200, 2131296900, 0).show();
             }
         }
         dialogInterface.dismiss();

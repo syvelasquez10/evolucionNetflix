@@ -6,5 +6,5 @@ package android.support.v7.cardview;
 
 public final class R$style
 {
-    public static final int CardView = 2131427479;
+    public static final int CardView = 2131493032;
 }

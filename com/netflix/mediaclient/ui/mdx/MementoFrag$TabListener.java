@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import java.util.Iterator;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.widget.ImageView;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
@@ -76,16 +76,16 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     
     @Override
     public void onTabSelected(final TabLayout$Tab pagerPositionOnTabSelect) {
-        pagerPositionOnTabSelect.getCustomView().findViewById(2131690014).setVisibility(0);
-        final TextView textView = (TextView)pagerPositionOnTabSelect.getCustomView().findViewById(2131690015);
+        pagerPositionOnTabSelect.getCustomView().findViewById(2131755557).setVisibility(0);
+        final TextView textView = (TextView)pagerPositionOnTabSelect.getCustomView().findViewById(2131755558);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         this.setPagerPositionOnTabSelect(pagerPositionOnTabSelect);
         if (this.this$0.isActivityValid()) {
-            if (this.this$0.getResources().getString(2131231071).compareToIgnoreCase(textView.getText().toString()) == 0) {
+            if (this.this$0.getResources().getString(2131296627).compareToIgnoreCase(textView.getText().toString()) == 0) {
                 UIViewLogUtils.reportUIViewCommand((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.mementoTabCast, IClientLogging$ModalView.memento, this.this$0.getNetflixActivity().getDataContext());
                 return;
             }
-            if (this.this$0.getResources().getString(2131231073).compareToIgnoreCase(textView.getText().toString()) == 0) {
+            if (this.this$0.getResources().getString(2131296629).compareToIgnoreCase(textView.getText().toString()) == 0) {
                 UIViewLogUtils.reportUIViewCommand((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.mementoTabRelated, IClientLogging$ModalView.memento, this.this$0.getNetflixActivity().getDataContext());
             }
         }
@@ -93,7 +93,7 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     
     @Override
     public void onTabUnselected(final TabLayout$Tab tabLayout$Tab) {
-        tabLayout$Tab.getCustomView().findViewById(2131690014).setVisibility(4);
-        ((TextView)tabLayout$Tab.getCustomView().findViewById(2131690015)).setTypeface(Typeface.DEFAULT);
+        tabLayout$Tab.getCustomView().findViewById(2131755557).setVisibility(4);
+        ((TextView)tabLayout$Tab.getCustomView().findViewById(2131755558)).setTypeface(Typeface.DEFAULT);
     }
 }

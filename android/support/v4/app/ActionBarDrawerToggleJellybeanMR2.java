@@ -10,7 +10,9 @@ import android.app.ActionBar;
 import android.util.AttributeSet;
 import android.graphics.drawable.Drawable;
 import android.app.Activity;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class ActionBarDrawerToggleJellybeanMR2
 {
     private static final String TAG = "ActionBarDrawerToggleImplJellybeanMR2";

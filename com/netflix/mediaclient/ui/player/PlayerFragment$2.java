@@ -25,6 +25,7 @@ import android.view.Surface;
 import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.support.v4.media.session.MediaSessionCompat$Callback;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
@@ -44,6 +45,7 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -55,11 +57,12 @@ import android.os.Debug;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
+import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -89,6 +92,7 @@ import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.media.BookmarkStore;
 import android.widget.Toast;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
+import android.view.View;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
@@ -111,7 +115,6 @@ import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDesc
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
 import com.netflix.mediaclient.ui.player.error.PlayerErrorDialogDescriptorFactory;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
@@ -137,6 +140,7 @@ import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceled
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.media.Language;
+import android.view.View$OnClickListener;
 import android.widget.SeekBar$OnSeekBarChangeListener;
 import com.netflix.mediaclient.ui.details.DetailsActivity$Reloader;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -146,11 +150,9 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import android.os.SystemClock;
-import android.view.View;
-import android.view.View$OnClickListener;
+import com.netflix.mediaclient.Log;
 
-class PlayerFragment$2 implements View$OnClickListener
+class PlayerFragment$2 implements Runnable
 {
     final /* synthetic */ PlayerFragment this$0;
     
@@ -158,13 +160,9 @@ class PlayerFragment$2 implements View$OnClickListener
         this.this$0 = this$0;
     }
     
-    public void onClick(final View view) {
-        this.this$0.mState.setLastActionTime(SystemClock.elapsedRealtime());
-        this.this$0.mState.userInteraction();
-        if (this.this$0.mPlayer.isPlaying()) {
-            this.this$0.doPause(true);
-            return;
-        }
-        this.this$0.doUnpause();
+    @Override
+    public void run() {
+        Log.d("PlayerFragment", "Pause, release awake clock");
+        this.this$0.releaseLockOnScreen();
     }
 }

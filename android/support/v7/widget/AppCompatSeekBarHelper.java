@@ -9,6 +9,7 @@ import android.support.v4.view.ViewCompat;
 import android.graphics.drawable.Drawable$Callback;
 import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
+import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.widget.ProgressBar;
@@ -87,6 +88,7 @@ class AppCompatSeekBarHelper extends AppCompatProgressBarHelper
         }
     }
     
+    @TargetApi(11)
     void jumpDrawablesToCurrentState() {
         if (this.mTickMark != null) {
             this.mTickMark.jumpToCurrentState();

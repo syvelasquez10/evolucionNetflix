@@ -26,6 +26,7 @@ import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.FetchErrorUtils;
 import com.netflix.mediaclient.util.VolleyUtils;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.Log;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.util.UriUtil;
@@ -86,7 +87,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
         if (Log.isLoggable()) {
             Log.d("FalkorVolleyWebClientRequest", "request duration time (ms): " + durationTimeMs + ", class: " + this.getClass() + ", error: " + volleyError);
         }
-        final NetflixStatus status = VolleyUtils.getStatus(volleyError, this.mErrorLogger);
+        final NetflixStatus status = VolleyUtils.getStatus(volleyError, this.mErrorLogger, StatusCode.INT_ERR_FETCH_ERROR);
         if (this.mContext != null) {
             if (FetchErrorUtils.isAccountError(status.getStatusCode())) {
                 FetchErrorUtils.notifyOthersOfAccountErrors(this.mContext, status.getStatusCode());

@@ -9,6 +9,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import java.util.Iterator;
 import android.content.Context;
+import com.netflix.mediaclient.service.configuration.persistent.AimLowTextPlaceholderConfig;
 import com.netflix.mediaclient.service.configuration.persistent.DPPrefetchABTestConfig;
 import com.netflix.mediaclient.service.configuration.persistent.PrefetchLolomoConfig;
 import com.netflix.mediaclient.service.configuration.persistent.BrandLoveSurvey;
@@ -46,6 +47,7 @@ public final class PersistentConfig
         PersistentConfig.mConfigs.put(BrandLoveSurvey.class, new BrandLoveSurvey());
         PersistentConfig.mConfigs.put(PrefetchLolomoConfig.class, new PrefetchLolomoConfig());
         PersistentConfig.mConfigs.put(DPPrefetchABTestConfig.class, new DPPrefetchABTestConfig());
+        PersistentConfig.mConfigs.put(AimLowTextPlaceholderConfig.class, new AimLowTextPlaceholderConfig());
     }
     
     public static void delete(final Context context) {
@@ -53,6 +55,10 @@ public final class PersistentConfig
         while (iterator.hasNext()) {
             iterator.next().delete(context);
         }
+    }
+    
+    public static ABTestConfig$Cell getAimLowTextPlaceholderConfig(final Context context) {
+        return PersistentConfig.mConfigs.get(AimLowTextPlaceholderConfig.class).getCell(context);
     }
     
     public static ABTestConfig$Cell getBrandLoveSurveyTestCell(final Context context) {
@@ -76,7 +82,7 @@ public final class PersistentConfig
     }
     
     public static ABTestConfig$Cell getDisplayPageRefreshTestCell(final Context context) {
-        return PersistentConfig.mConfigs.get(DisplayPageRefreshConfig.class).getCell(context, ABTestConfig$Cell.CELL_TWO);
+        return PersistentConfig.mConfigs.get(DisplayPageRefreshConfig.class).getCell(context);
     }
     
     public static ABTestConfig$Cell getMemento(final Context context) {

@@ -20,7 +20,7 @@ public abstract class MediaRouteProvider
     private boolean mPendingDiscoveryRequestChange;
     
     MediaRouteProvider(final Context mContext, final MediaRouteProvider$ProviderMetadata mMetadata) {
-        this.mHandler = new MediaRouteProvider$ProviderHandler(this, null);
+        this.mHandler = new MediaRouteProvider$ProviderHandler(this);
         if (mContext == null) {
             throw new IllegalArgumentException("context must not be null");
         }
@@ -32,14 +32,14 @@ public abstract class MediaRouteProvider
         this.mMetadata = mMetadata;
     }
     
-    private void deliverDescriptorChanged() {
+    void deliverDescriptorChanged() {
         this.mPendingDescriptorChange = false;
         if (this.mCallback != null) {
             this.mCallback.onDescriptorChanged(this, this.mDescriptor);
         }
     }
     
-    private void deliverDiscoveryRequestChanged() {
+    void deliverDiscoveryRequestChanged() {
         this.mPendingDiscoveryRequestChange = false;
         this.onDiscoveryRequestChanged(this.mDiscoveryRequest);
     }
@@ -65,7 +65,20 @@ public abstract class MediaRouteProvider
     }
     
     public MediaRouteProvider$RouteController onCreateRouteController(final String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("routeId cannot be null");
+        }
         return null;
+    }
+    
+    public MediaRouteProvider$RouteController onCreateRouteController(final String s, final String s2) {
+        if (s == null) {
+            throw new IllegalArgumentException("routeId cannot be null");
+        }
+        if (s2 == null) {
+            throw new IllegalArgumentException("routeGroupId cannot be null");
+        }
+        return this.onCreateRouteController(s);
     }
     
     public void onDiscoveryRequestChanged(final MediaRouteDiscoveryRequest mediaRouteDiscoveryRequest) {

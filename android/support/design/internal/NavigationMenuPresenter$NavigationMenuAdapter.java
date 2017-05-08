@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView$ViewHolder;
 import android.graphics.drawable.Drawable;
 import android.widget.TextView;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import java.util.Iterator;
 import android.util.SparseArray;
@@ -191,7 +192,7 @@ class NavigationMenuPresenter$NavigationMenuAdapter extends RecyclerView$Adapter
                 final NavigationMenuItemView navigationMenuItemView = (NavigationMenuItemView)navigationMenuPresenter$ViewHolder.itemView;
                 navigationMenuItemView.setIconTintList(this.this$0.mIconTintList);
                 if (this.this$0.mTextAppearanceSet) {
-                    navigationMenuItemView.setTextAppearance(navigationMenuItemView.getContext(), this.this$0.mTextAppearance);
+                    navigationMenuItemView.setTextAppearance(this.this$0.mTextAppearance);
                 }
                 if (this.this$0.mTextColor != null) {
                     navigationMenuItemView.setTextColor(this.this$0.mTextColor);
@@ -203,7 +204,7 @@ class NavigationMenuPresenter$NavigationMenuAdapter extends RecyclerView$Adapter
                 else {
                     drawable = null;
                 }
-                navigationMenuItemView.setBackgroundDrawable(drawable);
+                ViewCompat.setBackground((View)navigationMenuItemView, drawable);
                 final NavigationMenuPresenter$NavigationMenuTextItem navigationMenuPresenter$NavigationMenuTextItem = this.mItems.get(n);
                 navigationMenuItemView.setNeedsEmptyIcon(navigationMenuPresenter$NavigationMenuTextItem.needsEmptyIcon);
                 navigationMenuItemView.initialize(navigationMenuPresenter$NavigationMenuTextItem.getMenuItem(), 0);

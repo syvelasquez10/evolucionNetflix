@@ -10,7 +10,9 @@ import android.os.Parcelable;
 import android.os.Bundle;
 import android.app.RemoteInput$Builder;
 import android.app.RemoteInput;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class NotificationCompatApi21
 {
     public static final String CATEGORY_ALARM = "alarm";

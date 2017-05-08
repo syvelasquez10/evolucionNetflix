@@ -5,13 +5,13 @@
 package android.support.v7.widget;
 
 import android.support.v4.view.ViewPropertyAnimatorListener;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.view.menu.MenuBuilder$Callback;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.appcompat.R$id;
 import android.support.v7.view.menu.MenuPresenter$Callback;
 import android.support.v7.content.res.AppCompatResources;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.content.Context;
@@ -263,8 +263,8 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
-    public void setBackgroundDrawable(final Drawable backgroundDrawable) {
-        this.mToolbar.setBackgroundDrawable(backgroundDrawable);
+    public void setBackgroundDrawable(final Drawable drawable) {
+        ViewCompat.setBackground((View)this.mToolbar, drawable);
     }
     
     @Override

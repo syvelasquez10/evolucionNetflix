@@ -9,7 +9,9 @@ import android.view.ViewParent;
 import android.graphics.Matrix;
 import android.animation.ValueAnimator;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class ViewCompatHC
 {
     public static int combineMeasuredStates(final int n, final int n2) {

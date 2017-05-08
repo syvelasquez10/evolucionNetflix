@@ -74,6 +74,11 @@ class SingleDocumentFile extends DocumentFile
     }
     
     @Override
+    public boolean isVirtual() {
+        return DocumentsContractApi19.isVirtual(this.mContext, this.mUri);
+    }
+    
+    @Override
     public long lastModified() {
         return DocumentsContractApi19.lastModified(this.mContext, this.mUri);
     }

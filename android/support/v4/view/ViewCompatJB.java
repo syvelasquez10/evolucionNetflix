@@ -4,10 +4,13 @@
 
 package android.support.v4.view;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ViewParent;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class ViewCompatJB
 {
     public static Object getAccessibilityNodeProvider(final View view) {
@@ -64,6 +67,10 @@ class ViewCompatJB
     
     public static void requestApplyInsets(final View view) {
         view.requestFitSystemWindows();
+    }
+    
+    public static void setBackground(final View view, final Drawable background) {
+        view.setBackground(background);
     }
     
     public static void setHasTransientState(final View view, final boolean hasTransientState) {

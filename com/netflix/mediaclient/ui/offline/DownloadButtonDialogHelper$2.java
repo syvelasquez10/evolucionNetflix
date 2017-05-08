@@ -28,17 +28,18 @@ final class DownloadButtonDialogHelper$2 implements PopupMenu$OnMenuItemClickLis
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        if (menuItem.getItemId() == 2131690414) {
+        if (menuItem.getItemId() == 2131755984) {
             UIViewLogUtils.reportUIViewCommand(this.val$context, UIViewLogging$UIViewCommandName.PauseDownloadCommand, IClientLogging$ModalView.pauseDownloadButton, CommandEndedEvent$InputMethod.gesture, null);
             ((NetflixActivity)this.val$context).getServiceManager().getOfflineAgent().pauseDownload(this.val$playableId);
             this.val$downloadButton.setState(DownloadButton$ButtonState.PAUSED, this.val$playableId);
         }
-        else if (menuItem.getItemId() == 2131690417) {
+        else if (menuItem.getItemId() == 2131755987) {
             UIViewLogUtils.reportUIViewCommand(this.val$context, UIViewLogging$UIViewCommandName.RemoveCachedVideoCommand, IClientLogging$ModalView.removeCachedVideoButton, CommandEndedEvent$InputMethod.gesture, null);
             ((NetflixActivity)this.val$context).getServiceManager().getOfflineAgent().deleteOfflinePlayable(this.val$playableId);
             DownloadButton.removePreQueued(this.val$playableId);
         }
-        else if (menuItem.getItemId() == 2131690418) {
+        else if (menuItem.getItemId() == 2131755988) {
+            UIViewLogUtils.reportUIViewCommand(this.val$context, UIViewLogging$UIViewCommandName.ShowMyDownloads, IClientLogging$ModalView.myDownloads, CommandEndedEvent$InputMethod.gesture, null);
             this.val$context.startActivity(OfflineActivity.showAllDownloads((Activity)this.val$context));
         }
         return true;

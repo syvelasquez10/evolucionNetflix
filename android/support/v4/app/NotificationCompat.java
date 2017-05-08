@@ -161,10 +161,6 @@ public class NotificationCompat
                 if (notificationCompat$Style instanceof NotificationCompat$BigPictureStyle) {
                     final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle = (NotificationCompat$BigPictureStyle)notificationCompat$Style;
                     NotificationCompatJellybean.addBigPictureStyle(notificationBuilderWithBuilderAccessor, notificationCompat$BigPictureStyle.mBigContentTitle, notificationCompat$BigPictureStyle.mSummaryTextSet, notificationCompat$BigPictureStyle.mSummaryText, notificationCompat$BigPictureStyle.mPicture, notificationCompat$BigPictureStyle.mBigLargeIcon, notificationCompat$BigPictureStyle.mBigLargeIconSet);
-                    return;
-                }
-                if (notificationCompat$Style instanceof NotificationCompat$MessagingStyle) {
-                    return;
                 }
             }
         }

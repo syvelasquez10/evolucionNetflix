@@ -5,6 +5,7 @@
 package android.support.design.widget;
 
 import android.view.ViewParent;
+import android.view.View;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.util.AttributeSet;
@@ -28,9 +29,11 @@ public class TextInputEditText extends AppCompatEditText
     public InputConnection onCreateInputConnection(final EditorInfo editorInfo) {
         final InputConnection onCreateInputConnection = super.onCreateInputConnection(editorInfo);
         if (onCreateInputConnection != null && editorInfo.hintText == null) {
-            final ViewParent parent = this.getParent();
-            if (parent instanceof TextInputLayout) {
-                editorInfo.hintText = ((TextInputLayout)parent).getHint();
+            for (ViewParent viewParent = this.getParent(); viewParent instanceof View; viewParent = viewParent.getParent()) {
+                if (viewParent instanceof TextInputLayout) {
+                    editorInfo.hintText = ((TextInputLayout)viewParent).getHint();
+                    break;
+                }
             }
         }
         return onCreateInputConnection;

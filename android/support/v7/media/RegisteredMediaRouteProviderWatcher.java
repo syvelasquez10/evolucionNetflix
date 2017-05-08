@@ -48,7 +48,7 @@ final class RegisteredMediaRouteProviderWatcher
         return -1;
     }
     
-    private void scanPackages() {
+    void scanPackages() {
         if (this.mRunning) {
             final Iterator<ResolveInfo> iterator = (Iterator<ResolveInfo>)this.mPackageManager.queryIntentServices(new Intent("android.media.MediaRouteProviderService"), 0).iterator();
             int n = 0;

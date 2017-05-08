@@ -7,7 +7,9 @@ package android.support.v4.media;
 import android.media.browse.MediaBrowser$SubscriptionCallback;
 import android.media.browse.MediaBrowser;
 import android.os.Bundle;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 class MediaBrowserCompatApi24
 {
     public static Object createSubscriptionCallback(final MediaBrowserCompatApi24$SubscriptionCallback mediaBrowserCompatApi24$SubscriptionCallback) {

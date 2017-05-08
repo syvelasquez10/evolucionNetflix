@@ -5,7 +5,9 @@
 package android.support.v4.widget;
 
 import android.widget.TextView;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class TextViewCompatJb
 {
     static int getMaxLines(final TextView textView) {

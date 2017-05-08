@@ -29,8 +29,8 @@ public class PostPlayItemBasic extends PostPlayItemView
     
     @Override
     protected void findViews() {
-        this.displayArt = (AdvancedImageView)this.findViewById(2131690179);
-        this.playButton = (ImageView)this.findViewById(2131690160);
+        this.displayArt = (AdvancedImageView)this.findViewById(2131755747);
+        this.playButton = (ImageView)this.findViewById(2131755728);
     }
     
     @Override
@@ -44,7 +44,7 @@ public class PostPlayItemBasic extends PostPlayItemView
     @Override
     public void updateViews(final PostPlayItem postPlayItem, final NetflixActivity netflixActivity, final PlayerFragment playerFragment, final PostPlayRequestContext postPlayRequestContext, final View$OnClickListener onClickListener) {
         if (postPlayItem.getDisplayArtAsset() != null && postPlayItem.getDisplayArtAsset().getUrl() != null) {
-            NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.displayArt, postPlayItem.getDisplayArtAsset().getUrl(), IClientLogging$AssetType.merchStill, String.format(netflixActivity.getResources().getString(2131230899), postPlayItem.getTitle()), ImageLoader$StaticImgConfig.LIGHT_NO_PLACEHOLDER, true, 1);
+            NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.displayArt, postPlayItem.getDisplayArtAsset().getUrl(), IClientLogging$AssetType.merchStill, String.format(netflixActivity.getResources().getString(2131296449), postPlayItem.getTitle()), ImageLoader$StaticImgConfig.LIGHT_NO_PLACEHOLDER, true, 1);
         }
         if (onClickListener == null) {
             this.playButton.setVisibility(8);

@@ -13,16 +13,20 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import java.util.ArrayList;
-import java.util.HashMap;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.content.Context;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import java.util.Iterator;
 import java.util.Collections;
 import java.util.HashSet;
 import com.netflix.mediaclient.util.ThreadUtils;
+import java.util.ArrayDeque;
+import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.List;
@@ -34,10 +38,22 @@ public final class DPPrefetchABTestUtils
     private static final int CELL_FOUR_PREFETCH_COUNT = 1;
     public static final int DP_PREFETCH_REQUEST_LATCH_TIMEOUT_MS = 20000;
     public static final String DP_TTI_COMPLETION_REASON_PARAM_KEY = "reason";
+    public static final int MAX_PARALLEL_PREFETCH_REQUEST_COUNT = 2;
     public static final String PARAM_KEY_IS_FROM_CACHE = "isFromCache";
+    private static final Object REQUEST_TAG;
     private static final String TAG = "DPPrefetchABTestUtils";
     private static volatile Map<String, List<CountDownLatch>> pendingDetailsRequestsMap;
     private static volatile Set<String> pendingDetailsRequestsSet;
+    private static AtomicInteger prefetchCounter;
+    private static HashMap<Video, BrowseAgentCallback> prefetchDPCallbackMap;
+    private static ArrayDeque<Video> prefetchDPQueue;
+    
+    static {
+        REQUEST_TAG = new Object();
+        DPPrefetchABTestUtils.prefetchDPQueue = new ArrayDeque<Video>();
+        DPPrefetchABTestUtils.prefetchDPCallbackMap = new HashMap<Video, BrowseAgentCallback>();
+        DPPrefetchABTestUtils.prefetchCounter = new AtomicInteger();
+    }
     
     public static void addToPendingDetailsRequest(final String s) {
         ThreadUtils.assertNotOnMain();
@@ -45,6 +61,48 @@ public final class DPPrefetchABTestUtils
             DPPrefetchABTestUtils.pendingDetailsRequestsSet = Collections.synchronizedSet(new HashSet<String>());
         }
         DPPrefetchABTestUtils.pendingDetailsRequestsSet.add(s);
+    }
+    
+    public static void addToQueue(final List<? extends Video> list, final BrowseAgentCallback browseAgentCallback) {
+        for (final Video video : list) {
+            if (DPPrefetchABTestUtils.prefetchDPQueue.contains(video)) {
+                DPPrefetchABTestUtils.prefetchDPQueue.remove(video);
+                DPPrefetchABTestUtils.prefetchDPCallbackMap.remove(video);
+            }
+            DPPrefetchABTestUtils.prefetchDPQueue.addFirst(video);
+            DPPrefetchABTestUtils.prefetchDPCallbackMap.put(video, browseAgentCallback);
+        }
+    }
+    
+    public static void cancelPrefetchDPRequests(final ServiceManager serviceManager) {
+        if (serviceManager != null && isInTest(serviceManager.getContext())) {
+            serviceManager.cancelRequests(getRequestTag());
+        }
+        DPPrefetchABTestUtils.prefetchDPQueue.clear();
+        DPPrefetchABTestUtils.prefetchDPCallbackMap.clear();
+    }
+    
+    public static int decrementPrefetchCounter() {
+        return DPPrefetchABTestUtils.prefetchCounter.getAndDecrement();
+    }
+    
+    public static Video getNextPrefetchVideo() {
+        if (DPPrefetchABTestUtils.prefetchDPQueue.isEmpty()) {
+            return null;
+        }
+        return DPPrefetchABTestUtils.prefetchDPQueue.pop();
+    }
+    
+    public static int getPrefetchCounter() {
+        return DPPrefetchABTestUtils.prefetchCounter.get();
+    }
+    
+    public static Object getRequestTag() {
+        return DPPrefetchABTestUtils.REQUEST_TAG;
+    }
+    
+    public static int incrementPrefetchCounter() {
+        return DPPrefetchABTestUtils.prefetchCounter.getAndIncrement();
     }
     
     public static boolean isInTest(final Context context) {
@@ -63,18 +121,26 @@ public final class DPPrefetchABTestUtils
         return true;
     }
     
+    public static boolean isPrefetchDPRequestInFlight(final String s) {
+        return DPPrefetchABTestUtils.pendingDetailsRequestsSet != null && DPPrefetchABTestUtils.pendingDetailsRequestsSet.contains(s);
+    }
+    
+    public static boolean isPrefetchQueueEmpty() {
+        return DPPrefetchABTestUtils.prefetchDPQueue.isEmpty();
+    }
+    
     public static void latchToPendingRequestsIfExists(final String s) {
         ThreadUtils.assertNotOnMain();
-        if (DPPrefetchABTestUtils.pendingDetailsRequestsSet == null || !DPPrefetchABTestUtils.pendingDetailsRequestsSet.contains(s)) {
+        if (!isPrefetchDPRequestInFlight(s)) {
             return;
         }
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         if (DPPrefetchABTestUtils.pendingDetailsRequestsMap == null) {
             DPPrefetchABTestUtils.pendingDetailsRequestsMap = Collections.synchronizedMap(new HashMap<String, List<CountDownLatch>>());
         }
-        Label_0169: {
+        Label_0159: {
             if (!DPPrefetchABTestUtils.pendingDetailsRequestsMap.containsKey(s)) {
-                break Label_0169;
+                break Label_0159;
             }
             List<CountDownLatch> list;
             if ((list = DPPrefetchABTestUtils.pendingDetailsRequestsMap.get(s)) == null) {
@@ -166,11 +232,15 @@ public final class DPPrefetchABTestUtils
         prefetchVideoListDetails(serviceManager, list, Math.min(n, list.size()));
     }
     
-    private static void prefetchVideoListDetails(final ServiceManager serviceManager, final List<? extends Video> list, int min) {
+    private static void prefetchVideoListDetails(final ServiceManager serviceManager, final List<? extends Video> list, int i) {
         if (isInputValid(serviceManager, list)) {
-            min = Math.min(min, list.size());
-            if (min >= 0) {
-                serviceManager.getBrowse().prefetchVideoListDetails(list.subList(0, min), new DPPrefetchABTestUtils$1());
+            List<? extends Video> subList;
+            for (i = Math.min(i, list.size()); i > 0; --i) {
+                subList = list.subList(i - 1, i);
+                if (Log.isLoggable()) {
+                    Log.d("DPPrefetchABTestUtils", "Prefetch DP submit request to queue - " + subList);
+                }
+                serviceManager.getBrowse().prefetchVideoListDetails(subList, new DPPrefetchABTestUtils$1());
             }
         }
     }
@@ -194,6 +264,10 @@ public final class DPPrefetchABTestUtils
                 DPPrefetchABTestUtils.pendingDetailsRequestsMap.remove(s);
             }
         }
+    }
+    
+    public static BrowseAgentCallback removePrefetchDPCallback(final Video video) {
+        return DPPrefetchABTestUtils.prefetchDPCallbackMap.remove(video);
     }
     
     public static void reportDPMetadataFetchedEvent(final Status status) {

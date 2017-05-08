@@ -13,10 +13,10 @@ import java.util.Iterator;
 import android.support.v7.media.MediaRouter$ProviderInfo;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONException;
+import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.google.android.gms.cast.CastDevice;
 import java.util.HashMap;
-import android.support.v7.media.MediaRouter;
 import android.support.v7.media.MediaRouteSelector;
 import com.netflix.mediaclient.service.mdx.MdxNrdpLogger;
 import android.support.v7.media.MediaRouter$RouteInfo;
@@ -24,7 +24,7 @@ import java.util.Map;
 import android.os.Handler;
 import android.content.Context;
 import android.support.v7.media.MediaRouter$Callback;
-import com.netflix.mediaclient.Log;
+import android.support.v7.media.MediaRouter;
 
 class CastManager$2 implements Runnable
 {
@@ -36,11 +36,9 @@ class CastManager$2 implements Runnable
     
     @Override
     public void run() {
-        Log.d(CastManager.TAG, "stop ApiClient");
-        if (this.this$0.mSelectedMdxCastApp != null) {
-            this.this$0.mSelectedMdxCastApp.stop();
-            this.this$0.mSelectedMdxCastApp = null;
+        if (this.this$0.mMediaRouter == null) {
+            this.this$0.mMediaRouter = MediaRouter.getInstance(this.this$0.mContext);
         }
-        Log.d(CastManager.TAG, "stop ApiClient done");
+        this.this$0.startDiscovery();
     }
 }

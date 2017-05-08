@@ -17,6 +17,8 @@ public interface Bridge
 {
     boolean enableLowBitrateStreams();
     
+    String getChannelId();
+    
     int getConfigVideoBufferSize();
     
     Context getContext();

@@ -23,7 +23,7 @@ public class PrefetchLolomoConfig extends PersistentConfigurable
     
     @Override
     public String getTestId() {
-        return "7480";
+        return "7882";
     }
     
     @Override

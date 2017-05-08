@@ -12,7 +12,6 @@ import io.realm.internal.RealmObjectProxy;
 import io.realm.internal.Row;
 import java.util.List;
 import io.realm.log.RealmLog;
-import java.util.Iterator;
 import io.realm.internal.ObjectServerFacade;
 import java.io.FileNotFoundException;
 import io.realm.exceptions.RealmMigrationNeededException;
@@ -61,7 +60,7 @@ abstract class BaseRealm implements Closeable
     
     static boolean deleteRealm(final RealmConfiguration realmConfiguration) {
         final AtomicBoolean atomicBoolean = new AtomicBoolean(true);
-        RealmCache.invokeWithGlobalRefCount(realmConfiguration, new BaseRealm$3(realmConfiguration, atomicBoolean));
+        RealmCache.invokeWithGlobalRefCount(realmConfiguration, (RealmCache$Callback)new BaseRealm$3(realmConfiguration, atomicBoolean));
         return atomicBoolean.get();
     }
     
@@ -73,7 +72,7 @@ abstract class BaseRealm implements Closeable
             throw new RealmMigrationNeededException(realmConfiguration.getPath(), "RealmMigration must be provided", (Throwable)ex);
         }
         final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        RealmCache.invokeWithGlobalRefCount(realmConfiguration, new BaseRealm$4(realmConfiguration, atomicBoolean, realmMigration, baseRealm$MigrationCallback));
+        RealmCache.invokeWithGlobalRefCount(realmConfiguration, (RealmCache$Callback)new BaseRealm$4(realmConfiguration, atomicBoolean, realmMigration, baseRealm$MigrationCallback));
         if (atomicBoolean.get()) {
             throw new FileNotFoundException("Cannot migrate a Realm file which doesn't exist: " + realmConfiguration.getPath());
         }
@@ -119,14 +118,6 @@ abstract class BaseRealm implements Closeable
         }
     }
     
-    public void deleteAll() {
-        this.checkIfValid();
-        final Iterator<RealmObjectSchema> iterator = this.schema.getAll().iterator();
-        while (iterator.hasNext()) {
-            this.schema.getTable(iterator.next().getClassName()).clear();
-        }
-    }
-    
     void doClose() {
         if (this.sharedRealm != null) {
             this.sharedRealm.close();
@@ -146,7 +137,7 @@ abstract class BaseRealm implements Closeable
     }
     
      <E extends RealmModel> E get(final Class<E> clazz, final long n, final boolean b, final List<String> list) {
-        final RealmModel instance = this.configuration.getSchemaMediator().newInstance((Class)clazz, (Object)this, (Row)this.schema.getTable(clazz).getUncheckedRow(n), this.schema.getColumnInfo(clazz), b, (List)list);
+        final RealmModel instance = this.configuration.getSchemaMediator().newInstance((Class)clazz, (Object)this, (Row)this.schema.getTable((Class)clazz).getUncheckedRow(n), this.schema.getColumnInfo((Class)clazz), b, (List)list);
         ((RealmObjectProxy)instance).realmGet$proxyState().setTableVersion$realm();
         return (E)instance;
     }
@@ -164,9 +155,9 @@ abstract class BaseRealm implements Closeable
             table = this.schema.getTable(s);
         }
         else {
-            table = this.schema.getTable(clazz);
+            table = this.schema.getTable((Class)clazz);
         }
-        RealmModel instance;
+        Object instance;
         if (b) {
             Object o;
             if (n != -1L) {
@@ -186,7 +177,7 @@ abstract class BaseRealm implements Closeable
             else {
                 o2 = InvalidRow.INSTANCE;
             }
-            instance = schemaMediator.newInstance((Class)clazz, (Object)this, (Row)o2, this.schema.getColumnInfo(clazz), false, (List)Collections.emptyList());
+            instance = schemaMediator.newInstance((Class)clazz, (Object)this, (Row)o2, this.schema.getColumnInfo((Class)clazz), false, (List)Collections.emptyList());
         }
         final RealmObjectProxy realmObjectProxy = (RealmObjectProxy)instance;
         if (n != -1L) {
@@ -201,6 +192,10 @@ abstract class BaseRealm implements Closeable
     
     public String getPath() {
         return this.configuration.getPath();
+    }
+    
+    public RealmSchema getSchema() {
+        return this.schema;
     }
     
     public long getVersion() {

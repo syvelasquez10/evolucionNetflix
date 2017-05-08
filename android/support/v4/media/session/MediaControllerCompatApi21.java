@@ -11,12 +11,15 @@ import android.app.PendingIntent;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
+import android.app.Activity;
 import android.os.Bundle;
 import android.media.session.MediaSession$Token;
 import android.content.Context;
 import android.view.KeyEvent;
 import android.media.session.MediaController;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class MediaControllerCompatApi21
 {
     public static void adjustVolume(final Object o, final int n, final int n2) {
@@ -41,6 +44,10 @@ class MediaControllerCompatApi21
     
     public static long getFlags(final Object o) {
         return ((MediaController)o).getFlags();
+    }
+    
+    public static Object getMediaController(final Activity activity) {
+        return activity.getMediaController();
     }
     
     public static Object getMetadata(final Object o) {
@@ -79,6 +86,10 @@ class MediaControllerCompatApi21
         return ((MediaController)o).getSessionActivity();
     }
     
+    public static Object getSessionToken(final Object o) {
+        return ((MediaController)o).getSessionToken();
+    }
+    
     public static Object getTransportControls(final Object o) {
         return ((MediaController)o).getTransportControls();
     }
@@ -89,6 +100,10 @@ class MediaControllerCompatApi21
     
     public static void sendCommand(final Object o, final String s, final Bundle bundle, final ResultReceiver resultReceiver) {
         ((MediaController)o).sendCommand(s, bundle, resultReceiver);
+    }
+    
+    public static void setMediaController(final Activity activity, final Object o) {
+        activity.setMediaController((MediaController)o);
     }
     
     public static void setVolumeTo(final Object o, final int n, final int n2) {

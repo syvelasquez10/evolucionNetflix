@@ -4,14 +4,6 @@
 
 package android.support.v7.media;
 
-import android.os.Messenger;
-import android.os.IBinder;
-import java.util.List;
-import android.content.Intent;
-import android.content.Context;
-import java.util.ArrayList;
-import android.content.ComponentName;
-import android.content.ServiceConnection;
 import android.util.Log;
 import android.os.Message;
 import android.os.Bundle;

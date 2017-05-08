@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.offline.agent;
 
-import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
@@ -13,16 +13,20 @@ import com.android.volley.Cache;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.NoCache;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
-import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmIncompleteVideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
+import com.netflix.mediaclient.android.app.BaseStatus;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.log.OfflineLogUtils;
@@ -37,6 +41,8 @@ import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerClien
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQuality;
+import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
@@ -47,19 +53,21 @@ import com.netflix.mediaclient.service.resfetcher.volley.ResourceHttpStack;
 import com.android.volley.toolbox.HttpStack;
 import android.os.Looper;
 import java.util.Iterator;
-import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import com.netflix.mediaclient.service.offline.registry.RegistryData;
+import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$RegistryEnumerator;
+import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
-import android.content.Context;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.HashMap;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.user.UserAgent;
+import com.netflix.mediaclient.service.offline.registry.OfflineStorageMonitor;
+import com.netflix.mediaclient.service.offline.registry.OfflineStorageMonitor$StorageChangeListener;
 import com.android.volley.RequestQueue;
 import io.realm.Realm;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry;
@@ -71,6 +79,7 @@ import java.util.Map;
 import com.netflix.mediaclient.service.offline.manifest.OfflineManifestManager;
 import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableListener;
+import android.content.Context;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
@@ -88,6 +97,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private HandlerThread mBackgroundThread;
     private BroadcastReceiverHelper mBroadcastReceiverHelper;
     private final ServiceAgent$ConfigurationAgentInterface mConfigurationAgent;
+    private final Context mContext;
     private DownloadController mDownloadController;
     private final DownloadController$DownloadControllerListener mDownloadControllerListener;
     private DownloadNotificationManager mDownloadNotificationManager;
@@ -104,9 +114,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private boolean mRegistryDirty;
     private RequestQueue mRequestQueue;
     private boolean mSkipAdultContent;
+    private final OfflineStorageMonitor$StorageChangeListener mStorageChangeListener;
+    private OfflineStorageMonitor mStorageMonitor;
     private final UserAgent mUserAgent;
     
-    public OfflineAgent(final ConfigurationAgent mConfigurationAgent, final UserAgent mUserAgent) {
+    public OfflineAgent(final Context mContext, final ConfigurationAgent mConfigurationAgent, final UserAgent mUserAgent) {
         this.mOfflinePlayableList = new ArrayList<OfflinePlayable>();
         this.mOfflinePlayableUiList = new OfflinePlayableUiListImpl();
         this.mRegistryDirty = false;
@@ -114,9 +126,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.mAvailable = false;
         this.mAgentListenerHelper = new OfflineAgentListenerHelper();
         this.mMainThreadOfflinePlayableListener = new OfflineAgent$1(this);
-        this.mDownloadControllerListener = new OfflineAgent$15(this);
+        this.mStorageChangeListener = new OfflineAgent$19(this);
+        this.mDownloadControllerListener = new OfflineAgent$20(this);
         this.mConfigurationAgent = mConfigurationAgent;
         this.mUserAgent = mUserAgent;
+        this.mContext = mContext;
     }
     
     private void addRequestToHandler(final int n) {
@@ -130,7 +144,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private boolean buildFalkorDataAndPlayableListFromPersistentStore() {
         Log.i("nf_offlineAgent", "buildFalkorDataAndPlayableListFromPersistentStore");
         final long currentTimeMillis = System.currentTimeMillis();
-        this.mOfflineRegistry = OfflineRegistry.create(this.getContext());
+        this.mOfflineRegistry = OfflineRegistry.create(this.getContext(), this.mStorageMonitor);
         if (this.mOfflineRegistry == null) {
             Log.e("nf_offlineAgent", "can't create OfflineRegistry");
             return false;
@@ -142,16 +156,16 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             this.startQueueIfRequired();
         }
         this.mOfflinePlayableList.clear();
-        for (final RegistryData registryData : this.mOfflineRegistry.getRegistryList()) {
-            final Iterator<OfflinePlayablePersistentData> iterator2 = registryData.mOfflinePlayablePersistentDataList.iterator();
-            while (iterator2.hasNext()) {
-                this.mOfflinePlayableList.add(this.createOfflineViewable(registryData.mOfflineRootStorageDirPath, iterator2.next()));
+        final OfflineRegistry$RegistryEnumerator registryEnumerator = this.mOfflineRegistry.getRegistryEnumerator();
+        while (registryEnumerator.hasMoreElements()) {
+            final RegistryData nextElement = registryEnumerator.nextElement();
+            final Iterator<OfflinePlayablePersistentData> iterator = nextElement.mOfflinePlayablePersistentDataList.iterator();
+            while (iterator.hasNext()) {
+                this.mOfflinePlayableList.add(this.createOfflineViewable(nextElement.mOfflineRootStorageDirPath, iterator.next()));
             }
         }
         this.refreshUIData();
-        if (Log.isLoggable()) {
-            Log.i("nf_offlineAgent", "buildFalkorDataAndPlayableListFromPersistentStore took=" + (System.currentTimeMillis() - currentTimeMillis));
-        }
+        Log.i("nf_offlineAgent", "buildFalkorDataAndPlayableListFromPersistentStore took=%d", System.currentTimeMillis() - currentTimeMillis);
         return true;
     }
     
@@ -165,7 +179,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             this.mOfflinePlayableUiList.regenerate(this.mRealm, (Map<String, OfflinePlayableViewData>)hashMap, this.mSkipAdultContent);
             return;
         }
-        this.getMainHandler().post((Runnable)new OfflineAgent$9(this, hashMap));
+        this.getMainHandler().post((Runnable)new OfflineAgent$12(this, hashMap));
     }
     
     private HttpStack createHttpStack() {
@@ -188,6 +202,19 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         Log.e("nf_offlineAgent", "doSaveToRegistryInBGThread context is null");
     }
     
+    private void emptyOfflinePlayableUiList() {
+        this.getMainHandler().post((Runnable)new OfflineAgent$9(this, new HashMap()));
+    }
+    
+    private void fetchVideoDetailsAndSaveToRealm(final String s, final VideoType videoType, final String s2, final Runnable runnable) {
+        if (videoType == VideoType.MOVIE) {
+            this.getBrowseAgent().fetchMovieDetails(s, null, new OfflineAgent$24(this, s2, s, runnable));
+        }
+        else if (videoType == VideoType.EPISODE) {
+            this.getBrowseAgent().fetchEpisodeDetails(s, null, new OfflineAgent$25(this, s, s2, runnable));
+        }
+    }
+    
     private Realm getRealm() {
         return this.mRealm;
     }
@@ -198,6 +225,9 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     
     private void handleAgentDestroyRequest() {
         Log.i("nf_offlineAgent", "handleAgentDestroyRequest");
+        if (this.mStorageMonitor != null) {
+            this.mStorageMonitor.destroy();
+        }
         if (this.mBroadcastReceiverHelper != null) {
             this.mBroadcastReceiverHelper.destroy();
         }
@@ -235,6 +265,10 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             this.initCompleted(CommonStatus.OK);
             return;
         }
+        if (this.mStorageMonitor != null) {
+            this.mStorageMonitor.destroy();
+        }
+        this.mStorageMonitor = new OfflineStorageMonitor(this.mContext, this.mBackgroundThread.getLooper(), this.mStorageChangeListener);
         this.mAgentListenerHelper.setNetflixPowerManager(this.getService().getNetflixPowerManager());
         final BladeRunnerClient bladeRunnerClient = new BladeRunnerClient(this.getContext(), this.getMSLClient(), this.getConfigurationAgent(), this.getUserAgent());
         this.mOfflineManifestManager = new OfflineManifestManagerImpl(bladeRunnerClient, this.mBackgroundThread, this.getPdsAgentForDownload(), this.getLoggingAgent());
@@ -246,7 +280,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
                     this.initCompleted(CommonStatus.OK);
                     return;
                 }
-                goto Label_0235;
+                goto Label_0275;
             }
             catch (ChecksumException ex) {
                 Log.e("nf_offlineAgent", ex, "ChecksumException", new Object[0]);
@@ -255,7 +289,23 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         }
         catch (NotProvisionedException ex2) {}
         catch (UnsupportedSchemeException ex3) {
-            goto Label_0220;
+            goto Label_0260;
+        }
+    }
+    
+    private void handleChangeCurrentOfflineStorageVolume(final int currentOfflineVolume) {
+        Log.i("nf_offlineAgent", "handleChangeCurrentOfflineStorageVolume newVolumeIndex=%d", currentOfflineVolume);
+        if (OfflineAgentHelper.hasAnyItemInCreatingOrCreateFailed(this.mOfflinePlayableList)) {
+            Log.e("nf_offlineAgent", "handleChangeCurrentOfflineStorageVolume can't change volume while active create operations");
+        }
+        else {
+            final boolean stopAllDownloads = this.stopAllDownloads(StopReason.WaitingToBeStarted);
+            if (this.mOfflineRegistry.setCurrentOfflineVolume(currentOfflineVolume)) {
+                this.doSaveToRegistryInBGThread(this.mContext);
+                if (stopAllDownloads) {
+                    this.startDownloadIfAllowed();
+                }
+            }
         }
     }
     
@@ -285,6 +335,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             final OfflinePlayable offlineViewable = this.createOfflineViewable(this.mOfflineRegistry.getCurrentOfflineStorageDirPath(), offlineContentPersistentData);
             this.mOfflineRegistry.addToCurrentRegistryData(offlineContentPersistentData);
             this.mOfflinePlayableList.add(offlineViewable);
+            OfflineAgentHelper.sendOfflineDlRequestStorageInfoLogblob(this.getNrdController(), mPlayableId, this.mOfflineRegistry.getCurrentOfflineStorageDirPath());
             this.processNextCreateRequest();
             return;
         }
@@ -295,6 +346,8 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private void handleDeleteAllRequest(final boolean b) {
         Log.i("nf_offlineAgent", "handleDeleteAllRequest deletePermanently=%b", b);
         NetflixImmutableStatus ok = CommonStatus.OK;
+        this.emptyOfflinePlayableUiList();
+        final ArrayList<String> list = new ArrayList<String>();
         for (final OfflinePlayable offlinePlayable : this.mOfflinePlayableList) {
             if (offlinePlayable.getPlayableId().equals(this.mPlayableIdInFlight)) {
                 Log.i("nf_offlineAgent", "handleDeleteRequest not deleting in-flight item");
@@ -310,6 +363,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
                     ok = (NetflixImmutableStatus)deleteDownload;
                 }
                 this.reportDeleteConsolidatedLogging(deleteDownload, offlinePlayable);
+                list.add(offlinePlayable.getPlayableId());
             }
         }
         this.mOfflineRegistry.setPrimaryProfileGuid("");
@@ -318,10 +372,45 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (b) {
             this.mOfflineRegistry.deleteDeletedList();
         }
-        this.getMainHandler().post((Runnable)new OfflineAgent$6(this));
         this.saveToRegistry();
         this.refreshUIData();
         this.sendAllDeleted(ok);
+        this.getMainHandler().post((Runnable)new OfflineAgent$8(this, list));
+    }
+    
+    private void handleDeletePlayables(final List<String> list) {
+        BaseStatus ok = CommonStatus.OK;
+        for (int i = 0; i < list.size(); ++i) {
+            final String s = list.get(i);
+            Log.i("nf_offlineAgent", "handleDeletePlayables playableId=%s", s);
+            final OfflinePlayable offlineViewableByPlayableId = OfflineAgentHelper.getOfflineViewableByPlayableId(s, this.mOfflinePlayableList);
+            if (offlineViewableByPlayableId == null) {
+                Log.e("nf_offlineAgent", "handleDeletePlayables offlinePlayable not found");
+            }
+            else if (offlineViewableByPlayableId.getPlayableId().equals(this.mPlayableIdInFlight)) {
+                Log.i("nf_offlineAgent", "handleDeletePlayables not deleting in-flight item");
+                ok = new NetflixStatus(StatusCode.DL_BUSY_TRY_DELETE_AGAIN);
+            }
+            else {
+                OfflineLogUtils.reportRemoveCachedVideoStart(this.getContext(), offlineViewableByPlayableId.getOfflineViewablePersistentData().mOxId);
+                this.mOfflinePlayableList.remove(offlineViewableByPlayableId);
+                this.mOfflineRegistry.removePlayable(offlineViewableByPlayableId.getOfflineViewablePersistentData(), true);
+                final Status deleteDownload = offlineViewableByPlayableId.deleteDownload();
+                NetflixImmutableStatus netflixImmutableStatus = (NetflixImmutableStatus)ok;
+                if (ok.isSucces()) {
+                    netflixImmutableStatus = (NetflixImmutableStatus)deleteDownload;
+                }
+                this.reportDeleteConsolidatedLogging(deleteDownload, offlineViewableByPlayableId);
+                this.mDownloadController.onDeleted(s);
+                this.saveToRegistry();
+                ok = netflixImmutableStatus;
+            }
+        }
+        this.saveToRegistry();
+        this.buildNewUiList();
+        this.getMainHandler().post((Runnable)new OfflineAgent$7(this, list));
+        this.startDownloadIfAllowed();
+        this.sendDownloadPlayablesDeleteDone(list, ok);
     }
     
     private void handleDeleteRequest(final String s) {
@@ -346,7 +435,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.buildNewUiList();
         this.sendDownloadDeleted(s, deleteDownload);
         this.startDownloadIfAllowed();
-        this.getMainHandler().post((Runnable)new OfflineAgent$5(this, s));
+        this.getMainHandler().post((Runnable)new OfflineAgent$6(this, s));
     }
     
     private void handleDownloadMaintenanceJob() {
@@ -416,6 +505,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             return;
         }
         Log.e("nf_offlineAgent", "handlePauseRequest trying to pause a completed item");
+    }
+    
+    private void handleRecalculateOsvSpaceUsage() {
+        this.mOfflineRegistry.recalculateOsvSpaceUsage();
+        LocalBroadcastManager.getInstance(this.mContext).sendBroadcast(new Intent("com.netflix.mediaclient.intent.offline.osv.space.usage.updated"));
     }
     
     private void handleRequestForGeoPlayability() {
@@ -488,7 +582,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (this.isOfflineFeatureDisabled()) {
             return;
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$4(this, map));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$5(this, map));
     }
     
     private void processNextCreateRequest() {
@@ -519,6 +613,13 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         }
     }
     
+    private void recoverUiList() {
+        for (final RealmIncompleteVideoDetails realmIncompleteVideoDetails : RealmUtils.getIncompleteVideoDetails(this.mRealm)) {
+            Log.d("nf_offlineAgent", "Recover details for %s", realmIncompleteVideoDetails.getPlayableId());
+            this.fetchVideoDetailsAndSaveToRealm(realmIncompleteVideoDetails.getPlayableId(), VideoType.create(realmIncompleteVideoDetails.getVideoType()), realmIncompleteVideoDetails.getProfileId(), new OfflineAgent$13(this));
+        }
+    }
+    
     private void reportDeleteConsolidatedLogging(final Status status, final OfflinePlayable offlinePlayable) {
         final String mOxId = offlinePlayable.getOfflineViewablePersistentData().mOxId;
         if (offlinePlayable.getDownloadState() != DownloadState.Complete) {
@@ -534,7 +635,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private void saveToRegistry() {
         Log.i("nf_offlineAgent", "saveToRegistry");
         this.mRegistryDirty = true;
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$13(this));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$17(this));
     }
     
     private void sendAllDeleted(final Status status) {
@@ -547,6 +648,10 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     
     private void sendDownloadDeleted(final String s, final Status status) {
         this.mAgentListenerHelper.onOfflinePlayableDeleted(this.getMainHandler(), s, status);
+    }
+    
+    private void sendDownloadPlayablesDeleteDone(final List<String> list, final Status status) {
+        this.mAgentListenerHelper.onOfflinePlayablesDeleted(this.getMainHandler(), list, status);
     }
     
     private void sendDownloadResumedByUser(final OfflinePlayable offlinePlayable) {
@@ -563,7 +668,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     private void sendGeoPlayabilityRequest() {
-        DownloadGeoPlayabilityHelper.sendGeoPlayabilityRequest(OfflineAgentHelper.getCompletedVideoIds(this.mOfflinePlayableList), this.getBrowseAgent(), new OfflineAgent$3(this));
+        DownloadGeoPlayabilityHelper.sendGeoPlayabilityRequest(OfflineAgentHelper.getCompletedVideoIds(this.mOfflinePlayableList), this.getBrowseAgent(), new OfflineAgent$4(this));
     }
     
     private void sendLicenseRefreshDone(final OfflinePlayable offlinePlayable, final Status status) {
@@ -574,7 +679,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "sendOfflineManifestFromMainThread offlineManifest=" + offlinePlaybackInterface$OfflineManifest + "status=" + status);
         }
-        this.getMainHandler().post((Runnable)new OfflineAgent$18(this, offlinePlaybackInterface$OfflineManifest, offlinePlaybackInterface$ManifestCallback, n, status));
+        this.getMainHandler().post((Runnable)new OfflineAgent$23(this, offlinePlaybackInterface$OfflineManifest, offlinePlaybackInterface$ManifestCallback, n, status));
     }
     
     private void sendPlayWindowRenewDone(final OfflinePlayable offlinePlayable, final Status status) {
@@ -620,14 +725,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         }
     }
     
-    private void serializeMetadataToDisc(final String s, final VideoType videoType) {
+    private void serializeMetadataToRealm(final String s, final VideoType videoType) {
         final UserProfile currentProfile = this.getService().getCurrentProfile();
-        if (videoType == VideoType.MOVIE) {
-            this.getBrowseAgent().fetchMovieDetails(s, null, new OfflineAgent$19(this, currentProfile, s));
-        }
-        else if (videoType == VideoType.EPISODE) {
-            this.getBrowseAgent().fetchEpisodeDetails(s, null, new OfflineAgent$20(this, currentProfile, s));
-        }
+        RealmProfile.insertProfileIfNeeded(this.mRealm, this.getService(), currentProfile);
+        RealmIncompleteVideoDetails.insertInRealm(this.mRealm, s, videoType, currentProfile.getProfileGuid());
+        this.fetchVideoDetailsAndSaveToRealm(s, videoType, currentProfile.getProfileGuid(), null);
     }
     
     private void startBackgroundThread() {
@@ -717,7 +819,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     @Override
     public void abortManifestRequest(final long n) {
         if (this.isReady()) {
-            this.mBackGroundHandler.post((Runnable)new OfflineAgent$17(this, n));
+            this.mBackGroundHandler.post((Runnable)new OfflineAgent$22(this, n));
         }
         else if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "abortManifestRequest OfflineAgent not ready error movieId=" + n);
@@ -744,6 +846,17 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     @Override
+    public void deleteOfflinePlayables(final List<String> list) {
+        ThreadUtils.assertOnMain();
+        if (list.size() > 0) {
+            this.onDownloadPauseOrResumeByUser(false);
+            this.mBackGroundHandler.sendMessage(this.mBackGroundHandler.obtainMessage(14, (Object)list));
+            return;
+        }
+        Log.i("nf_offlineAgent", "deleteOfflinePlayables nothing to be done");
+    }
+    
+    @Override
     public void destroy() {
         Log.i("nf_offlineAgent", "destroy");
         this.mAvailable = false;
@@ -752,7 +865,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             this.addRequestToHandler(5);
         }
         if (this.getMainHandler() != null) {
-            this.getMainHandler().post((Runnable)new OfflineAgent$8(this));
+            this.getMainHandler().post((Runnable)new OfflineAgent$11(this));
         }
     }
     
@@ -760,7 +873,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     protected void doInit() {
         Log.i("nf_offlineAgent", "OfflineAgent doInit");
         this.mAvailable = false;
-        this.getMainHandler().post((Runnable)new OfflineAgent$7(this));
+        this.getMainHandler().post((Runnable)new OfflineAgent$10(this));
         this.stopBackgroundThread();
         this.startBackgroundThread();
         this.addRequestToHandler(0);
@@ -783,6 +896,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     }
     
     @Override
+    public OfflineStorageVolumeUiList getOfflineStorageVolumeList() {
+        return this.mOfflineRegistry.getUiStorageVolumeList();
+    }
+    
+    @Override
     public boolean getRequiresUnmeteredNetwork() {
         ThreadUtils.assertOnMain();
         return this.mDownloadController.requiresUnmeteredConnectionForDownload();
@@ -791,7 +909,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     @Override
     public void handleCommand(final Intent intent) {
         final IntentCommandGroupType groupType = IntentCommandGroupType.getGroupType(intent);
-        switch (OfflineAgent$21.$SwitchMap$com$netflix$mediaclient$service$offline$agent$IntentCommandGroupType[groupType.ordinal()]) {
+        switch (OfflineAgent$26.$SwitchMap$com$netflix$mediaclient$service$offline$agent$IntentCommandGroupType[groupType.ordinal()]) {
             default: {
                 if (Log.isLoggable()) {
                     Log.e("nf_offlineAgent", "unsupported IntentCommandGroupType=" + groupType);
@@ -887,7 +1005,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             return;
         }
         this.stopAllDownloadsAndPersistRegistry(StopReason.AccountInActive);
-        this.getMainHandler().post((Runnable)new OfflineAgent$14(this));
+        this.getMainHandler().post((Runnable)new OfflineAgent$18(this));
     }
     
     @Override
@@ -895,6 +1013,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         ThreadUtils.assertOnMain();
         this.onDownloadPauseOrResumeByUser(true);
         this.addRequestToHandler(3, s);
+    }
+    
+    @Override
+    public void recalculateSpaceUsageForOfflineStorageVolumes() {
+        this.mBackGroundHandler.obtainMessage(13).sendToTarget();
     }
     
     @Override
@@ -926,7 +1049,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "requestOfflineManifest posting runnable movieId=" + n);
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$16(this, n, offlinePlaybackInterface$ManifestCallback));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$21(this, n, offlinePlaybackInterface$ManifestCallback));
     }
     
     @Override
@@ -937,7 +1060,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.updatePrimaryProfileGuidIfMissing();
         this.onDownloadPauseOrResumeByUser(false);
         final OfflineAgent$CreateRequest offlineAgent$CreateRequest = new OfflineAgent$CreateRequest(this, s, playContext);
-        this.serializeMetadataToDisc(s, videoType);
+        this.serializeMetadataToRealm(s, videoType);
         this.mBackGroundHandler.sendMessageAtFrontOfQueue(this.mBackGroundHandler.obtainMessage(1, (Object)offlineAgent$CreateRequest));
     }
     
@@ -946,7 +1069,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "requestRefreshLicenseForPlayable playableId=" + s);
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$11(this, s));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$15(this, s));
     }
     
     @Override
@@ -954,7 +1077,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "requestRenewPlayWindowForPlayable playableId=" + s);
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$12(this, s));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$16(this, s));
     }
     
     @Override
@@ -962,6 +1085,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         ThreadUtils.assertOnMain();
         this.onDownloadPauseOrResumeByUser(false);
         this.addRequestToHandler(4, s);
+    }
+    
+    @Override
+    public void setCurrentOfflineStorageVolume(final int n) {
+        this.mBackGroundHandler.obtainMessage(12, (Object)n).sendToTarget();
     }
     
     @Override
@@ -975,7 +1103,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "setRequiresUnmeteredNetwork requires=" + b);
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$10(this, b));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$14(this, b));
     }
     
     @Override

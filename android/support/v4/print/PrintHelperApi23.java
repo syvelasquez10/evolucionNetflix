@@ -7,7 +7,9 @@ package android.support.v4.print;
 import android.print.PrintAttributes$Builder;
 import android.print.PrintAttributes;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class PrintHelperApi23 extends PrintHelperApi20
 {
     PrintHelperApi23(final Context context) {

@@ -8,7 +8,9 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.animation.TimeInterpolator;
+import android.annotation.TargetApi;
 
+@TargetApi(12)
 class HoneycombMr1AnimatorCompatProvider implements AnimatorProvider
 {
     private TimeInterpolator mDefaultInterpolator;

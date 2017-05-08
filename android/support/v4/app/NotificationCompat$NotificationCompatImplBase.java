@@ -13,7 +13,7 @@ class NotificationCompat$NotificationCompatImplBase implements NotificationCompa
 {
     @Override
     public Notification build(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BuilderExtender notificationCompat$BuilderExtender) {
-        final Notification add = NotificationCompatBase.add(notificationCompat$Builder.mNotification, notificationCompat$Builder.mContext, notificationCompat$Builder.mContentTitle, notificationCompat$Builder.mContentText, notificationCompat$Builder.mContentIntent, notificationCompat$Builder.mFullScreenIntent);
+        final Notification add = NotificationCompatBase.add(notificationCompat$Builder.mNotification, notificationCompat$Builder.mContext, notificationCompat$Builder.resolveTitle(), notificationCompat$Builder.resolveText(), notificationCompat$Builder.mContentIntent, notificationCompat$Builder.mFullScreenIntent);
         if (notificationCompat$Builder.mPriority > 0) {
             add.flags |= 0x80;
         }

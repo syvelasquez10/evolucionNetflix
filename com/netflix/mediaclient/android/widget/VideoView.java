@@ -6,14 +6,17 @@ package com.netflix.mediaclient.android.widget;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
+import android.text.TextUtils;
+import com.netflix.mediaclient.service.configuration.ABTestUtils.AimLowTextPlaceholderABTestUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -24,7 +27,10 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
 {
     protected VideoDetailsClickListener clicker;
     private boolean isHorizontal;
+    private String mTitle;
+    private TitleDrawable mTitleDrawable;
     protected PlayContext playContext;
+    private boolean useCallbackAnimation;
     
     public VideoView(final Context context) {
         super(context);
@@ -44,8 +50,23 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837990);
-        this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
+        this.setBackgroundResource(2130838134);
+        this.useCallbackAnimation = BrowseExperience.showKidsExperience();
+        this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this, this.useCallbackAnimation);
+        this.setPressedStateHandlerEnabled(this.useCallbackAnimation);
+    }
+    
+    private void renderTextOnPlaceholder() {
+        if (this.mTitleDrawable == null) {
+            final int dimensionPixelSize = this.getContext().getResources().getDimensionPixelSize(2131427924);
+            (this.mTitleDrawable = new TitleDrawable()).setMaxLines(this.getResources().getInteger(2131558434));
+            this.mTitleDrawable.setTextColor(this.getContext().getResources().getColor(2131689719));
+            this.mTitleDrawable.setTextPadding(0, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
+            this.mTitleDrawable.setTextSize(this.getContext().getResources().getDimensionPixelSize(2131427928));
+            this.mTitleDrawable.setBackground(this.getContext(), BrowseExperience.getImageLoaderConfig().getPlaceholderResId());
+        }
+        this.mTitleDrawable.setVideoTitle(this.mTitle);
+        this.setImageDrawable(this.mTitleDrawable);
     }
     
     @Override
@@ -102,5 +123,9 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
             visibility = 0;
         }
         imageLoader.showImg(this, imageUrl, boxArt, title, imageLoaderConfig, true, visibility);
+        if (AimLowTextPlaceholderABTestUtils.shouldShowTextOnPlaceholder(this.getContext()) && !this.isImageLoaded() && !TextUtils.equals((CharSequence)this.mTitle, (CharSequence)video.getTitle())) {
+            this.mTitle = video.getTitle();
+            this.renderTextOnPlaceholder();
+        }
     }
 }

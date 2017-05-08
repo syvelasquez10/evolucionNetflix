@@ -135,53 +135,25 @@ public final class AppCompatDrawableManager
         }
     }
     
-    private ColorStateList createBorderlessButtonColorStateList(final Context context, final ColorStateList list) {
-        return this.createButtonColorStateList(context, 0, null);
+    private ColorStateList createBorderlessButtonColorStateList(final Context context) {
+        return this.createButtonColorStateList(context, 0);
     }
     
-    private ColorStateList createButtonColorStateList(final Context context, int colorForState, final ColorStateList list) {
-        final int[][] array = new int[4][];
+    private ColorStateList createButtonColorStateList(final Context context, final int n) {
         final int themeAttrColor = ThemeUtils.getThemeAttrColor(context, R$attr.colorControlHighlight);
-        int n = ThemeUtils.getDisabledThemeAttrColor(context, R$attr.colorButtonNormal);
-        array[0] = ThemeUtils.DISABLED_STATE_SET;
-        if (list != null) {
-            n = list.getColorForState(array[0], 0);
-        }
-        array[1] = ThemeUtils.PRESSED_STATE_SET;
-        int colorForState2;
-        if (list == null) {
-            colorForState2 = colorForState;
-        }
-        else {
-            colorForState2 = list.getColorForState(array[1], 0);
-        }
-        final int compositeColors = ColorUtils.compositeColors(themeAttrColor, colorForState2);
-        array[2] = ThemeUtils.FOCUSED_STATE_SET;
-        int colorForState3;
-        if (list == null) {
-            colorForState3 = colorForState;
-        }
-        else {
-            colorForState3 = list.getColorForState(array[2], 0);
-        }
-        final int compositeColors2 = ColorUtils.compositeColors(themeAttrColor, colorForState3);
-        array[3] = ThemeUtils.EMPTY_STATE_SET;
-        if (list != null) {
-            colorForState = list.getColorForState(array[3], 0);
-        }
-        return new ColorStateList(array, new int[] { n, compositeColors, compositeColors2, colorForState });
+        return new ColorStateList(new int[][] { ThemeUtils.DISABLED_STATE_SET, ThemeUtils.PRESSED_STATE_SET, ThemeUtils.FOCUSED_STATE_SET, ThemeUtils.EMPTY_STATE_SET }, new int[] { ThemeUtils.getDisabledThemeAttrColor(context, R$attr.colorButtonNormal), ColorUtils.compositeColors(themeAttrColor, n), ColorUtils.compositeColors(themeAttrColor, n), n });
     }
     
     private static long createCacheKey(final TypedValue typedValue) {
         return typedValue.assetCookie << 32 | typedValue.data;
     }
     
-    private ColorStateList createColoredButtonColorStateList(final Context context, final ColorStateList list) {
-        return this.createButtonColorStateList(context, ThemeUtils.getThemeAttrColor(context, R$attr.colorAccent), list);
+    private ColorStateList createColoredButtonColorStateList(final Context context) {
+        return this.createButtonColorStateList(context, ThemeUtils.getThemeAttrColor(context, R$attr.colorAccent));
     }
     
-    private ColorStateList createDefaultButtonColorStateList(final Context context, final ColorStateList list) {
-        return this.createButtonColorStateList(context, ThemeUtils.getThemeAttrColor(context, R$attr.colorButtonNormal), list);
+    private ColorStateList createDefaultButtonColorStateList(final Context context) {
+        return this.createButtonColorStateList(context, ThemeUtils.getThemeAttrColor(context, R$attr.colorButtonNormal));
     }
     
     private Drawable createDrawableIfNeeded(final Context context, final int n) {
@@ -275,10 +247,9 @@ public final class AppCompatDrawableManager
     }
     
     private static void installDefaultInflateDelegates(final AppCompatDrawableManager appCompatDrawableManager) {
-        final int sdk_INT = Build$VERSION.SDK_INT;
-        if (sdk_INT < 23) {
+        if (Build$VERSION.SDK_INT < 24) {
             appCompatDrawableManager.addDelegate("vector", new AppCompatDrawableManager$VdcInflateDelegate());
-            if (sdk_INT >= 11) {
+            if (Build$VERSION.SDK_INT >= 11) {
                 appCompatDrawableManager.addDelegate("animated-vector", new AppCompatDrawableManager$AvdcInflateDelegate());
             }
         }
@@ -531,26 +502,9 @@ public final class AppCompatDrawableManager
     }
     
     ColorStateList getTintList(final Context context, final int n) {
-        return this.getTintList(context, n, null);
-    }
-    
-    ColorStateList getTintList(final Context context, final int n, ColorStateList list) {
-        boolean b;
-        if (list == null) {
-            b = true;
-        }
-        else {
-            b = false;
-        }
         ColorStateList tintListFromCache;
-        if (b) {
-            tintListFromCache = this.getTintListFromCache(context, n);
-        }
-        else {
-            tintListFromCache = null;
-        }
-        ColorStateList list2 = tintListFromCache;
-        if (tintListFromCache == null) {
+        ColorStateList list = tintListFromCache = this.getTintListFromCache(context, n);
+        if (list == null) {
             if (n == R$drawable.abc_edit_text_material) {
                 list = AppCompatResources.getColorStateList(context, R$color.abc_tint_edittext);
             }
@@ -561,13 +515,13 @@ public final class AppCompatDrawableManager
                 list = AppCompatResources.getColorStateList(context, R$color.abc_tint_switch_thumb);
             }
             else if (n == R$drawable.abc_btn_default_mtrl_shape) {
-                list = this.createDefaultButtonColorStateList(context, list);
+                list = this.createDefaultButtonColorStateList(context);
             }
             else if (n == R$drawable.abc_btn_borderless_material) {
-                list = this.createBorderlessButtonColorStateList(context, list);
+                list = this.createBorderlessButtonColorStateList(context);
             }
             else if (n == R$drawable.abc_btn_colored_material) {
-                list = this.createColoredButtonColorStateList(context, list);
+                list = this.createColoredButtonColorStateList(context);
             }
             else if (n == R$drawable.abc_spinner_mtrl_am_alpha || n == R$drawable.abc_spinner_textfield_background_material) {
                 list = AppCompatResources.getColorStateList(context, R$color.abc_tint_spinner);
@@ -581,19 +535,15 @@ public final class AppCompatDrawableManager
             else if (arrayContains(AppCompatDrawableManager.TINT_CHECKABLE_BUTTON_LIST, n)) {
                 list = AppCompatResources.getColorStateList(context, R$color.abc_tint_btn_checkable);
             }
-            else {
-                list = tintListFromCache;
-                if (n == R$drawable.abc_seekbar_thumb_material) {
-                    list = AppCompatResources.getColorStateList(context, R$color.abc_tint_seek_thumb);
-                }
+            else if (n == R$drawable.abc_seekbar_thumb_material) {
+                list = AppCompatResources.getColorStateList(context, R$color.abc_tint_seek_thumb);
             }
-            list2 = list;
-            if (b && (list2 = list) != null) {
+            if ((tintListFromCache = list) != null) {
                 this.addTintListToCache(context, n, list);
-                list2 = list;
+                tintListFromCache = list;
             }
         }
-        return list2;
+        return tintListFromCache;
     }
     
     public void onConfigurationChanged(final Context context) {

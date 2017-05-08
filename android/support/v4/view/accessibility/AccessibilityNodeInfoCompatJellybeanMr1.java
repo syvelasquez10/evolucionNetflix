@@ -6,7 +6,9 @@ package android.support.v4.view.accessibility;
 
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 class AccessibilityNodeInfoCompatJellybeanMr1
 {
     public static Object getLabelFor(final Object o) {

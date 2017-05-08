@@ -24,10 +24,9 @@ import java.util.Arrays;
 import com.netflix.mediaclient.util.Base64;
 import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import android.media.UnsupportedSchemeException;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
@@ -97,6 +96,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private AccountConfiguration mAccountConfigOverride;
     private int mAppVersionCode;
     private CastKeyConfiguration mCastKeyConfigOverride;
+    private ChannelIdManager mChannelIdManager;
     private final List<ConfigurationAgent$ConfigAgentListener> mConfigAgentListeners;
     private Status mConfigRefreshStatus;
     private ConfigurationWebClient mConfigurationWebClient;
@@ -396,6 +396,9 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         if (this.mESN != null) {
             this.mESN.destroy();
         }
+        if (this.mChannelIdManager != null) {
+            this.mChannelIdManager.destroy();
+        }
     }
     
     @Override
@@ -430,6 +433,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mNrmConfigOverride = new NrmConfiguration(this.getContext());
         this.mCastKeyConfigOverride = new CastKeyConfiguration(this.getContext());
         this.mTextToSpeechWrapper = new TextToSpeechWrapper(this.getContext(), this.getMainHandler());
+        this.mChannelIdManager = new ChannelIdManager(this.getContext(), this.getMainHandler());
         this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), this.getUserAgent(), this, this.getOfflineAgent());
         this.mMicrophoneExist = this.hasMicrophone();
         final Status loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
@@ -478,13 +482,8 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public ABTestConfig getABTestConfiguration_6634() {
-        return this.mAccountConfigOverride.getABTestConfiguration_6634();
-    }
-    
-    @Override
-    public ABTestConfig getABTestConfiguration_6725() {
-        return this.mAccountConfigOverride.getABTestConfiguration_6725();
+    public ABTestConfig$Cell getAimLowTextPlaceholderConfig() {
+        return this.mABTestConfigOverride.getAimLowTextPlaceholderConfig();
     }
     
     @Override
@@ -552,6 +551,14 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
                     return null;
                 }
             }
+        }
+        return null;
+    }
+    
+    @Override
+    public String getChannelId() {
+        if (this.mChannelIdManager != null) {
+            return this.mChannelIdManager.requestChannelId();
         }
         return null;
     }
@@ -677,11 +684,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public int getJPlayerStreamErrorRestartCount() {
         return this.mDeviceConfigOverride.getJPlayerStreamErrorRestartCount();
-    }
-    
-    @Override
-    public KubrickConfiguration getKubrickConfiguration() {
-        return this.mAccountConfigOverride.getKubrickConfig();
     }
     
     @Override

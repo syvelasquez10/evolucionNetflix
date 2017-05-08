@@ -42,6 +42,6 @@ public final class PlayerErrorDialogDescriptorFactory
     }
     
     public static ErrorDescriptor getHandlerForPlaybackError(final PlayerFragment playerFragment, final IPlayer$PlaybackError player$PlaybackError) {
-        return new UknownErrorDescriptor(new AlertDialogFactory$AlertDialogDescriptor("", playerFragment.getString(2131230859, new Object[] { "(" + player$PlaybackError.getUiDisplayErrorCode() + ")" }), null, new ExitPlayerAction(playerFragment.getActivity())));
+        return new UknownErrorDescriptor(new AlertDialogFactory$AlertDialogDescriptor("", playerFragment.getString(2131296409, new Object[] { "(" + player$PlaybackError.getUiDisplayErrorCode() + ")" }), null, new ExitPlayerAction(playerFragment.getActivity())));
     }
 }

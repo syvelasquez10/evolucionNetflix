@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.ui.offline;
 
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.widget.Toast;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.netflix.mediaclient.util.ViewUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData$ViewType;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;

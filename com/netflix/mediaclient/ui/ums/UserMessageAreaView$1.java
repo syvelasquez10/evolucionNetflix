@@ -12,6 +12,8 @@ import android.widget.FrameLayout$LayoutParams;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.ViewParent;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.NetworkErrorStatus;

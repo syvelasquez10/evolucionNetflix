@@ -5,7 +5,9 @@
 package android.support.v4.media;
 
 import android.view.KeyEvent;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 interface TransportMediatorCallback
 {
     long getPlaybackPosition();

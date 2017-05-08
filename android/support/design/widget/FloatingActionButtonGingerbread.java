@@ -104,7 +104,7 @@ class FloatingActionButtonGingerbread extends FloatingActionButtonImpl
             array = new Drawable[] { this.mShapeDrawable, this.mRippleDrawable };
         }
         this.mContentBackground = (Drawable)new LayerDrawable(array);
-        (this.mShadowDrawable = new ShadowDrawableWrapper(this.mView.getResources(), this.mContentBackground, this.mShadowViewDelegate.getRadius(), this.mElevation, this.mElevation + this.mPressedTranslationZ)).setAddPaddingForCorners(false);
+        (this.mShadowDrawable = new ShadowDrawableWrapper(this.mView.getContext(), this.mContentBackground, this.mShadowViewDelegate.getRadius(), this.mElevation, this.mElevation + this.mPressedTranslationZ)).setAddPaddingForCorners(false);
         this.mShadowViewDelegate.setBackgroundDrawable(this.mShadowDrawable);
     }
     

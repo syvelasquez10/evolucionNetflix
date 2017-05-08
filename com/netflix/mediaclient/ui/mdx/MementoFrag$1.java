@@ -10,7 +10,7 @@ import java.util.Iterator;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.widget.ImageView;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
@@ -56,7 +56,7 @@ class MementoFrag$1 implements Runnable
         if (this.val$showRDP) {
             final View viewWithTag = this.this$0.pager.findViewWithTag((Object)("POS_TAG" + String.valueOf(this.val$pagerIndex)));
             if (viewWithTag != null) {
-                final View viewById = viewWithTag.findViewById(2131689973);
+                final View viewById = viewWithTag.findViewById(2131755516);
                 if (viewById != null) {
                     viewById.performClick();
                 }

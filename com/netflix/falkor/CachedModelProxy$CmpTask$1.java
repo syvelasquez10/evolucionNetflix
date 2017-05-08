@@ -10,16 +10,17 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.GsonBuilder;
 import java.io.Writer;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.model.branches.MementoVideoSwatch;
 import java.util.LinkedHashSet;
 import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
+import java.io.File;
 import com.fasterxml.jackson.core.JsonFactory;
 import java.io.Reader;
 import java.util.Date;
@@ -35,6 +36,8 @@ import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.mediaclient.service.NetflixService;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.Map;
@@ -148,6 +151,16 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
     @Override
     protected boolean isAuthorizationRequired() {
         return this.useAuthorization;
+    }
+    
+    @Override
+    protected void markInFlight(final boolean b) {
+        super.markInFlight(b);
+        if (b) {
+            this.this$1.onTaskStarted();
+            return;
+        }
+        this.this$1.onTaskCompleted();
     }
     
     @Override

@@ -25,6 +25,7 @@ import android.view.Surface;
 import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.support.v4.media.session.MediaSessionCompat$Callback;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
@@ -44,6 +45,7 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -55,12 +57,11 @@ import android.os.Debug;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
-import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -147,6 +148,7 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.View$OnClickListener;
 
@@ -159,6 +161,14 @@ class PlayerFragment$5 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.skipBack();
+        this.this$0.mState.setLastActionTime(SystemClock.elapsedRealtime());
+        this.this$0.mState.userInteraction();
+        if (this.this$0.mIsZoomedOut) {
+            this.this$0.doZoomIn();
+        }
+        else {
+            this.this$0.doZoomOut();
+        }
+        this.this$0.mIsZoomedOut = !this.this$0.mIsZoomedOut;
     }
 }

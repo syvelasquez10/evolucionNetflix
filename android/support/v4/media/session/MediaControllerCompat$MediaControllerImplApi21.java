@@ -4,31 +4,45 @@
 
 package android.support.v4.media.session;
 
-import android.os.Build$VERSION;
 import android.os.IBinder$DeathRecipient;
-import android.os.ResultReceiver;
-import android.os.Handler;
+import java.util.ArrayList;
 import android.app.PendingIntent;
-import java.util.List;
+import android.util.Log;
+import android.os.Build$VERSION;
 import android.support.v4.media.MediaMetadataCompat;
-import android.os.Bundle;
 import android.view.KeyEvent;
+import android.os.ResultReceiver;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.content.Context;
+import java.util.List;
+import java.util.HashMap;
 
 class MediaControllerCompat$MediaControllerImplApi21 implements MediaControllerCompat$MediaControllerImpl
 {
+    private HashMap<MediaControllerCompat$Callback, MediaControllerCompat$MediaControllerImplApi21$ExtraCallback> mCallbackMap;
     protected final Object mControllerObj;
+    private IMediaSession mExtraBinder;
+    private List<MediaControllerCompat$Callback> mPendingCallbacks;
     
     public MediaControllerCompat$MediaControllerImplApi21(final Context context, final MediaSessionCompat$Token mediaSessionCompat$Token) {
+        this.mCallbackMap = new HashMap<MediaControllerCompat$Callback, MediaControllerCompat$MediaControllerImplApi21$ExtraCallback>();
         this.mControllerObj = MediaControllerCompatApi21.fromToken(context, mediaSessionCompat$Token.getToken());
         if (this.mControllerObj == null) {
             throw new RemoteException();
         }
+        this.requestExtraBinder();
     }
     
     public MediaControllerCompat$MediaControllerImplApi21(final Context context, final MediaSessionCompat mediaSessionCompat) {
+        this.mCallbackMap = new HashMap<MediaControllerCompat$Callback, MediaControllerCompat$MediaControllerImplApi21$ExtraCallback>();
         this.mControllerObj = MediaControllerCompatApi21.fromToken(context, mediaSessionCompat.getSessionToken().getToken());
+        this.requestExtraBinder();
+    }
+    
+    private void requestExtraBinder() {
+        this.sendCommand("android.support.v4.media.session.command.GET_EXTRA_BINDER", null, new MediaControllerCompat$MediaControllerImplApi21$1(this, new Handler()));
     }
     
     @Override
@@ -81,6 +95,14 @@ class MediaControllerCompat$MediaControllerImplApi21 implements MediaControllerC
     
     @Override
     public PlaybackStateCompat getPlaybackState() {
+        if (Build$VERSION.SDK_INT < 22 && this.mExtraBinder != null) {
+            try {
+                return this.mExtraBinder.getPlaybackState();
+            }
+            catch (RemoteException ex) {
+                Log.e("MediaControllerCompat", "Dead object in getPlaybackState. " + ex);
+            }
+        }
         final Object playbackState = MediaControllerCompatApi21.getPlaybackState(this.mControllerObj);
         if (playbackState != null) {
             return PlaybackStateCompat.fromPlaybackState(playbackState);
@@ -104,6 +126,14 @@ class MediaControllerCompat$MediaControllerImplApi21 implements MediaControllerC
     
     @Override
     public int getRatingType() {
+        if (Build$VERSION.SDK_INT < 22 && this.mExtraBinder != null) {
+            try {
+                return this.mExtraBinder.getRatingType();
+            }
+            catch (RemoteException ex) {
+                Log.e("MediaControllerCompat", "Dead object in getRatingType. " + ex);
+            }
+        }
         return MediaControllerCompatApi21.getRatingType(this.mControllerObj);
     }
     
@@ -122,8 +152,27 @@ class MediaControllerCompat$MediaControllerImplApi21 implements MediaControllerC
     }
     
     @Override
-    public void registerCallback(final MediaControllerCompat$Callback mediaControllerCompat$Callback, final Handler handler) {
+    public final void registerCallback(final MediaControllerCompat$Callback mediaControllerCompat$Callback, final Handler handler) {
         MediaControllerCompatApi21.registerCallback(this.mControllerObj, mediaControllerCompat$Callback.mCallbackObj, handler);
+        if (this.mExtraBinder != null) {
+            mediaControllerCompat$Callback.setHandler(handler);
+            final MediaControllerCompat$MediaControllerImplApi21$ExtraCallback mediaControllerCompat$MediaControllerImplApi21$ExtraCallback = new MediaControllerCompat$MediaControllerImplApi21$ExtraCallback(this, mediaControllerCompat$Callback);
+            this.mCallbackMap.put(mediaControllerCompat$Callback, mediaControllerCompat$MediaControllerImplApi21$ExtraCallback);
+            mediaControllerCompat$Callback.mHasExtraCallback = true;
+            try {
+                this.mExtraBinder.registerCallbackListener(mediaControllerCompat$MediaControllerImplApi21$ExtraCallback);
+                return;
+            }
+            catch (RemoteException ex) {
+                Log.e("MediaControllerCompat", "Dead object in registerCallback. " + ex);
+                return;
+            }
+        }
+        if (this.mPendingCallbacks == null) {
+            this.mPendingCallbacks = new ArrayList<MediaControllerCompat$Callback>();
+        }
+        mediaControllerCompat$Callback.setHandler(handler);
+        this.mPendingCallbacks.add(mediaControllerCompat$Callback);
     }
     
     @Override
@@ -137,7 +186,24 @@ class MediaControllerCompat$MediaControllerImplApi21 implements MediaControllerC
     }
     
     @Override
-    public void unregisterCallback(final MediaControllerCompat$Callback mediaControllerCompat$Callback) {
+    public final void unregisterCallback(final MediaControllerCompat$Callback mediaControllerCompat$Callback) {
         MediaControllerCompatApi21.unregisterCallback(this.mControllerObj, mediaControllerCompat$Callback.mCallbackObj);
+        if (this.mExtraBinder != null) {
+            try {
+                final MediaControllerCompat$MediaControllerImplApi21$ExtraCallback mediaControllerCompat$MediaControllerImplApi21$ExtraCallback = this.mCallbackMap.remove(mediaControllerCompat$Callback);
+                if (mediaControllerCompat$MediaControllerImplApi21$ExtraCallback != null) {
+                    this.mExtraBinder.unregisterCallbackListener(mediaControllerCompat$MediaControllerImplApi21$ExtraCallback);
+                }
+                return;
+            }
+            catch (RemoteException ex) {
+                Log.e("MediaControllerCompat", "Dead object in unregisterCallback. " + ex);
+                return;
+            }
+        }
+        if (this.mPendingCallbacks == null) {
+            this.mPendingCallbacks = new ArrayList<MediaControllerCompat$Callback>();
+        }
+        this.mPendingCallbacks.remove(mediaControllerCompat$Callback);
     }
 }

@@ -57,7 +57,7 @@ public class AgeDialog extends NetflixDialogFrag
         final Bundle arguments = new Bundle();
         arguments.putParcelable(PlayVerifierVault.NAME, (Parcelable)playVerifierVault);
         ageDialog.setArguments(arguments);
-        ageDialog.setStyle(1, 2131427465);
+        ageDialog.setStyle(1, 2131493008);
         return ageDialog;
     }
     
@@ -121,10 +121,10 @@ public class AgeDialog extends NetflixDialogFrag
         final TextView mAgeMessage = this.mAgeMessage;
         int text;
         if (mInProgress) {
-            text = 2131230978;
+            text = 2131296534;
         }
         else {
-            text = 2131230980;
+            text = 2131296536;
         }
         mAgeMessage.setText(text);
         if (!mInProgress) {
@@ -164,9 +164,9 @@ public class AgeDialog extends NetflixDialogFrag
         }
         this.mVault = (PlayVerifierVault)this.getArguments().getParcelable(PlayVerifierVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903071, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131689618);
-        this.mAgeMessage = (TextView)inflate.findViewById(2131689617);
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903072, (ViewGroup)null);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131755160);
+        this.mAgeMessage = (TextView)inflate.findViewById(2131755159);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             mDialogWidthInDp = 400;
@@ -178,8 +178,8 @@ public class AgeDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        create.setButton(-2, this.getString(2131231008), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
-        create.setButton(-1, this.getString(2131230979), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
+        create.setButton(-2, this.getString(2131296564), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
+        create.setButton(-1, this.getString(2131296535), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
         this.mActive = true;
         this.mDialog = create;
         if (!this.mRestored) {

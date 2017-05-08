@@ -6,7 +6,7 @@ package android.support.v4.net;
 
 import android.net.ConnectivityManager;
 
-class ConnectivityManagerCompat$HoneycombMR2ConnectivityManagerCompatImpl implements ConnectivityManagerCompat$ConnectivityManagerCompatImpl
+class ConnectivityManagerCompat$HoneycombMR2ConnectivityManagerCompatImpl extends ConnectivityManagerCompat$BaseConnectivityManagerCompatImpl
 {
     @Override
     public boolean isActiveNetworkMetered(final ConnectivityManager connectivityManager) {

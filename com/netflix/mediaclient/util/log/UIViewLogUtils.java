@@ -195,6 +195,26 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
+    public static void reportUIViewModalViewEnded(final Context context, final IClientLogging$ModalView clientLogging$ModalView, final boolean b, final String s) {
+        if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(clientLogging$ModalView, "View can not be null!")) {
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIVIEW_MDL_VW_ENDED");
+            intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+            intent.putExtra("view", clientLogging$ModalView.name());
+            intent.putExtra("isModalView", b);
+            intent.putExtra("trackingInfo", s);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
+    }
+    
+    public static void reportUIViewModalViewStarted(final Context context, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(clientLogging$ModalView, "View can not be null!")) {
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIVIEW_MDL_VW_START");
+            intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+            intent.putExtra("view", clientLogging$ModalView.name());
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
+    }
+    
     private static void sendImpressionBroadcast(final Context context, final String s, final Boolean b, final JSONObject jsonObject) {
         if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
             return;

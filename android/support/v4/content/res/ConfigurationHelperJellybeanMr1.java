@@ -5,7 +5,9 @@
 package android.support.v4.content.res;
 
 import android.content.res.Resources;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 class ConfigurationHelperJellybeanMr1
 {
     static int getDensityDpi(final Resources resources) {

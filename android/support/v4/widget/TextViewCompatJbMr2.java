@@ -6,9 +6,15 @@ package android.support.v4.widget;
 
 import android.graphics.drawable.Drawable;
 import android.widget.TextView;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class TextViewCompatJbMr2
 {
+    public static Drawable[] getCompoundDrawablesRelative(final TextView textView) {
+        return textView.getCompoundDrawablesRelative();
+    }
+    
     public static void setCompoundDrawablesRelative(final TextView textView, final Drawable drawable, final Drawable drawable2, final Drawable drawable3, final Drawable drawable4) {
         textView.setCompoundDrawablesRelative(drawable, drawable2, drawable3, drawable4);
     }

@@ -9,7 +9,9 @@ import android.media.session.PlaybackState$CustomAction;
 import android.media.session.PlaybackState$Builder;
 import java.util.List;
 import android.media.session.PlaybackState;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class PlaybackStateCompatApi21
 {
     public static long getActions(final Object o) {

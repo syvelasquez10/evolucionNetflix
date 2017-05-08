@@ -4,12 +4,15 @@
 
 package android.support.v7.widget;
 
+import java.util.Arrays;
+
 class StaggeredGridLayoutManager$AnchorInfo
 {
     boolean mInvalidateOffsets;
     boolean mLayoutFromEnd;
     int mOffset;
     int mPosition;
+    int[] mSpanReferenceLines;
     boolean mValid;
     final /* synthetic */ StaggeredGridLayoutManager this$0;
     
@@ -43,5 +46,18 @@ class StaggeredGridLayoutManager$AnchorInfo
         this.mLayoutFromEnd = false;
         this.mInvalidateOffsets = false;
         this.mValid = false;
+        if (this.mSpanReferenceLines != null) {
+            Arrays.fill(this.mSpanReferenceLines, -1);
+        }
+    }
+    
+    void saveSpanReferenceLines(final StaggeredGridLayoutManager$Span[] array) {
+        final int length = array.length;
+        if (this.mSpanReferenceLines == null || this.mSpanReferenceLines.length < length) {
+            this.mSpanReferenceLines = new int[this.this$0.mSpans.length];
+        }
+        for (int i = 0; i < length; ++i) {
+            this.mSpanReferenceLines[i] = array[i].getStartLine(Integer.MIN_VALUE);
+        }
     }
 }

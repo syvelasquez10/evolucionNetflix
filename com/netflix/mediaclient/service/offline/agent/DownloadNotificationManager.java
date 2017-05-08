@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.offline.agent;
 
+import java.util.List;
 import com.netflix.mediaclient.util.UserVisibleErrorCodeGenerator;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.android.app.Status;
@@ -94,7 +95,7 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
         notification$Builder.setOnlyAlertOnce(true);
         if (Build$VERSION.SDK_INT >= 21) {
             notification$Builder.setVisibility(1);
-            notification$Builder.setColor(ContextCompat.getColor(this.mContext, 2131624097));
+            notification$Builder.setColor(ContextCompat.getColor(this.mContext, 2131689634));
         }
         if (largeIcon != null) {
             notification$Builder.setLargeIcon(largeIcon);
@@ -157,7 +158,7 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
                 downloadNotificationManager$NotificationData.mVideoType = offlineVideoDetails.getType();
                 if (downloadNotificationManager$NotificationData.mVideoType == VideoType.EPISODE) {
                     addMarkerForRtLocale.append(new String(playable.getParentTitle()));
-                    addMarkerForRtLocale2.append(this.mContext.getString(2131231088, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), offlineVideoDetails.getTitle() }));
+                    addMarkerForRtLocale2.append(this.mContext.getString(2131296644, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), offlineVideoDetails.getTitle() }));
                 }
                 else {
                     addMarkerForRtLocale.append(new String(offlineVideoDetails.getTitle()));
@@ -238,10 +239,10 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
         }
         this.mKitKatCompatBuilder.mActions.clear();
         this.mKitKatCompatBuilder.setProgress(100, n, false);
-        this.mKitKatCompatBuilder.addAction(new NotificationCompat$Action(2130837778, this.mContext.getString(2131231159), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId())));
-        this.mKitKatCompatBuilder.addAction(new NotificationCompat$Action(2130837708, this.mContext.getString(2131231151), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId())));
+        this.mKitKatCompatBuilder.addAction(new NotificationCompat$Action(2130837905, this.mContext.getString(2131296715), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId())));
+        this.mKitKatCompatBuilder.addAction(new NotificationCompat$Action(2130837716, this.mContext.getString(2131296707), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId())));
         this.mKitKatCompatBuilder.setContentText(this.getShortPercentageString(offlinePlayableViewData)).setShowWhen(false).setOngoing(true).setAutoCancel(false);
-        this.mKitKatCompatBuilder.setSmallIcon(2130837812);
+        this.mKitKatCompatBuilder.setSmallIcon(2130837935);
         final String bigTextForInProgress = this.getBigTextForInProgress(offlinePlayableViewData, ensureImageAndVideoType);
         final NotificationCompat$BigTextStyle setBigContentTitle = new NotificationCompat$BigTextStyle().setBigContentTitle(ensureImageAndVideoType.mTitle);
         setBigContentTitle.bigText(bigTextForInProgress);
@@ -283,7 +284,7 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
         final Notification$Builder notification$Builder = new Notification$Builder(this.mContext);
         notification$Builder.setDeleteIntent(this.getDeleteIntent());
         notification$Builder.setShowWhen(true).setOngoing(false).setSmallIcon(this.getDownloadCompleteSmallIcon()).setAutoCancel(true);
-        final String string = this.mContext.getString(2131231152);
+        final String string = this.mContext.getString(2131296708);
         notification$Builder.setContentTitle((CharSequence)string).setTicker((CharSequence)string);
         Notification notification;
         if (this.mNumDownloadCompletedForNotification <= 1) {
@@ -304,7 +305,7 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
         }
         else {
             final int n = this.mNumDownloadCompletedForNotification - 1;
-            final String quantityString = this.mContext.getResources().getQuantityString(2131296258, n, new Object[] { n, ensureImageAndVideoType.mTitle });
+            final String quantityString = this.mContext.getResources().getQuantityString(2131361794, n, new Object[] { n, ensureImageAndVideoType.mTitle });
             notification$Builder.setContentText((CharSequence)quantityString);
             notification$Builder.setStyle((Notification$Style)new Notification$BigTextStyle().bigText((CharSequence)quantityString));
             notification$Builder.setContentIntent(this.getContentIntent(null));
@@ -485,21 +486,21 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
         String s;
         if (stopReason == StopReason.NoNetworkConnectivity || stopReason == StopReason.NotAllowedOnCurrentNetwork) {
             if (this.mOfflineAgent.getRequiresUnmeteredNetwork()) {
-                s = this.mContext.getString(2131231157);
+                s = this.mContext.getString(2131296713);
             }
             else {
-                s = this.mContext.getString(2131231156);
+                s = this.mContext.getString(2131296712);
             }
         }
         else if (stopReason == StopReason.NotEnoughSpace) {
-            s = this.mContext.getString(2131231154);
+            s = this.mContext.getString(2131296710);
         }
         else {
             if (stopReason != StopReason.EncodesAreNotAvailableAnyMore && stopReason != StopReason.GeoCheckError) {
                 this.removeAllNotifications();
                 return;
             }
-            s = LocalizationUtils.addMarkerForRtLocale(new StringBuilder(), '\u200f').append(this.mContext.getString(2131231153)).append(LocalizationUtils.addMarkerForRtLocale(new StringBuilder(), '\u200f').append(UserVisibleErrorCodeGenerator.addParenthesisWithPrefixSpace(UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason))).toString()).toString();
+            s = LocalizationUtils.addMarkerForRtLocale(new StringBuilder(), '\u200f').append(this.mContext.getString(2131296709)).append(LocalizationUtils.addMarkerForRtLocale(new StringBuilder(), '\u200f').append(UserVisibleErrorCodeGenerator.addParenthesisWithPrefixSpace(UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason))).toString()).toString();
         }
         this.showNotificationForErrors(offlinePlayableViewData, s);
     }
@@ -533,6 +534,20 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
             return;
         }
         this.onOfflinePlayableProgressAfterKitKat(offlinePlayableViewData, n);
+    }
+    
+    @Override
+    public void onOfflinePlayablesDeleted(final List<String> list, final Status status) {
+        if (Log.isLoggable()) {
+            Log.i("nf_downloadNotification", "onOfflinePlayableDeleted");
+        }
+        this.mNumDownloadCompletedForNotification = 0;
+        this.removeAllNotifications();
+    }
+    
+    @Override
+    public void onOfflineStorageVolumeAddedOrRemoved(final boolean b) {
+        this.removeAllNotifications();
     }
     
     @Override

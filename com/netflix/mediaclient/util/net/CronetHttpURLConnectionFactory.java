@@ -67,11 +67,11 @@ public final class CronetHttpURLConnectionFactory
         synchronized (this) {
             if (!this.mNetLogInProgress.get()) {
                 try {
-                    final File externalStorageDirectory = Environment.getExternalStorageDirectory();
+                    final File tempFile = File.createTempFile("cronet", ".log", Environment.getExternalStorageDirectory());
                     if (Log.isLoggable()) {
-                        Log.d("nf_net_cronet", "Logging cronet netlog to " + externalStorageDirectory.getAbsolutePath());
+                        Log.d("nf_net_cronet", "Logging cronet netlog to: " + tempFile.getCanonicalPath());
                     }
-                    this.mCronetEngine.startNetLogToFile(File.createTempFile("cronet", ".log", externalStorageDirectory).toString(), true);
+                    this.mCronetEngine.startNetLogToFile(tempFile.toString(), true);
                     this.mNetLogInProgress.set(true);
                 }
                 catch (IOException ex) {
@@ -84,6 +84,7 @@ public final class CronetHttpURLConnectionFactory
     public void stopNetLog() {
         synchronized (this) {
             if (this.mNetLogInProgress.get()) {
+                Log.d("nf_net_cronet", "Stopping cronet logging");
                 this.mCronetEngine.stopNetLog();
                 this.mNetLogInProgress.set(false);
             }

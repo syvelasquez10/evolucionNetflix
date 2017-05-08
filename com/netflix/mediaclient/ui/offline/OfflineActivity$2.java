@@ -25,12 +25,12 @@ class OfflineActivity$2 implements MenuItem$OnMenuItemClickListener
             final String selectedItemsDiskSpace = offlineFragment.getSelectedItemsDiskSpace();
             offlineFragment.deleteSelected();
             offlineFragment.switchToEditMode(false);
-            final View viewById = this.this$0.findViewById(2131689780);
+            final View viewById = this.this$0.findViewById(2131755332);
             if (viewById == null) {
                 LogUtils.reportErrorSafely("Expected a R.id.coordinatorLayout here");
                 return true;
             }
-            Snackbar.make(viewById, this.this$0.getResources().getQuantityString(2131296267, selectedItemsCount, new Object[] { selectedItemsCount, selectedItemsDiskSpace, "" }), 0).show();
+            Snackbar.make(viewById, this.this$0.getResources().getQuantityString(2131361803, selectedItemsCount, new Object[] { selectedItemsCount, selectedItemsDiskSpace, "" }), 0).show();
         }
         return true;
     }

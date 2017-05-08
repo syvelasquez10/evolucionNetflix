@@ -4,6 +4,9 @@
 
 package android.support.v4.view.accessibility;
 
+import android.annotation.TargetApi;
+
+@TargetApi(16)
 class AccessibilityNodeProviderCompatJellyBean
 {
     public static Object newAccessibilityNodeProviderBridge(final AccessibilityNodeProviderCompatJellyBean$AccessibilityNodeInfoBridge accessibilityNodeProviderCompatJellyBean$AccessibilityNodeInfoBridge) {

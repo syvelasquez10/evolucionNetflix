@@ -5,7 +5,9 @@
 package android.support.v4.content.res;
 
 import android.content.res.Resources;
+import android.annotation.TargetApi;
 
+@TargetApi(13)
 class ConfigurationHelperHoneycombMr2
 {
     static int getScreenHeightDp(final Resources resources) {

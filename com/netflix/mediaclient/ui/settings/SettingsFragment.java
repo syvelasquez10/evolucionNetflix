@@ -25,6 +25,7 @@ import android.preference.Preference$OnPreferenceChangeListener;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import android.preference.Preference$OnPreferenceClickListener;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.content.Context;
@@ -44,6 +45,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 {
     private static final String FAKE_KEY_BW_SAVE = "nf.bw_save";
     private static final String FAKE_KEY_DOWNLOADS_DELETE_ALL_CONFIG = "pref.downloads.remove_all";
+    private static final String FAKE_KEY_DOWNLOADS_STORAGE_SELECTOR = "pref.downloads.storage_selector";
     private static final String FAKE_KEY_DOWNLOADS_VIDEO_QUALITY_CONFIG = "pref.downloads.video_quality";
     private static final String FAKE_KEY_ENABLE_NOTIFICATIONS = "nf_notification_enable";
     private static final String FAKE_KEY_SUBTITLE_CONFIG = "ui.subtitleConfig";
@@ -59,6 +61,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final String SUBTITLE_CONFIG_ENHANCED_XML = "ENHANCED_XML";
     private static final String SUBTITLE_CONFIG_SIMPLE_XML = "SIMPLE_XML";
     private static final String TAG = "SettingsFragment";
+    private static final boolean WRITE_EXT_STORAGE_PERMISSION_DEBUG = false;
     private Activity activity;
     private SettingsFragment$ActivityCallbackListener activityCallback;
     Dialog dialog;
@@ -75,15 +78,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     
     private void handleAllOfflineItemsDeleted() {
         final SettingsActivity settingsActivity = AndroidUtils.getContextAs((Context)this.getActivity(), SettingsActivity.class);
-        if (settingsActivity == null) {
-            return;
+        if (settingsActivity != null) {
+            final Preference preference = this.findPreference((CharSequence)"pref.downloads.remove_all");
+            final PreferenceGroup preferenceGroup = (PreferenceGroup)this.findPreference((CharSequence)"pref.downloads");
+            if (preferenceGroup != null) {
+                preferenceGroup.removePreference(preference);
+            }
+            final OfflineAgentInterface offlineAgent = settingsActivity.getServiceManager().getOfflineAgent();
+            if (offlineAgent != null) {
+                offlineAgent.recalculateSpaceUsageForOfflineStorageVolumes();
+            }
         }
-        final Preference preference = this.findPreference((CharSequence)"pref.downloads.remove_all");
-        final PreferenceGroup preferenceGroup = (PreferenceGroup)this.findPreference((CharSequence)"pref.downloads");
-        if (preferenceGroup != null) {
-            preferenceGroup.removePreference(preference);
-        }
-        settingsActivity.refreshStorageIndicator();
     }
     
     private void handleAndroidHttpStackSettings(final ServiceManager serviceManager) {
@@ -106,7 +111,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131231009) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setSummary((CharSequence)((Object)this.getText(2131296565) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
             preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$12(this));
         }
     }
@@ -125,12 +130,39 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     
     private void handleDownloadsPreferenceGroup(final ServiceManager serviceManager) {
         if (serviceManager.isOfflineFeatureAvailable()) {
+            this.handleDownloadsStorageSelectorSetting(serviceManager);
             this.handleDownloadsDeleteAllConfig(serviceManager);
             this.handleDownloadsVideoQualityConfig(serviceManager);
             this.handleDownloadsWifiOnlySetting(serviceManager);
             return;
         }
         this.getPreferenceScreen().removePreference(this.findPreference((CharSequence)"pref.downloads"));
+    }
+    
+    private void handleDownloadsStorageSelectorSetting(final ServiceManager serviceManager) {
+        Log.d("SettingsFragment", "handleDownloadsStorageSelectorSetting");
+        final OfflineAgentInterface offlineAgent = serviceManager.getOfflineAgent();
+        if (offlineAgent == null) {
+            Log.d("SettingsFragment", "handleDownloadsStorageSelectorSetting offlineAgent is null");
+            return;
+        }
+        final Preference preference = this.findPreference((CharSequence)"pref.downloads.storage_selector");
+        if (preference == null) {
+            Log.e("SettingsFragment", "handleDownloadsStorageSelectorSetting dl location pref is null");
+            return;
+        }
+        final boolean storageRemovable = offlineAgent.getOfflineStorageVolumeList().isStorageRemovable(offlineAgent.getOfflineStorageVolumeList().getCurrentSelectedVolumeIndex());
+        Log.i("SettingsFragment", "currentStorageRemovable=%b", storageRemovable);
+        int summary;
+        if (storageRemovable) {
+            summary = 2131296916;
+        }
+        else {
+            summary = 2131296895;
+        }
+        preference.setSummary(summary);
+        offlineAgent.recalculateSpaceUsageForOfflineStorageVolumes();
+        preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new SettingsFragment$13(this, offlineAgent, preference));
     }
     
     private void handleDownloadsVideoQualityConfig(final ServiceManager serviceManager) {
@@ -160,7 +192,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         Log.d("SettingsFragment", "Debug: downloads video quality");
         listPreference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$10(this, listPreference, serviceManager));
         if (listPreference instanceof ListPreference) {
-            this.populateDownloadsVideoQualityConfig(listPreference);
+            this.populateDownloadsVideoQualityDefaults(listPreference);
             return;
         }
         Log.e("SettingsFragment", "Preference downloads video quality type is NOT list preference!");
@@ -318,41 +350,43 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         return SettingsConfiguration.getPushOptInStatus((Context)this.activity);
     }
     
-    private void populateDownloadsVideoQualityConfig(final ListPreference listPreference) {
+    private void populateDownloadsVideoQualityChoices(final ListPreference listPreference) {
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(StringUtils.generateTitleAndSubtitles(this.getString(2131231353), this.getString(2131231354)));
+        list.add(StringUtils.generateTitleAndSubtitles(this.getString(2131296913), this.getString(2131296914)));
         list2.add(DownloadVideoQuality.DEFAULT.getValue());
-        list.add(StringUtils.generateTitleAndSubtitles(this.getString(2131231351), this.getString(2131231352)));
+        list.add(StringUtils.generateTitleAndSubtitles(this.getString(2131296911), this.getString(2131296912)));
         list2.add(DownloadVideoQuality.BEST.getValue());
+        listPreference.setEntries((CharSequence[])list.toArray(new CharSequence[list.size()]));
+        listPreference.setEntryValues((CharSequence[])list2.toArray(new CharSequence[list2.size()]));
+    }
+    
+    private void populateDownloadsVideoQualityDefaults(final ListPreference listPreference) {
         final DownloadVideoQuality currentDownloadVideoQuality = ((NetflixActivity)this.getActivity()).getServiceManager().getOfflineAgent().getCurrentDownloadVideoQuality();
         final Preference preference = this.findPreference((CharSequence)"pref.downloads.video_quality");
-        switch (SettingsFragment$13.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$DownloadVideoQuality[currentDownloadVideoQuality.ordinal()]) {
+        switch (SettingsFragment$14.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$DownloadVideoQuality[currentDownloadVideoQuality.ordinal()]) {
+            default: {}
             case 1: {
                 listPreference.setValue(DownloadVideoQuality.BEST.getValue());
-                preference.setSummary(this.getText(2131231351));
-                break;
+                preference.setSummary(this.getText(2131296911));
             }
             case 2:
             case 3: {
                 listPreference.setValue(DownloadVideoQuality.DEFAULT.getValue());
-                preference.setSummary(this.getText(2131231353));
-                break;
+                preference.setSummary(this.getText(2131296913));
             }
         }
-        listPreference.setEntries((CharSequence[])list.toArray(new CharSequence[list.size()]));
-        listPreference.setEntryValues((CharSequence[])list2.toArray(new CharSequence[list2.size()]));
     }
     
     private void populateSubtitleConfig(final ListPreference listPreference) {
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131231520));
+        list.add(this.getText(2131297086));
         list2.add("DEFAULT");
-        list.add(this.getText(2131231521));
+        list.add(this.getText(2131297087));
         list2.add("ENHANCED_XML");
-        list.add(this.getText(2131231523));
+        list.add(this.getText(2131297089));
         list2.add("SIMPLE_XML");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_XML) {
@@ -437,9 +471,27 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         this.activity = this.getActivity();
         this.getPreferenceManager().setSharedPreferencesMode(0);
         this.getPreferenceManager().setSharedPreferencesName("nfxpref");
-        this.addPreferencesFromResource(2131099651);
+        this.addPreferencesFromResource(2131165187);
+        final Preference preference = this.findPreference((CharSequence)"pref.downloads.video_quality");
+        if (preference instanceof ListPreference) {
+            this.populateDownloadsVideoQualityChoices((ListPreference)preference);
+        }
         ((PreferenceGroup)this.findPreference((CharSequence)"pref.screen")).removePreference(this.findPreference((CharSequence)"pref.qa.debugonly"));
         this.handlePushNotificationsSettings();
+    }
+    
+    public void onExternalStoragePermissionDenied() {
+        if (this.serviceManager != null) {
+            final OfflineAgentInterface offlineAgent = this.serviceManager.getOfflineAgent();
+            if (offlineAgent != null) {
+                Log.i("SettingsFragment", "onExternalStoragePermissionDenied reverting to internal storage");
+                offlineAgent.setCurrentOfflineStorageVolume(0);
+                final Preference preference = this.findPreference((CharSequence)"pref.downloads.storage_selector");
+                if (preference != null) {
+                    preference.setSummary(2131296895);
+                }
+            }
+        }
     }
     
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {

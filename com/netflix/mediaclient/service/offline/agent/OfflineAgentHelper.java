@@ -12,6 +12,8 @@ import com.netflix.mediaclient.javabridge.ui.Nrdp;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import com.netflix.mediaclient.service.logging.logblob.LogBlobType;
 import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
+import android.os.Environment;
+import android.os.Build$VERSION;
 import com.netflix.mediaclient.service.NrdController;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry;
@@ -99,6 +101,15 @@ class OfflineAgentHelper
         return null;
     }
     
+    static boolean hasAnyItemInCreatingOrCreateFailed(final List<OfflinePlayable> list) {
+        for (final OfflinePlayable offlinePlayable : list) {
+            if (offlinePlayable.getDownloadState() == DownloadState.Creating || offlinePlayable.getDownloadState() == DownloadState.CreateFailed) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     static boolean hasPrimaryProfileGuidChanged(final UserAgent userAgent, final OfflineRegistry offlineRegistry) {
         final String primaryProfileGuid = userAgent.getPrimaryProfileGuid();
         final String primaryProfileGuid2 = offlineRegistry.getPrimaryProfileGuid();
@@ -115,6 +126,19 @@ class OfflineAgentHelper
             }
         }
         return false;
+    }
+    
+    static void sendOfflineDlRequestStorageInfoLogblob(final NrdController nrdController, final String s, final String s2) {
+        if (nrdController != null) {
+            final Nrdp nrdp = nrdController.getNrdp();
+            if (nrdp != null) {
+                boolean externalStorageRemovable = false;
+                if (Build$VERSION.SDK_INT >= 21) {
+                    externalStorageRemovable = Environment.isExternalStorageRemovable(new File(s2));
+                }
+                nrdp.getLog().log(new LogArguments(LogArguments$LogLevel.INFO, "DlRequestStorageInfo playableId=" + s + " isRemovable=" + externalStorageRemovable, LogBlobType.OFFLINE_LOGBLOB_TYPE.getValue(), null));
+            }
+        }
     }
     
     static void sendOfflineNotAvailableLogblob(final NrdController nrdController, final OfflineUnavailableReason offlineUnavailableReason) {

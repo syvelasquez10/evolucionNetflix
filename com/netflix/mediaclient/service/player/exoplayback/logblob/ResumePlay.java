@@ -13,8 +13,8 @@ public class ResumePlay extends OfflinePlaybackBaseLogblob
         this.mJson.put("mid", n);
         this.mJson.put("soffms", n3);
         this.mJson.put("soff", n3 / 1000L);
-        this.mJson.put("moff", n2);
-        this.mJson.put("moffms", n2 / 1000L);
+        this.mJson.put("moffms", n2);
+        this.mJson.put("moff", n2 / 1000L);
         if (StringUtils.isNotEmpty(s5)) {
             this.mJson.put("vdlid", (Object)s5);
             this.mJson.put("vBitrate", n4);

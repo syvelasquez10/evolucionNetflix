@@ -8,7 +8,9 @@ import android.util.Log;
 import android.graphics.drawable.Drawable;
 import android.widget.TextView;
 import java.lang.reflect.Field;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class TextViewCompatGingerbread
 {
     private static final int LINES = 1;

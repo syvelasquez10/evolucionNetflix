@@ -6,7 +6,9 @@ package android.support.v4.app;
 
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class AppOpsManagerCompat23
 {
     public static int noteOp(final Context context, final String s, final int n, final String s2) {

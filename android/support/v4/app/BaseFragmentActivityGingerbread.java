@@ -12,9 +12,10 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.View;
-import android.app.Activity;
+import android.annotation.TargetApi;
 
-abstract class BaseFragmentActivityGingerbread extends Activity
+@TargetApi(9)
+abstract class BaseFragmentActivityGingerbread extends SupportActivity
 {
     boolean mStartedIntentSenderFromFragment;
     

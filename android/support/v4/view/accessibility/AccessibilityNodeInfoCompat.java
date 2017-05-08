@@ -55,6 +55,7 @@ public class AccessibilityNodeInfoCompat
     public static final int MOVEMENT_GRANULARITY_PARAGRAPH = 8;
     public static final int MOVEMENT_GRANULARITY_WORD = 2;
     private final Object mInfo;
+    public int mParentVirtualDescendantId;
     
     static {
         if (Build$VERSION.SDK_INT >= 24) {
@@ -97,6 +98,7 @@ public class AccessibilityNodeInfoCompat
     }
     
     public AccessibilityNodeInfoCompat(final Object mInfo) {
+        this.mParentVirtualDescendantId = -1;
         this.mInfo = mInfo;
     }
     
@@ -662,8 +664,9 @@ public class AccessibilityNodeInfoCompat
         AccessibilityNodeInfoCompat.IMPL.setParent(this.mInfo, view);
     }
     
-    public void setParent(final View view, final int n) {
-        AccessibilityNodeInfoCompat.IMPL.setParent(this.mInfo, view, n);
+    public void setParent(final View view, final int mParentVirtualDescendantId) {
+        this.mParentVirtualDescendantId = mParentVirtualDescendantId;
+        AccessibilityNodeInfoCompat.IMPL.setParent(this.mInfo, view, mParentVirtualDescendantId);
     }
     
     public void setPassword(final boolean b) {

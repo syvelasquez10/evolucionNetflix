@@ -16,9 +16,9 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.content.res.ColorStateList;
 import android.widget.ImageView$ScaleType;
-import android.widget.ImageView;
+import com.netflix.mediaclient.android.widget.DebugImageView;
 
-public class RoundedImageView extends ImageView
+public abstract class RoundedImageView extends DebugImageView
 {
     public static final int DEFAULT_BORDER_WIDTH = 0;
     public static final int DEFAULT_RADIUS = 0;
@@ -211,6 +211,7 @@ public class RoundedImageView extends ImageView
         this.updateBackgroundDrawableAttrs();
     }
     
+    @Override
     public void setImageBitmap(final Bitmap bitmap) {
         this.mResource = 0;
         this.mDrawable = RoundedDrawable.fromBitmap(bitmap);
@@ -218,13 +219,19 @@ public class RoundedImageView extends ImageView
         super.setImageDrawable(this.mDrawable);
     }
     
-    public void setImageDrawable(final Drawable drawable) {
+    @Override
+    public void setImageDrawable(final Drawable imageDrawable) {
+        if (this.mCornerRadius == 0 && this.mBorderWidth == 0) {
+            super.setImageDrawable(imageDrawable);
+            return;
+        }
         this.mResource = 0;
-        this.mDrawable = RoundedDrawable.fromDrawable(drawable);
+        this.mDrawable = RoundedDrawable.fromDrawable(imageDrawable);
         this.updateDrawableAttrs();
         super.setImageDrawable(this.mDrawable);
     }
     
+    @Override
     public void setImageResource(final int mResource) {
         if (this.mResource != mResource) {
             this.mResource = mResource;

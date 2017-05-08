@@ -363,7 +363,7 @@ public abstract class WPCardLayout extends FrameLayout
     protected void initProperties() {
         this.setCameraDistance(8000.0f);
         this.cardRotationValue = 3.0f;
-        this.padding = this.getContext().getResources().getDimensionPixelSize(2131362360);
+        this.padding = this.getContext().getResources().getDimensionPixelSize(2131427931);
         this.quintOutInterpolator = WPConstants.getQuintOutInterpolator();
         this.videoTextureState = WPCardLayout$VideoTextureState.HIDDEN;
     }

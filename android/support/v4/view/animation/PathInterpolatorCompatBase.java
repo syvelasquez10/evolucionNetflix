@@ -6,7 +6,9 @@ package android.support.v4.view.animation;
 
 import android.graphics.Path;
 import android.view.animation.Interpolator;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class PathInterpolatorCompatBase
 {
     public static Interpolator create(final float n, final float n2) {

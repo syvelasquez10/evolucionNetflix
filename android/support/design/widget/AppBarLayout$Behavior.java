@@ -390,7 +390,7 @@ public class AppBarLayout$Behavior extends HeaderBehavior<AppBarLayout>
             if (child.getTop() + topAndBottomOffset <= 0 && n >= 0) {
                 final AppBarLayout$Behavior$SavedState appBarLayout$Behavior$SavedState = new AppBarLayout$Behavior$SavedState(onSaveInstanceState);
                 appBarLayout$Behavior$SavedState.firstVisibleChildIndex = i;
-                if (n == ViewCompat.getMinimumHeight(child)) {
+                if (n == ViewCompat.getMinimumHeight(child) + appBarLayout.getTopInset()) {
                     firstVisibleChildAtMinimumHeight = true;
                 }
                 appBarLayout$Behavior$SavedState.firstVisibleChildAtMinimumHeight = firstVisibleChildAtMinimumHeight;

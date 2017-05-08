@@ -14,7 +14,6 @@ import com.netflix.mediaclient.service.configuration.PlaybackConfiguration;
 import com.netflix.mediaclient.service.webclient.model.leafs.OfflineConfig;
 import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
-import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.configuration.ImageResolutionClass;
@@ -27,10 +26,9 @@ import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 
 public interface ServiceAgent$ConfigurationAgentInterface
@@ -45,9 +43,7 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     void fetchAccountConfigData(final ConfigurationAgentWebCallback p0);
     
-    ABTestConfig getABTestConfiguration_6634();
-    
-    ABTestConfig getABTestConfiguration_6725();
+    ABTestConfig$Cell getAimLowTextPlaceholderConfig();
     
     String getAlertMsgForMissingLocale();
     
@@ -66,6 +62,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     ABTestConfig$Cell getCWProgressBarConfig();
     
     Pair<String, byte[]> getCastPrefetchSharedSecret();
+    
+    String getChannelId();
     
     ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String p0);
     
@@ -110,8 +108,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     JSONObject getJPlayerConfig();
     
     int getJPlayerStreamErrorRestartCount();
-    
-    KubrickConfiguration getKubrickConfiguration();
     
     MdxConfiguration getMdxConfiguration();
     

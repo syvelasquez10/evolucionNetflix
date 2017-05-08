@@ -16,8 +16,10 @@ import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.BitmapShader;
 import android.graphics.Bitmap;
+import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
 
+@TargetApi(9)
 public abstract class RoundedBitmapDrawable extends Drawable
 {
     private static final int DEFAULT_PAINT_FLAGS = 3;

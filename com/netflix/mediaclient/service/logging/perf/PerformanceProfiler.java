@@ -138,7 +138,7 @@ public class PerformanceProfiler
         }
         sb.deleteCharAt(sb.length() - 1);
         sb.append("]");
-        if (FileUtils.writeStringToFile("PerformanceProfiler", sb.toString(), "perf_dump.txt")) {
+        if (FileUtils.writeStringToExternalStorageDirectory("PerformanceProfiler", sb.toString(), "perf_dump.txt")) {
             Toast.makeText((Context)activity, (CharSequence)"File dumped! Please run perfScripts/perf.sh", 0).show();
             Log.i("PerformanceProfiler", "File dumped! Please run perfScripts/perf.sh");
         }
@@ -186,7 +186,11 @@ public class PerformanceProfiler
             ApmLogUtils.reportPerformanceEvent(iterator.next(), applicationPerformanceMetricsLogging);
         }
         for (final PerfSession perfSession : this.sessions.values()) {
-            if (perfSession.isComplete() && !Sessions.IMAGE_FETCH.name().equals(perfSession.getName())) {
+            if (perfSession.isComplete()) {
+                final String name = perfSession.getStartEvent().getName();
+                if (name == null || name.startsWith(Sessions.IMAGE_FETCH.name())) {
+                    continue;
+                }
                 ApmLogUtils.startPerformanceSession(perfSession, applicationPerformanceMetricsLogging);
                 ApmLogUtils.endPerformanceSession(perfSession, applicationPerformanceMetricsLogging);
             }

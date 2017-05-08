@@ -59,7 +59,7 @@ public class AppBarLayout extends LinearLayout
             ViewUtilsLollipop.setStateListAnimatorFromAttrs((View)this, set, 0, R$style.Widget_Design_AppBarLayout);
         }
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.AppBarLayout, 0, R$style.Widget_Design_AppBarLayout);
-        this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R$styleable.AppBarLayout_android_background));
+        ViewCompat.setBackground((View)this, obtainStyledAttributes.getDrawable(R$styleable.AppBarLayout_android_background));
         if (obtainStyledAttributes.hasValue(R$styleable.AppBarLayout_expanded)) {
             this.setExpanded(obtainStyledAttributes.getBoolean(R$styleable.AppBarLayout_expanded, false));
         }
@@ -132,7 +132,7 @@ public class AppBarLayout extends LinearLayout
     }
     
     protected AppBarLayout$LayoutParams generateLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
-        if (viewGroup$LayoutParams instanceof LinearLayout$LayoutParams) {
+        if (Build$VERSION.SDK_INT >= 19 && viewGroup$LayoutParams instanceof LinearLayout$LayoutParams) {
             return new AppBarLayout$LayoutParams((LinearLayout$LayoutParams)viewGroup$LayoutParams);
         }
         if (viewGroup$LayoutParams instanceof ViewGroup$MarginLayoutParams) {

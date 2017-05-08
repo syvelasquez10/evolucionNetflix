@@ -57,7 +57,7 @@ public class BladeRunnerClient implements IBladeRunnerClient
     }
     
     private String buildYearlyWarningMessage(final Context context, final long n, final Locale locale) {
-        final String string = context.getString(2131231328, new Object[] { 1, new SimpleDateFormat("MMMM d, yyyy", locale).format(new Date(n)) });
+        final String string = context.getString(2131296884, new Object[] { 1, new SimpleDateFormat("MMMM d, yyyy", locale).format(new Date(n)) });
         Log.d(BladeRunnerClient.TAG, "yearly warning msg: %s", string);
         return string;
     }

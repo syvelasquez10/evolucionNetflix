@@ -4,8 +4,7 @@
 
 package com.netflix.mediaclient.ui.home;
 
-import android.content.Context;
-import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import android.content.Intent;
 import android.view.View;
 import android.view.View$OnClickListener;
 
@@ -18,6 +17,9 @@ class StandardSlidingMenu$8 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.activity.startActivity(ProfileSelectionActivity.createStartIntent((Context)this.this$0.activity));
+        final Intent startIntent = HomeActivity.createStartIntent(this.this$0.activity);
+        startIntent.addFlags(67108864);
+        this.this$0.activity.startActivity(startIntent);
+        this.this$0.closeDrawersWithDelay();
     }
 }

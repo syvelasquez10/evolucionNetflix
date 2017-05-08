@@ -7,7 +7,9 @@ package android.support.v4.app;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class TaskStackBuilderHoneycomb
 {
     public static PendingIntent getActivitiesPendingIntent(final Context context, final int n, final Intent[] array, final int n2) {

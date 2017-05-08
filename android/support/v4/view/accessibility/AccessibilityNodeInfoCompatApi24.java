@@ -6,7 +6,9 @@ package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo$AccessibilityAction;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 class AccessibilityNodeInfoCompatApi24
 {
     public static Object getActionSetProgress() {

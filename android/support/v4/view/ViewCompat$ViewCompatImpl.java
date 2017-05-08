@@ -6,11 +6,13 @@ package android.support.v4.view;
 
 import android.graphics.Paint;
 import android.view.ViewGroup;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.ViewParent;
 import android.graphics.Matrix;
+import android.view.Display;
 import android.graphics.Rect;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
@@ -52,6 +54,8 @@ interface ViewCompat$ViewCompatImpl
     PorterDuff$Mode getBackgroundTintMode(final View p0);
     
     Rect getClipBounds(final View p0);
+    
+    Display getDisplay(final View p0);
     
     float getElevation(final View p0);
     
@@ -174,6 +178,8 @@ interface ViewCompat$ViewCompatImpl
     void setActivated(final View p0, final boolean p1);
     
     void setAlpha(final View p0, final float p1);
+    
+    void setBackground(final View p0, final Drawable p1);
     
     void setBackgroundTintList(final View p0, final ColorStateList p1);
     

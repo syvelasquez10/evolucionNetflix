@@ -6,7 +6,9 @@ package android.support.v4.view;
 
 import android.graphics.Rect;
 import android.view.WindowInsets;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class WindowInsetsCompatApi21
 {
     public static Object consumeStableInsets(final Object o) {

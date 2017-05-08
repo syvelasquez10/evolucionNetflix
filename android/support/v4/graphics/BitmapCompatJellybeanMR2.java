@@ -5,7 +5,9 @@
 package android.support.v4.graphics;
 
 import android.graphics.Bitmap;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class BitmapCompatJellybeanMR2
 {
     public static boolean hasMipMap(final Bitmap bitmap) {

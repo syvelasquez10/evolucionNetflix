@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
-import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
 import org.json.JSONException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
@@ -18,10 +17,6 @@ public class AccountConfigData
 {
     private static final KubrickConfigData DEFAULT_KUBRICK_CONFIG;
     private static final String TAG = "nf_config";
-    @SerializedName("expiringContentConfig")
-    private ABTestConfig abTestConfig_6634;
-    @SerializedName("titleArtTabletConfig")
-    private ABTestConfig abTestConfig_6725;
     @SerializedName("castWhitelistTargets")
     private final String castWhitelist;
     @SerializedName("dataSaveConfig")
@@ -38,8 +33,6 @@ public class AccountConfigData
     private boolean enableLowBitrateStreams;
     @SerializedName("JPlayerConfig")
     private String jPlayerConfig;
-    @SerializedName("kubrickConfig")
-    private KubrickConfigData kubrickConfig;
     @Expose
     private JSONArray mCastWhitelistJSONArray;
     @Expose
@@ -70,30 +63,21 @@ public class AccountConfigData
         this.mdxBlacklistTargets = null;
         this.mCastWhitelistJSONArray = null;
         this.mMdxBlacklistTargetsJSONArray = null;
-        this.kubrickConfig = AccountConfigData.DEFAULT_KUBRICK_CONFIG;
         this.mJPlayerConfigJSON = null;
         this.previewContent = PreviewContentConfigData.getDefault();
     }
     
     public static AccountConfigData fromJsonString(final String s) {
-        AccountConfigData accountConfigData;
         if (StringUtils.isEmpty(s)) {
-            accountConfigData = null;
+            return null;
         }
-        else {
-            if (Log.isLoggable()) {
-                Log.v("nf_config", "Parsing AccountConfig from json: " + s);
-            }
-            final AccountConfigData accountConfigData2 = FalkorParseUtils.getGson().fromJson(s, AccountConfigData.class);
-            accountConfigData2.mCastWhitelistJSONArray = null;
-            accountConfigData2.mMdxBlacklistTargetsJSONArray = null;
-            accountConfigData2.mJPlayerConfigJSON = null;
-            accountConfigData = accountConfigData2;
-            if (accountConfigData2.kubrickConfig == null) {
-                accountConfigData2.kubrickConfig = AccountConfigData.DEFAULT_KUBRICK_CONFIG;
-                return accountConfigData2;
-            }
+        if (Log.isLoggable()) {
+            Log.v("nf_config", "Parsing AccountConfig from json: " + s);
         }
+        final AccountConfigData accountConfigData = FalkorParseUtils.getGson().fromJson(s, AccountConfigData.class);
+        accountConfigData.mCastWhitelistJSONArray = null;
+        accountConfigData.mMdxBlacklistTargetsJSONArray = null;
+        accountConfigData.mJPlayerConfigJSON = null;
         return accountConfigData;
     }
     
@@ -103,14 +87,6 @@ public class AccountConfigData
     
     public boolean enableLowBitrateStreams() {
         return this.enableLowBitrateStreams;
-    }
-    
-    public ABTestConfig getABTestConfiguration_6634() {
-        return this.abTestConfig_6634;
-    }
-    
-    public ABTestConfig getABTestConfiguration_6725() {
-        return this.abTestConfig_6725;
     }
     
     public DataSaveConfigData getBWSaveConfigData() {
@@ -169,10 +145,6 @@ public class AccountConfigData
             final JSONObject mjPlayerConfigJSON = null;
             continue;
         }
-    }
-    
-    public KubrickConfiguration getKubrickConfig() {
-        return this.kubrickConfig;
     }
     
     public String getMdxBlacklist() {

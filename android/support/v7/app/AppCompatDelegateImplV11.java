@@ -8,7 +8,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class AppCompatDelegateImplV11 extends AppCompatDelegateImplV9
 {
     AppCompatDelegateImplV11(final Context context, final Window window, final AppCompatCallback appCompatCallback) {

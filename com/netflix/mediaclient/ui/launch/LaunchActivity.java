@@ -122,7 +122,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131231235));
+            this.showDebugToast(this.getString(2131296791));
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.success, null);
             return;
         }
@@ -529,7 +529,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         Log.d("LaunchActivity", "Service is NOT ready, use splash screen... nf_config: splashscreen");
         this.mSplashScreenStarted = System.currentTimeMillis();
-        this.setContentView(2130903295);
+        this.setContentView(2130903309);
     }
     
     @Override

@@ -22,6 +22,7 @@ import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.Asset;
+import java.io.File;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import com.netflix.falkor.BranchNode;
@@ -83,15 +84,16 @@ class FalkorAgent$PrefetchLolomoSchedulerJob implements NetflixJobExecutor
         if (Log.isLoggable()) {
             Log.d("FalkorAgent", "handleUntimelyJobRequest: Start job request is invalidated because the last request ran before start delay ms");
         }
-        this.this$0.notifyJobFinished(true, false, false, "handleUntimelyJobRequest");
         if (n <= 60000L) {
             this.this$0.cancelPrefetchLolomoSchedulerJob();
-            this.this$0.schedulePrefetchLolomoJob();
         }
     }
     
     private boolean isStartJobUntimely(final long n) {
-        return n < 3600000L;
+        if (Log.isLoggable()) {
+            Log.d("FalkorAgent", "isStartJobUntimely: timeDifferenceMS = " + n);
+        }
+        return n > 0L && n < 3600000L;
     }
     
     @Override
@@ -105,8 +107,9 @@ class FalkorAgent$PrefetchLolomoSchedulerJob implements NetflixJobExecutor
         }
         else {
             final long elapsedRealtime = SystemClock.elapsedRealtime();
-            final long n = elapsedRealtime - PrefetchLolomoABTestUtils.getLastJobStartTime(this.this$0.getContext());
-            if (this.isStartJobUntimely(n)) {
+            final long lastJobStartTime = PrefetchLolomoABTestUtils.getLastJobStartTime(this.this$0.getContext());
+            final long n = elapsedRealtime - lastJobStartTime;
+            if (lastJobStartTime > 0L && this.isStartJobUntimely(n)) {
                 this.handleUntimelyJobRequest(n);
                 return;
             }

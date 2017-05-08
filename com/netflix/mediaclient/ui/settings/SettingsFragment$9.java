@@ -23,6 +23,7 @@ import com.netflix.mediaclient.Log;
 import android.preference.Preference$OnPreferenceChangeListener;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import android.preference.PreferenceGroup;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.Fragment;

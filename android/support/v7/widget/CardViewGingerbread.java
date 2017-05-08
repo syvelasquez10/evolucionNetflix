@@ -9,7 +9,9 @@ import android.graphics.drawable.Drawable;
 import android.content.res.ColorStateList;
 import android.content.Context;
 import android.graphics.RectF;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class CardViewGingerbread implements CardViewImpl
 {
     final RectF sCornerRect;

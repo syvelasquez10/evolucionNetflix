@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.mdx;
 
 import android.view.Menu;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.os.Bundle;
 import android.content.Intent;
 import com.netflix.mediaclient.android.activity.NetflixActivity;

@@ -10,16 +10,17 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.GsonBuilder;
 import java.io.Writer;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.model.branches.MementoVideoSwatch;
 import java.util.LinkedHashSet;
 import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
+import java.io.File;
 import com.fasterxml.jackson.core.JsonFactory;
 import java.io.Reader;
 import java.util.Date;
@@ -36,14 +37,16 @@ import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.util.DataUtil$StringPair;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.Map;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
 import com.netflix.mediaclient.util.FileUtils;
-import com.netflix.mediaclient.Log;
 import java.util.Iterator;
 import java.util.Comparator;
 import java.util.Collections;
@@ -255,13 +258,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     }
     
     private void dumpCacheToDisk(final String s) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("==START OF CACHE==").append("\n");
-        if (Log.isLoggable()) {
-            this.doDumpCacheToDiskRecursive(sb, this.root, 0, false);
-        }
-        sb.append("==END OF CACHE==").append("\n");
-        FileUtils.writeStringToFile("CachedModelProxy", sb.toString(), s);
+        FileUtils.writeStringToExternalStorageDirectory("CachedModelProxy", this.rootStringRepresentation(), s);
     }
     
     private void executeRequest(final FalkorVolleyWebClientRequest<?> falkorVolleyWebClientRequest) {
@@ -426,10 +423,26 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         return new DataUtil$StringPair(id, value);
     }
     
+    private String getCurrentProfileGuidOrNull() {
+        String profileGuid = null;
+        final NetflixService service = this.getService();
+        UserProfile currentProfile;
+        if (service != null) {
+            currentProfile = service.getCurrentProfile();
+        }
+        else {
+            currentProfile = null;
+        }
+        if (currentProfile != null) {
+            profileGuid = currentProfile.getProfileGuid();
+        }
+        return profileGuid;
+    }
+    
     private List<GenreList> getGenreList() {
         final Object value = this.getValue(PQL.create("genreList"));
         if (value != null) {
-            return ((Sentinel<List<GenreList>>)value).getValue();
+            return new ArrayList<GenreList>(((Sentinel<List>)value).getValue());
         }
         return null;
     }
@@ -644,6 +657,117 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         }
     }
     // monitorexit(this)
+    
+    private void prefetchVideoDetailsFromQueue() {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: invokestatic    com/netflix/mediaclient/ui/details/DPPrefetchABTestUtils.isPrefetchQueueEmpty:()Z
+        //     3: ifne            109
+        //     6: invokestatic    com/netflix/mediaclient/ui/details/DPPrefetchABTestUtils.getPrefetchCounter:()I
+        //     9: iconst_2       
+        //    10: if_icmpge       109
+        //    13: invokestatic    com/netflix/mediaclient/ui/details/DPPrefetchABTestUtils.incrementPrefetchCounter:()I
+        //    16: pop            
+        //    17: invokestatic    com/netflix/mediaclient/ui/details/DPPrefetchABTestUtils.getNextPrefetchVideo:()Lcom/netflix/mediaclient/servicemgr/interface_/Video;
+        //    20: astore_1       
+        //    21: aload_1        
+        //    22: ifnull          102
+        //    25: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    28: ifeq            77
+        //    31: ldc             "CachedModelProxy"
+        //    33: new             Ljava/lang/StringBuilder;
+        //    36: dup            
+        //    37: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    40: ldc_w           "Prefetch DP request for "
+        //    43: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    46: aload_1        
+        //    47: invokeinterface com/netflix/mediaclient/servicemgr/interface_/Video.getId:()Ljava/lang/String;
+        //    52: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    55: ldc_w           ": "
+        //    58: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    61: aload_1        
+        //    62: invokeinterface com/netflix/mediaclient/servicemgr/interface_/Video.getTitle:()Ljava/lang/String;
+        //    67: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    70: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    73: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    76: pop            
+        //    77: aload_1        
+        //    78: invokestatic    com/netflix/mediaclient/ui/details/DPPrefetchABTestUtils.removePrefetchDPCallback:(Lcom/netflix/mediaclient/servicemgr/interface_/Video;)Lcom/netflix/mediaclient/service/browse/BrowseAgentCallback;
+        //    81: astore_2       
+        //    82: aload_0        
+        //    83: new             new            !!! ERROR
+        //    86: dup            
+        //    87: aload_0        
+        //    88: aload_1        
+        //    89: invokestatic    java/util/Collections.singletonList:(Ljava/lang/Object;)Ljava/util/List;
+        //    92: aload_2        
+        //    93: invokespecial   invokespecial  !!! ERROR
+        //    96: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    99: goto            0
+        //   102: invokestatic    com/netflix/mediaclient/ui/details/DPPrefetchABTestUtils.decrementPrefetchCounter:()I
+        //   105: pop            
+        //   106: goto            0
+        //   109: return         
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
+        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
+        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
+        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
+        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    private String rootStringRepresentation() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("==START OF CACHE==").append("\n");
+        if (Log.isLoggable()) {
+            this.doDumpCacheToDiskRecursive(sb, this.root, 0, false);
+        }
+        sb.append("==END OF CACHE==").append("\n");
+        return sb.toString();
+    }
     
     private void sendDetailPageReloadBroadcast(final Context context) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.DETAIL_PAGE_REFRESH"));
@@ -871,7 +995,11 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         return true;
     }
     
-    public void dumpCacheToDisk() {
+    public void dumpCacheToDisk(final File file) {
+        if (file != null) {
+            FileUtils.writeStringToFile("CachedModelProxy", this.rootStringRepresentation(), file);
+            return;
+        }
         this.dumpCacheToDisk("cache.txt");
     }
     
@@ -1020,7 +1148,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    15: dup            
         //    16: iconst_0       
         //    17: invokespecial   java/util/ArrayList.<init>:(I)V
-        //    20: getstatic       com/netflix/mediaclient/android/app/CommonStatus.INTERNAL_ERROR:Lcom/netflix/mediaclient/android/app/NetflixImmutableStatus;
+        //    20: getstatic       com/netflix/mediaclient/android/app/CommonStatus.INT_ERR_ADVIS_VIDEO_ID_NULL:Lcom/netflix/mediaclient/android/app/NetflixImmutableStatus;
         //    23: invokeinterface com/netflix/mediaclient/service/browse/BrowseAgentCallback.onAdvisoriesFetched:(Ljava/util/List;Lcom/netflix/mediaclient/android/app/Status;)V
         //    28: return         
         //    29: aload_0        
@@ -3657,69 +3785,12 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void prefetchVideoListDetails(final List<? extends Video> p0, final BrowseAgentCallback p1) {
-        // 
-        // This method could not be decompiled.
-        // 
-        // Original Bytecode:
-        // 
-        //     0: aload_0        
-        //     1: new             new            !!! ERROR
-        //     4: dup            
-        //     5: aload_0        
-        //     6: aload_1        
-        //     7: aload_2        
-        //     8: invokespecial   invokespecial  !!! ERROR
-        //    11: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    14: return         
-        //    Signature:
-        //  (Ljava/util/List<+Lcom/netflix/mediaclient/servicemgr/interface_/Video;>;Lcom/netflix/mediaclient/service/browse/BrowseAgentCallback;)V
-        // 
-        // The error that occurred was:
-        // 
-        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
-        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
-        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
-        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
-        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
-        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
-        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
-        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
-        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
-        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
-        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
-        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
-        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
-        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
-        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
-        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
-        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
-        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
-        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-        // 
-        throw new IllegalStateException("An error occurred while decompiling this method.");
+    public void prefetchVideoListDetails(final List<? extends Video> list, final BrowseAgentCallback browseAgentCallback) {
+        final boolean prefetchQueueEmpty = DPPrefetchABTestUtils.isPrefetchQueueEmpty();
+        DPPrefetchABTestUtils.addToQueue(list, browseAgentCallback);
+        if (prefetchQueueEmpty) {
+            this.prefetchVideoDetailsFromQueue();
+        }
     }
     
     public void refreshCw() {

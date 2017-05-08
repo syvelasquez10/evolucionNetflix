@@ -4,6 +4,7 @@
 
 package android.support.v7.widget;
 
+import android.widget.LinearLayout$LayoutParams;
 import android.support.v4.view.ViewCompat;
 import android.os.Build$VERSION;
 import android.view.View$MeasureSpec;
@@ -28,6 +29,16 @@ public class ButtonBarLayout extends LinearLayout
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.ButtonBarLayout);
         this.mAllowStacking = obtainStyledAttributes.getBoolean(R$styleable.ButtonBarLayout_allowStacking, b);
         obtainStyledAttributes.recycle();
+    }
+    
+    private int getNextVisibleChildIndex(int i) {
+        while (i < this.getChildCount()) {
+            if (this.getChildAt(i).getVisibility() == 0) {
+                return i;
+            }
+            ++i;
+        }
+        return -1;
     }
     
     private boolean isStacked() {
@@ -67,9 +78,8 @@ public class ButtonBarLayout extends LinearLayout
         }
     }
     
-    protected void onMeasure(final int n, final int n2) {
-        final boolean b = false;
-        final int size = View$MeasureSpec.getSize(n);
+    protected void onMeasure(int nextVisibleChildIndex, int paddingTop) {
+        final int size = View$MeasureSpec.getSize(nextVisibleChildIndex);
         if (this.mAllowStacking) {
             if (size > this.mLastWidthSize && this.isStacked()) {
                 this.setStacked(false);
@@ -77,49 +87,76 @@ public class ButtonBarLayout extends LinearLayout
             this.mLastWidthSize = size;
         }
         int measureSpec;
-        boolean b2;
-        if (!this.isStacked() && View$MeasureSpec.getMode(n) == 1073741824) {
+        boolean b;
+        if (!this.isStacked() && View$MeasureSpec.getMode(nextVisibleChildIndex) == 1073741824) {
             measureSpec = View$MeasureSpec.makeMeasureSpec(size, Integer.MIN_VALUE);
-            b2 = true;
+            b = true;
         }
         else {
-            measureSpec = n;
-            b2 = false;
+            measureSpec = nextVisibleChildIndex;
+            b = false;
         }
-        super.onMeasure(measureSpec, n2);
-        int n3 = b2 ? 1 : 0;
+        super.onMeasure(measureSpec, paddingTop);
+        int n = b ? 1 : 0;
         if (this.mAllowStacking) {
-            n3 = (b2 ? 1 : 0);
+            n = (b ? 1 : 0);
             if (!this.isStacked()) {
-                int n4;
+                int n2;
                 if (Build$VERSION.SDK_INT >= 11) {
-                    n4 = (b ? 1 : 0);
                     if ((ViewCompat.getMeasuredWidthAndState((View)this) & 0xFF000000) == 0x1000000) {
-                        n4 = 1;
+                        n2 = 1;
+                    }
+                    else {
+                        n2 = 0;
                     }
                 }
                 else {
                     final int childCount = this.getChildCount();
                     int i = 0;
-                    int n5 = 0;
+                    int n3 = 0;
                     while (i < childCount) {
-                        n5 += this.getChildAt(i).getMeasuredWidth();
+                        n3 += this.getChildAt(i).getMeasuredWidth();
                         ++i;
                     }
-                    n4 = (b ? 1 : 0);
-                    if (this.getPaddingLeft() + n5 + this.getPaddingRight() > size) {
-                        n4 = 1;
+                    if (this.getPaddingLeft() + n3 + this.getPaddingRight() > size) {
+                        n2 = 1;
+                    }
+                    else {
+                        n2 = 0;
                     }
                 }
-                n3 = (b2 ? 1 : 0);
-                if (n4 != 0) {
+                n = (b ? 1 : 0);
+                if (n2 != 0) {
                     this.setStacked(true);
-                    n3 = 1;
+                    n = 1;
                 }
             }
         }
-        if (n3 != 0) {
-            super.onMeasure(n, n2);
+        if (n != 0) {
+            super.onMeasure(nextVisibleChildIndex, paddingTop);
+        }
+        nextVisibleChildIndex = this.getNextVisibleChildIndex(0);
+        if (nextVisibleChildIndex >= 0) {
+            final View child = this.getChildAt(nextVisibleChildIndex);
+            final LinearLayout$LayoutParams linearLayout$LayoutParams = (LinearLayout$LayoutParams)child.getLayoutParams();
+            paddingTop = this.getPaddingTop();
+            paddingTop = linearLayout$LayoutParams.bottomMargin + (child.getMeasuredHeight() + paddingTop + linearLayout$LayoutParams.topMargin) + 0;
+            if (this.isStacked()) {
+                final int nextVisibleChildIndex2 = this.getNextVisibleChildIndex(nextVisibleChildIndex + 1);
+                nextVisibleChildIndex = paddingTop;
+                if (nextVisibleChildIndex2 >= 0) {
+                    nextVisibleChildIndex = (int)(paddingTop + (this.getChildAt(nextVisibleChildIndex2).getPaddingTop() + 16.0f * this.getResources().getDisplayMetrics().density));
+                }
+            }
+            else {
+                nextVisibleChildIndex = paddingTop + this.getPaddingBottom();
+            }
+        }
+        else {
+            nextVisibleChildIndex = 0;
+        }
+        if (ViewCompat.getMinimumHeight((View)this) != nextVisibleChildIndex) {
+            this.setMinimumHeight(nextVisibleChildIndex);
         }
     }
     

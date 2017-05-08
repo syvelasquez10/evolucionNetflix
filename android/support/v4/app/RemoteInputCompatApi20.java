@@ -8,7 +8,9 @@ import android.app.RemoteInput$Builder;
 import android.app.RemoteInput;
 import android.os.Bundle;
 import android.content.Intent;
+import android.annotation.TargetApi;
 
+@TargetApi(20)
 class RemoteInputCompatApi20
 {
     static void addResultsToIntent(final RemoteInputCompatBase$RemoteInput[] array, final Intent intent, final Bundle bundle) {

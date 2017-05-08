@@ -70,7 +70,7 @@ public class OfflineLicenseResponse
             this.licenseData = Base64.decode(optJSONObject.optString("licenseResponseBase64"));
             Log.d(OfflineLicenseResponse.TAG, "parsing license response end.");
             this.mExpirationTimeInMs = optJSONObject.optLong("absoluteExpirationTimeMillis");
-            this.mViewingWindow = optJSONObject.optLong("viewingWindow");
+            this.mViewingWindow = optJSONObject.optLong("viewingWindowExpiration");
             if (this.mViewingWindow <= 0L) {
                 this.mViewingWindow = Long.MAX_VALUE;
             }

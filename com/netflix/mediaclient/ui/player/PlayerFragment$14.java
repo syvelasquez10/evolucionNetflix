@@ -25,6 +25,7 @@ import android.view.Surface;
 import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.support.v4.media.session.MediaSessionCompat$Callback;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
@@ -44,6 +45,7 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -59,8 +61,8 @@ import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -162,7 +164,7 @@ class PlayerFragment$14 implements Runnable
     public void run() {
         final SecondSurface access$2700 = this.this$0.mSurface2;
         if (access$2700 != null) {
-            access$2700.setSurfaceInvisible();
+            access$2700.setSurfaceVisible();
         }
     }
 }

@@ -49,7 +49,7 @@ public class SlideTransition extends Visibility
             return null;
         }
         final ObjectAnimator translationAnimator = this.getTranslationAnimator(viewGroup, target, true);
-        ((Animator)translationAnimator).setDuration((long)AndroidUtils.getIntegerRes(target.getContext(), 2131492870));
+        ((Animator)translationAnimator).setDuration((long)AndroidUtils.getIntegerRes(target.getContext(), 2131558406));
         ((Animator)translationAnimator).setTarget((Object)target);
         return (Animator)translationAnimator;
     }
@@ -60,7 +60,7 @@ public class SlideTransition extends Visibility
         }
         final AnimatorSet set = new AnimatorSet();
         final ObjectAnimator translationAnimator = this.getTranslationAnimator(viewGroup, target, false);
-        set.setDuration((long)AndroidUtils.getIntegerRes(target.getContext(), 2131492870));
+        set.setDuration((long)AndroidUtils.getIntegerRes(target.getContext(), 2131558406));
         final AnimatorSet$Builder play = set.play((Animator)translationAnimator);
         if (DeviceUtils.isTabletByContext(target.getContext())) {
             final Property alpha = View.ALPHA;

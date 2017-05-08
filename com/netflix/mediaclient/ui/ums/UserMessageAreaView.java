@@ -13,6 +13,8 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.ViewParent;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.NetworkErrorStatus;
@@ -66,13 +68,13 @@ public class UserMessageAreaView extends LinearLayout
     public UserMessageAreaView(final Context context) {
         super(context);
         this.mReceiver = new UserMessageAreaView$1(this);
-        inflate(context, 2130903307, (ViewGroup)this);
-        (this.mTitle = (TextView)this.findViewById(2131689574)).setMovementMethod(LinkMovementMethod.getInstance());
-        (this.mBody = (TextView)this.findViewById(2131690378)).setMovementMethod(LinkMovementMethod.getInstance());
-        this.mCtaContainer = (ViewGroup)this.findViewById(2131690379);
-        this.mIcon = (IconFontTextView)this.findViewById(2131689573);
-        this.mAlertView = this.findViewById(2131690376);
-        this.mDimSpace = (Space)this.findViewById(2131690377);
+        inflate(context, 2130903321, (ViewGroup)this);
+        (this.mTitle = (TextView)this.findViewById(2131755114)).setMovementMethod(LinkMovementMethod.getInstance());
+        (this.mBody = (TextView)this.findViewById(2131755946)).setMovementMethod(LinkMovementMethod.getInstance());
+        this.mCtaContainer = (ViewGroup)this.findViewById(2131755947);
+        this.mIcon = (IconFontTextView)this.findViewById(2131755113);
+        this.mAlertView = this.findViewById(2131755944);
+        this.mDimSpace = (Space)this.findViewById(2131755945);
         this.setOnTouchListener((View$OnTouchListener)new UserMessageAreaView$2(this));
         LocalizationUtils.setLayoutDirection((View)this.mCtaContainer);
         (this.mAlphaAnimation = this.animate()).setDuration((long)this.getResources().getInteger(17694721));
@@ -90,10 +92,10 @@ public class UserMessageAreaView extends LinearLayout
         final Context context = this.getContext();
         int n;
         if (umaCta.selected()) {
-            n = 2131427777;
+            n = 2131493341;
         }
         else {
-            n = 2131427776;
+            n = 2131493340;
         }
         final NetflixTextButton netflixTextButton = new NetflixTextButton((Context)new ContextThemeWrapper(context, n));
         netflixTextButton.setText((CharSequence)umaCta.text());
@@ -139,20 +141,20 @@ public class UserMessageAreaView extends LinearLayout
         }
         if ("INFO".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231474);
-            this.mIcon.setTextColor(this.getResources().getColor(2131624052));
+            this.mIcon.setText(2131297037);
+            this.mIcon.setTextColor(this.getResources().getColor(2131689589));
             return;
         }
         if ("WARN".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231487);
-            this.mIcon.setTextColor(this.getResources().getColor(2131624053));
+            this.mIcon.setText(2131297050);
+            this.mIcon.setTextColor(this.getResources().getColor(2131689590));
             return;
         }
         if ("ERROR".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231471);
-            this.mIcon.setTextColor(this.getResources().getColor(2131624054));
+            this.mIcon.setText(2131297034);
+            this.mIcon.setTextColor(this.getResources().getColor(2131689591));
             return;
         }
         this.mIcon.setVisibility(8);
@@ -171,6 +173,7 @@ public class UserMessageAreaView extends LinearLayout
     
     public void dismiss(final boolean b) {
         if (this.mUmaAlert != null) {
+            UIViewLogUtils.reportUIViewModalViewEnded(this.getContext(), IClientLogging$ModalView.umsAlert, this.mUmaAlert.blocking(), this.mUmaAlert.trackingInfo());
             if (b) {
                 this.mAlphaAnimation.alpha(0.0f);
             }
@@ -210,13 +213,14 @@ public class UserMessageAreaView extends LinearLayout
                 viewGroup.addView((View)this, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
                 this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new UserMessageAreaView$6(this));
                 this.mDimSpace.setVisibility(0);
-                this.setBackgroundResource(2131624175);
+                this.setBackgroundResource(2131689715);
             }
             else {
                 this.mParentView.addHeaderView((View)this, (Object)null, false);
                 this.mDimSpace.setVisibility(8);
                 this.setBackground((Drawable)null);
             }
+            UIViewLogUtils.reportUIViewModalViewStarted(this.getContext(), IClientLogging$ModalView.umsAlert);
             Log.e("UserMessageAreaView", "Displaying uma alert created on " + new Date(this.mUmaAlert.timestamp()));
         }
     }

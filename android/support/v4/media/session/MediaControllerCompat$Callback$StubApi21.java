@@ -5,6 +5,7 @@
 package android.support.v4.media.session;
 
 import java.util.List;
+import android.os.Build$VERSION;
 import android.support.v4.media.MediaMetadataCompat;
 import android.os.Bundle;
 
@@ -33,6 +34,9 @@ class MediaControllerCompat$Callback$StubApi21 implements MediaControllerCompatA
     
     @Override
     public void onPlaybackStateChanged(final Object o) {
+        if (this.this$0.mHasExtraCallback && Build$VERSION.SDK_INT < 22) {
+            return;
+        }
         this.this$0.onPlaybackStateChanged(PlaybackStateCompat.fromPlaybackState(o));
     }
     
@@ -53,6 +57,9 @@ class MediaControllerCompat$Callback$StubApi21 implements MediaControllerCompatA
     
     @Override
     public void onSessionEvent(final String s, final Bundle bundle) {
+        if (this.this$0.mHasExtraCallback && Build$VERSION.SDK_INT < 23) {
+            return;
+        }
         this.this$0.onSessionEvent(s, bundle);
     }
 }

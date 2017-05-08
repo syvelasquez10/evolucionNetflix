@@ -9,7 +9,9 @@ import android.view.accessibility.AccessibilityNodeInfo$CollectionItemInfo;
 import android.view.accessibility.AccessibilityNodeInfo$CollectionInfo;
 import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class AccessibilityNodeInfoCompatKitKat
 {
     private static final String ROLE_DESCRIPTION_KEY = "AccessibilityNodeInfo.roleDescription";

@@ -167,13 +167,13 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     public static NetflixDialogFrag create(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131427465);
+        episodesFrag.setStyle(1, 2131493008);
         return applyCreateArgs(episodesFrag, s, s2, b, false);
     }
     
     public static NetflixDialogFrag createEpisodes(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131427599);
+        episodesFrag.setStyle(1, 2131493151);
         return applyCreateArgs(episodesFrag, s, s2, b, true);
     }
     
@@ -257,8 +257,8 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.spinner = spinner;
         this.setupSeasonsSpinnerAdapter();
         this.setupSeasonsSpinnerListener();
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131624173);
-        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131362330)));
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131689713);
+        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131427895)));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 8388627));
         return this.spinnerViewGroup;
     }
@@ -307,7 +307,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected int getlayoutId() {
-        return 2130903277;
+        return 2130903290;
     }
     
     protected void initDetailsViewGroup() {
@@ -490,13 +490,15 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener() {
-        if (this.getActivity() != null && this.recyclerView != null && this.recyclerView.getContext() instanceof NetflixActivity && (DeviceUtils.isNotTabletByContext((Context)this.getActivity()) || DeviceUtils.isPortrait((Context)this.getActivity()))) {
+        if (this.getActivity() != null && this.recyclerView != null && this.recyclerView.getContext() instanceof NetflixActivity) {
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener default1 = DetailsPageParallaxScrollListener.createDefault(this.spinner, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, null);
-                this.recyclerView.setOnScrollListener(default1);
-                return default1;
+                if (DeviceUtils.isNotTabletByContext((Context)this.getActivity()) || DeviceUtils.isPortrait((Context)this.getActivity())) {
+                    final DetailsPageParallaxScrollListener default1 = DetailsPageParallaxScrollListener.createDefault(this.spinner, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, null);
+                    this.recyclerView.setOnScrollListener(default1);
+                    return default1;
+                }
             }
         }
         return null;
@@ -520,7 +522,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         if (DeviceUtils.isTabletByContext((Context)this.getActivity()) && DeviceUtils.isLandscape((Context)this.getActivity())) {
             this.episodesAdapter.addHeaderView(ViewUtils.createActionBarDummyView(this.getNetflixActivity()));
         }
-        this.episodesAdapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131362333)));
+        this.episodesAdapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131427898)));
         this.recyclerView.setAdapter(this.episodesAdapter);
         this.episodesAdapter.setSingleChoiceMode(true);
         this.addOfflineAgentListener(this.recyclerView);
@@ -535,7 +537,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130837984);
+        adapter.setItemBackgroundColor(2130838128);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
@@ -550,7 +552,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     @Override
     public Tooltip setupTutorial(final UserProfile userProfile) {
-        final View viewById = this.recyclerView.findViewById(2131689849);
+        final View viewById = this.recyclerView.findViewById(2131755178);
         if (viewById == null) {
             return null;
         }

@@ -116,6 +116,18 @@ public class NotificationCompat$Builder
         return this;
     }
     
+    public RemoteViews getBigContentView() {
+        return this.mBigContentView;
+    }
+    
+    public int getColor() {
+        return this.mColor;
+    }
+    
+    public RemoteViews getContentView() {
+        return this.mContentView;
+    }
+    
     protected NotificationCompat$BuilderExtender getExtender() {
         return new NotificationCompat$BuilderExtender();
     }
@@ -127,9 +139,32 @@ public class NotificationCompat$Builder
         return this.mExtras;
     }
     
+    public RemoteViews getHeadsUpContentView() {
+        return this.mHeadsUpContentView;
+    }
+    
     @Deprecated
     public Notification getNotification() {
         return this.build();
+    }
+    
+    public int getPriority() {
+        return this.mPriority;
+    }
+    
+    public long getWhenIfShowing() {
+        if (this.mShowWhen) {
+            return this.mNotification.when;
+        }
+        return 0L;
+    }
+    
+    protected CharSequence resolveText() {
+        return this.mContentText;
+    }
+    
+    protected CharSequence resolveTitle() {
+        return this.mContentTitle;
     }
     
     public NotificationCompat$Builder setAutoCancel(final boolean b) {

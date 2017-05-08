@@ -47,6 +47,13 @@ public class ABTestConfiguration
         return this.mABTestConfigData.getAimLowPrefetchLolomoConfig().getCell();
     }
     
+    public ABTestConfig$Cell getAimLowTextPlaceholderConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getAimLowTextPlaceholderConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getAimLowTextPlaceholderConfig().getCell();
+    }
+    
     public ABTestConfig$Cell getBrandLoveSurveyConfig() {
         if (this.mABTestConfigData == null || this.mABTestConfigData.getBrandLoveSurveyConfig() == null) {
             return ABTestConfig$Cell.CELL_ONE;

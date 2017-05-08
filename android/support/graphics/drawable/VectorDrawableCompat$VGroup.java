@@ -123,9 +123,90 @@ class VectorDrawableCompat$VGroup
         return this.mGroupName;
     }
     
+    public Matrix getLocalMatrix() {
+        return this.mLocalMatrix;
+    }
+    
+    public float getPivotX() {
+        return this.mPivotX;
+    }
+    
+    public float getPivotY() {
+        return this.mPivotY;
+    }
+    
+    public float getRotation() {
+        return this.mRotate;
+    }
+    
+    public float getScaleX() {
+        return this.mScaleX;
+    }
+    
+    public float getScaleY() {
+        return this.mScaleY;
+    }
+    
+    public float getTranslateX() {
+        return this.mTranslateX;
+    }
+    
+    public float getTranslateY() {
+        return this.mTranslateY;
+    }
+    
     public void inflate(final Resources resources, final AttributeSet set, final Resources$Theme resources$Theme, final XmlPullParser xmlPullParser) {
         final TypedArray obtainAttributes = VectorDrawableCommon.obtainAttributes(resources, resources$Theme, set, AndroidResources.styleable_VectorDrawableGroup);
         this.updateStateFromTypedArray(obtainAttributes, xmlPullParser);
         obtainAttributes.recycle();
+    }
+    
+    public void setPivotX(final float mPivotX) {
+        if (mPivotX != this.mPivotX) {
+            this.mPivotX = mPivotX;
+            this.updateLocalMatrix();
+        }
+    }
+    
+    public void setPivotY(final float mPivotY) {
+        if (mPivotY != this.mPivotY) {
+            this.mPivotY = mPivotY;
+            this.updateLocalMatrix();
+        }
+    }
+    
+    public void setRotation(final float mRotate) {
+        if (mRotate != this.mRotate) {
+            this.mRotate = mRotate;
+            this.updateLocalMatrix();
+        }
+    }
+    
+    public void setScaleX(final float mScaleX) {
+        if (mScaleX != this.mScaleX) {
+            this.mScaleX = mScaleX;
+            this.updateLocalMatrix();
+        }
+    }
+    
+    public void setScaleY(final float mScaleY) {
+        if (mScaleY != this.mScaleY) {
+            this.mScaleY = mScaleY;
+            this.updateLocalMatrix();
+        }
+    }
+    
+    public void setTranslateX(final float mTranslateX) {
+        if (mTranslateX != this.mTranslateX) {
+            this.mTranslateX = mTranslateX;
+            this.updateLocalMatrix();
+        }
+    }
+    
+    public void setTranslateY(final float mTranslateY) {
+        if (mTranslateY != this.mTranslateY) {
+            this.mTranslateY = mTranslateY;
+            this.updateLocalMatrix();
+        }
     }
 }

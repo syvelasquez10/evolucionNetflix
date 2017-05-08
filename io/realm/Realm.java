@@ -41,7 +41,7 @@ public final class Realm extends BaseRealm
     }
     
     private void checkHasPrimaryKey(final Class<? extends RealmModel> clazz) {
-        if (!this.schema.getTable(clazz).hasPrimaryKey()) {
+        if (!this.schema.getTable((Class)clazz).hasPrimaryKey()) {
             throw new IllegalArgumentException("A RealmObject with no @PrimaryKey cannot be updated: " + clazz.toString());
         }
     }
@@ -132,7 +132,7 @@ public final class Realm extends BaseRealm
         if (realmConfiguration == null) {
             throw new IllegalArgumentException("A non-null RealmConfiguration must be provided");
         }
-        return RealmCache.createRealmOrGetFromCache(realmConfiguration, Realm.class);
+        return (Realm)RealmCache.createRealmOrGetFromCache(realmConfiguration, (Class)Realm.class);
     }
     
     public static void init(final Context context) {
@@ -231,7 +231,7 @@ public final class Realm extends BaseRealm
                     }
                 }
                 if (syncConfiguration) {
-                    realm.sharedRealm.updateSchema(new RealmSchema(list), version);
+                    realm.sharedRealm.updateSchema(new RealmSchema((ArrayList)list), version);
                     for (final Class clazz2 : modelClasses) {
                         map.put(clazz2, schemaMediator.validateTable((Class)clazz2, realm.sharedRealm, false));
                     }
@@ -250,7 +250,7 @@ public final class Realm extends BaseRealm
                     if (initialDataTransaction != null) {
                         if (syncConfiguration) {
                             realm.executeTransaction(initialDataTransaction);
-                            realm.executeTransaction(new Realm$1());
+                            realm.executeTransaction((Realm$Transaction)new Realm$1());
                         }
                         else {
                             initialDataTransaction.execute(realm);
@@ -271,7 +271,7 @@ public final class Realm extends BaseRealm
     }
     
     private static void migrateRealm(final RealmConfiguration realmConfiguration, final RealmMigrationNeededException ex) {
-        BaseRealm.migrateRealm(realmConfiguration, null, new Realm$3(), ex);
+        BaseRealm.migrateRealm(realmConfiguration, null, (BaseRealm$MigrationCallback)new Realm$3(), ex);
     }
     
     public <E extends RealmModel> E copyToRealm(final E e) {
@@ -291,11 +291,11 @@ public final class Realm extends BaseRealm
     }
     
      <E extends RealmModel> E createObjectInternal(final Class<E> clazz, final Object o, final boolean b, final List<String> list) {
-        return this.get(clazz, this.schema.getTable(clazz).addEmptyRowWithPrimaryKey(o), b, list);
+        return this.get(clazz, this.schema.getTable((Class)clazz).addEmptyRowWithPrimaryKey(o), b, list);
     }
     
      <E extends RealmModel> E createObjectInternal(final Class<E> clazz, final boolean b, final List<String> list) {
-        final Table table = this.schema.getTable(clazz);
+        final Table table = this.schema.getTable((Class)clazz);
         if (table.hasPrimaryKey()) {
             throw new RealmException(String.format("'%s' has a primary key, use 'createObject(Class<E>, Object)' instead.", Table.tableNameToClassName(table.getName())));
         }
@@ -338,7 +338,7 @@ public final class Realm extends BaseRealm
     }
     
     Table getTable(final Class<? extends RealmModel> clazz) {
-        return this.schema.getTable(clazz);
+        return this.schema.getTable((Class)clazz);
     }
     
     ColumnIndices updateSchemaCache(final ColumnIndices[] array) {
@@ -368,6 +368,6 @@ public final class Realm extends BaseRealm
     
     public <E extends RealmModel> RealmQuery<E> where(final Class<E> clazz) {
         this.checkIfValid();
-        return RealmQuery.createQuery(this, clazz);
+        return (RealmQuery<E>)RealmQuery.createQuery(this, (Class)clazz);
     }
 }

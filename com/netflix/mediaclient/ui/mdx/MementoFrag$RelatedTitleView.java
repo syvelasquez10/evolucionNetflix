@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.mdx;
 
 import java.util.Iterator;
 import android.view.ViewGroup$LayoutParams;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
 import android.os.Handler;
@@ -62,7 +62,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     
     private void updateInsetImage(final int n) {
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
-        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689980);
+        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131755523);
         if (advancedImageView != null && mementoVideoSwatch != null) {
             NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(advancedImageView, mementoVideoSwatch.boxArtUrl, IClientLogging$AssetType.boxArt, "MementoRelatedTitleView", BrowseExperience.getImageLoaderConfig(), true);
             this.adjustInsetHeight(advancedImageView);
@@ -74,7 +74,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     
     private void updateMainImage(final int n) {
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
-        final TopCropImageView topCropImageView = (TopCropImageView)this.findViewById(2131689978);
+        final TopCropImageView topCropImageView = (TopCropImageView)this.findViewById(2131755521);
         if (!DeviceUtils.isLandscape((Context)this.this$0.getActivity())) {
             topCropImageView.setScaleType(ImageView$ScaleType.CENTER_CROP);
         }
@@ -89,7 +89,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903195;
+        return 2130903198;
     }
     
     void updateDetails(final int n) {
@@ -99,12 +99,12 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     }
     
     void updateMoreInfo(final int n) {
-        final TextView textView = (TextView)this.findViewById(2131689979);
+        final TextView textView = (TextView)this.findViewById(2131755522);
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
         if (textView != null && mementoVideoSwatch != null) {
-            textView.setText((CharSequence)textView.getResources().getString(2131231132, new Object[] { mementoVideoSwatch.collectionName }));
-            textView.setTag(2131689499, (Object)mementoVideoSwatch.collectionName);
-            textView.setTag(2131689498, (Object)mementoVideoSwatch.collectionId);
+            textView.setText((CharSequence)textView.getResources().getString(2131296688, new Object[] { mementoVideoSwatch.collectionName }));
+            textView.setTag(2131755039, (Object)mementoVideoSwatch.collectionName);
+            textView.setTag(2131755038, (Object)mementoVideoSwatch.collectionId);
             textView.setOnClickListener((View$OnClickListener)new MementoFrag$RelatedTitleView$1(this, textView));
         }
     }

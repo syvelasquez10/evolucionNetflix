@@ -48,9 +48,9 @@ public class WPStandardCardLayout extends WPCardLayout
     protected void storeViews(final Context context) {
         final WPStandardCardImageView imageView = new WPStandardCardImageView(this.getContext());
         final Resources resources = context.getResources();
-        this.cardWidth = resources.getDimensionPixelSize(2131361951);
-        this.cardHeight = resources.getDimensionPixelSize(2131361949);
-        final FrameLayout$LayoutParams frameLayout$LayoutParams = new FrameLayout$LayoutParams(this.cardWidth + 2, resources.getDimensionPixelSize(2131361950) + 2);
+        this.cardWidth = resources.getDimensionPixelSize(2131427492);
+        this.cardHeight = resources.getDimensionPixelSize(2131427490);
+        final FrameLayout$LayoutParams frameLayout$LayoutParams = new FrameLayout$LayoutParams(this.cardWidth + 2, resources.getDimensionPixelSize(2131427491) + 2);
         frameLayout$LayoutParams.gravity = 48;
         frameLayout$LayoutParams.setMargins(-1, -1, 0, 0);
         this.addView((View)imageView, (ViewGroup$LayoutParams)frameLayout$LayoutParams);

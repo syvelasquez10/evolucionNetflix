@@ -241,7 +241,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         }
         netflixActionBar.setLogoType(logoType);
         if (this.isProfileEditMode) {
-            this.getNetflixActionBar().setTitle(this.getResources().getString(2131231395));
+            this.getNetflixActionBar().setTitle(this.getResources().getString(2131296956));
         }
         this.getNetflixActionBar().setDisplayHomeAsUpEnabled(this.isProfileEditMode);
         final ViewPropertyAnimator animate = this.topTextHeader.animate();
@@ -259,7 +259,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                 Log.e("ProfileSelectionActivity", "Something wierd happened: null grid child view!");
             }
             else if (i < this.profiles.size()) {
-                final View viewById = child.findViewById(2131690267);
+                final View viewById = child.findViewById(2131755835);
                 int visibility;
                 if (this.isProfileEditMode) {
                     visibility = 0;
@@ -268,7 +268,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     visibility = 8;
                 }
                 viewById.setVisibility(visibility);
-                this.findViewAndAnimate(child, 2131689622);
+                this.findViewAndAnimate(child, 2131755164);
             }
         }
         this.invalidateOptionsMenu();
@@ -331,14 +331,14 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     private void showPromoViewIfNeeded(final int n) {
-        final View viewById = this.findViewById(2131690266);
+        final View viewById = this.findViewById(2131755834);
         if (PreferenceUtils.getBooleanPref((Context)this, "user_profile_was_selected", false) || this.profiles == null || this.profiles.size() > 1) {
             viewById.setVisibility(8);
             return;
         }
         viewById.setVisibility(0);
-        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131361864)) / 2.0f);
-        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131362150));
+        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131427404)) / 2.0f);
+        ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131427700));
     }
     
     private void updateAppWasRestartedFlag(final Intent intent) {
@@ -446,14 +446,14 @@ public class ProfileSelectionActivity extends NetflixActivity
         if (bundle == null) {
             PerformanceProfiler.getInstance().startSession(Sessions.PROFILE_GATE, null);
         }
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131361860);
-        this.setContentView(2130903270);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131690262), this.errorCallback);
-        this.content = this.findViewById(2131690263);
-        this.topTextHeader = (TextView)this.findViewById(2131690264);
-        (this.gridView = (StaticGridView)this.findViewById(2131690265)).setOnItemClickListener(this.onAvatarClickListener);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131427400);
+        this.setContentView(2130903283);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131755830), this.errorCallback);
+        this.content = this.findViewById(2131755831);
+        this.topTextHeader = (TextView)this.findViewById(2131755832);
+        (this.gridView = (StaticGridView)this.findViewById(2131755833)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ProfileSelectionActivity$1(this));
-        this.kidsLoadingScreen = this.findViewById(2131689875);
+        this.kidsLoadingScreen = this.findViewById(2131755424);
         this.mDestination = this.getIntent().getStringExtra("extra_destination");
         if (bundle == null) {
             this.logKidsEntryExit();
@@ -475,9 +475,9 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         super.onCreateOptionsMenu(menu, menu2);
-        final MenuItem add = menu.add(0, 2131689485, 0, (CharSequence)this.getString(2131231394));
+        final MenuItem add = menu.add(0, 2131755021, 0, (CharSequence)this.getString(2131296955));
         add.setShowAsAction(1);
-        add.setIcon(2130837789);
+        add.setIcon(2130837912);
         add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new ProfileSelectionActivity$3(this));
     }
     
@@ -511,7 +511,7 @@ public class ProfileSelectionActivity extends NetflixActivity
     protected void startChangeProfile(final UserProfile userProfile) {
         if (this.manager == null || !this.manager.isReady()) {
             Log.e("ProfileSelectionActivity", "Manager is not ready");
-            UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging$CompletionReason.failed, this.getUiScreen(), ConsolidatedLoggingUtils.createUIError(CommonStatus.INTERNAL_ERROR, "", ActionOnUIError.handledSilently));
+            UserActionLogUtils.reportSelectProfileActionEnded((Context)this, IClientLogging$CompletionReason.failed, this.getUiScreen(), ConsolidatedLoggingUtils.createUIError(CommonStatus.INT_ERR_MNGR_NOT_READY, "", ActionOnUIError.handledSilently));
             return;
         }
         if (Log.isLoggable()) {

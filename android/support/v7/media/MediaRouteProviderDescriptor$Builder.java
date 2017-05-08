@@ -40,6 +40,6 @@ public final class MediaRouteProviderDescriptor$Builder
             }
             this.mBundle.putParcelableArrayList("routes", list);
         }
-        return new MediaRouteProviderDescriptor(this.mBundle, this.mRoutes, null);
+        return new MediaRouteProviderDescriptor(this.mBundle, this.mRoutes);
     }
 }

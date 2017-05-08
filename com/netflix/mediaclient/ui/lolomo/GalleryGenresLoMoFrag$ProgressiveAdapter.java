@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import com.netflix.mediaclient.android.app.Status;
 import android.view.View;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;

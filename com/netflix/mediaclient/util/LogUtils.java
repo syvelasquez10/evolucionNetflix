@@ -25,6 +25,7 @@ import com.netflix.mediaclient.android.app.Status;
 public final class LogUtils
 {
     private static final int CLIENT_CODE_STACK_INDEX;
+    private static final int MAX_TAG_LENGTH = 23;
     private static final String TAG = "nf_log";
     
     static {
@@ -67,6 +68,15 @@ public final class LogUtils
             s = ((BladerunnerErrorStatus)status).getErrorMessageForLogging();
         }
         return s;
+    }
+    
+    public static String getTag(final Class clazz) {
+        String s2;
+        final String s = s2 = clazz.getSimpleName();
+        if (s.length() > 23) {
+            s2 = s.substring(0, 23);
+        }
+        return s2;
     }
     
     public static void logCurrentThreadName(final String s, final String s2) {

@@ -7,6 +7,7 @@ package android.support.v7.widget;
 import android.util.Log;
 import android.support.v4.view.ViewCompat;
 import java.util.Collections;
+import java.lang.ref.WeakReference;
 import android.view.View;
 import java.util.List;
 import java.util.ArrayList;

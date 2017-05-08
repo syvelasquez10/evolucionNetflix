@@ -446,7 +446,6 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
             if (this.hasWindowFocus()) {
                 this.sendAccessibilityEvent(32);
             }
-            view.requestFocus();
         }
     }
     
@@ -1277,7 +1276,7 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
     }
     
     public void setDrawerShadow(final int n, final int n2) {
-        this.setDrawerShadow(this.getResources().getDrawable(n), n2);
+        this.setDrawerShadow(ContextCompat.getDrawable(this.getContext(), n), n2);
     }
     
     public void setDrawerShadow(final Drawable drawable, final int n) {

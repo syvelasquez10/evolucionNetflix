@@ -5,7 +5,9 @@
 package android.support.v4.view;
 
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class ViewCompatMarshmallow
 {
     public static int getScrollIndicators(final View view) {

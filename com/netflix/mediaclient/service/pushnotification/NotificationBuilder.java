@@ -106,7 +106,7 @@ abstract class NotificationBuilder
             return Uri.parse(s);
         }
         Log.d("nf_push", "default sound");
-        return Uri.parse("android.resource://com.netflix.mediaclient/2131165185");
+        return Uri.parse("android.resource://com.netflix.mediaclient/2131230721");
     }
     
     protected static boolean isSoundEnabled(final Context context) {

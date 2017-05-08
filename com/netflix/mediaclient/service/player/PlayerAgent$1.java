@@ -97,7 +97,7 @@ class PlayerAgent$1 implements Runnable
     @Override
     public void run() {
         while (true) {
-            Label_0585: {
+            Label_0595: {
                 while (true) {
                     synchronized (this.this$0) {
                         this.this$0.mMedia.reset();
@@ -120,7 +120,7 @@ class PlayerAgent$1 implements Runnable
                             Log.d(PlayerAgent.TAG, "Player state is " + this.this$0.mState);
                         }
                         if (this.this$0.mState != 4 && this.this$0.mState != -1) {
-                            break Label_0585;
+                            break Label_0595;
                         }
                         Log.d(PlayerAgent.TAG, "Player state was CLOSED or CREATED, cancel timeout task!");
                         this.this$0.mState = 5;
@@ -143,7 +143,7 @@ class PlayerAgent$1 implements Runnable
                             final ConnectivityUtils$NetType currentNetType = ConnectivityUtils.getCurrentNetType(this.this$0.getContext());
                             this.this$0.mMedia.setStreamingQoe(this.this$0.getConfigurationAgent().getStreamingQoe(), this.this$0.getConfigurationAgent().enableHTTPSAuth(), this.this$0.isMPPlayerType());
                             this.this$0.mPlaybackVolumeMetric = new PlaybackVolumeMetric(this.this$0.getContext());
-                            this.this$0.mMedia.open(this.this$0.mMovieId, this.this$0.mPlayContext, currentNetType, this.this$0.mBookmark, this.this$0.getConfigurationAgent().isPreviewContentEnabled(), this.this$0.mPlaybackVolumeMetric, this.this$0.getPreferredPeakBpsForLogging());
+                            this.this$0.mMedia.open(this.this$0.mMovieId, this.this$0.mPlayContext, currentNetType, this.this$0.mBookmark, this.this$0.getConfigurationAgent().isPreviewContentEnabled(), this.this$0.mPlaybackVolumeMetric, this.this$0.getPreferredPeakBpsForLogging(), ConnectivityUtils.getCarrierInfo(this.this$0.getContext()));
                             this.this$0.toOpenAfterClose = false;
                             this.this$0.sessionInitRxBytes = ConnectivityUtils.getApplicationRx();
                             this.this$0.sessionInitTxBytes = ConnectivityUtils.getApplicationTx();

@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsActivity;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsActivity;
 
 public class MementoBarkerShowDetailsActivity extends BarkerShowDetailsActivity
 {

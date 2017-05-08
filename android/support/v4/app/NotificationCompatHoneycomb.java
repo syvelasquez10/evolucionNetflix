@@ -10,7 +10,9 @@ import android.app.PendingIntent;
 import android.widget.RemoteViews;
 import android.app.Notification;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class NotificationCompatHoneycomb
 {
     static Notification add(final Context context, final Notification notification, final CharSequence contentTitle, final CharSequence contentText, final CharSequence contentInfo, final RemoteViews remoteViews, final int number, final PendingIntent contentIntent, final PendingIntent pendingIntent, final Bitmap largeIcon) {

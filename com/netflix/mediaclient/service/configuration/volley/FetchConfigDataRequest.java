@@ -8,6 +8,7 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
+import com.netflix.mediaclient.util.StringUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipAuthorizationData;
@@ -16,11 +17,14 @@ import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import com.netflix.mediaclient.service.webclient.model.leafs.CastKeyData;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
 import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import android.content.Context;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
@@ -45,6 +49,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
     private static final String streamingQoePql;
     public static final String streamingQoePqlDefault;
     private String abTestConfigPql;
+    private ServiceAgent$ConfigurationAgentInterface mConfigAgent;
     private final ConfigurationAgentWebCallback responseCallback;
     
     static {
@@ -58,8 +63,9 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
         castKeyPql = String.format("['%s']", "castKey");
     }
     
-    public FetchConfigDataRequest(final Context context, final ConfigurationAgentWebCallback responseCallback) {
+    public FetchConfigDataRequest(final Context context, final ServiceAgent$ConfigurationAgentInterface mConfigAgent, final ConfigurationAgentWebCallback responseCallback) {
         super(context);
+        this.mConfigAgent = mConfigAgent;
         this.responseCallback = responseCallback;
         this.abTestConfigPql = String.format("['%s', '%s']", "abTestConfig", ABTestConfigData.getABTestIds(context));
         if (Log.isLoggable()) {
@@ -79,9 +85,10 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_config_data", s);
         if (FalkorParseUtils.isEmpty(dataObj)) {
-            Log.d("nf_config_data", "No config overrides for device");
-            configData.deviceConfig = new DeviceConfigData();
-            return configData;
+            Log.e("nf_config_data", "Empty response for configuration request!");
+            final FalkorException ex = new FalkorException("Empty response for configuration request: " + s);
+            ErrorLoggingManager.logHandledException(ex);
+            throw ex;
         }
         if (dataObj.has("deviceConfig")) {
             configData.deviceConfig = FalkorParseUtils.getPropertyObject(dataObj, "deviceConfig", DeviceConfigData.class);
@@ -106,7 +113,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
             if (Log.isLoggable()) {
                 Log.v("nf_config_data", "AB Test config json: " + dataObj.get("abTestConfig"));
             }
-            configData.abTestConfigData = FalkorParseUtils.getPropertyObject(dataObj, "abTestConfig", ABTestConfigData.class);
+            (configData.abTestConfigData = FalkorParseUtils.getPropertyObject(dataObj, "abTestConfig", ABTestConfigData.class)).setRawABConfig(configData.abTestConfigData);
             if (Log.isLoggable()) {
                 final StringBuilder append2 = new StringBuilder().append("Parsed AB Test config: ");
                 if (configData.abTestConfigData == null) {
@@ -188,6 +195,14 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
             }
         }
         return configData;
+    }
+    
+    @Override
+    protected String getOptionalParams() {
+        if (StringUtils.isEmpty(this.mConfigAgent.getChannelId())) {
+            return null;
+        }
+        return new StringBuilder(FalkorVolleyWebClientRequest.urlEncodPQLParam("channelId", this.mConfigAgent.getChannelId())).toString();
     }
     
     @Override

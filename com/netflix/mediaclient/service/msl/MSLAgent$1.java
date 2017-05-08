@@ -25,6 +25,7 @@ import com.netflix.mediaclient.service.msl.client.AndroidMslClient;
 import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.configuration.crypto.CryptoManager$DrmReadyCallback;
@@ -40,6 +41,8 @@ class MSLAgent$1 implements CryptoManager$DrmReadyCallback
     @Override
     public void drmError(final Status status) {
         Log.e("nf_msl", "Failed to create MSL, disable it! Status" + status);
+        ErrorLoggingManager.logHandledException("MSL_ERROR_1: Failed to create MSL, disabled. Status code" + status.getStatusCode().name());
+        if (status != CommonStatus.MSL_LEGACY_CRYPTO) {}
         this.this$0.mEnabled = false;
         this.this$0.initCompleted(CommonStatus.OK);
         Log.d("nf_msl", "MSLAgent::doInit done.");

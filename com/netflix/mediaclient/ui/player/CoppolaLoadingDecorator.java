@@ -67,7 +67,7 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
     
     private void animateProgressBar() {
         Log.v("CoppolaLoadingDecorator", "animateProgressBar()");
-        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)this.loadingIndicator, "translationX", new float[] { -(int)this.getController().getResources().getDimension(2131362091), 0.0f });
+        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)this.loadingIndicator, "translationX", new float[] { -(int)this.getController().getResources().getDimension(2131427638), 0.0f });
         ofFloat.setDuration(700L);
         if (Build$VERSION.SDK_INT >= 18) {
             ofFloat.setAutoCancel(true);
@@ -148,10 +148,10 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
             }
             String s3;
             if (b) {
-                s3 = resources.getString(2131231092, new Object[] { n, s2 });
+                s3 = resources.getString(2131296648, new Object[] { n, s2 });
             }
             else {
-                s3 = resources.getString(2131231134, new Object[] { s2 });
+                s3 = resources.getString(2131296690, new Object[] { s2 });
             }
             this.loadingTextIndicator.setText((CharSequence)Html.fromHtml(s3));
             ((FrameLayout$LayoutParams)this.loadingTextIndicator.getLayoutParams()).gravity = 17;
@@ -168,26 +168,26 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
         }
         else {
             if (b) {
-                text = resources.getString(2131231090, new Object[] { text, n, s });
+                text = resources.getString(2131296646, new Object[] { text, n, s });
                 if (b2) {
-                    text = resources.getString(2131231089, new Object[] { s });
+                    text = resources.getString(2131296645, new Object[] { s });
                 }
                 this.loadingTextIndicator.setText((CharSequence)text);
                 return;
             }
-            this.loadingTextIndicator.setText(2131231116);
+            this.loadingTextIndicator.setText(2131296672);
         }
     }
     
     private void updateUI(final ViewGroup viewGroup) {
         Log.v("CoppolaLoadingDecorator", "Updating UI...");
         AnimationUtils.startViewAppearanceAnimation(this.getController().getView(), true);
-        this.getController().getActivity().getLayoutInflater().inflate(2130903238, viewGroup);
-        this.horzDispImg = (AdvancedImageView)viewGroup.findViewById(2131690110);
-        this.loadingIndicator = viewGroup.findViewById(2131690116);
-        this.loadingTextIndicator = (TextView)viewGroup.findViewById(2131690113);
-        this.gradient = viewGroup.findViewById(2131690111);
-        this.blackBackground = viewGroup.findViewById(2131690109);
+        this.getController().getActivity().getLayoutInflater().inflate(2130903251, viewGroup);
+        this.horzDispImg = (AdvancedImageView)viewGroup.findViewById(2131755677);
+        this.loadingIndicator = viewGroup.findViewById(2131755683);
+        this.loadingTextIndicator = (TextView)viewGroup.findViewById(2131755680);
+        this.gradient = viewGroup.findViewById(2131755678);
+        this.blackBackground = viewGroup.findViewById(2131755676);
         this.animateProgressBar();
         boolean b;
         if (BandwidthUtility.isPlaybackInWifiOnly((Context)this.playerScreen.getController()) && ConnectivityUtils.getConnectionType((Context)this.playerScreen.getController()) != LogMobileType.WIFI) {
@@ -200,7 +200,7 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
             this.showProgressAndTextIndicator(false);
         }
         this.getController().setOnStartedPlaybackListener(new CoppolaLoadingDecorator$1(this));
-        this.launchButton = viewGroup.findViewById(2131690114);
+        this.launchButton = viewGroup.findViewById(2131755681);
         final View launchButton = this.launchButton;
         int visibility;
         if (this.getController().isInPortrait() && this.isDelayedAutoplay() && !b && Coppola1Utils.isNewPlayerExperience((Context)this.getController().getActivity())) {
@@ -230,7 +230,7 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
         this.updateViewMargins(this.getController().isInPortrait());
         if (!Coppola1Utils.isNewPlayerExperience((Context)this.getController().getActivity()) && !Coppola1Utils.shouldInjectPlayerFragment((Context)this.getController().getActivity())) {
             this.getController().getActivity().setRequestedOrientation(1);
-            (this.oldLaunchButton = viewGroup.findViewById(2131690115)).setVisibility(0);
+            (this.oldLaunchButton = viewGroup.findViewById(2131755682)).setVisibility(0);
             this.oldLaunchButton.setOnClickListener((View$OnClickListener)new CoppolaLoadingDecorator$3(this));
         }
     }
@@ -240,10 +240,10 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
             final Resources resources = this.getController().getResources();
             int leftMargin;
             if (b) {
-                leftMargin = (int)resources.getDimension(2131362082);
+                leftMargin = (int)resources.getDimension(2131427629);
             }
             else {
-                leftMargin = (int)resources.getDimension(2131362150);
+                leftMargin = (int)resources.getDimension(2131427700);
             }
             ((ViewGroup$MarginLayoutParams)this.loadingTextIndicator.getLayoutParams()).leftMargin = leftMargin;
         }

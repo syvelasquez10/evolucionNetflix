@@ -5,20 +5,22 @@
 package android.support.v7.media;
 
 import java.util.Collection;
-import java.util.List;
+import android.text.TextUtils;
 import android.content.IntentSender;
 import android.view.Display;
+import android.net.Uri;
 import android.os.Bundle;
 import android.content.IntentFilter;
 import android.content.ComponentName;
 import java.util.ArrayList;
+import java.util.List;
 
 public final class MediaRouter$ProviderInfo
 {
     private MediaRouteProviderDescriptor mDescriptor;
     private final MediaRouteProvider$ProviderMetadata mMetadata;
     private final MediaRouteProvider mProviderInstance;
-    private final ArrayList<MediaRouter$RouteInfo> mRoutes;
+    private final List<MediaRouter$RouteInfo> mRoutes;
     
     MediaRouter$ProviderInfo(final MediaRouteProvider mProviderInstance) {
         this.mRoutes = new ArrayList<MediaRouter$RouteInfo>();

@@ -7,7 +7,9 @@ package android.support.v4.graphics.drawable;
 import android.util.Log;
 import android.graphics.drawable.Drawable;
 import java.lang.reflect.Method;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 class DrawableCompatJellybeanMr1
 {
     private static final String TAG = "DrawableCompatJellybeanMr1";

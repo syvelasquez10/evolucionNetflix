@@ -4,24 +4,21 @@
 
 package android.support.design.widget;
 
-import android.os.Message;
-import android.os.Handler$Callback;
+import android.view.View;
+import android.view.View$OnClickListener;
 
-final class Snackbar$1 implements Handler$Callback
+class Snackbar$1 implements View$OnClickListener
 {
-    public boolean handleMessage(final Message message) {
-        switch (message.what) {
-            default: {
-                return false;
-            }
-            case 0: {
-                ((Snackbar)message.obj).showView();
-                return true;
-            }
-            case 1: {
-                ((Snackbar)message.obj).hideView(message.arg1);
-                return true;
-            }
-        }
+    final /* synthetic */ Snackbar this$0;
+    final /* synthetic */ View$OnClickListener val$listener;
+    
+    Snackbar$1(final Snackbar this$0, final View$OnClickListener val$listener) {
+        this.this$0 = this$0;
+        this.val$listener = val$listener;
+    }
+    
+    public void onClick(final View view) {
+        this.val$listener.onClick(view);
+        this.this$0.dispatchDismiss(1);
     }
 }

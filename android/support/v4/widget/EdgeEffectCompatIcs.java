@@ -7,7 +7,9 @@ package android.support.v4.widget;
 import android.content.Context;
 import android.widget.EdgeEffect;
 import android.graphics.Canvas;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class EdgeEffectCompatIcs
 {
     public static boolean draw(final Object o, final Canvas canvas) {

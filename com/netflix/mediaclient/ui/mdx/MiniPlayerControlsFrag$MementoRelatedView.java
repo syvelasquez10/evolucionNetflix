@@ -82,7 +82,7 @@ class MiniPlayerControlsFrag$MementoRelatedView extends RelativeLayout implement
         this.this$0 = this$0;
         super(context);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        LayoutInflater.from(this.getContext()).inflate(2130903208, (ViewGroup)this, true);
+        LayoutInflater.from(this.getContext()).inflate(2130903211, (ViewGroup)this, true);
     }
     
     private void adjustDimensions() {
@@ -105,7 +105,7 @@ class MiniPlayerControlsFrag$MementoRelatedView extends RelativeLayout implement
         if (trackable != null) {
             this.playContext = new PlayContextImp(trackable, n);
         }
-        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131690013);
+        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131755556);
         if (advancedImageView != null) {
             final String imageUrl = this.getImageUrl(video, b2);
             final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());

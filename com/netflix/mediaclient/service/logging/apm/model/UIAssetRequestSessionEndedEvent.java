@@ -23,6 +23,7 @@ public final class UIAssetRequestSessionEndedEvent extends SessionEndedEvent
     private static final String UI_ASSET_NAME = "uiAssetRequest";
     public static final String URL = "url";
     private IClientLogging$AssetType assetType;
+    private ConnectionClassCustomData connectionClassCustomData;
     private Error error;
     private IClientLogging$CompletionReason reason;
     private HttpResponse response;
@@ -52,6 +53,14 @@ public final class UIAssetRequestSessionEndedEvent extends SessionEndedEvent
     
     public IClientLogging$AssetType getAssetType() {
         return this.assetType;
+    }
+    
+    @Override
+    protected JSONObject getCustomData() {
+        if (this.connectionClassCustomData == null) {
+            return null;
+        }
+        return this.connectionClassCustomData.toJson();
     }
     
     @Override
@@ -96,6 +105,10 @@ public final class UIAssetRequestSessionEndedEvent extends SessionEndedEvent
     
     public void setAssetType(final IClientLogging$AssetType assetType) {
         this.assetType = assetType;
+    }
+    
+    public void setConnectionClassCustomData(final ConnectionClassCustomData connectionClassCustomData) {
+        this.connectionClassCustomData = connectionClassCustomData;
     }
     
     public void setError(final Error error) {

@@ -6,7 +6,9 @@ package android.support.v4.content;
 
 import java.io.File;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class ContextCompatKitKat
 {
     public static File[] getExternalCacheDirs(final Context context) {

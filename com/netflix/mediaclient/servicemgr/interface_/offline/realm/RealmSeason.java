@@ -20,22 +20,18 @@ public class RealmSeason extends RealmObject implements RealmSeasonRealmProxyInt
         return this.realmGet$number();
     }
     
-    @Override
     public String realmGet$label() {
         return this.label;
     }
     
-    @Override
     public int realmGet$number() {
         return this.number;
     }
     
-    @Override
     public void realmSet$label(final String label) {
         this.label = label;
     }
     
-    @Override
     public void realmSet$number(final int number) {
         this.number = number;
     }

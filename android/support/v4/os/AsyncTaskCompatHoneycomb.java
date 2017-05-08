@@ -5,7 +5,9 @@
 package android.support.v4.os;
 
 import android.os.AsyncTask;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class AsyncTaskCompatHoneycomb
 {
     static <Params, Progress, Result> void executeParallel(final AsyncTask<Params, Progress, Result> asyncTask, final Params... array) {

@@ -4,25 +4,24 @@
 
 package android.support.v4.app;
 
-import android.net.Uri;
 import android.content.IntentSender;
-import android.content.Context;
 import android.os.Bundle;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build$VERSION;
 import android.app.Activity;
 import android.support.v4.content.ContextCompat;
 
 public class ActivityCompat extends ContextCompat
 {
-    private static ActivityCompat21$SharedElementCallback21 createCallback(final SharedElementCallback sharedElementCallback) {
-        ActivityCompat21$SharedElementCallback21 activityCompat21$SharedElementCallback21 = null;
+    private static ActivityCompatApi21$SharedElementCallback21 createCallback(final SharedElementCallback sharedElementCallback) {
+        ActivityCompatApi21$SharedElementCallback21 activityCompatApi21$SharedElementCallback21 = null;
         if (sharedElementCallback != null) {
-            activityCompat21$SharedElementCallback21 = new ActivityCompat$SharedElementCallback21Impl(sharedElementCallback);
+            activityCompatApi21$SharedElementCallback21 = new ActivityCompat$SharedElementCallback21Impl(sharedElementCallback);
         }
-        return activityCompat21$SharedElementCallback21;
+        return activityCompatApi21$SharedElementCallback21;
     }
     
     private static ActivityCompatApi23$SharedElementCallback23 createCallback23(final SharedElementCallback sharedElementCallback) {
@@ -43,10 +42,28 @@ public class ActivityCompat extends ContextCompat
     
     public static void finishAfterTransition(final Activity activity) {
         if (Build$VERSION.SDK_INT >= 21) {
-            ActivityCompat21.finishAfterTransition(activity);
+            ActivityCompatApi21.finishAfterTransition(activity);
             return;
         }
         activity.finish();
+    }
+    
+    public static Uri getReferrer(final Activity activity) {
+        Uri referrer;
+        if (Build$VERSION.SDK_INT >= 22) {
+            referrer = ActivityCompatApi22.getReferrer(activity);
+        }
+        else {
+            final Intent intent = activity.getIntent();
+            if ((referrer = (Uri)intent.getParcelableExtra("android.intent.extra.REFERRER")) == null) {
+                final String stringExtra = intent.getStringExtra("android.intent.extra.REFERRER_NAME");
+                if (stringExtra != null) {
+                    return Uri.parse(stringExtra);
+                }
+                return null;
+            }
+        }
+        return referrer;
     }
     
     public static boolean invalidateOptionsMenu(final Activity activity) {
@@ -59,7 +76,7 @@ public class ActivityCompat extends ContextCompat
     
     public static void postponeEnterTransition(final Activity activity) {
         if (Build$VERSION.SDK_INT >= 21) {
-            ActivityCompat21.postponeEnterTransition(activity);
+            ActivityCompatApi21.postponeEnterTransition(activity);
         }
     }
     
@@ -77,7 +94,7 @@ public class ActivityCompat extends ContextCompat
             ActivityCompatApi23.setEnterSharedElementCallback(activity, createCallback23(sharedElementCallback));
         }
         else if (Build$VERSION.SDK_INT >= 21) {
-            ActivityCompat21.setEnterSharedElementCallback(activity, createCallback(sharedElementCallback));
+            ActivityCompatApi21.setEnterSharedElementCallback(activity, createCallback(sharedElementCallback));
         }
     }
     
@@ -86,20 +103,12 @@ public class ActivityCompat extends ContextCompat
             ActivityCompatApi23.setExitSharedElementCallback(activity, createCallback23(sharedElementCallback));
         }
         else if (Build$VERSION.SDK_INT >= 21) {
-            ActivityCompat21.setExitSharedElementCallback(activity, createCallback(sharedElementCallback));
+            ActivityCompatApi21.setExitSharedElementCallback(activity, createCallback(sharedElementCallback));
         }
     }
     
     public static boolean shouldShowRequestPermissionRationale(final Activity activity, final String s) {
         return Build$VERSION.SDK_INT >= 23 && ActivityCompatApi23.shouldShowRequestPermissionRationale(activity, s);
-    }
-    
-    public static void startActivity(final Activity activity, final Intent intent, final Bundle bundle) {
-        if (Build$VERSION.SDK_INT >= 16) {
-            ActivityCompatJB.startActivity((Context)activity, intent, bundle);
-            return;
-        }
-        activity.startActivity(intent);
     }
     
     public static void startActivityForResult(final Activity activity, final Intent intent, final int n, final Bundle bundle) {
@@ -120,26 +129,7 @@ public class ActivityCompat extends ContextCompat
     
     public static void startPostponedEnterTransition(final Activity activity) {
         if (Build$VERSION.SDK_INT >= 21) {
-            ActivityCompat21.startPostponedEnterTransition(activity);
+            ActivityCompatApi21.startPostponedEnterTransition(activity);
         }
-    }
-    
-    @Deprecated
-    public Uri getReferrer(final Activity activity) {
-        Uri referrer;
-        if (Build$VERSION.SDK_INT >= 22) {
-            referrer = ActivityCompat22.getReferrer(activity);
-        }
-        else {
-            final Intent intent = activity.getIntent();
-            if ((referrer = (Uri)intent.getParcelableExtra("android.intent.extra.REFERRER")) == null) {
-                final String stringExtra = intent.getStringExtra("android.intent.extra.REFERRER_NAME");
-                if (stringExtra != null) {
-                    return Uri.parse(stringExtra);
-                }
-                return null;
-            }
-        }
-        return referrer;
     }
 }

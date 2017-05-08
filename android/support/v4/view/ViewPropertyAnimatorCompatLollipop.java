@@ -5,7 +5,9 @@
 package android.support.v4.view;
 
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class ViewPropertyAnimatorCompatLollipop
 {
     public static void translationZ(final View view, final float n) {

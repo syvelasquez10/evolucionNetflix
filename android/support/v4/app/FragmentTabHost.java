@@ -46,34 +46,25 @@ public class FragmentTabHost extends TabHost implements TabHost$OnTabChangeListe
     }
     
     private FragmentTransaction doTabChanged(final String s, final FragmentTransaction fragmentTransaction) {
-        FragmentTabHost$TabInfo mLastTab = null;
-        for (int i = 0; i < this.mTabs.size(); ++i) {
-            final FragmentTabHost$TabInfo fragmentTabHost$TabInfo = this.mTabs.get(i);
-            if (fragmentTabHost$TabInfo.tag.equals(s)) {
-                mLastTab = fragmentTabHost$TabInfo;
-            }
-        }
-        if (mLastTab == null) {
-            throw new IllegalStateException("No tab known for tag " + s);
-        }
+        final FragmentTabHost$TabInfo tabInfoForTag = this.getTabInfoForTag(s);
         FragmentTransaction beginTransaction = fragmentTransaction;
-        if (this.mLastTab != mLastTab) {
+        if (this.mLastTab != tabInfoForTag) {
             if ((beginTransaction = fragmentTransaction) == null) {
                 beginTransaction = this.mFragmentManager.beginTransaction();
             }
             if (this.mLastTab != null && this.mLastTab.fragment != null) {
                 beginTransaction.detach(this.mLastTab.fragment);
             }
-            if (mLastTab != null) {
-                if (mLastTab.fragment == null) {
-                    mLastTab.fragment = Fragment.instantiate(this.mContext, mLastTab.clss.getName(), mLastTab.args);
-                    beginTransaction.add(this.mContainerId, mLastTab.fragment, mLastTab.tag);
+            if (tabInfoForTag != null) {
+                if (tabInfoForTag.fragment == null) {
+                    tabInfoForTag.fragment = Fragment.instantiate(this.mContext, tabInfoForTag.clss.getName(), tabInfoForTag.args);
+                    beginTransaction.add(this.mContainerId, tabInfoForTag.fragment, tabInfoForTag.tag);
                 }
                 else {
-                    beginTransaction.attach(mLastTab.fragment);
+                    beginTransaction.attach(tabInfoForTag.fragment);
                 }
             }
-            this.mLastTab = mLastTab;
+            this.mLastTab = tabInfoForTag;
         }
         return beginTransaction;
     }
@@ -105,6 +96,16 @@ public class FragmentTabHost extends TabHost implements TabHost$OnTabChangeListe
         }
     }
     
+    private FragmentTabHost$TabInfo getTabInfoForTag(final String s) {
+        for (int size = this.mTabs.size(), i = 0; i < size; ++i) {
+            final FragmentTabHost$TabInfo fragmentTabHost$TabInfo = this.mTabs.get(i);
+            if (fragmentTabHost$TabInfo.tag.equals(s)) {
+                return fragmentTabHost$TabInfo;
+            }
+        }
+        return null;
+    }
+    
     private void initFragmentTabHost(final Context context, final AttributeSet set) {
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, new int[] { 16842995 }, 0, 0);
         this.mContainerId = obtainStyledAttributes.getResourceId(0, 0);
@@ -133,7 +134,7 @@ public class FragmentTabHost extends TabHost implements TabHost$OnTabChangeListe
         final String currentTabTag = this.getCurrentTabTag();
         FragmentTransaction fragmentTransaction = null;
         FragmentTransaction beginTransaction;
-        for (int i = 0; i < this.mTabs.size(); ++i, fragmentTransaction = beginTransaction) {
+        for (int size = this.mTabs.size(), i = 0; i < size; ++i, fragmentTransaction = beginTransaction) {
             final FragmentTabHost$TabInfo mLastTab = this.mTabs.get(i);
             mLastTab.fragment = this.mFragmentManager.findFragmentByTag(mLastTab.tag);
             beginTransaction = fragmentTransaction;

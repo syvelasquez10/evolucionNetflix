@@ -10,6 +10,13 @@ class ViewCompat$Api24ViewCompatImpl extends ViewCompat$MarshmallowViewCompatImp
 {
     @Override
     public void setPointerIcon(final View view, final PointerIconCompat pointerIconCompat) {
-        ViewCompatApi24.setPointerIcon(view, pointerIconCompat.getPointerIcon());
+        Object pointerIcon;
+        if (pointerIconCompat != null) {
+            pointerIcon = pointerIconCompat.getPointerIcon();
+        }
+        else {
+            pointerIcon = null;
+        }
+        ViewCompatApi24.setPointerIcon(view, pointerIcon);
     }
 }

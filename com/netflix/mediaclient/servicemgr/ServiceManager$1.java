@@ -58,7 +58,7 @@ class ServiceManager$1 implements ServiceConnection
     public final void onServiceDisconnected(final ComponentName componentName) {
         Log.d("ServiceManager", "onServiceDisconnected");
         if (this.this$0.mCallback != null) {
-            this.this$0.mCallback.onManagerUnavailable(this.this$0, CommonStatus.INTERNAL_ERROR);
+            this.this$0.mCallback.onManagerUnavailable(this.this$0, CommonStatus.INT_ERR_CB_NULL);
             this.this$0.mCallback = null;
         }
         this.this$0.mLocalService = null;

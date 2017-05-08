@@ -7,7 +7,9 @@ package android.support.v4.widget;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
 import android.widget.CompoundButton;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class CompoundButtonCompatLollipop
 {
     static ColorStateList getButtonTintList(final CompoundButton compoundButton) {

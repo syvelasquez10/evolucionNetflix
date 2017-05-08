@@ -411,7 +411,7 @@ public class PathParser$PathDataNode
             final double tan = Math.tan((n14 - sin) / 2.0);
             sin = Math.sin(n14 - sin);
             sin = (Math.sqrt(tan * (3.0 * tan) + 4.0) - 1.0) * sin / 3.0;
-            path.cubicTo((float)(n6 * sin + cos), (float)(n7 + n5 * sin), (float)(n15 - sin * n17), (float)(n16 - sin * n18), (float)n15, (float)n16);
+            path.rCubicTo((float)(n6 * sin + cos) - (float)cos, (float)(n7 + n5 * sin) - (float)n7, (float)(n15 - sin * n17) - (float)cos, (float)(n16 - sin * n18) - (float)n7, (float)n15 - (float)cos, (float)n16 - (float)n7);
             ++i;
             n6 = n17;
             sin = n14;

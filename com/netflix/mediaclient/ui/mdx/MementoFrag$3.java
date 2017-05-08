@@ -10,7 +10,7 @@ import java.util.Iterator;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.widget.ImageView;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
@@ -46,18 +46,15 @@ class MementoFrag$3 implements ViewPager$OnPageChangeListener
         this.this$0 = this$0;
     }
     
-    @Override
     public void onPageScrollStateChanged(final int n) {
         if (n == 0) {
             this.this$0.toggleTabs(this.this$0.pager.getCurrentItem());
         }
     }
     
-    @Override
     public void onPageScrolled(final int n, final float n2, final int n3) {
     }
     
-    @Override
     public void onPageSelected(final int n) {
         final View viewWithTag = this.this$0.pager.findViewWithTag((Object)("POS_TAG" + String.valueOf(n)));
         if (viewWithTag instanceof MementoFrag$ActorDetailsView) {

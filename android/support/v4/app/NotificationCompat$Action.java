@@ -22,11 +22,10 @@ public class NotificationCompat$Action extends NotificationCompatBase$Action
     }
     
     public NotificationCompat$Action(final int n, final CharSequence charSequence, final PendingIntent pendingIntent) {
-        this(n, charSequence, pendingIntent, new Bundle(), null, false);
+        this(n, charSequence, pendingIntent, new Bundle(), null, true);
     }
     
     NotificationCompat$Action(final int icon, final CharSequence charSequence, final PendingIntent actionIntent, Bundle mExtras, final RemoteInput[] mRemoteInputs, final boolean mAllowGeneratedReplies) {
-        this.mAllowGeneratedReplies = false;
         this.icon = icon;
         this.title = NotificationCompat$Builder.limitCharSequenceLength(charSequence);
         this.actionIntent = actionIntent;

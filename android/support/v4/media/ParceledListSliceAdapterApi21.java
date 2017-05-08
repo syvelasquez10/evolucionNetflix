@@ -8,7 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import android.media.browse.MediaBrowser$MediaItem;
 import java.util.List;
 import java.lang.reflect.Constructor;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class ParceledListSliceAdapterApi21
 {
     private static Constructor sConstructor;

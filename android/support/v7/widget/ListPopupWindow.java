@@ -606,7 +606,6 @@ public class ListPopupWindow implements ShowableListMenu
                                 while (true) {
                                     mPopup5.setOutsideTouchable(outsideTouchable);
                                     this.mPopup.setTouchInterceptor((View$OnTouchListener)this.mTouchInterceptor);
-                                Block_21_Outer:
                                     while (true) {
                                         if (ListPopupWindow.sSetEpicenterBoundsMethod == null) {
                                             break Label_0396;
@@ -623,25 +622,25 @@ public class ListPopupWindow implements ShowableListMenu
                                                 return;
                                             }
                                             return;
+                                            // iftrue(Label_0309:, this.mDropDownHeight == -2)
                                             // iftrue(Label_0488:, this.mDropDownWidth != -2)
-                                            while (true) {
+                                            Block_21: {
+                                                break Block_21;
                                                 while (true) {
                                                     width3 = this.getAnchorView().getWidth();
                                                     continue Label_0309_Outer;
-                                                    height = this.mDropDownHeight;
-                                                    continue Label_0350_Outer;
-                                                    Label_0488: {
-                                                        width3 = this.mDropDownWidth;
-                                                    }
-                                                    continue Label_0309_Outer;
-                                                    outsideTouchable = false;
-                                                    continue Label_0396_Outer;
-                                                    continue Block_21_Outer;
+                                                    continue;
                                                 }
-                                                continue;
                                             }
+                                            height = this.mDropDownHeight;
+                                            continue Label_0350_Outer;
+                                            outsideTouchable = false;
+                                            continue Label_0396_Outer;
+                                            Label_0488: {
+                                                width3 = this.mDropDownWidth;
+                                            }
+                                            continue Label_0309_Outer;
                                         }
-                                        // iftrue(Label_0309:, this.mDropDownHeight == -2)
                                         catch (Exception ex) {
                                             Log.e("ListPopupWindow", "Could not invoke setEpicenterBounds on PopupWindow", (Throwable)ex);
                                             continue;

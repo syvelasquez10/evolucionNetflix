@@ -21,6 +21,7 @@ import android.view.ViewGroup$MarginLayoutParams;
 import android.text.TextUtils;
 import android.graphics.drawable.Drawable;
 import android.text.Layout;
+import android.support.v4.view.PointerIconCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.content.Context;
@@ -46,12 +47,13 @@ class TabLayout$TabView extends LinearLayout implements View$OnLongClickListener
         super(context);
         this.mDefaultMaxLines = 2;
         if (this$0.mTabBackgroundResId != 0) {
-            this.setBackgroundDrawable(AppCompatResources.getDrawable(context, this$0.mTabBackgroundResId));
+            ViewCompat.setBackground((View)this, AppCompatResources.getDrawable(context, this$0.mTabBackgroundResId));
         }
         ViewCompat.setPaddingRelative((View)this, this$0.mTabPaddingStart, this$0.mTabPaddingTop, this$0.mTabPaddingEnd, this$0.mTabPaddingBottom);
         this.setGravity(17);
         this.setOrientation(1);
         this.setClickable(true);
+        ViewCompat.setPointerIcon((View)this, PointerIconCompat.getSystemIcon(this.getContext(), 1002));
     }
     
     private float approximateLineWidth(final Layout layout, final int n, final float n2) {
@@ -248,6 +250,9 @@ class TabLayout$TabView extends LinearLayout implements View$OnLongClickListener
     public boolean performClick() {
         boolean performClick = super.performClick();
         if (this.mTab != null) {
+            if (!performClick) {
+                this.playSoundEffect(0);
+            }
             this.mTab.select();
             performClick = true;
         }
@@ -340,7 +345,7 @@ class TabLayout$TabView extends LinearLayout implements View$OnLongClickListener
                 this.mTextView = mTextView;
                 this.mDefaultMaxLines = TextViewCompat.getMaxLines(this.mTextView);
             }
-            this.mTextView.setTextAppearance(this.getContext(), this.this$0.mTabTextAppearance);
+            TextViewCompat.setTextAppearance(this.mTextView, this.this$0.mTabTextAppearance);
             if (this.this$0.mTabTextColors != null) {
                 this.mTextView.setTextColor(this.this$0.mTabTextColors);
             }

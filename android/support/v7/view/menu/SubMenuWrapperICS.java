@@ -10,8 +10,10 @@ import android.view.MenuItem;
 import android.support.v4.internal.view.SupportMenu;
 import android.support.v4.internal.view.SupportSubMenu;
 import android.content.Context;
+import android.annotation.TargetApi;
 import android.view.SubMenu;
 
+@TargetApi(14)
 class SubMenuWrapperICS extends MenuWrapperICS implements SubMenu
 {
     SubMenuWrapperICS(final Context context, final SupportSubMenu supportSubMenu) {

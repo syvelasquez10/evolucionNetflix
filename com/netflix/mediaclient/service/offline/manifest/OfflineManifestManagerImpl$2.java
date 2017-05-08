@@ -59,6 +59,6 @@ class OfflineManifestManagerImpl$2 implements OfflineManifestCallback
             this.this$0.mBladeRunnerClient.refreshOfflineManifest(this.val$playableId, this.val$oxid, this.val$dxid, this.val$downloadVideoQuality, nfManifest, new OfflineManifestManagerImpl$2$1(this));
             return;
         }
-        this.this$0.mWorkHandler.post((Runnable)new OfflineManifestManagerImpl$2$2(this));
+        this.this$0.mWorkHandler.post((Runnable)new OfflineManifestManagerImpl$2$2(this, status));
     }
 }

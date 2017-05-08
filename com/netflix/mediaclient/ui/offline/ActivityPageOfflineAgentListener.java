@@ -7,6 +7,8 @@ package com.netflix.mediaclient.ui.offline;
 import android.text.Spannable;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import android.graphics.Typeface;
+import android.widget.Toast;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
@@ -63,8 +65,8 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
         final SpannableString spannableString = new SpannableString((CharSequence)Html.fromHtml(s));
         if (spannableString.toString().contains("\ud83d\udca5")) {
             if (this.bangIconInSnackbar == null) {
-                DrawableCompat.setTint(this.bangIconInSnackbar = DrawableCompat.wrap(ContextCompat.getDrawable(this.content.getContext(), 2130837742).mutate()), -1);
-                final int dimensionPixelSize = this.content.getResources().getDimensionPixelSize(2131362273);
+                DrawableCompat.setTint(this.bangIconInSnackbar = DrawableCompat.wrap(ContextCompat.getDrawable(this.content.getContext(), 2130837744).mutate()), -1);
+                final int dimensionPixelSize = this.content.getResources().getDimensionPixelSize(2131427837);
                 this.bangIconInSnackbar.setBounds(0, 0, dimensionPixelSize, dimensionPixelSize);
             }
             final ImageSpan imageSpan = new ImageSpan(this.bangIconInSnackbar, 1);
@@ -103,7 +105,7 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
                 Log.d("ActivityPageOfflineAgentListener", "No buffetBar while MDX mini player display");
                 return null;
             }
-            final View viewById = netflixActivity.findViewById(2131689780);
+            final View viewById = netflixActivity.findViewById(2131755332);
             if (viewById instanceof CoordinatorLayout) {
                 color = ContextCompat.getColor(this.content.getContext(), color);
                 final CharSequence decoratedText = this.getDecoratedText(string);
@@ -282,6 +284,31 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
     }
     
     @Override
+    public void onOfflinePlayablesDeleted(final List<String> list, final Status status) {
+        if (this.content == null) {
+            return;
+        }
+        for (final String s : list) {
+            final DownloadButton downloadButton = (DownloadButton)this.content.findViewWithTag((Object)("download_btn" + s));
+            if (downloadButton != null) {
+                downloadButton.setState(DownloadButton$ButtonState.AVAILABLE, s);
+                DownloadButton.removePreQueued(s);
+            }
+        }
+        this.updateSnackbar();
+    }
+    
+    @Override
+    public void onOfflineStorageVolumeAddedOrRemoved(final boolean b) {
+        if (this.content != null) {
+            final NetflixActivity netflixActivity = AndroidUtils.getContextAs(this.content.getContext(), NetflixActivity.class);
+            if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
+                Toast.makeText((Context)netflixActivity, 2131296908, 1).show();
+            }
+        }
+    }
+    
+    @Override
     public void onPlayWindowRenewDone(final OfflinePlayableViewData offlinePlayableViewData, final Status status) {
         this.handlePlayRightsRenewDone(offlinePlayableViewData.getPlayableId(), status);
     }
@@ -309,10 +336,10 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
                 final String text = snackbarStatus.text;
                 int n;
                 if (snackbarStatus.errors > 0) {
-                    n = 2131624036;
+                    n = 2131689575;
                 }
                 else {
-                    n = 2131624035;
+                    n = 2131689574;
                 }
                 this.buffetBar = this.showSnackbar(text, n);
                 if (this.buffetBar != null) {
@@ -320,10 +347,10 @@ public class ActivityPageOfflineAgentListener implements OfflineAgentListener
                     final BuffetBar buffetBar = this.buffetBar;
                     int n2;
                     if (this.content.getLayoutDirection() == 1) {
-                        n2 = 2131231488;
+                        n2 = 2131297051;
                     }
                     else {
-                        n2 = 2131231489;
+                        n2 = 2131297052;
                     }
                     buffetBar.setAction(n2, this.launchMyDownloads);
                     this.buffetBar.show(b);

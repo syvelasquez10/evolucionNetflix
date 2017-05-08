@@ -25,6 +25,7 @@ import android.view.Surface;
 import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.support.v4.media.session.MediaSessionCompat$Callback;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
@@ -44,6 +45,7 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -58,8 +60,8 @@ import android.app.Activity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -118,7 +120,6 @@ import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import java.util.ArrayList;
@@ -149,8 +150,10 @@ import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.os.SystemClock;
 import com.netflix.mediaclient.Log;
+import android.view.MotionEvent;
+import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 
-class PlayerFragment$8 implements Runnable
+class PlayerFragment$8 implements TappableSurfaceView$TapListener
 {
     final /* synthetic */ PlayerFragment this$0;
     
@@ -159,25 +162,21 @@ class PlayerFragment$8 implements Runnable
     }
     
     @Override
-    public void run() {
-        if (!this.this$0.isActivityValid() || this.this$0.mState.draggingInProgress || this.this$0.mState.draggingAudioInProgress) {
-            Log.d("PlayerFragment", "METADATA exit");
+    public void onTap(final MotionEvent motionEvent) {
+        Log.d("PlayerFragment", "PA tap");
+        if (this.this$0.mState.seekToInProgress || this.this$0.mState.audioSeekToInProgress) {
+            Log.d("PlayerFragment", "Seekto in progress, ignore");
             return;
         }
-        synchronized (this.this$0) {
-            final PlayScreen access$900 = this.this$0.mScreen;
-            if (Log.isLoggable() && access$900 != null) {
-                Log.d("PlayerFragment", "Player UI state - " + this.this$0.mScreen.getState());
-            }
-            if (access$900 != null && !this.this$0.mState.draggingInProgress && !this.this$0.mState.draggingAudioInProgress) {
-                if (this.this$0.mState.getLastActionTime() > 0L && SystemClock.elapsedRealtime() - this.this$0.mState.getLastActionTime() > 5000L && this.this$0.mScreen.getState() != PlayerUiState.PostPlay) {
-                    Log.d("PlayerFragment", "Time to remove panel");
-                    this.this$0.clearPanel();
-                }
-                this.this$0.setProgress();
-                this.this$0.updateMetadataIfNeeded();
-            }
-            this.this$0.repostOnEverySecondRunnable(1000);
+        if (this.this$0.mScreen.inInterruptedOrPendingInterrupted()) {
+            Log.d("PlayerFragment", "In interrupted state, ignore");
+            return;
         }
+        final boolean b = motionEvent != null;
+        this.this$0.mState.setLastActionTime(SystemClock.elapsedRealtime());
+        if (!this.this$0.mScreen.inPostPlayOrPendingPostplay()) {
+            this.this$0.mState.userInteraction();
+        }
+        this.this$0.showControlScreenOverlay(b);
     }
 }

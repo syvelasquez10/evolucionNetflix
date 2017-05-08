@@ -12,14 +12,17 @@ import java.util.Enumeration;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import android.telephony.TelephonyManager;
 import com.netflix.mediaclient.service.net.LogMobileType;
-import com.netflix.mediaclient.Log;
+import org.json.JSONArray;
+import android.telephony.TelephonyManager;
 import android.net.TrafficStats;
 import android.os.Process;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.content.Context;
+import org.json.JSONException;
+import com.netflix.mediaclient.Log;
+import org.json.JSONObject;
 
 public final class ConnectivityUtils
 {
@@ -52,6 +55,7 @@ public final class ConnectivityUtils
     public static final int NRD_NTWK_WIFI = 4;
     public static final int NRD_NTWK_WIMAX = 3;
     public static final int NRD_NTWK_WIRED = 5;
+    private static final String PARAM_NET_TYPE = "nettype";
     private static final String TAG = "nf_net";
     
     public static boolean carrierInfoNeeded(final int n) {
@@ -60,6 +64,29 @@ public final class ConnectivityUtils
     
     public static boolean carrierInfoNeeded(final String s) {
         return !"wifi".equals(s) && !"wimax".equals(s) && !"wired".equals(s) && !"bluetooth".equals(s);
+    }
+    
+    public static JSONObject fillNetworkType(final JSONObject jsonObject, final ConnectivityUtils$NetType connectivityUtils$NetType) {
+        try {
+            if (ConnectivityUtils$NetType.mobile.equals(connectivityUtils$NetType)) {
+                jsonObject.put("nettype", (Object)"mobile");
+                return jsonObject;
+            }
+            if (ConnectivityUtils$NetType.wifi.equals(connectivityUtils$NetType)) {
+                jsonObject.put("nettype", (Object)"wifi");
+                return jsonObject;
+            }
+        }
+        catch (JSONException ex) {
+            Log.e("nf_net", "error adding nettype to json", (Throwable)ex);
+            return jsonObject;
+        }
+        if (ConnectivityUtils$NetType.wired.equals(connectivityUtils$NetType)) {
+            jsonObject.put("nettype", (Object)"wired");
+            return jsonObject;
+        }
+        jsonObject.put("nettype", (Object)"mobile");
+        return jsonObject;
     }
     
     public static NetworkInfo getActiveNetworkInfo(final Context context) {
@@ -100,6 +127,39 @@ public final class ConnectivityUtils
             uidTxBytes = 0L;
         }
         return uidTxBytes;
+    }
+    
+    public static JSONObject getCarrierInfo(final Context context) {
+        final TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService("phone");
+        if (telephonyManager != null) {
+            final String simOperatorName = telephonyManager.getSimOperatorName();
+            final String simOperator = telephonyManager.getSimOperator();
+            if (StringUtils.isEmpty(simOperatorName) || StringUtils.isEmpty(simOperator)) {
+                return null;
+            }
+            final String networkOperatorName = telephonyManager.getNetworkOperatorName();
+            final String networkOperator = telephonyManager.getNetworkOperator();
+            final JSONObject jsonObject = new JSONObject();
+            final JSONArray jsonArray = new JSONArray();
+            final JSONObject jsonObject2 = new JSONObject();
+            final JSONObject jsonObject3 = new JSONObject();
+            try {
+                jsonObject2.put("simindex", (Object)"1");
+                jsonObject2.put("name", (Object)simOperatorName);
+                jsonObject2.put("mcc_mnc", (Object)simOperator);
+                jsonArray.put((Object)jsonObject2);
+                jsonObject3.put("name", (Object)networkOperatorName);
+                jsonObject3.put("mcc_mnc", (Object)networkOperator);
+                jsonObject.put("siminfo", (Object)jsonArray);
+                jsonObject.put("currentoperator", (Object)jsonObject3);
+                return jsonObject;
+            }
+            catch (JSONException ex) {
+                ex.printStackTrace();
+                return jsonObject;
+            }
+        }
+        return null;
     }
     
     public static LogMobileType getConnectionType(final Context context) {
@@ -160,11 +220,11 @@ public final class ConnectivityUtils
     
     public static String getLocalMobileIP4Address(final Context context) {
         while (true) {
-        Label_0046:
+        Label_0047:
             while (true) {
                 String localWifiIP4Address = null;
                 NetworkInterface networkInterface = null;
-                Label_0095: {
+                Label_0098: {
                     try {
                         localWifiIP4Address = getLocalWifiIP4Address(context);
                         if (Log.isLoggable()) {
@@ -177,7 +237,7 @@ public final class ConnectivityUtils
                         while (networkInterfaces.hasMoreElements()) {
                             networkInterface = networkInterfaces.nextElement();
                             if (!networkInterface.isLoopback()) {
-                                break Label_0095;
+                                break Label_0098;
                             }
                             Log.d("nf_net", "NI is loopback, skip");
                         }
@@ -189,11 +249,11 @@ public final class ConnectivityUtils
                 }
                 if (networkInterface.isVirtual()) {
                     Log.d("nf_net", "NI is virtual, skip");
-                    continue Label_0046;
+                    continue Label_0047;
                 }
                 if (!networkInterface.isUp()) {
                     Log.d("nf_net", "NI is not up, skip");
-                    continue Label_0046;
+                    continue Label_0047;
                 }
                 final Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
                 while (inetAddresses.hasMoreElements()) {
@@ -206,12 +266,12 @@ public final class ConnectivityUtils
                         final String hostAddress = inetAddress.getHostAddress();
                         if (localWifiIP4Address != null && localWifiIP4Address.equals(hostAddress)) {
                             Log.d("nf_net", "WiFi interface found in all network interfaces, skip!");
-                            continue Label_0046;
+                            continue Label_0047;
                         }
                         return hostAddress;
                     }
                 }
-                continue Label_0046;
+                continue Label_0047;
             }
         }
     }

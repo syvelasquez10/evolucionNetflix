@@ -8,7 +8,9 @@ import android.app.Notification$MessagingStyle$Message;
 import android.app.Notification$MessagingStyle;
 import android.net.Uri;
 import java.util.List;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 class NotificationCompatApi24
 {
     public static final String CATEGORY_ALARM = "alarm";

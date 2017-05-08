@@ -10,7 +10,7 @@ import java.util.Iterator;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.widget.ImageView;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
@@ -85,9 +85,9 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     private void findViews(final View view) {
-        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131690011);
-        this.tabLayout = (TabLayout)view.findViewById(2131690012);
-        this.pager = (ViewPager)view.findViewById(2131690010);
+        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131755554);
+        this.tabLayout = (TabLayout)view.findViewById(2131755555);
+        this.pager = (ViewPager)view.findViewById(2131755553);
     }
     
     private void hideStandardViews() {
@@ -119,11 +119,11 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     private void initPager() {
-        this.pagerIndicator.setOnPageChangeListener(new MementoFrag$3(this));
+        this.pagerIndicator.setOnPageChangeListener((ViewPager$OnPageChangeListener)new MementoFrag$3(this));
         final MementoFrag$4 adapter = new MementoFrag$4(this);
         if (this.pager != null) {
-            this.pager.setAdapter(adapter);
-            this.pager.setPageTransformer(false, new MementoFrag$5(this));
+            this.pager.setAdapter((PagerAdapter)adapter);
+            this.pager.setPageTransformer(false, (ViewPager$PageTransformer)new MementoFrag$5(this));
         }
         if (this.pagerIndicator != null) {
             this.pagerIndicator.setViewPager(this.pager);
@@ -133,16 +133,16 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     private void initTabs() {
         if (this.tabLayout != null) {
             this.tabLayout.removeAllTabs();
-            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903209), 0, true);
-            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903209), 1, true);
-            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131690015)).setText(2131231071);
-            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131690015)).setText(2131231073);
+            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903212), 0, true);
+            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903212), 1, true);
+            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131755558)).setText(2131296627);
+            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131755558)).setText(2131296629);
             this.tabLayout.setOnTabSelectedListener(new MementoFrag$TabListener(this));
         }
     }
     
     private boolean isRDPShowing() {
-        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690026);
+        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131755569);
         return roleDetailsFrag != null && !roleDetailsFrag.isHidden();
     }
     
@@ -151,8 +151,8 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
             final View viewWithTag = this.pager.findViewWithTag((Object)("POS_TAG" + String.valueOf(n)));
             if (viewWithTag != null) {
                 View view;
-                if ((view = viewWithTag.findViewById(2131689973)) == null) {
-                    view = viewWithTag.findViewById(2131689978);
+                if ((view = viewWithTag.findViewById(2131755516)) == null) {
+                    view = viewWithTag.findViewById(2131755521);
                 }
                 if (view != null) {
                     view.setTranslationX(0.0f);
@@ -169,10 +169,10 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     
     private void showRDP(final String actorId) {
         if (this.isActivityValid() && this.getNetflixActivity().isPanelExpanded()) {
-            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690026);
+            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131755569);
             if (roleDetailsFrag != null) {
                 final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-                beginTransaction.setCustomAnimations(2131034114, 2131034115);
+                beginTransaction.setCustomAnimations(2131034115, 2131034116);
                 beginTransaction.show((Fragment)roleDetailsFrag);
                 roleDetailsFrag.setStillImageHeight(this.pager.getMeasuredHeight());
                 roleDetailsFrag.setImageTint(this.currentTint);
@@ -225,7 +225,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     protected void adjustHeight(final ImageView imageView) {
-        final float n = this.getActivity().getResources().getDimensionPixelOffset(2131362200);
+        final float n = this.getActivity().getResources().getDimensionPixelOffset(2131427754);
         final float n2 = 1;
         final ViewGroup$LayoutParams layoutParams = imageView.getLayoutParams();
         final float n3 = (BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) - n * (n2 + 1.0f)) / 1;
@@ -267,7 +267,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("MementoFrag", "Creating new frag view...");
-        final View inflate = layoutInflater.inflate(2130903207, (ViewGroup)null, false);
+        final View inflate = layoutInflater.inflate(2130903210, (ViewGroup)null, false);
         this.findViews(inflate);
         this.init(inflate);
         this.restoreInstanceState(bundle);

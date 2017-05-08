@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.search;
 
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.ui.kubrick_kids.search.KubrickKidsSearchActionBar;
+import com.netflix.mediaclient.ui.barker_kids.search.BarkerKidsSearchActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
 import android.view.View$OnFocusChangeListener;

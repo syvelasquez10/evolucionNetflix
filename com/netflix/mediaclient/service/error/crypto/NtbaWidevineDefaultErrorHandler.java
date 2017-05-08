@@ -34,6 +34,6 @@ class NtbaWidevineDefaultErrorHandler extends BaseNtbaCryptoErrorHandler
         }
         this.logHandledException(sb.toString());
         com.netflix.mediaclient.Log.d(NtbaWidevineDefaultErrorHandler.TAG, "MediaDrm defaul failure for NTBA, kill app and let user restart...");
-        return new WidevineErrorDescriptor(context, this.mFailureType, this.getForceStopTask(context), 2131231081);
+        return new WidevineErrorDescriptor(context, this.mFailureType, this.getForceStopTask(context), 2131296637);
     }
 }

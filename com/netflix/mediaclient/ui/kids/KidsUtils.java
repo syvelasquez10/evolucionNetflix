@@ -6,8 +6,8 @@ package com.netflix.mediaclient.ui.kids;
 
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper$BarkerBars;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper$BarkerBars;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import android.view.ViewConfiguration;

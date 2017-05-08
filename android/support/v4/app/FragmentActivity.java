@@ -5,7 +5,6 @@
 package android.support.v4.app;
 
 import android.content.IntentSender;
-import android.app.Activity;
 import android.support.v4.util.SimpleArrayMap;
 import android.view.MenuItem;
 import android.view.Menu;
@@ -14,6 +13,8 @@ import android.os.Bundle;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.content.Intent;
+import android.app.Activity;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.os.Build$VERSION;
 import java.io.FileDescriptor;
 import android.util.AttributeSet;
@@ -24,14 +25,12 @@ import android.view.ViewGroup;
 import android.view.View;
 import java.io.PrintWriter;
 import android.support.v4.util.SparseArrayCompat;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.os.Handler;
 
 public class FragmentActivity extends BaseFragmentActivityJB implements ActivityCompat$OnRequestPermissionsResultCallback, ActivityCompatApi23$RequestPermissionsRequestCodeValidator
 {
     static final String ALLOCATED_REQUEST_INDICIES_TAG = "android:support:request_indicies";
     static final String FRAGMENTS_TAG = "android:support:fragments";
-    private static final int HONEYCOMB = 11;
     static final int MAX_NUM_PENDING_FRAGMENT_ACTIVITY_RESULTS = 65534;
     static final int MSG_REALLY_STOPPED = 1;
     static final int MSG_RESUME_PENDING = 2;
@@ -41,7 +40,6 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
     boolean mCreated;
     final FragmentController mFragments;
     final Handler mHandler;
-    MediaControllerCompat mMediaController;
     int mNextCandidateRequestIndex;
     boolean mOptionsMenuInvalidated;
     SparseArrayCompat<String> mPendingFragmentActivityResults;
@@ -112,22 +110,22 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
         char c10 = '\0';
         char c11 = '\0';
         char c12;
-        Label_0509_Outer:Label_0611_Outer:
+        Label_0509_Outer:Label_0610_Outer:
         while (true) {
-        Label_0618_Outer:
+        Label_0616_Outer:
             while (true) {
                 while (true) {
-                    Label_0546_Outer:Label_0575_Outer:Label_0599_Outer:
+                Label_0604_Outer:
                     while (true) {
                         Label_0261: {
+                            Label_0586_Outer:Label_0592_Outer:Label_0598_Outer:
                             while (true) {
                                 Label_0244: {
-                                Label_0593_Outer:
                                     while (true) {
                                         Label_0220: {
                                             while (true) {
                                                 Label_0203: {
-                                                Label_0581_Outer:
+                                                    Label_0568_Outer:Label_0580_Outer:
                                                     while (true) {
                                                         Label_0186: {
                                                             while (true) {
@@ -136,7 +134,6 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
                                                                         Label_0152: {
                                                                             while (true) {
                                                                                 Label_0135: {
-                                                                                Label_0557_Outer:
                                                                                     while (true) {
                                                                                         Label_0118: {
                                                                                             while (true) {
@@ -148,8 +145,8 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
                                                                                                                 break;
                                                                                                             }
                                                                                                             case 0: {
-                                                                                                                Label_0524: {
-                                                                                                                    break Label_0524;
+                                                                                                                Label_0523: {
+                                                                                                                    break Label_0523;
                                                                                                                     try {
                                                                                                                         resourcePackageName = resources.getResourcePackageName(id);
                                                                                                                         while (true) {
@@ -163,47 +160,47 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
                                                                                                                             sb.append(resourceEntryName);
                                                                                                                             sb.append("}");
                                                                                                                             return sb.toString();
+                                                                                                                            c3 = '.';
+                                                                                                                            break Label_0261;
                                                                                                                             sb.append('G');
                                                                                                                             break;
-                                                                                                                            c3 = '.';
-                                                                                                                            break Label_0169;
-                                                                                                                            resourcePackageName = "app";
-                                                                                                                            continue Label_0509_Outer;
                                                                                                                             c4 = '.';
                                                                                                                             break Label_0203;
+                                                                                                                            c5 = 'D';
+                                                                                                                            break Label_0152;
+                                                                                                                            c6 = '.';
+                                                                                                                            break Label_0186;
                                                                                                                             sb.append('I');
                                                                                                                             break;
+                                                                                                                            resourcePackageName = "app";
+                                                                                                                            continue Label_0509_Outer;
                                                                                                                             sb.append('V');
                                                                                                                             break;
-                                                                                                                            c5 = '.';
-                                                                                                                            break Label_0186;
-                                                                                                                            c6 = '.';
-                                                                                                                            break Label_0244;
                                                                                                                             c7 = '.';
-                                                                                                                            break Label_0135;
-                                                                                                                            c8 = '.';
                                                                                                                             break Label_0118;
-                                                                                                                            c9 = '.';
+                                                                                                                            c8 = '.';
                                                                                                                             break Label_0220;
-                                                                                                                            c10 = 'D';
-                                                                                                                            break Label_0152;
+                                                                                                                            c9 = '.';
+                                                                                                                            break Label_0135;
+                                                                                                                            c10 = '.';
+                                                                                                                            break Label_0244;
                                                                                                                             resourcePackageName = "android";
                                                                                                                             continue Label_0509_Outer;
                                                                                                                         }
                                                                                                                         c11 = '.';
-                                                                                                                        break Label_0261;
+                                                                                                                        break Label_0169;
                                                                                                                     }
                                                                                                                     catch (Resources$NotFoundException ex) {
-                                                                                                                        continue Label_0546_Outer;
+                                                                                                                        continue Label_0604_Outer;
                                                                                                                     }
                                                                                                                 }
                                                                                                                 break;
                                                                                                             }
                                                                                                             case 4: {
-                                                                                                                continue Label_0581_Outer;
+                                                                                                                continue Label_0610_Outer;
                                                                                                             }
                                                                                                             case 8: {
-                                                                                                                continue Label_0575_Outer;
+                                                                                                                continue Label_0586_Outer;
                                                                                                             }
                                                                                                         }
                                                                                                         break;
@@ -211,47 +208,47 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
                                                                                                     break;
                                                                                                 }
                                                                                                 if (!view.isFocusable()) {
-                                                                                                    continue Label_0593_Outer;
+                                                                                                    continue Label_0592_Outer;
                                                                                                 }
                                                                                                 break;
                                                                                             }
-                                                                                            c8 = 'F';
+                                                                                            c7 = 'F';
                                                                                         }
-                                                                                        sb.append(c8);
+                                                                                        sb.append(c7);
                                                                                         if (!view.isEnabled()) {
-                                                                                            continue Label_0557_Outer;
+                                                                                            continue Label_0598_Outer;
                                                                                         }
                                                                                         break;
                                                                                     }
-                                                                                    c7 = 'E';
+                                                                                    c9 = 'E';
                                                                                 }
-                                                                                sb.append(c7);
+                                                                                sb.append(c9);
                                                                                 if (!view.willNotDraw()) {
-                                                                                    continue Label_0618_Outer;
+                                                                                    continue Label_0580_Outer;
                                                                                 }
                                                                                 break;
                                                                             }
-                                                                            c10 = '.';
+                                                                            c5 = '.';
                                                                         }
-                                                                        sb.append(c10);
+                                                                        sb.append(c5);
                                                                         if (!view.isHorizontalScrollBarEnabled()) {
-                                                                            continue Label_0611_Outer;
+                                                                            continue;
                                                                         }
                                                                         break;
                                                                     }
-                                                                    c3 = 'H';
+                                                                    c11 = 'H';
                                                                 }
-                                                                sb.append(c3);
+                                                                sb.append(c11);
                                                                 if (!view.isVerticalScrollBarEnabled()) {
-                                                                    continue Label_0599_Outer;
+                                                                    continue Label_0610_Outer;
                                                                 }
                                                                 break;
                                                             }
-                                                            c5 = 'V';
+                                                            c6 = 'V';
                                                         }
-                                                        sb.append(c5);
+                                                        sb.append(c6);
                                                         if (!view.isClickable()) {
-                                                            continue Label_0581_Outer;
+                                                            continue Label_0568_Outer;
                                                         }
                                                         break;
                                                     }
@@ -259,30 +256,30 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
                                                 }
                                                 sb.append(c4);
                                                 if (!view.isLongClickable()) {
-                                                    continue Label_0618_Outer;
+                                                    continue Label_0598_Outer;
                                                 }
                                                 break;
                                             }
-                                            c9 = 'L';
+                                            c8 = 'L';
                                         }
-                                        sb.append(c9);
+                                        sb.append(c8);
                                         sb.append(' ');
                                         if (!view.isFocused()) {
-                                            continue Label_0593_Outer;
+                                            continue Label_0616_Outer;
                                         }
                                         break;
                                     }
-                                    c6 = c;
+                                    c10 = c;
                                 }
-                                sb.append(c6);
+                                sb.append(c10);
                                 if (!view.isSelected()) {
-                                    continue;
+                                    continue Label_0586_Outer;
                                 }
                                 break;
                             }
-                            c11 = 'S';
+                            c3 = 'S';
                         }
-                        sb.append(c11);
+                        sb.append(c3);
                         c12 = c2;
                         if (view.isPressed()) {
                             c12 = 'P';
@@ -298,13 +295,13 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
                         sb.append(view.getBottom());
                         id = view.getId();
                         if (id == -1) {
-                            continue Label_0575_Outer;
+                            continue Label_0604_Outer;
                         }
                         sb.append(" #");
                         sb.append(Integer.toHexString(id));
                         resources = view.getResources();
                         if (id == 0 || resources == null) {
-                            continue Label_0575_Outer;
+                            continue Label_0604_Outer;
                         }
                         break;
                     }
@@ -313,7 +310,7 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
                             continue Label_0509_Outer;
                         }
                         case 2130706432: {
-                            continue Label_0618_Outer;
+                            continue Label_0616_Outer;
                         }
                         case 16777216: {
                             continue;
@@ -384,8 +381,9 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
         return this.mFragments.getSupportLoaderManager();
     }
     
+    @Deprecated
     public final MediaControllerCompat getSupportMediaController() {
-        return this.mMediaController;
+        return MediaControllerCompat.getMediaController(this);
     }
     
     protected void onActivityResult(final int n, final int n2, final Intent intent) {
@@ -686,11 +684,9 @@ public class FragmentActivity extends BaseFragmentActivityJB implements Activity
         ActivityCompat.setExitSharedElementCallback(this, sharedElementCallback);
     }
     
-    public final void setSupportMediaController(final MediaControllerCompat mMediaController) {
-        this.mMediaController = mMediaController;
-        if (Build$VERSION.SDK_INT >= 21) {
-            ActivityCompat21.setMediaController(this, mMediaController.getMediaController());
-        }
+    @Deprecated
+    public final void setSupportMediaController(final MediaControllerCompat mediaControllerCompat) {
+        MediaControllerCompat.setMediaController(this, mediaControllerCompat);
     }
     
     public void startActivityForResult(final Intent intent, final int n) {

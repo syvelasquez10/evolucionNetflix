@@ -22,6 +22,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import android.preference.Preference$OnPreferenceClickListener;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import android.preference.PreferenceGroup;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -65,13 +66,13 @@ class SettingsFragment$10 implements Preference$OnPreferenceChangeListener
             }
             case "BEST": {
                 Log.d("SettingsFragment", "Set downloads video quality to best");
-                this.val$customPrefs.setSummary(this.this$0.getText(2131231351));
+                this.val$customPrefs.setSummary(this.this$0.getText(2131296911));
                 this.this$0.updateDownloadsVideoQualityConfig(DownloadVideoQuality.BEST, this.val$manager);
                 return true;
             }
             case "DEFAULT": {
                 Log.d("SettingsFragment", "Set downloads video quality to default");
-                this.val$customPrefs.setSummary(this.this$0.getText(2131231353));
+                this.val$customPrefs.setSummary(this.this$0.getText(2131296913));
                 this.this$0.updateDownloadsVideoQualityConfig(DownloadVideoQuality.DEFAULT, this.val$manager);
                 return true;
             }

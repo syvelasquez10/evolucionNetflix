@@ -6,7 +6,8 @@ package android.support.design.widget;
 
 import android.graphics.PorterDuff$Mode;
 import android.graphics.drawable.GradientDrawable;
-import android.content.res.Resources;
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.design.R$color;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
@@ -63,19 +64,19 @@ abstract class FloatingActionButtonImpl
     }
     
     CircularBorderDrawable createBorderDrawable(final int n, final ColorStateList borderTint) {
-        final Resources resources = this.mView.getResources();
+        final Context context = this.mView.getContext();
         final CircularBorderDrawable circularDrawable = this.newCircularDrawable();
-        circularDrawable.setGradientColors(resources.getColor(R$color.design_fab_stroke_top_outer_color), resources.getColor(R$color.design_fab_stroke_top_inner_color), resources.getColor(R$color.design_fab_stroke_end_inner_color), resources.getColor(R$color.design_fab_stroke_end_outer_color));
+        circularDrawable.setGradientColors(ContextCompat.getColor(context, R$color.design_fab_stroke_top_outer_color), ContextCompat.getColor(context, R$color.design_fab_stroke_top_inner_color), ContextCompat.getColor(context, R$color.design_fab_stroke_end_inner_color), ContextCompat.getColor(context, R$color.design_fab_stroke_end_outer_color));
         circularDrawable.setBorderWidth(n);
         circularDrawable.setBorderTint(borderTint);
         return circularDrawable;
     }
     
     GradientDrawable createShapeDrawable() {
-        final GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setShape(1);
-        gradientDrawable.setColor(-1);
-        return gradientDrawable;
+        final GradientDrawable gradientDrawableForShape = this.newGradientDrawableForShape();
+        gradientDrawableForShape.setShape(1);
+        gradientDrawableForShape.setColor(-1);
+        return gradientDrawableForShape;
     }
     
     final Drawable getContentBackground() {
@@ -116,6 +117,10 @@ abstract class FloatingActionButtonImpl
     
     CircularBorderDrawable newCircularDrawable() {
         return new CircularBorderDrawable();
+    }
+    
+    GradientDrawable newGradientDrawableForShape() {
+        return new GradientDrawable();
     }
     
     void onAttachedToWindow() {

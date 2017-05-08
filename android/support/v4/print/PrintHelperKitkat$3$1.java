@@ -26,6 +26,7 @@ import android.print.PrintDocumentAdapter$WriteResultCallback;
 import android.os.ParcelFileDescriptor;
 import android.graphics.BitmapFactory$Options;
 import android.content.Context;
+import android.annotation.TargetApi;
 import android.os.CancellationSignal$OnCancelListener;
 import android.print.PrintDocumentInfo;
 import android.print.PrintAttributes$MediaSize;

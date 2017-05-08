@@ -4,20 +4,6 @@
 
 package android.support.v7.media;
 
-import java.util.List;
-import java.util.Collections;
-import android.util.Log;
-import java.util.Iterator;
-import java.util.Locale;
-import android.support.v4.app.ActivityManagerCompat;
-import android.app.ActivityManager;
-import android.support.v4.media.session.MediaSessionCompat$OnActiveChangeListener;
-import java.lang.ref.WeakReference;
-import android.support.v4.media.session.MediaSessionCompat;
-import java.util.ArrayList;
-import android.support.v4.hardware.display.DisplayManagerCompat;
-import android.content.Context;
-
 class MediaRouter$GlobalMediaRouter$MediaSessionRecord$1$1 implements Runnable
 {
     final /* synthetic */ MediaRouter$GlobalMediaRouter$MediaSessionRecord$1 this$2;

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
+import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -20,6 +21,7 @@ public class DataContext
     public static final String REQUEST_ID = "requestId";
     public static final String ROW = "row";
     private static final String TAG = "DataContext";
+    public static final String TRACKING_INFO = "trackingInfo";
     public static final String TRACK_ID = "trackId";
     public static final String VIDEO_ID = "videoId";
     public static final String XID = "xid";
@@ -35,6 +37,8 @@ public class DataContext
     @SerializedName("trackId")
     @Since(1.0)
     private Integer trackId;
+    @SerializedName("trackingInfo")
+    private String trackingInfo;
     @SerializedName("videoId")
     @Since(1.0)
     private Integer videoId;
@@ -137,6 +141,7 @@ public class DataContext
         dataContext.trackId = value4;
         dataContext.requestId = JsonUtils.getString(jsonObject, "requestId", null);
         dataContext.xid = JsonUtils.getString(jsonObject, "xid", null);
+        dataContext.trackingInfo = JsonUtils.getString(jsonObject, "trackingInfo", null);
         return dataContext;
     }
     
@@ -154,6 +159,10 @@ public class DataContext
     
     public Integer getTrackId() {
         return this.trackId;
+    }
+    
+    public String getTrackingInfo() {
+        return this.trackingInfo;
     }
     
     public Integer getVideoId() {
@@ -178,6 +187,10 @@ public class DataContext
     
     public void setTrackId(final Integer trackId) {
         this.trackId = trackId;
+    }
+    
+    public void setTrackingInfo(final String trackingInfo) {
+        this.trackingInfo = trackingInfo;
     }
     
     public void setVideoId(final Integer videoId) {
@@ -208,11 +221,22 @@ public class DataContext
         if (this.rank != null) {
             jsonObject.put("rank", (Object)this.rank);
         }
-        return jsonObject;
+        if (this.trackingInfo == null) {
+            return jsonObject;
+        }
+        try {
+            jsonObject.put("trackingInfo", (Object)new JSONObject(this.trackingInfo));
+            return jsonObject;
+        }
+        catch (JSONException ex) {
+            Log.e("DataContext", "Failed to put an errror", (Throwable)ex);
+            jsonObject.put("trackingInfo", (Object)this.trackingInfo);
+            return jsonObject;
+        }
     }
     
     @Override
     public String toString() {
-        return "DataContext [requestId=" + this.requestId + ", trackId=" + this.trackId + ", videoId=" + this.videoId + ", xid=" + this.xid + ", row=" + this.row + ", rank=" + this.rank + "]";
+        return "DataContext [requestId=" + this.requestId + ", trackId=" + this.trackId + ", videoId=" + this.videoId + ", xid=" + this.xid + ", row=" + this.row + ", rank=" + this.rank + ", trackingInfo=" + this.trackingInfo + "]";
     }
 }

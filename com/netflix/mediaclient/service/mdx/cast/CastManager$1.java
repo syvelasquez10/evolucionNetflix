@@ -17,7 +17,6 @@ import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
 import com.google.android.gms.cast.CastDevice;
 import java.util.HashMap;
-import android.support.v7.media.MediaRouter;
 import android.support.v7.media.MediaRouteSelector;
 import com.netflix.mediaclient.service.mdx.MdxNrdpLogger;
 import android.support.v7.media.MediaRouter$RouteInfo;
@@ -25,6 +24,7 @@ import java.util.Map;
 import android.os.Handler;
 import android.content.Context;
 import android.support.v7.media.MediaRouter$Callback;
+import android.support.v7.media.MediaRouter;
 
 class CastManager$1 implements Runnable
 {
@@ -36,6 +36,6 @@ class CastManager$1 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.startDiscovery();
+        this.this$0.mMediaRouter = MediaRouter.getInstance(this.this$0.mContext);
     }
 }

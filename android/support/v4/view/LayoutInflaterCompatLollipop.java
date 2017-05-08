@@ -6,7 +6,9 @@ package android.support.v4.view;
 
 import android.view.LayoutInflater$Factory2;
 import android.view.LayoutInflater;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class LayoutInflaterCompatLollipop
 {
     static void setFactory(final LayoutInflater layoutInflater, final LayoutInflaterFactory layoutInflaterFactory) {

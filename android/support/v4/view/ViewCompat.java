@@ -6,11 +6,13 @@ package android.support.v4.view;
 
 import android.graphics.Paint;
 import android.view.ViewGroup;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.ViewParent;
 import android.graphics.Matrix;
+import android.view.Display;
 import android.graphics.Rect;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
@@ -169,6 +171,10 @@ public class ViewCompat
     
     public static Rect getClipBounds(final View view) {
         return ViewCompat.IMPL.getClipBounds(view);
+    }
+    
+    public static Display getDisplay(final View view) {
+        return ViewCompat.IMPL.getDisplay(view);
     }
     
     public static float getElevation(final View view) {
@@ -423,6 +429,10 @@ public class ViewCompat
     
     public static void setAlpha(final View view, final float n) {
         ViewCompat.IMPL.setAlpha(view, n);
+    }
+    
+    public static void setBackground(final View view, final Drawable drawable) {
+        ViewCompat.IMPL.setBackground(view, drawable);
     }
     
     public static void setBackgroundTintList(final View view, final ColorStateList list) {

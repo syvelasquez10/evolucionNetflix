@@ -6,7 +6,9 @@ package android.support.v7.widget;
 
 import android.view.View;
 import android.graphics.drawable.Drawable;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 interface CardViewDelegate
 {
     Drawable getCardBackground();

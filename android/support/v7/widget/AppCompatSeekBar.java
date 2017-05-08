@@ -5,6 +5,7 @@
 package android.support.v7.widget;
 
 import android.graphics.Canvas;
+import android.annotation.TargetApi;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -13,6 +14,10 @@ import android.widget.SeekBar;
 public class AppCompatSeekBar extends SeekBar
 {
     private AppCompatSeekBarHelper mAppCompatSeekBarHelper;
+    
+    public AppCompatSeekBar(final Context context) {
+        this(context, null);
+    }
     
     public AppCompatSeekBar(final Context context, final AttributeSet set) {
         this(context, set, R$attr.seekBarStyle);
@@ -28,6 +33,7 @@ public class AppCompatSeekBar extends SeekBar
         this.mAppCompatSeekBarHelper.drawableStateChanged();
     }
     
+    @TargetApi(11)
     public void jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState();
         this.mAppCompatSeekBarHelper.jumpDrawablesToCurrentState();

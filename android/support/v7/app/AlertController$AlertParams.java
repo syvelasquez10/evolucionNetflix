@@ -6,9 +6,9 @@ package android.support.v7.app;
 
 import android.os.Message;
 import android.widget.AdapterView$OnItemClickListener;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.content.DialogInterface$OnKeyListener;
 import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.DialogInterface$OnDismissListener;
@@ -77,7 +77,7 @@ public class AlertController$AlertParams
     }
     
     private void createListView(final AlertController alertController) {
-        final ListView mListView = (ListView)this.mInflater.inflate(alertController.mListLayout, (ViewGroup)null);
+        final AlertController$RecycleListView mListView = (AlertController$RecycleListView)this.mInflater.inflate(alertController.mListLayout, (ViewGroup)null);
         Object mAdapter;
         if (this.mIsMultiChoice) {
             if (this.mCursor == null) {

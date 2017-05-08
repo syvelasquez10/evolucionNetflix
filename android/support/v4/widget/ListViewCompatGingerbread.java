@@ -6,7 +6,9 @@ package android.support.v4.widget;
 
 import android.view.View;
 import android.widget.ListView;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class ListViewCompatGingerbread
 {
     static void scrollListBy(final ListView listView, final int n) {

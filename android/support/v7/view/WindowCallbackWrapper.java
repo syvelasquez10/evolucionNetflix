@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.ActionMode;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.KeyEvent;
+import android.annotation.TargetApi;
 import android.view.MotionEvent;
 import android.view.Window$Callback;
 
@@ -29,6 +30,7 @@ public class WindowCallbackWrapper implements Window$Callback
         this.mWrapped = mWrapped;
     }
     
+    @TargetApi(12)
     public boolean dispatchGenericMotionEvent(final MotionEvent motionEvent) {
         return this.mWrapped.dispatchGenericMotionEvent(motionEvent);
     }
@@ -37,6 +39,7 @@ public class WindowCallbackWrapper implements Window$Callback
         return this.mWrapped.dispatchKeyEvent(keyEvent);
     }
     
+    @TargetApi(11)
     public boolean dispatchKeyShortcutEvent(final KeyEvent keyEvent) {
         return this.mWrapped.dispatchKeyShortcutEvent(keyEvent);
     }
@@ -53,10 +56,12 @@ public class WindowCallbackWrapper implements Window$Callback
         return this.mWrapped.dispatchTrackballEvent(motionEvent);
     }
     
+    @TargetApi(11)
     public void onActionModeFinished(final ActionMode actionMode) {
         this.mWrapped.onActionModeFinished(actionMode);
     }
     
+    @TargetApi(11)
     public void onActionModeStarted(final ActionMode actionMode) {
         this.mWrapped.onActionModeStarted(actionMode);
     }
@@ -97,6 +102,7 @@ public class WindowCallbackWrapper implements Window$Callback
         return this.mWrapped.onPreparePanel(n, view, menu);
     }
     
+    @TargetApi(24)
     public void onProvideKeyboardShortcuts(final List<KeyboardShortcutGroup> list, final Menu menu, final int n) {
         this.mWrapped.onProvideKeyboardShortcuts((List)list, menu, n);
     }
@@ -105,6 +111,7 @@ public class WindowCallbackWrapper implements Window$Callback
         return this.mWrapped.onSearchRequested();
     }
     
+    @TargetApi(23)
     public boolean onSearchRequested(final SearchEvent searchEvent) {
         return this.mWrapped.onSearchRequested(searchEvent);
     }
@@ -117,10 +124,12 @@ public class WindowCallbackWrapper implements Window$Callback
         this.mWrapped.onWindowFocusChanged(b);
     }
     
+    @TargetApi(11)
     public ActionMode onWindowStartingActionMode(final ActionMode$Callback actionMode$Callback) {
         return this.mWrapped.onWindowStartingActionMode(actionMode$Callback);
     }
     
+    @TargetApi(23)
     public ActionMode onWindowStartingActionMode(final ActionMode$Callback actionMode$Callback, final int n) {
         return this.mWrapped.onWindowStartingActionMode(actionMode$Callback, n);
     }

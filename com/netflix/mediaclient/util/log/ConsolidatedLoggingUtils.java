@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.util.log;
 
 import java.util.Iterator;
-import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
+import com.android.volley.NetworkError;
 import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import android.support.v4.content.LocalBroadcastManager;
@@ -124,20 +124,10 @@ public abstract class ConsolidatedLoggingUtils
                 break;
             }
             case 10:
-            case 11: {
-                rootCause = RootCause.clientFailure;
-                break;
-            }
-            case 12: {
-                rootCause = RootCause.serverResponseBad;
-                break;
-            }
+            case 11:
+            case 12:
             case 13:
-            case 14: {
-                rootCause = RootCause.clientRequestBad;
-                break;
-            }
-            case 8:
+            case 14:
             case 15:
             case 16:
             case 17:
@@ -147,7 +137,31 @@ public abstract class ConsolidatedLoggingUtils
             case 21:
             case 22:
             case 23:
-            case 24: {
+            case 24:
+            case 25: {
+                rootCause = RootCause.clientFailure;
+                break;
+            }
+            case 26: {
+                rootCause = RootCause.serverResponseBad;
+                break;
+            }
+            case 27:
+            case 28: {
+                rootCause = RootCause.clientRequestBad;
+                break;
+            }
+            case 8:
+            case 29:
+            case 30:
+            case 31:
+            case 32:
+            case 33:
+            case 34:
+            case 35:
+            case 36:
+            case 37:
+            case 38: {
                 rootCause = RootCause.serverFailure;
                 break;
             }
@@ -260,7 +274,7 @@ public abstract class ConsolidatedLoggingUtils
                         break Label_0241;
                         while (true) {
                             final JSONObject message = new JSONObject();
-                        Block_12_Outer:
+                        Block_11_Outer:
                             while (true) {
                                 DeepErrorElement deepErrorElement = null;
                                 Label_0307: {
@@ -277,29 +291,27 @@ public abstract class ConsolidatedLoggingUtils
                                             return error;
                                         }
                                         break Label_0307;
+                                        // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                         // iftrue(Label_0258:, !volleyError instanceof ServerError)
                                         // iftrue(Label_0275:, !volleyError instanceof TimeoutError)
-                                        while (true) {
-                                            Block_10: {
-                                                break Block_10;
-                                                error.setRootCause(RootCause.tcpConnectionTimeout);
-                                                break;
-                                            }
-                                            error.setRootCause(RootCause.serverFailure);
-                                            break;
-                                            Label_0258: {
-                                                continue Block_12_Outer;
-                                            }
-                                        }
-                                        while (true) {
-                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
-                                            break;
-                                            Label_0275: {
-                                                continue;
+                                        Block_12: {
+                                            break Block_12;
+                                            while (true) {
+                                                while (true) {
+                                                    error.setRootCause(RootCause.serverFailure);
+                                                    break;
+                                                    error.setRootCause(RootCause.tcpConnectionTimeout);
+                                                    break;
+                                                    continue Block_11_Outer;
+                                                }
+                                                Label_0258: {
+                                                    continue;
+                                                }
                                             }
                                         }
+                                        error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                        break;
                                     }
-                                    // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                     catch (Throwable t) {
                                         Log.e("nf_log", "Failed to add body response to JSON object", t);
                                         continue Label_0156;

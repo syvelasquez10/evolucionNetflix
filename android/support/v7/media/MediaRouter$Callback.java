@@ -33,6 +33,10 @@ public abstract class MediaRouter$Callback
     public void onRouteUnselected(final MediaRouter mediaRouter, final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
     }
     
+    public void onRouteUnselected(final MediaRouter mediaRouter, final MediaRouter$RouteInfo mediaRouter$RouteInfo, final int n) {
+        this.onRouteUnselected(mediaRouter, mediaRouter$RouteInfo);
+    }
+    
     public void onRouteVolumeChanged(final MediaRouter mediaRouter, final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
     }
 }

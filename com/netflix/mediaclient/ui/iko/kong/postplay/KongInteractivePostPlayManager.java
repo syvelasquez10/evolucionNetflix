@@ -463,14 +463,14 @@ public class KongInteractivePostPlayManager implements InteractivePostPlayManage
     }
     
     View inflateViews(final ViewGroup viewGroup) {
-        viewGroup.addView(this.kongPostplayContainer = ((LayoutInflater)this.getActivity().getSystemService("layout_inflater")).inflate(2130903237, viewGroup, false));
-        this.unlockingGearContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690090);
-        this.powerUpContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690103);
-        this.gear1Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690100);
-        this.gear2Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690101);
-        this.battleIntroContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690095);
-        this.nextEpisodeContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690091);
-        this.battleResultAvatar = (ImageView)this.kongPostplayContainer.findViewById(2131690102);
+        viewGroup.addView(this.kongPostplayContainer = ((LayoutInflater)this.getActivity().getSystemService("layout_inflater")).inflate(2130903250, viewGroup, false));
+        this.unlockingGearContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131755657);
+        this.powerUpContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131755670);
+        this.gear1Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131755667);
+        this.gear2Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131755668);
+        this.battleIntroContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131755662);
+        this.nextEpisodeContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131755658);
+        this.battleResultAvatar = (ImageView)this.kongPostplayContainer.findViewById(2131755669);
         this.bgScreen.initViews(this.kongPostplayContainer);
         this.unlockScreen.initViews((View)this.unlockingGearContainer);
         this.powerUpScreen.initViews((View)this.powerUpContainer);

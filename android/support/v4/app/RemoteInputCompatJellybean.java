@@ -8,7 +8,9 @@ import android.content.ClipDescription;
 import android.content.ClipData;
 import android.os.Bundle;
 import android.content.Intent;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class RemoteInputCompatJellybean
 {
     public static final String EXTRA_RESULTS_DATA = "android.remoteinput.resultsData";

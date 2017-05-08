@@ -10,7 +10,9 @@ import android.media.session.PlaybackState$Builder;
 import java.util.List;
 import android.media.session.PlaybackState;
 import android.os.Bundle;
+import android.annotation.TargetApi;
 
+@TargetApi(22)
 class PlaybackStateCompatApi22
 {
     public static Bundle getExtras(final Object o) {

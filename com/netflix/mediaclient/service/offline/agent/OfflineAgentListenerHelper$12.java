@@ -8,27 +8,29 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.android.app.Status;
 import android.os.Handler;
-import java.util.Iterator;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixPowerManager$PartialWakeLockReason;
 import java.util.ArrayList;
 import java.util.List;
 import com.netflix.mediaclient.service.NetflixPowerManager;
-import com.netflix.mediaclient.Log;
+import java.util.Iterator;
 
 class OfflineAgentListenerHelper$12 implements Runnable
 {
     final /* synthetic */ OfflineAgentListenerHelper this$0;
-    final /* synthetic */ OfflineAgentListener val$listener;
+    final /* synthetic */ boolean val$offlineFeatureAvailable;
     
-    OfflineAgentListenerHelper$12(final OfflineAgentListenerHelper this$0, final OfflineAgentListener val$listener) {
+    OfflineAgentListenerHelper$12(final OfflineAgentListenerHelper this$0, final boolean val$offlineFeatureAvailable) {
         this.this$0 = this$0;
-        this.val$listener = val$listener;
+        this.val$offlineFeatureAvailable = val$offlineFeatureAvailable;
     }
     
     @Override
     public void run() {
-        this.this$0.mOfflineAgentListeners.remove(this.val$listener);
         this.this$0.removeDeadListeners();
-        Log.i("nf_offlineAgent", "removeOfflineAgentListener after count=%d", this.this$0.mOfflineAgentListeners.size());
+        final Iterator<OfflineAgentListener> iterator = this.this$0.mOfflineAgentListeners.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().onOfflineStorageVolumeAddedOrRemoved(this.val$offlineFeatureAvailable);
+        }
     }
 }

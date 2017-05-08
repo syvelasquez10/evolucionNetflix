@@ -4,6 +4,7 @@
 
 package android.support.v4.widget;
 
+import android.annotation.SuppressLint;
 import android.view.animation.Animation;
 import android.view.animation.Animation$AnimationListener;
 
@@ -15,6 +16,7 @@ class SwipeRefreshLayout$1 implements Animation$AnimationListener
         this.this$0 = this$0;
     }
     
+    @SuppressLint({ "NewApi" })
     public void onAnimationEnd(final Animation animation) {
         if (this.this$0.mRefreshing) {
             this.this$0.mProgress.setAlpha(255);

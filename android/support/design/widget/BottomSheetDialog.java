@@ -7,6 +7,8 @@ package android.support.design.widget;
 import android.content.res.TypedArray;
 import android.os.Build$VERSION;
 import android.os.Bundle;
+import android.support.v4.view.AccessibilityDelegateCompat;
+import android.support.v4.view.ViewCompat;
 import android.view.View$OnClickListener;
 import android.support.design.R$id;
 import android.view.ViewGroup;
@@ -37,7 +39,7 @@ public class BottomSheetDialog extends AppCompatDialog
         super(context, getThemeResId(context, n));
         this.mCancelable = true;
         this.mCanceledOnTouchOutside = true;
-        this.mBottomSheetCallback = new BottomSheetDialog$2(this);
+        this.mBottomSheetCallback = new BottomSheetDialog$3(this);
         this.supportRequestWindowFeature(1);
     }
     
@@ -45,7 +47,7 @@ public class BottomSheetDialog extends AppCompatDialog
         super(context, mCancelable, dialogInterface$OnCancelListener);
         this.mCancelable = true;
         this.mCanceledOnTouchOutside = true;
-        this.mBottomSheetCallback = new BottomSheetDialog$2(this);
+        this.mBottomSheetCallback = new BottomSheetDialog$3(this);
         this.supportRequestWindowFeature(1);
         this.mCancelable = mCancelable;
     }
@@ -78,6 +80,7 @@ public class BottomSheetDialog extends AppCompatDialog
             frameLayout.addView(inflate, viewGroup$LayoutParams);
         }
         coordinatorLayout.findViewById(R$id.touch_outside).setOnClickListener((View$OnClickListener)new BottomSheetDialog$1(this));
+        ViewCompat.setAccessibilityDelegate((View)frameLayout, new BottomSheetDialog$2(this));
         return (View)coordinatorLayout;
     }
     

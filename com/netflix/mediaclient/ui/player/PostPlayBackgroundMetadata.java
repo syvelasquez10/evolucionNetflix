@@ -28,9 +28,9 @@ public class PostPlayBackgroundMetadata extends PostPlayBackground
     
     @Override
     protected void findViews() {
-        this.backgound = (PostPlayBackgroundBasic)this.findViewById(2131690154);
-        this.metadata = (PostPlayMetadata)this.findViewById(2131690186);
-        this.logo = (AdvancedImageView)this.findViewById(2131690159);
+        this.backgound = (PostPlayBackgroundBasic)this.findViewById(2131755722);
+        this.metadata = (PostPlayMetadata)this.findViewById(2131755754);
+        this.logo = (AdvancedImageView)this.findViewById(2131755727);
     }
     
     @Override

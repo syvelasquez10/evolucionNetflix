@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.common;
 
 import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewGroup;
 import android.view.View;
 import com.netflix.mediaclient.media.AudioSource;
@@ -59,14 +58,7 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Subtitle create row " + n);
-            int n2;
-            if (BrowseExperience.isKubrick()) {
-                n2 = 2130903166;
-            }
-            else {
-                n2 = 2130903174;
-            }
-            inflate = this.activity.getLayoutInflater().inflate(n2, viewGroup, false);
+            inflate = this.activity.getLayoutInflater().inflate(2130903177, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();
@@ -82,13 +74,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             if (item.isCC()) {
                 Log.d("nf_language_selector", "Add CC");
                 sb.append(' ');
-                sb.append(this.activity.getText(2131231011));
+                sb.append(this.activity.getText(2131296567));
             }
             text = sb.toString();
             equals = item.equals(subtitle);
         }
         else {
-            text = this.activity.getString(2131231148);
+            text = this.activity.getString(2131296704);
             if (subtitle == null) {
                 equals = true;
                 text = text;

@@ -33,11 +33,11 @@ class DialerScreen$3 implements Runnable
     @Override
     public void run() {
         if (this.this$0.mMuted) {
-            this.this$0.mMicIcon.setImageResource(2130837766);
+            this.this$0.mMicIcon.setImageResource(2130837796);
             this.this$0.mMicIcon.setSelected(true);
             return;
         }
-        this.this$0.mMicIcon.setImageResource(2130837765);
+        this.this$0.mMicIcon.setImageResource(2130837795);
         this.this$0.mMicIcon.setSelected(false);
     }
 }

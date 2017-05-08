@@ -5,7 +5,9 @@
 package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityEvent;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class AccessibilityEventCompatJellyBean
 {
     public static int getAction(final AccessibilityEvent accessibilityEvent) {

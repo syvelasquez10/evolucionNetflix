@@ -130,9 +130,73 @@ class VectorDrawableCompat$VFullPath extends VectorDrawableCompat$VPath
         this.mTrimPathStart = TypedArrayUtils.getNamedFloat(typedArray, xmlPullParser, "trimPathStart", 5, this.mTrimPathStart);
     }
     
+    float getFillAlpha() {
+        return this.mFillAlpha;
+    }
+    
+    int getFillColor() {
+        return this.mFillColor;
+    }
+    
+    float getStrokeAlpha() {
+        return this.mStrokeAlpha;
+    }
+    
+    int getStrokeColor() {
+        return this.mStrokeColor;
+    }
+    
+    float getStrokeWidth() {
+        return this.mStrokeWidth;
+    }
+    
+    float getTrimPathEnd() {
+        return this.mTrimPathEnd;
+    }
+    
+    float getTrimPathOffset() {
+        return this.mTrimPathOffset;
+    }
+    
+    float getTrimPathStart() {
+        return this.mTrimPathStart;
+    }
+    
     public void inflate(final Resources resources, final AttributeSet set, final Resources$Theme resources$Theme, final XmlPullParser xmlPullParser) {
         final TypedArray obtainAttributes = VectorDrawableCommon.obtainAttributes(resources, resources$Theme, set, AndroidResources.styleable_VectorDrawablePath);
         this.updateStateFromTypedArray(obtainAttributes, xmlPullParser);
         obtainAttributes.recycle();
+    }
+    
+    void setFillAlpha(final float mFillAlpha) {
+        this.mFillAlpha = mFillAlpha;
+    }
+    
+    void setFillColor(final int mFillColor) {
+        this.mFillColor = mFillColor;
+    }
+    
+    void setStrokeAlpha(final float mStrokeAlpha) {
+        this.mStrokeAlpha = mStrokeAlpha;
+    }
+    
+    void setStrokeColor(final int mStrokeColor) {
+        this.mStrokeColor = mStrokeColor;
+    }
+    
+    void setStrokeWidth(final float mStrokeWidth) {
+        this.mStrokeWidth = mStrokeWidth;
+    }
+    
+    void setTrimPathEnd(final float mTrimPathEnd) {
+        this.mTrimPathEnd = mTrimPathEnd;
+    }
+    
+    void setTrimPathOffset(final float mTrimPathOffset) {
+        this.mTrimPathOffset = mTrimPathOffset;
+    }
+    
+    void setTrimPathStart(final float mTrimPathStart) {
+        this.mTrimPathStart = mTrimPathStart;
     }
 }

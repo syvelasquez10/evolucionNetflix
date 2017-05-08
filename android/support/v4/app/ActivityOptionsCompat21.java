@@ -11,7 +11,9 @@ import android.app.Activity;
 import android.view.View;
 import android.content.Context;
 import android.app.ActivityOptions;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class ActivityOptionsCompat21
 {
     private final ActivityOptions mActivityOptions;

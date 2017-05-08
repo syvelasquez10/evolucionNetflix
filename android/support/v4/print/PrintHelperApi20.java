@@ -5,7 +5,9 @@
 package android.support.v4.print;
 
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(20)
 class PrintHelperApi20 extends PrintHelperKitkat
 {
     PrintHelperApi20(final Context context) {

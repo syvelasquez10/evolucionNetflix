@@ -8,7 +8,9 @@ import android.view.LayoutInflater$Factory;
 import android.view.LayoutInflater$Factory2;
 import android.view.LayoutInflater;
 import java.lang.reflect.Field;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class LayoutInflaterCompatHC
 {
     private static final String TAG = "LayoutInflaterCompatHC";

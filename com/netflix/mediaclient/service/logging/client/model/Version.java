@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.logging.client.model;
 
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
+import android.os.Build$VERSION;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import android.content.Context;
@@ -19,6 +20,7 @@ public class Version
     public static final String NRDAPP = "nrdapp";
     public static final String NRDLIB = "nrdlib";
     public static final String NRDSDK = "nrdsdk";
+    public static final String OS = "os";
     public static final String UI = "ui";
     @Since(1.0)
     private String app;
@@ -33,6 +35,8 @@ public class Version
     @Since(1.1)
     private String nrdsdk;
     @Since(1.0)
+    private String os;
+    @Since(1.0)
     private String ui;
     
     public Version() {
@@ -46,6 +50,7 @@ public class Version
         this.mdxlib = SecurityRepository.getMdxLibVersion();
         this.mdxjs = SecurityRepository.getMdxJsVersion();
         this.nrdsdk = SecurityRepository.getNrdSdkVersion();
+        this.os = Build$VERSION.RELEASE;
     }
     
     public static Version createInstance(final JSONObject jsonObject) {
@@ -60,6 +65,7 @@ public class Version
         version.mdxlib = JsonUtils.getString(jsonObject, "mdxlib", null);
         version.mdxjs = JsonUtils.getString(jsonObject, "mdxjs", null);
         version.nrdsdk = JsonUtils.getString(jsonObject, "nrdsdk", null);
+        version.os = JsonUtils.getString(jsonObject, "os", null);
         return version;
     }
     
@@ -85,6 +91,10 @@ public class Version
     
     public String getNrdsdk() {
         return this.nrdsdk;
+    }
+    
+    public String getOs() {
+        return this.os;
     }
     
     public String getUi() {
@@ -114,11 +124,14 @@ public class Version
         if (this.nrdsdk != null) {
             jsonObject.put("nrdsdk", (Object)this.nrdsdk);
         }
+        if (this.os != null) {
+            jsonObject.put("os", (Object)this.os);
+        }
         return jsonObject;
     }
     
     @Override
     public String toString() {
-        return "Version [app=" + this.app + ", ui=" + this.ui + ", nrdapp=" + this.nrdapp + ", nrdlib=" + this.nrdlib + ", mdxlib=" + this.mdxlib + ", mdxjs=" + this.mdxjs + ", nrdsdk=" + this.nrdsdk + "]";
+        return "Version [app=" + this.app + ", ui=" + this.ui + ", nrdapp=" + this.nrdapp + ", nrdlib=" + this.nrdlib + ", mdxlib=" + this.mdxlib + ", mdxjs=" + this.mdxjs + ", nrdsdk=" + this.nrdsdk + "os=" + this.os + "]";
     }
 }

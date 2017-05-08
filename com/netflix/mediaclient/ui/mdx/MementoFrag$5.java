@@ -34,7 +34,7 @@ import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.view.View;
 import com.viewpagerindicator.android.osp.ViewPager$PageTransformer;
 
@@ -46,13 +46,12 @@ class MementoFrag$5 implements ViewPager$PageTransformer
         this.this$0 = this$0;
     }
     
-    @Override
     public void transformPage(final View view, final float n) {
         view.setAlpha(Math.max(Math.abs(Math.abs(n) - 1.0f), 0.75f));
         if (n <= 1.0f) {
             View view2;
-            if ((view2 = view.findViewById(2131689973)) == null) {
-                view2 = view.findViewById(2131689978);
+            if ((view2 = view.findViewById(2131755516)) == null) {
+                view2 = view.findViewById(2131755521);
             }
             if (view2 != null) {
                 view2.setTranslationX(-n * (BarkerUtils.getDetailsPageContentWidth(this.this$0.pager.getContext()) / 2));

@@ -4,6 +4,7 @@
 
 package android.support.v4.text;
 
+import android.text.SpannableStringBuilder;
 import java.util.Locale;
 
 public final class BidiFormatter
@@ -42,12 +43,12 @@ public final class BidiFormatter
         this.mDefaultTextDirectionHeuristicCompat = mDefaultTextDirectionHeuristicCompat;
     }
     
-    private static int getEntryDir(final String s) {
-        return new BidiFormatter$DirectionalityEstimator(s, false).getEntryDir();
+    private static int getEntryDir(final CharSequence charSequence) {
+        return new BidiFormatter$DirectionalityEstimator(charSequence, false).getEntryDir();
     }
     
-    private static int getExitDir(final String s) {
-        return new BidiFormatter$DirectionalityEstimator(s, false).getExitDir();
+    private static int getExitDir(final CharSequence charSequence) {
+        return new BidiFormatter$DirectionalityEstimator(charSequence, false).getExitDir();
     }
     
     public static BidiFormatter getInstance() {
@@ -66,23 +67,23 @@ public final class BidiFormatter
         return TextUtilsCompat.getLayoutDirectionFromLocale(locale) == 1;
     }
     
-    private String markAfter(final String s, final TextDirectionHeuristicCompat textDirectionHeuristicCompat) {
-        final boolean rtl = textDirectionHeuristicCompat.isRtl(s, 0, s.length());
-        if (!this.mIsRtlContext && (rtl || getExitDir(s) == 1)) {
+    private String markAfter(final CharSequence charSequence, final TextDirectionHeuristicCompat textDirectionHeuristicCompat) {
+        final boolean rtl = textDirectionHeuristicCompat.isRtl(charSequence, 0, charSequence.length());
+        if (!this.mIsRtlContext && (rtl || getExitDir(charSequence) == 1)) {
             return BidiFormatter.LRM_STRING;
         }
-        if (this.mIsRtlContext && (!rtl || getExitDir(s) == -1)) {
+        if (this.mIsRtlContext && (!rtl || getExitDir(charSequence) == -1)) {
             return BidiFormatter.RLM_STRING;
         }
         return "";
     }
     
-    private String markBefore(final String s, final TextDirectionHeuristicCompat textDirectionHeuristicCompat) {
-        final boolean rtl = textDirectionHeuristicCompat.isRtl(s, 0, s.length());
-        if (!this.mIsRtlContext && (rtl || getEntryDir(s) == 1)) {
+    private String markBefore(final CharSequence charSequence, final TextDirectionHeuristicCompat textDirectionHeuristicCompat) {
+        final boolean rtl = textDirectionHeuristicCompat.isRtl(charSequence, 0, charSequence.length());
+        if (!this.mIsRtlContext && (rtl || getEntryDir(charSequence) == 1)) {
             return BidiFormatter.LRM_STRING;
         }
-        if (this.mIsRtlContext && (!rtl || getEntryDir(s) == -1)) {
+        if (this.mIsRtlContext && (!rtl || getEntryDir(charSequence) == -1)) {
             return BidiFormatter.RLM_STRING;
         }
         return "";
@@ -92,12 +93,70 @@ public final class BidiFormatter
         return (this.mFlags & 0x2) != 0x0;
     }
     
+    public boolean isRtl(final CharSequence charSequence) {
+        return this.mDefaultTextDirectionHeuristicCompat.isRtl(charSequence, 0, charSequence.length());
+    }
+    
     public boolean isRtl(final String s) {
-        return this.mDefaultTextDirectionHeuristicCompat.isRtl(s, 0, s.length());
+        return this.isRtl((CharSequence)s);
     }
     
     public boolean isRtlContext() {
         return this.mIsRtlContext;
+    }
+    
+    public CharSequence unicodeWrap(final CharSequence charSequence) {
+        return this.unicodeWrap(charSequence, this.mDefaultTextDirectionHeuristicCompat, true);
+    }
+    
+    public CharSequence unicodeWrap(final CharSequence charSequence, final TextDirectionHeuristicCompat textDirectionHeuristicCompat) {
+        return this.unicodeWrap(charSequence, textDirectionHeuristicCompat, true);
+    }
+    
+    public CharSequence unicodeWrap(final CharSequence charSequence, TextDirectionHeuristicCompat textDirectionHeuristicCompat, final boolean b) {
+        if (charSequence == null) {
+            return null;
+        }
+        final boolean rtl = textDirectionHeuristicCompat.isRtl(charSequence, 0, charSequence.length());
+        final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+        if (this.getStereoReset() && b) {
+            if (rtl) {
+                textDirectionHeuristicCompat = TextDirectionHeuristicsCompat.RTL;
+            }
+            else {
+                textDirectionHeuristicCompat = TextDirectionHeuristicsCompat.LTR;
+            }
+            spannableStringBuilder.append((CharSequence)this.markBefore(charSequence, textDirectionHeuristicCompat));
+        }
+        if (rtl != this.mIsRtlContext) {
+            char c;
+            if (rtl) {
+                c = '\u202b';
+            }
+            else {
+                c = '\u202a';
+            }
+            spannableStringBuilder.append(c);
+            spannableStringBuilder.append(charSequence);
+            spannableStringBuilder.append('\u202c');
+        }
+        else {
+            spannableStringBuilder.append(charSequence);
+        }
+        if (b) {
+            if (rtl) {
+                textDirectionHeuristicCompat = TextDirectionHeuristicsCompat.RTL;
+            }
+            else {
+                textDirectionHeuristicCompat = TextDirectionHeuristicsCompat.LTR;
+            }
+            spannableStringBuilder.append((CharSequence)this.markAfter(charSequence, textDirectionHeuristicCompat));
+        }
+        return (CharSequence)spannableStringBuilder;
+    }
+    
+    public CharSequence unicodeWrap(final CharSequence charSequence, final boolean b) {
+        return this.unicodeWrap(charSequence, this.mDefaultTextDirectionHeuristicCompat, b);
     }
     
     public String unicodeWrap(final String s) {
@@ -108,46 +167,11 @@ public final class BidiFormatter
         return this.unicodeWrap(s, textDirectionHeuristicCompat, true);
     }
     
-    public String unicodeWrap(final String s, TextDirectionHeuristicCompat textDirectionHeuristicCompat, final boolean b) {
+    public String unicodeWrap(final String s, final TextDirectionHeuristicCompat textDirectionHeuristicCompat, final boolean b) {
         if (s == null) {
             return null;
         }
-        final boolean rtl = textDirectionHeuristicCompat.isRtl(s, 0, s.length());
-        final StringBuilder sb = new StringBuilder();
-        if (this.getStereoReset() && b) {
-            if (rtl) {
-                textDirectionHeuristicCompat = TextDirectionHeuristicsCompat.RTL;
-            }
-            else {
-                textDirectionHeuristicCompat = TextDirectionHeuristicsCompat.LTR;
-            }
-            sb.append(this.markBefore(s, textDirectionHeuristicCompat));
-        }
-        if (rtl != this.mIsRtlContext) {
-            char c;
-            if (rtl) {
-                c = '\u202b';
-            }
-            else {
-                c = '\u202a';
-            }
-            sb.append(c);
-            sb.append(s);
-            sb.append('\u202c');
-        }
-        else {
-            sb.append(s);
-        }
-        if (b) {
-            if (rtl) {
-                textDirectionHeuristicCompat = TextDirectionHeuristicsCompat.RTL;
-            }
-            else {
-                textDirectionHeuristicCompat = TextDirectionHeuristicsCompat.LTR;
-            }
-            sb.append(this.markAfter(s, textDirectionHeuristicCompat));
-        }
-        return sb.toString();
+        return this.unicodeWrap((CharSequence)s, textDirectionHeuristicCompat, b).toString();
     }
     
     public String unicodeWrap(final String s, final boolean b) {

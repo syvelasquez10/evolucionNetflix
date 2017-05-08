@@ -10,7 +10,9 @@ import android.util.Log;
 import android.graphics.drawable.Drawable;
 import android.widget.CompoundButton;
 import java.lang.reflect.Field;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class CompoundButtonCompatGingerbread
 {
     private static final String TAG = "CompoundButtonCompatGingerbread";

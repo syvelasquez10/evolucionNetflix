@@ -4,10 +4,7 @@
 
 package com.netflix.mediaclient.android.activity;
 
-import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$ReturnToDialScreenFrom;
-import android.content.Context;
-import com.netflix.mediaclient.ui.voip.ContactUsActivity;
+import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnClickListener;
 
@@ -20,11 +17,7 @@ class NetflixActivity$3 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        final Intent startIntent = ContactUsActivity.createStartIntent((Context)this.this$0);
-        if (this.this$0.getUiScreen() != null) {
-            startIntent.putExtra("source", this.this$0.getUiScreen().name());
-        }
-        startIntent.putExtra("from", CustomerServiceLogging$ReturnToDialScreenFrom.fab.name());
-        this.this$0.startActivity(startIntent);
+        Log.d("NetflixActivity", "Handle click on No Network overlay");
+        this.this$0.handleActionOnNoNetworkOverlay();
     }
 }

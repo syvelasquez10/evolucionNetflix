@@ -7,6 +7,8 @@ package android.support.v4.media.session;
 import android.support.v4.media.RatingCompat;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.IBinder;
+import android.support.v4.app.BundleCompat;
 import android.os.ResultReceiver;
 import android.os.Bundle;
 
@@ -19,7 +21,16 @@ class MediaSessionCompat$Callback$StubApi21 implements MediaSessionCompatApi21$C
     }
     
     @Override
-    public void onCommand(final String s, final Bundle bundle, final ResultReceiver resultReceiver) {
+    public void onCommand(final String s, Bundle bundle, final ResultReceiver resultReceiver) {
+        if (s.equals("android.support.v4.media.session.command.GET_EXTRA_BINDER")) {
+            final MediaSessionCompat$MediaSessionImplApi21 mediaSessionCompat$MediaSessionImplApi21 = this.this$0.mSessionImpl.get();
+            if (mediaSessionCompat$MediaSessionImplApi21 != null) {
+                bundle = new Bundle();
+                BundleCompat.putBinder(bundle, "android.support.v4.media.session.EXTRA_BINDER", (IBinder)mediaSessionCompat$MediaSessionImplApi21.getExtraSessionBinder());
+                resultReceiver.send(0, bundle);
+            }
+            return;
+        }
         this.this$0.onCommand(s, bundle, resultReceiver);
     }
     

@@ -80,9 +80,11 @@ import android.support.v7.widget.DecorContentParent;
 import android.support.v7.widget.ActionBarContextView;
 import android.widget.PopupWindow;
 import android.support.v7.view.ActionMode;
+import android.annotation.TargetApi;
 import android.support.v7.view.menu.MenuBuilder$Callback;
 import android.support.v4.view.LayoutInflaterFactory;
 
+@TargetApi(9)
 class AppCompatDelegateImplV9 extends AppCompatDelegateImplBase implements LayoutInflaterFactory, MenuBuilder$Callback
 {
     private AppCompatDelegateImplV9$ActionMenuPresenterCallback mActionMenuPresenterCallback;
@@ -946,6 +948,9 @@ class AppCompatDelegateImplV9 extends AppCompatDelegateImplBase implements Layou
     
     @Override
     public void onDestroy() {
+        if (this.mInvalidatePanelMenuPosted) {
+            this.mWindow.getDecorView().removeCallbacks(this.mInvalidatePanelMenuRunnable);
+        }
         super.onDestroy();
         if (this.mActionBar != null) {
             this.mActionBar.onDestroy();
@@ -1193,7 +1198,7 @@ class AppCompatDelegateImplV9 extends AppCompatDelegateImplBase implements Layou
             supportActionBar.onDestroy();
         }
         if (toolbar != null) {
-            final ToolbarActionBar mActionBar = new ToolbarActionBar(toolbar, ((Activity)this.mContext).getTitle(), this.mAppCompatWindowCallback);
+            final ToolbarActionBar mActionBar = new ToolbarActionBar(toolbar, ((Activity)this.mOriginalWindowCallback).getTitle(), this.mAppCompatWindowCallback);
             this.mActionBar = mActionBar;
             this.mWindow.setCallback(mActionBar.getWrappedWindowCallback());
         }
@@ -1316,7 +1321,7 @@ class AppCompatDelegateImplV9 extends AppCompatDelegateImplBase implements Layou
                         ViewCompat.setAlpha((View)this.mActionModeView, 1.0f);
                         this.mActionModeView.setVisibility(0);
                         this.mActionModeView.sendAccessibilityEvent(32);
-                        if (this.mActionModeView.getParent() != null) {
+                        if (this.mActionModeView.getParent() instanceof View) {
                             ViewCompat.requestApplyInsets((View)this.mActionModeView.getParent());
                         }
                     }

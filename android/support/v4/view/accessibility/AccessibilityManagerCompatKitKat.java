@@ -6,7 +6,9 @@ package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityManager$TouchExplorationStateChangeListener;
 import android.view.accessibility.AccessibilityManager;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class AccessibilityManagerCompatKitKat
 {
     public static boolean addTouchExplorationStateChangeListener(final AccessibilityManager accessibilityManager, final Object o) {

@@ -7,19 +7,23 @@ package com.netflix.mediaclient.service.offline.download;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.LogblobLogging;
+import android.content.Context;
 
 class CdnUrlDownloadEventReceiver
 {
     private static final String TAG = "nf_cdnUrlDownloadEvent";
     private final CommonCdnLogBlobData mCommonLogBlobData;
+    private Context mContext;
     private CdnUrl mCurrentCdnUrl;
     private long mDlStartBytes;
     private long mDlStartTime;
     private final LogblobLogging mLogblobLogging;
     
-    CdnUrlDownloadEventReceiver(final CommonCdnLogBlobData mCommonLogBlobData, final IClientLogging clientLogging) {
+    CdnUrlDownloadEventReceiver(final Context mContext, final CommonCdnLogBlobData mCommonLogBlobData, final IClientLogging clientLogging) {
+        this.mContext = mContext;
         this.mCommonLogBlobData = mCommonLogBlobData;
         this.mLogblobLogging = clientLogging.getLogblobLogging();
     }
@@ -30,7 +34,7 @@ class CdnUrlDownloadEventReceiver
         if (n2 > 0L && n >= 0L) {
             final CdnUrlDownloadEventReceiver$CdnDownloadLogBlob cdnUrlDownloadEventReceiver$CdnDownloadLogBlob = new CdnUrlDownloadEventReceiver$CdnDownloadLogBlob(this, b);
             try {
-                cdnUrlDownloadEventReceiver$CdnDownloadLogBlob.populateJson(this.mCommonLogBlobData, this.mCurrentCdnUrl, this.mDlStartTime, this.mDlStartBytes, n2, n);
+                cdnUrlDownloadEventReceiver$CdnDownloadLogBlob.populateJson(this.mCommonLogBlobData, this.mCurrentCdnUrl, this.mDlStartTime, this.mDlStartBytes, n2, n, ConnectivityUtils.getCurrentNetType(this.mContext));
                 new BackgroundTask().execute(new CdnUrlDownloadEventReceiver$1(this, cdnUrlDownloadEventReceiver$CdnDownloadLogBlob));
                 return;
             }

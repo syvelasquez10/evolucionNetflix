@@ -6,6 +6,8 @@ package com.netflix.mediaclient.ui.offline;
 
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import android.graphics.Typeface;
+import android.widget.Toast;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;

@@ -5,7 +5,9 @@
 package android.support.v4.view;
 
 import android.view.ViewGroup;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class ViewGroupCompatLollipop
 {
     public static int getNestedScrollAxes(final ViewGroup viewGroup) {

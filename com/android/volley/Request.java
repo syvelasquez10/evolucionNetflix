@@ -30,6 +30,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
     private HttpURLConnection mHttpURLConnection;
     private final int mMethod;
     private long mRequestBirthTime;
+    private boolean mRequestInFlight;
     private RequestQueue mRequestQueue;
     private boolean mResponseDelivered;
     private RetryPolicy mRetryPolicy;
@@ -54,6 +55,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
         this.mShouldCache = true;
         this.mCanceled = false;
         this.mResponseDelivered = false;
+        this.mRequestInFlight = false;
         this.mRequestBirthTime = 0L;
         this.mCacheEntry = null;
         this.mMethod = hashCode;
@@ -278,8 +280,16 @@ public abstract class Request<T> implements Comparable<Request<T>>
         return this.mCanceled;
     }
     
+    public boolean isRequestInFlight() {
+        return this.mRequestInFlight;
+    }
+    
     public void markDelivered() {
         this.mResponseDelivered = true;
+    }
+    
+    protected void markInFlight(final boolean mRequestInFlight) {
+        this.mRequestInFlight = mRequestInFlight;
     }
     
     protected VolleyError parseNetworkError(final VolleyError volleyError) {

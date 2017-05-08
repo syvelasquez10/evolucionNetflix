@@ -20,8 +20,10 @@ import android.graphics.Path;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.content.res.ColorStateList;
+import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
 
+@TargetApi(9)
 class RoundRectDrawableWithShadow extends Drawable
 {
     static final double COS_45;

@@ -4,6 +4,9 @@
 
 package android.support.v4.view.accessibility;
 
+import android.annotation.TargetApi;
+
+@TargetApi(19)
 class AccessibilityNodeProviderCompatKitKat
 {
     public static Object newAccessibilityNodeProviderBridge(final AccessibilityNodeProviderCompatKitKat$AccessibilityNodeInfoBridge accessibilityNodeProviderCompatKitKat$AccessibilityNodeInfoBridge) {

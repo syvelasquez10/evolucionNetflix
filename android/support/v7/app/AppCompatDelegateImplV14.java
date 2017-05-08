@@ -6,8 +6,8 @@ package android.support.v7.app;
 
 import android.view.Window$Callback;
 import android.os.Bundle;
-import android.content.res.Resources;
 import android.util.DisplayMetrics;
+import android.content.res.Resources;
 import android.content.res.Configuration;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager$NameNotFoundException;
@@ -16,7 +16,9 @@ import android.content.ComponentName;
 import android.app.Activity;
 import android.view.Window;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class AppCompatDelegateImplV14 extends AppCompatDelegateImplV11
 {
     private boolean mApplyDayNightCalled;
@@ -73,8 +75,10 @@ class AppCompatDelegateImplV14 extends AppCompatDelegateImplV11
             }
             else {
                 final Configuration configuration2 = new Configuration(configuration);
+                final DisplayMetrics displayMetrics = resources.getDisplayMetrics();
                 configuration2.uiMode = (n | (configuration2.uiMode & 0xFFFFFFCF));
-                resources.updateConfiguration(configuration2, (DisplayMetrics)null);
+                resources.updateConfiguration(configuration2, displayMetrics);
+                ResourcesFlusher.flush(resources);
             }
             return true;
         }

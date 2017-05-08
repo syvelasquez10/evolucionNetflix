@@ -56,18 +56,18 @@ public class PostPlayMetadata extends LinearLayout
     }
     
     private void findViews() {
-        this.countdown = (PostPlayCountDown)this.findViewById(2131690161);
-        this.logo = (AdvancedImageView)this.findViewById(2131690192);
-        this.titleBar = (LinearLayout)this.findViewById(2131690193);
-        this.episodeBadge = (TextView)this.findViewById(2131690194);
-        this.postPlayTitle = (TextView)this.findViewById(2131689891);
-        this.metadataBar = (LinearLayout)this.findViewById(2131690187);
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131689625);
-        this.year = (TextView)this.findViewById(2131690188);
-        this.maturityRating = (TextView)this.findViewById(2131690189);
-        this.contentLength = (TextView)this.findViewById(2131690190);
-        this.synopsis = (TextView)this.findViewById(2131690170);
-        this.buttonsContainer = (LinearLayout)this.findViewById(2131690191);
+        this.countdown = (PostPlayCountDown)this.findViewById(2131755729);
+        this.logo = (AdvancedImageView)this.findViewById(2131755760);
+        this.titleBar = (LinearLayout)this.findViewById(2131755761);
+        this.episodeBadge = (TextView)this.findViewById(2131755762);
+        this.postPlayTitle = (TextView)this.findViewById(2131755440);
+        this.metadataBar = (LinearLayout)this.findViewById(2131755755);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131755167);
+        this.year = (TextView)this.findViewById(2131755756);
+        this.maturityRating = (TextView)this.findViewById(2131755757);
+        this.contentLength = (TextView)this.findViewById(2131755758);
+        this.synopsis = (TextView)this.findViewById(2131755738);
+        this.buttonsContainer = (LinearLayout)this.findViewById(2131755759);
     }
     
     private String getContentLength(final PostPlayItem postPlayItem) {
@@ -95,7 +95,7 @@ public class PostPlayMetadata extends LinearLayout
             String s;
             if (postPlayItem.getType().equals("episode") && postPlayItem.getPlayAction() != null) {
                 final PostPlayAction playAction = postPlayItem.getPlayAction();
-                s = this.getContext().getResources().getString(2131231187, new Object[] { postPlayItem.getAncestorTitle(), playAction.getSeasonSequenceAbbr(), playAction.getEpisode(), postPlayItem.getTitle() });
+                s = this.getContext().getResources().getString(2131296743, new Object[] { postPlayItem.getAncestorTitle(), playAction.getSeasonSequenceAbbr(), playAction.getEpisode(), postPlayItem.getTitle() });
             }
             else {
                 s = postPlayItem.getTitle();
@@ -195,12 +195,12 @@ public class PostPlayMetadata extends LinearLayout
     
     public void updateViews(final PostPlayItem postPlayItem, final NetflixActivity netflixActivity, final PlayerFragment playerFragment, final PostPlayRequestContext postPlayRequestContext) {
         this.playerFragment = playerFragment;
-        final boolean b = postPlayItem.isNSRE() && postPlayItem.getExperienceType().equals("episodicTeaser") && postPlayItem.getLogoAsset() != null;
+        final boolean b = postPlayItem.getExperienceType().equals("episodicTeaser") && postPlayItem.getLogoAsset() != null;
         this.buttonsContainer.removeAllViews();
         if (this.supportsButtons(postPlayItem) && !postPlayRequestContext.equals(PostPlayRequestContext.MDX)) {
             for (int i = 1; i < postPlayItem.getActions().size(); ++i) {
                 final PostPlayAction postPlayAction = postPlayItem.getActions().get(i);
-                final Button button = (Button)netflixActivity.getLayoutInflater().inflate(2130903251, (ViewGroup)this.buttonsContainer, false);
+                final Button button = (Button)netflixActivity.getLayoutInflater().inflate(2130903264, (ViewGroup)this.buttonsContainer, false);
                 this.buttonsContainer.addView((View)button);
                 this.actions.add(new PostPlayCallToAction(netflixActivity, playerFragment, postPlayAction, postPlayRequestContext, (View)button));
             }

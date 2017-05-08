@@ -19,9 +19,6 @@ import android.graphics.Rect;
 
 public class GridLayoutManager extends LinearLayoutManager
 {
-    private static final boolean DEBUG = false;
-    public static final int DEFAULT_SPAN_COUNT = -1;
-    private static final String TAG = "GridLayoutManager";
     int[] mCachedBorders;
     final Rect mDecorInsets;
     boolean mPendingSpanCountChange;
@@ -270,6 +267,15 @@ public class GridLayoutManager extends LinearLayoutManager
     }
     
     @Override
+    void collectPrefetchPositionsForLayoutState(final RecyclerView$State recyclerView$State, final LinearLayoutManager$LayoutState linearLayoutManager$LayoutState, final RecyclerView$LayoutManager$LayoutPrefetchRegistry recyclerView$LayoutManager$LayoutPrefetchRegistry) {
+        int mCurrentPosition;
+        for (int mSpanCount = this.mSpanCount, n = 0; n < this.mSpanCount && linearLayoutManager$LayoutState.hasMore(recyclerView$State) && mSpanCount > 0; mSpanCount -= this.mSpanSizeLookup.getSpanSize(mCurrentPosition), linearLayoutManager$LayoutState.mCurrentPosition += linearLayoutManager$LayoutState.mItemDirection, ++n) {
+            mCurrentPosition = linearLayoutManager$LayoutState.mCurrentPosition;
+            recyclerView$LayoutManager$LayoutPrefetchRegistry.addPosition(mCurrentPosition, linearLayoutManager$LayoutState.mScrollingOffset);
+        }
+    }
+    
+    @Override
     View findReferenceChild(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, int i, final int n, final int n2) {
         View view = null;
         this.ensureLayoutState();
@@ -385,14 +391,6 @@ public class GridLayoutManager extends LinearLayoutManager
             return this.mCachedBorders[this.mSpanCount - n] - this.mCachedBorders[this.mSpanCount - n - n2];
         }
         return this.mCachedBorders[n + n2] - this.mCachedBorders[n];
-    }
-    
-    public int getSpanCount() {
-        return this.mSpanCount;
-    }
-    
-    public GridLayoutManager$SpanSizeLookup getSpanSizeLookup() {
-        return this.mSpanSizeLookup;
     }
     
     @Override

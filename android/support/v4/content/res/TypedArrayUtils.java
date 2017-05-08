@@ -48,6 +48,14 @@ public class TypedArrayUtils
         return s;
     }
     
+    public static CharSequence getText(final TypedArray typedArray, final int n, final int n2) {
+        CharSequence charSequence;
+        if ((charSequence = typedArray.getText(n)) == null) {
+            charSequence = typedArray.getText(n2);
+        }
+        return charSequence;
+    }
+    
     public static CharSequence[] getTextArray(final TypedArray typedArray, final int n, final int n2) {
         CharSequence[] array;
         if ((array = typedArray.getTextArray(n)) == null) {

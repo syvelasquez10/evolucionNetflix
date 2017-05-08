@@ -12,9 +12,9 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import io.realm.RealmVideoDetailsRealmProxyInterface;
-import io.realm.RealmModel;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineImageUtils;
+import io.realm.RealmModel;
 import io.realm.RealmList;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import io.realm.Realm;
@@ -37,7 +37,6 @@ final class RealmVideoDetails$1 implements Realm$Transaction
         this.val$service = val$service;
     }
     
-    @Override
     public void execute(final Realm realm) {
         final RealmVideoDetails realmVideoDetails = realm.createObject(RealmVideoDetails.class, this.val$details.getId());
         realmVideoDetails.fillForRealm(this.val$details);
@@ -50,14 +49,15 @@ final class RealmVideoDetails$1 implements Realm$Transaction
                 final RealmSeason realmSeason = new RealmSeason();
                 realmSeason.setNumber(seasonDetails.getSeasonNumber());
                 realmSeason.setLabel(seasonDetails.getSeasonLongSeqLabel());
-                realmVideoDetails.realmGet$seasonLabels().add(realmSeason);
+                realmVideoDetails.realmGet$seasonLabels().add((RealmModel)realmSeason);
             }
         }
         RealmPlayable realmPlayable;
-        if ((realmPlayable = realm.where(RealmPlayable.class).equalTo("playableId", this.val$details.getPlayable().getPlayableId()).findFirst()) == null) {
+        if ((realmPlayable = (RealmPlayable)realm.where(RealmPlayable.class).equalTo("playableId", this.val$details.getPlayable().getPlayableId()).findFirst()) == null) {
             realmPlayable = realm.copyToRealm(new RealmPlayable(this.val$details.getPlayable()));
         }
         realmVideoDetails.setPlayable(realmPlayable);
         OfflineImageUtils.cacheVideoDetailsImage(this.val$service, realmVideoDetails.getHorzDispUrl(), realmVideoDetails.getId());
+        realm.where(RealmIncompleteVideoDetails.class).equalTo("playableId", this.val$details.getId()).findAll().deleteAllFromRealm();
     }
 }

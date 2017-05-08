@@ -96,14 +96,14 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(int visibility, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903271, viewGroup, false);
-            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131689622), (TextView)inflate.findViewById(2131690268), inflate.findViewById(2131690267)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903284, viewGroup, false);
+            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131755164), (TextView)inflate.findViewById(2131755836), inflate.findViewById(2131755835)));
         }
         final ProfileSelectionActivity$Holder profileSelectionActivity$Holder = (ProfileSelectionActivity$Holder)inflate.getTag();
         final UserProfile item = this.getItem(visibility);
         if (visibility == this.this$0.profiles.size()) {
-            profileSelectionActivity$Holder.img.setImageResource(2130837968);
-            profileSelectionActivity$Holder.title.setText(2131231385);
+            profileSelectionActivity$Holder.img.setImageResource(2130838112);
+            profileSelectionActivity$Holder.title.setText(2131296946);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);
             return inflate;
         }

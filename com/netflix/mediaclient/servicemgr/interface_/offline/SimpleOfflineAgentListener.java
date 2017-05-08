@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.offline;
 
+import java.util.List;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
 
@@ -43,6 +44,14 @@ public abstract class SimpleOfflineAgentListener implements OfflineAgentListener
     
     @Override
     public void onOfflinePlayableProgress(final OfflinePlayableViewData offlinePlayableViewData, final int n) {
+    }
+    
+    @Override
+    public void onOfflinePlayablesDeleted(final List<String> list, final Status status) {
+    }
+    
+    @Override
+    public void onOfflineStorageVolumeAddedOrRemoved(final boolean b) {
     }
     
     @Override

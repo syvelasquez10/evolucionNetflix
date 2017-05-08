@@ -4,18 +4,14 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.RelativeLayout$LayoutParams;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.text.TextUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper$BarkerBars;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper$BarkerBars;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -26,7 +22,7 @@ import android.widget.Button;
 
 class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends VideoDetailsViewGroup
 {
-    private static final String TAG = "PreReleaseVideoDetailsViewGroup";
+    private static final String TAG = "BarkerPreReleaseVideoDetailsViewGroup";
     private Button playButton;
     private TextView supplementalMessage;
     final /* synthetic */ BarkerPreReleaseDetailsFrag this$0;
@@ -39,7 +35,7 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends 
     private void fetchSupplementalVideos(final String s) {
         final ServiceManager serviceManager = this.this$0.getServiceManager();
         if (serviceManager == null || !serviceManager.isReady()) {
-            Log.w("PreReleaseVideoDetailsViewGroup", "Manager is null/notReady - can't reload data");
+            Log.w("BarkerPreReleaseVideoDetailsViewGroup", "Manager is null/notReady - can't reload data");
             return;
         }
         this.this$0.requestId = System.nanoTime();
@@ -67,13 +63,13 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends 
     @Override
     protected void findViews() {
         super.findViews();
-        this.playButton = (Button)this.findViewById(2131690389);
-        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131690386)));
+        this.playButton = (Button)this.findViewById(2131755957);
+        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131755954)));
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903320;
+        return 2130903334;
     }
     
     @Override
@@ -97,9 +93,6 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends 
     @Override
     protected void updateImage(final VideoDetails videoDetails, final NetflixActivity netflixActivity, final String s) {
         final AdvancedImageView advancedImageView = (AdvancedImageView)this.getBackgroundImage();
-        advancedImageView.setLayoutParams((ViewGroup$LayoutParams)new RelativeLayout$LayoutParams(-1, DeviceUtils.getScreenHeightInPixels((Context)netflixActivity)));
-        final ImageLoader imageLoader = NetflixActivity.getImageLoader((Context)netflixActivity);
-        final AdvancedImageView horzDispImg = this.horzDispImg;
         String s2;
         if (videoDetails.getTitleCroppedImgUrl() == null) {
             s2 = videoDetails.getTvCardUrl();
@@ -107,8 +100,13 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends 
         else {
             s2 = videoDetails.getTitleCroppedImgUrl();
         }
-        imageLoader.showImg(horzDispImg, s2, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true);
-        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(advancedImageView, videoDetails.getStoryUrl(), IClientLogging$AssetType.heroImage, s, BrowseExperience.getImageLoaderConfig(), true);
+        final String storyUrl = videoDetails.getStoryUrl();
+        if (Log.isLoggable()) {
+            Log.d("BarkerPreReleaseVideoDetailsViewGroup", "logoImg -> " + s2);
+            Log.d("BarkerPreReleaseVideoDetailsViewGroup", "bgImg -> " + storyUrl);
+        }
+        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, s2, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true);
+        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(advancedImageView, storyUrl, IClientLogging$AssetType.heroImage, s, BrowseExperience.getImageLoaderConfig(), true);
         this.setupImageClicks(videoDetails, netflixActivity);
     }
 }

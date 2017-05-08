@@ -5,7 +5,9 @@
 package android.support.v4.view;
 
 import android.view.VelocityTracker;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class VelocityTrackerCompatHoneycomb
 {
     public static float getXVelocity(final VelocityTracker velocityTracker, final int n) {

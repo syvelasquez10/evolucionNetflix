@@ -15,7 +15,9 @@ import android.animation.StateListAnimator;
 import android.support.design.R$integer;
 import android.view.ViewOutlineProvider;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class ViewUtilsLollipop
 {
     private static final int[] STATE_LIST_ANIM_ATTRS;

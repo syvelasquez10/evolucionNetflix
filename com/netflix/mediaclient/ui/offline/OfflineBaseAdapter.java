@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui.offline;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData;
+import java.util.List;
+import java.util.ArrayList;
 import android.util.SparseArray;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
@@ -54,17 +56,17 @@ public abstract class OfflineBaseAdapter extends RecyclerView$Adapter<RecyclerVi
     protected void applyColorScheme(final OfflineBaseAdapter$OfflineViewHolderData offlineBaseAdapter$OfflineViewHolderData) {
         int n;
         if (BrowseExperience.showKidsExperience()) {
-            n = ContextCompat.getColor((Context)this.mActivity, 2131624058);
+            n = ContextCompat.getColor((Context)this.mActivity, 2131689595);
         }
         else {
-            n = ContextCompat.getColor((Context)this.mActivity, 2131624188);
+            n = ContextCompat.getColor((Context)this.mActivity, 2131689730);
         }
         int textColor;
         if (BrowseExperience.showKidsExperience()) {
-            textColor = ContextCompat.getColor((Context)this.mActivity, 2131624058);
+            textColor = ContextCompat.getColor((Context)this.mActivity, 2131689595);
         }
         else {
-            textColor = ContextCompat.getColor((Context)this.mActivity, 2131624132);
+            textColor = ContextCompat.getColor((Context)this.mActivity, 2131689671);
         }
         offlineBaseAdapter$OfflineViewHolderData.info.setTextColor(textColor);
         offlineBaseAdapter$OfflineViewHolderData.profileName.setTextColor(n);
@@ -117,9 +119,9 @@ public abstract class OfflineBaseAdapter extends RecyclerView$Adapter<RecyclerVi
     @Override
     public RecyclerView$ViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int n) {
         if (n == 1) {
-            return new OfflineBaseAdapter$FooterViewHolderData(this, this.mActivity.getLayoutInflater().inflate(2130903227, viewGroup, false));
+            return new OfflineBaseAdapter$FooterViewHolderData(this, this.mActivity.getLayoutInflater().inflate(2130903240, viewGroup, false));
         }
-        return new OfflineBaseAdapter$OfflineViewHolderData(this, this.mActivity.getLayoutInflater().inflate(2130903228, viewGroup, false));
+        return new OfflineBaseAdapter$OfflineViewHolderData(this, this.mActivity.getLayoutInflater().inflate(2130903241, viewGroup, false));
     }
     
     public void setSelectionMode(final boolean selectable) {
@@ -134,16 +136,16 @@ public abstract class OfflineBaseAdapter extends RecyclerView$Adapter<RecyclerVi
                 netflixActionBar.replaceUpButtonWithCancelIcon(false);
                 int backgroundResource;
                 if (BrowseExperience.showKidsExperience()) {
-                    backgroundResource = 2131624188;
+                    backgroundResource = 2131689730;
                 }
                 else {
-                    backgroundResource = 2131623961;
+                    backgroundResource = 2131689499;
                 }
                 netflixActionBar.setBackgroundResource(backgroundResource);
                 return;
             }
             netflixActionBar.replaceUpButtonWithCancelIcon(true);
-            netflixActionBar.setBackgroundResource(2131624033);
+            netflixActionBar.setBackgroundResource(2131689572);
         }
     }
     
@@ -227,6 +229,7 @@ public abstract class OfflineBaseAdapter extends RecyclerView$Adapter<RecyclerVi
                 }
                 else if (offlineVideoDetails.getType() == VideoType.MOVIE || offlineVideoDetails.getType() == VideoType.EPISODE) {
                     ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.downloadButton, !this.mSelectionController.isSelectable() && b2);
+                    ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.showIndicator, false);
                 }
             }
         }

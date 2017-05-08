@@ -8,7 +8,9 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import java.util.List;
 import android.view.accessibility.AccessibilityManager$AccessibilityStateChangeListener;
 import android.view.accessibility.AccessibilityManager;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class AccessibilityManagerCompatIcs
 {
     public static boolean addAccessibilityStateChangeListener(final AccessibilityManager accessibilityManager, final AccessibilityManagerCompatIcs$AccessibilityStateChangeListenerWrapper accessibilityManagerCompatIcs$AccessibilityStateChangeListenerWrapper) {

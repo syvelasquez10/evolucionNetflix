@@ -30,7 +30,9 @@ import android.graphics.Bitmap;
 import android.print.PrintAttributes;
 import android.graphics.BitmapFactory$Options;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class PrintHelperKitkat
 {
     public static final int COLOR_MODE_COLOR = 2;

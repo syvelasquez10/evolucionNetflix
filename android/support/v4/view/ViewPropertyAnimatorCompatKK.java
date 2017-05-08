@@ -6,7 +6,9 @@ package android.support.v4.view;
 
 import android.animation.ValueAnimator$AnimatorUpdateListener;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class ViewPropertyAnimatorCompatKK
 {
     public static void setUpdateListener(final View view, final ViewPropertyAnimatorUpdateListener viewPropertyAnimatorUpdateListener) {

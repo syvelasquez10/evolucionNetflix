@@ -53,7 +53,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         if (viewGroup == null) {
             return;
         }
-        viewGroup.setId(2131689494);
+        viewGroup.setId(2131755030);
     }
     
     public int getCount() {
@@ -107,13 +107,13 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
             this.logException(itemBackgroundResource);
         }
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBackgroundResource = 2131624173;
+            itemBackgroundResource = 2131689713;
         }
         else {
             itemBackgroundResource = this.itemBackgroundResource;
         }
         textView.setBackgroundResource(itemBackgroundResource);
-        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131624131));
+        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131689670));
         return (View)textView;
     }
     

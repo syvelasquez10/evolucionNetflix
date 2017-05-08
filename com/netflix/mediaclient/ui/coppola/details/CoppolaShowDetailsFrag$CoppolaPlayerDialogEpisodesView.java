@@ -12,9 +12,9 @@ import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.TextView;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView;
 
 public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView
 {
@@ -26,13 +26,13 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Bark
     
     public CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView(final CoppolaShowDetailsFrag this$0, final Context context) {
         this.this$0 = this$0;
-        super(this$0, context, 2130903092);
+        super(this$0, context, 2130903095);
         this.synopsis.setOnClickListener((View$OnClickListener)new CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView$1(this, this$0));
     }
     
     @Override
     protected void adjustEpisodeImageHeight() {
-        final int n = DeviceUtils.getScreenWidthInPixels(this.getContext()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362150);
+        final int n = DeviceUtils.getScreenWidthInPixels(this.getContext()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427700);
         final int height = (int)(n * 0.5625f);
         this.image.getLayoutParams().width = n;
         this.image.getLayoutParams().height = height;
@@ -83,7 +83,7 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Bark
         if (this.title == null) {
             return;
         }
-        this.title.setTextColor(this.getResources().getColor(2131624117));
+        this.title.setTextColor(this.getResources().getColor(2131689656));
         this.title.setText((CharSequence)(AbsEpisodeView.createTitleText(episodeDetails, (Context)this.this$0.getActivity()) + " "));
     }
 }

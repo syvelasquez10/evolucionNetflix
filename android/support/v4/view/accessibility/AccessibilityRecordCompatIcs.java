@@ -8,7 +8,9 @@ import android.view.View;
 import java.util.List;
 import android.os.Parcelable;
 import android.view.accessibility.AccessibilityRecord;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class AccessibilityRecordCompatIcs
 {
     public static int getAddedCount(final Object o) {

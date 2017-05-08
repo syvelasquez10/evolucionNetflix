@@ -7,8 +7,10 @@ package com.netflix.mediaclient.service.offline.download;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.LogblobLogging;
+import android.content.Context;
 import com.netflix.mediaclient.servicemgr.Logblob;
 
 class CdnUrlDownloadEventReceiver$1 implements Runnable

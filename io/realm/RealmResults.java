@@ -64,15 +64,15 @@ public final class RealmResults<E extends RealmModel> extends AbstractList<E> im
     }
     
     static RealmResults<DynamicRealmObject> createFromDynamicTableOrView(final BaseRealm baseRealm, final TableOrView tableOrView, final String s) {
-        final RealmResults<RealmModel> realmResults = new RealmResults<RealmModel>(baseRealm, tableOrView, s);
-        baseRealm.handlerController.addToRealmResults(realmResults);
-        return (RealmResults<DynamicRealmObject>)realmResults;
+        final RealmResults<DynamicRealmObject> realmResults = new RealmResults<DynamicRealmObject>(baseRealm, tableOrView, s);
+        baseRealm.handlerController.addToRealmResults((RealmResults)realmResults);
+        return realmResults;
     }
     
     static <E extends RealmModel> RealmResults<E> createFromTableOrView(final BaseRealm baseRealm, final TableOrView tableOrView, final Class<E> clazz) {
-        final RealmResults<RealmModel> realmResults = new RealmResults<RealmModel>(baseRealm, tableOrView, (Class<RealmModel>)clazz);
-        baseRealm.handlerController.addToRealmResults(realmResults);
-        return (RealmResults<E>)realmResults;
+        final RealmResults<E> realmResults = new RealmResults<E>(baseRealm, tableOrView, clazz);
+        baseRealm.handlerController.addToRealmResults((RealmResults)realmResults);
+        return realmResults;
     }
     
     @Deprecated
@@ -94,7 +94,6 @@ public final class RealmResults<E extends RealmModel> extends AbstractList<E> im
     }
     
     @Deprecated
-    @Override
     public boolean addAll(final Collection<? extends E> collection) {
         throw new UnsupportedOperationException("This method is not supported by RealmResults.");
     }
@@ -105,7 +104,6 @@ public final class RealmResults<E extends RealmModel> extends AbstractList<E> im
         throw new UnsupportedOperationException("This method is not supported by RealmResults.");
     }
     
-    @Override
     public boolean contains(final Object o) {
         boolean b2;
         final boolean b = b2 = false;
@@ -149,7 +147,7 @@ public final class RealmResults<E extends RealmModel> extends AbstractList<E> im
     
     TableOrView getTableOrView() {
         if (this.table == null) {
-            return (TableOrView)this.realm.schema.getTable(this.classSpec);
+            return (TableOrView)this.realm.schema.getTable((Class)this.classSpec);
         }
         return this.table;
     }
@@ -369,9 +367,9 @@ public final class RealmResults<E extends RealmModel> extends AbstractList<E> im
     void notifyChangeListeners(final boolean b) {
         if (!this.listeners.isEmpty() && (this.pendingQuery == null || this.asyncQueryCompleted) && (this.viewUpdated || b)) {
             this.viewUpdated = false;
-            final Iterator<RealmChangeListener<RealmResults>> iterator = this.listeners.iterator();
+            final Iterator<RealmChangeListener<RealmResults<E>>> iterator = this.listeners.iterator();
             while (iterator.hasNext()) {
-                iterator.next().onChange(this);
+                iterator.next().onChange((Object)this);
             }
         }
     }
@@ -383,19 +381,16 @@ public final class RealmResults<E extends RealmModel> extends AbstractList<E> im
     }
     
     @Deprecated
-    @Override
     public boolean remove(final Object o) {
         throw new UnsupportedOperationException("This method is not supported by RealmResults.");
     }
     
     @Deprecated
-    @Override
     public boolean removeAll(final Collection<?> collection) {
         throw new UnsupportedOperationException("This method is not supported by RealmResults.");
     }
     
     @Deprecated
-    @Override
     public boolean retainAll(final Collection<?> collection) {
         throw new UnsupportedOperationException("This method is not supported by RealmResults.");
     }
@@ -406,7 +401,6 @@ public final class RealmResults<E extends RealmModel> extends AbstractList<E> im
         throw new UnsupportedOperationException("This method is not supported by RealmResults.");
     }
     
-    @Override
     public int size() {
         if (!this.isLoaded()) {
             return 0;

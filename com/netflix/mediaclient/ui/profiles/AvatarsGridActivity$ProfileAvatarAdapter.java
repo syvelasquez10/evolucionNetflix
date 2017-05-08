@@ -82,14 +82,14 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903073, viewGroup, false);
-            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131689622), (ImageView)inflate.findViewById(2131689623)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903074, viewGroup, false);
+            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131755164), (ImageView)inflate.findViewById(2131755165)));
         }
         final AvatarsGridActivity$ViewHolder avatarsGridActivity$ViewHolder = (AvatarsGridActivity$ViewHolder)inflate.getTag();
         final String item = this.getItem(n);
         if (this.this$0.mSelectedIconPos == n) {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(0);
-            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837965);
+            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130838109);
         }
         else {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(8);
@@ -107,8 +107,8 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         final int width = this.this$0.mGridView.getWidth();
         if (width > 0) {
             final Resources resources = this.this$0.getResources();
-            final float dimension = resources.getDimension(2131362319);
-            final float n = resources.getDimension(2131362318) + dimension;
+            final float dimension = resources.getDimension(2131427884);
+            final float n = resources.getDimension(2131427883) + dimension;
             final int numColumns = (int)(width / n);
             this.this$0.mGridView.setNumColumns(numColumns);
             this.adjustGridViewPaddings(width, numColumns, n, dimension);

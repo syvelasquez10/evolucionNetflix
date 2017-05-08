@@ -12,6 +12,7 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
 import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
+import com.netflix.mediaclient.util.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
@@ -61,6 +62,9 @@ public class VerifyLoginRequest extends FalkorVolleyWebClientRequest<SignInData>
         if (nrmConfigData != null) {
             hashMap.put("netflixId", nrmConfigData.netflixId);
             hashMap.put("secureNetflixId", nrmConfigData.secureNetflixId);
+        }
+        if (StringUtils.isNotEmpty(this.mConfigAgent.getChannelId())) {
+            hashMap.put("channelId", this.mConfigAgent.getChannelId());
         }
         hashMap.put("email", this.mId);
         hashMap.put("password", this.mCode);

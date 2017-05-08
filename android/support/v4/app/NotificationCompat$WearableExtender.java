@@ -29,6 +29,7 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
     private static final int FLAG_START_SCROLL_BOTTOM = 8;
     private static final String KEY_ACTIONS = "actions";
     private static final String KEY_BACKGROUND = "background";
+    private static final String KEY_BRIDGE_TAG = "bridgeTag";
     private static final String KEY_CONTENT_ACTION_INDEX = "contentActionIndex";
     private static final String KEY_CONTENT_ICON = "contentIcon";
     private static final String KEY_CONTENT_ICON_GRAVITY = "contentIconGravity";
@@ -51,6 +52,7 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
     public static final int UNSET_ACTION_INDEX = -1;
     private ArrayList<NotificationCompat$Action> mActions;
     private Bitmap mBackground;
+    private String mBridgeTag;
     private int mContentActionIndex;
     private int mContentIcon;
     private int mContentIconGravity;
@@ -109,6 +111,7 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
             this.mGravity = bundle.getInt("gravity", 80);
             this.mHintScreenTimeout = bundle.getInt("hintScreenTimeout");
             this.mDismissalId = bundle.getString("dismissalId");
+            this.mBridgeTag = bundle.getString("bridgeTag");
         }
     }
     
@@ -165,6 +168,7 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
         notificationCompat$WearableExtender.mGravity = this.mGravity;
         notificationCompat$WearableExtender.mHintScreenTimeout = this.mHintScreenTimeout;
         notificationCompat$WearableExtender.mDismissalId = this.mDismissalId;
+        notificationCompat$WearableExtender.mBridgeTag = this.mBridgeTag;
         return notificationCompat$WearableExtender;
     }
     
@@ -210,6 +214,9 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
         if (this.mDismissalId != null) {
             bundle.putString("dismissalId", this.mDismissalId);
         }
+        if (this.mBridgeTag != null) {
+            bundle.putString("bridgeTag", this.mBridgeTag);
+        }
         notificationCompat$Builder.getExtras().putBundle("android.wearable.EXTENSIONS", bundle);
         return notificationCompat$Builder;
     }
@@ -220,6 +227,10 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
     
     public Bitmap getBackground() {
         return this.mBackground;
+    }
+    
+    public String getBridgeTag() {
+        return this.mBridgeTag;
     }
     
     public int getContentAction() {
@@ -292,6 +303,11 @@ public final class NotificationCompat$WearableExtender implements NotificationCo
     
     public NotificationCompat$WearableExtender setBackground(final Bitmap mBackground) {
         this.mBackground = mBackground;
+        return this;
+    }
+    
+    public NotificationCompat$WearableExtender setBridgeTag(final String mBridgeTag) {
+        this.mBridgeTag = mBridgeTag;
         return this;
     }
     

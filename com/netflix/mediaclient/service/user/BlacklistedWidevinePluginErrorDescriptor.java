@@ -19,7 +19,7 @@ public class BlacklistedWidevinePluginErrorDescriptor implements ErrorDescriptor
     
     public BlacklistedWidevinePluginErrorDescriptor(final Context context) {
         Log.d("nf_user_error", "actionID 1 15003, Widevine blacklisted...");
-        this.mMetadata = new AlertDialogFactory$AlertDialogDescriptor("", context.getString(2131230879, new Object[] { 15003 }), null, new BlacklistedWidevinePluginErrorDescriptor$1(this, context));
+        this.mMetadata = new AlertDialogFactory$AlertDialogDescriptor("", context.getString(2131296429, new Object[] { 15003 }), null, new BlacklistedWidevinePluginErrorDescriptor$1(this, context));
     }
     
     static boolean canHandle(final ActivateEvent activateEvent) {

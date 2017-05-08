@@ -8,9 +8,12 @@ import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.net.Uri;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class DocumentsContractApi19
 {
+    private static final int FLAG_VIRTUAL_DOCUMENT = 512;
     private static final String TAG = "DocumentFile";
     
     public static boolean canRead(final Context context, final Uri uri) {
@@ -157,6 +160,10 @@ class DocumentsContractApi19
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
+    public static long getFlags(final Context context, final Uri uri) {
+        return queryForLong(context, uri, "flags", 0L);
+    }
+    
     public static String getName(final Context context, final Uri uri) {
         return queryForString(context, uri, "_display_name", null);
     }
@@ -184,6 +191,10 @@ class DocumentsContractApi19
     public static boolean isFile(final Context context, final Uri uri) {
         final String rawType = getRawType(context, uri);
         return !"vnd.android.document/directory".equals(rawType) && !TextUtils.isEmpty((CharSequence)rawType);
+    }
+    
+    public static boolean isVirtual(final Context context, final Uri uri) {
+        return isDocumentUri(context, uri) && (getFlags(context, uri) & 0x200L) != 0x0L;
     }
     
     public static long lastModified(final Context context, final Uri uri) {

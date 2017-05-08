@@ -4,6 +4,7 @@
 
 package android.support.v7.widget;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,7 @@ import android.content.Context;
 
 class AppCompatDrawableManager$VdcInflateDelegate implements AppCompatDrawableManager$InflateDelegate
 {
+    @SuppressLint({ "NewApi" })
     @Override
     public Drawable createFromXmlInner(final Context context, final XmlPullParser xmlPullParser, final AttributeSet set, final Resources$Theme resources$Theme) {
         try {

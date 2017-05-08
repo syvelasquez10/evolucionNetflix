@@ -12,9 +12,11 @@ import android.graphics.Canvas;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.PorterDuff$Mode;
+import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable$Callback;
 import android.graphics.drawable.Drawable;
 
+@TargetApi(9)
 class DrawableWrapperGingerbread extends Drawable implements Drawable$Callback, DrawableWrapper, TintAwareDrawable
 {
     static final PorterDuff$Mode DEFAULT_TINT_MODE;

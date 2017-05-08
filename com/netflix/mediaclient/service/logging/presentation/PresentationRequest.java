@@ -12,7 +12,6 @@ import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import java.util.Iterator;
 import java.util.Collection;
 import com.netflix.mediaclient.Log;
@@ -95,9 +94,6 @@ public class PresentationRequest
     }
     
     private String getApplicationName(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        if (BrowseExperience.isKubrick()) {
-            return "android/kubrick";
-        }
         return "andorid";
     }
     

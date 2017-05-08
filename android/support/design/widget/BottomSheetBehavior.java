@@ -141,6 +141,10 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout$Behav
         return this.mPeekHeight;
     }
     
+    int getPeekHeightMin() {
+        return this.mPeekHeightMin;
+    }
+    
     public boolean getSkipCollapsed() {
         return this.mSkipCollapsed;
     }

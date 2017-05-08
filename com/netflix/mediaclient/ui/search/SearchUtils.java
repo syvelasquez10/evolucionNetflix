@@ -132,10 +132,10 @@ public class SearchUtils
     public static int getSearchFragLayout() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903284;
+                return 2130903297;
             }
             case 1: {
-                return 2130903285;
+                return 2130903298;
             }
         }
     }
@@ -143,10 +143,10 @@ public class SearchUtils
     public static int getSearchViewLayoutPeople() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903281;
+                return 2130903294;
             }
             case 1: {
-                return 2130903283;
+                return 2130903296;
             }
         }
     }
@@ -154,10 +154,10 @@ public class SearchUtils
     public static int getSearchViewLayoutRelated() {
         switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903282;
+                return 2130903295;
             }
             case 1: {
-                return 2130903283;
+                return 2130903296;
             }
         }
     }

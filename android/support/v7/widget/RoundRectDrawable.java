@@ -13,8 +13,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.content.res.ColorStateList;
+import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
 
+@TargetApi(21)
 class RoundRectDrawable extends Drawable
 {
     private ColorStateList mBackground;

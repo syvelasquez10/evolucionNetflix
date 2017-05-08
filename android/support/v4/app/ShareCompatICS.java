@@ -10,7 +10,9 @@ import android.widget.ShareActionProvider;
 import android.content.Intent;
 import android.app.Activity;
 import android.view.MenuItem;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class ShareCompatICS
 {
     private static final String HISTORY_FILENAME_PREFIX = ".sharecompat_";

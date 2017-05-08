@@ -6,7 +6,9 @@ package android.support.v4.net;
 
 import android.net.NetworkInfo;
 import android.net.ConnectivityManager;
+import android.annotation.TargetApi;
 
+@TargetApi(13)
 class ConnectivityManagerCompatHoneycombMR2
 {
     public static boolean isActiveNetworkMetered(final ConnectivityManager connectivityManager) {

@@ -9,7 +9,7 @@ import android.content.Intent;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import com.netflix.mediaclient.ui.details.ShowDetailsActivity;
 
 public class MementoShowDetailsActivity extends ShowDetailsActivity

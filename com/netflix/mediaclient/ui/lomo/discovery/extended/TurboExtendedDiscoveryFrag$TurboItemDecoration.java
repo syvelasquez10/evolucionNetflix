@@ -12,6 +12,6 @@ class TurboExtendedDiscoveryFrag$TurboItemDecoration extends ItemDecorationUnifo
     
     public TurboExtendedDiscoveryFrag$TurboItemDecoration(final TurboExtendedDiscoveryFrag this$0) {
         this.this$0 = this$0;
-        super(this$0.getActivity().getResources().getDimensionPixelOffset(2131362150), 2);
+        super(this$0.getActivity().getResources().getDimensionPixelOffset(2131427700), 2);
     }
 }

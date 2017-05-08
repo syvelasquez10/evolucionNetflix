@@ -6,8 +6,10 @@ package android.support.v4.view.animation;
 
 import android.graphics.PathMeasure;
 import android.graphics.Path;
+import android.annotation.TargetApi;
 import android.view.animation.Interpolator;
 
+@TargetApi(9)
 class PathInterpolatorGingerbread implements Interpolator
 {
     private static final float PRECISION = 0.002f;

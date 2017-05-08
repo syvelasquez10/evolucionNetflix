@@ -9,7 +9,9 @@ import android.graphics.Rect;
 import android.graphics.Outline;
 import android.graphics.Bitmap;
 import android.content.res.Resources;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class RoundedBitmapDrawable21 extends RoundedBitmapDrawable
 {
     protected RoundedBitmapDrawable21(final Resources resources, final Bitmap bitmap) {

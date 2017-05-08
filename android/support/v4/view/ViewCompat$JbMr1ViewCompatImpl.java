@@ -5,10 +5,16 @@
 package android.support.v4.view;
 
 import android.graphics.Paint;
+import android.view.Display;
 import android.view.View;
 
 class ViewCompat$JbMr1ViewCompatImpl extends ViewCompat$JBViewCompatImpl
 {
+    @Override
+    public Display getDisplay(final View view) {
+        return ViewCompatJellybeanMr1.getDisplay(view);
+    }
+    
     @Override
     public int getLabelFor(final View view) {
         return ViewCompatJellybeanMr1.getLabelFor(view);

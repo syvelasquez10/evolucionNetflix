@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.resfetcher.volley;
 
 import java.util.LinkedList;
+import android.text.TextUtils;
 import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
@@ -166,14 +167,14 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     
     private void showImgInternal(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b, final int n, final Bitmap$Config bitmap$Config) {
         ImageLoader$ValidatingListener imageLoader$ValidatingListener;
-        if (imageLoader$StaticImgConfig.shouldShowPlaceholder()) {
-            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithPlaceholder(this, advancedImageView, s, imageLoader$StaticImgConfig);
+        if (imageLoader$StaticImgConfig != null && imageLoader$StaticImgConfig.shouldShowPlaceholder()) {
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithPlaceholder(this, advancedImageView, s, imageLoader$StaticImgConfig, bitmap$Config);
         }
         else if (b) {
-            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithAnimation(this, advancedImageView, s, imageLoader$StaticImgConfig);
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithAnimation(this, advancedImageView, s, imageLoader$StaticImgConfig, bitmap$Config);
         }
         else {
-            imageLoader$ValidatingListener = new ImageLoader$ValidatingListener(this, advancedImageView, s, imageLoader$StaticImgConfig);
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListener(this, advancedImageView, s, imageLoader$StaticImgConfig, bitmap$Config);
         }
         Request$Priority request$Priority;
         if (n > 0) {
@@ -276,6 +277,9 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
             imageUrl = imageLoaderInfo.imageUrl;
         }
         drawableToNull.setImageLoaderInfo(new AdvancedImageView$ImageLoaderInfo(s, imageLoader$StaticImgConfig, bitmap$Config));
+        if (imageLoaderInfo != null && imageLoaderInfo.loaded && TextUtils.equals((CharSequence)imageLoaderInfo.imageUrl, (CharSequence)s)) {
+            drawableToNull.getImageLoaderInfo().setLoaded(true);
+        }
         if (s == null) {
             this.setDrawableToNull(drawableToNull);
         }

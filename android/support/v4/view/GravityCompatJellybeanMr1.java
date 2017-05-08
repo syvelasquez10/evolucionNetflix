@@ -6,7 +6,9 @@ package android.support.v4.view;
 
 import android.view.Gravity;
 import android.graphics.Rect;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 class GravityCompatJellybeanMr1
 {
     public static void apply(final int n, final int n2, final int n3, final Rect rect, final int n4, final int n5, final Rect rect2, final int n6) {

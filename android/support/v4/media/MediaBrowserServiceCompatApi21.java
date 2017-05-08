@@ -9,7 +9,9 @@ import android.os.IBinder;
 import android.content.Intent;
 import android.service.media.MediaBrowserService;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class MediaBrowserServiceCompatApi21
 {
     public static Object createService(final Context context, final MediaBrowserServiceCompatApi21$ServiceCompatProxy mediaBrowserServiceCompatApi21$ServiceCompatProxy) {

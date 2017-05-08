@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
@@ -61,7 +61,7 @@ class GalleryGenresLoMoFrag$GenresVideoFetchCallback extends LoggingManagerCallb
             }
             if (list == null || list.size() <= 0) {
                 this.this$0.hasMoreData = false;
-                this.this$0.leWrapper.showErrorView(2131231145, false, true);
+                this.this$0.leWrapper.showErrorView(2131296701, false, true);
                 return;
             }
             if (list.size() < this.numItems) {

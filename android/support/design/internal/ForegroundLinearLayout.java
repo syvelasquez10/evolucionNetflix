@@ -5,6 +5,7 @@
 package android.support.design.internal;
 
 import android.graphics.drawable.Drawable$Callback;
+import android.annotation.TargetApi;
 import android.view.Gravity;
 import android.graphics.Canvas;
 import android.content.res.TypedArray;
@@ -72,6 +73,7 @@ public class ForegroundLinearLayout extends LinearLayoutCompat
         }
     }
     
+    @TargetApi(21)
     public void drawableHotspotChanged(final float n, final float n2) {
         super.drawableHotspotChanged(n, n2);
         if (this.mForeground != null) {
@@ -94,6 +96,7 @@ public class ForegroundLinearLayout extends LinearLayoutCompat
         return this.mForegroundGravity;
     }
     
+    @TargetApi(11)
     public void jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState();
         if (this.mForeground != null) {

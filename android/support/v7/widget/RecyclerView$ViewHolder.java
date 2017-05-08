@@ -8,6 +8,7 @@ import android.util.Log;
 import android.support.v4.view.ViewCompat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.lang.ref.WeakReference;
 import android.view.View;
 import java.util.List;
 
@@ -27,15 +28,18 @@ public abstract class RecyclerView$ViewHolder
     static final int FLAG_TMP_DETACHED = 256;
     static final int FLAG_UPDATE = 2;
     private static final List<Object> FULLUPDATE_PAYLOADS;
+    static final int PENDING_ACCESSIBILITY_STATE_NOT_SET = -1;
     public final View itemView;
     private int mFlags;
     private boolean mInChangeScrap;
     private int mIsRecyclableCount;
     long mItemId;
     int mItemViewType;
+    WeakReference<RecyclerView> mNestedRecyclerView;
     int mOldPosition;
     RecyclerView mOwnerRecyclerView;
     List<Object> mPayloads;
+    int mPendingAccessibilityState;
     int mPosition;
     int mPreLayoutPosition;
     private RecyclerView$Recycler mScrapContainer;
@@ -62,6 +66,7 @@ public abstract class RecyclerView$ViewHolder
         this.mScrapContainer = null;
         this.mInChangeScrap = false;
         this.mWasImportantForAccessibilityBeforeHidden = 0;
+        this.mPendingAccessibilityState = -1;
         if (itemView == null) {
             throw new IllegalArgumentException("itemView may not be null");
         }
@@ -79,13 +84,13 @@ public abstract class RecyclerView$ViewHolder
         return (this.mFlags & 0x10) == 0x0 && ViewCompat.hasTransientState(this.itemView);
     }
     
-    private void onEnteredHiddenState() {
+    private void onEnteredHiddenState(final RecyclerView recyclerView) {
         this.mWasImportantForAccessibilityBeforeHidden = ViewCompat.getImportantForAccessibility(this.itemView);
-        ViewCompat.setImportantForAccessibility(this.itemView, 4);
+        recyclerView.setChildImportantForAccessibilityInternal(this, 4);
     }
     
-    private void onLeftHiddenState() {
-        ViewCompat.setImportantForAccessibility(this.itemView, this.mWasImportantForAccessibilityBeforeHidden);
+    private void onLeftHiddenState(final RecyclerView recyclerView) {
+        recyclerView.setChildImportantForAccessibilityInternal(this, this.mWasImportantForAccessibilityBeforeHidden);
         this.mWasImportantForAccessibilityBeforeHidden = 0;
     }
     
@@ -244,6 +249,8 @@ public abstract class RecyclerView$ViewHolder
         this.mShadowingHolder = null;
         this.clearPayload();
         this.mWasImportantForAccessibilityBeforeHidden = 0;
+        this.mPendingAccessibilityState = -1;
+        RecyclerView.clearNestedRecyclerViewIfNotNested(this);
     }
     
     void saveOldPosition() {

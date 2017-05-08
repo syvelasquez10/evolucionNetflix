@@ -10,6 +10,7 @@ import android.view.ViewParent;
 import android.graphics.drawable.Drawable;
 import android.content.res.TypedArray;
 import android.text.TextUtils$TruncateAt;
+import android.support.v4.widget.TextViewCompat;
 import android.view.View;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -68,9 +69,9 @@ public class PagerTitleStrip extends ViewGroup
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, PagerTitleStrip.ATTRS);
         final int resourceId = obtainStyledAttributes.getResourceId(0, 0);
         if (resourceId != 0) {
-            this.mPrevText.setTextAppearance(context, resourceId);
-            this.mCurrText.setTextAppearance(context, resourceId);
-            this.mNextText.setTextAppearance(context, resourceId);
+            TextViewCompat.setTextAppearance(this.mPrevText, resourceId);
+            TextViewCompat.setTextAppearance(this.mCurrText, resourceId);
+            TextViewCompat.setTextAppearance(this.mNextText, resourceId);
         }
         final int dimensionPixelSize = obtainStyledAttributes.getDimensionPixelSize(1, 0);
         if (dimensionPixelSize != 0) {

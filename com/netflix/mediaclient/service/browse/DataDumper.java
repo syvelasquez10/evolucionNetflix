@@ -67,7 +67,7 @@ public class DataDumper
         }
         append.append("</body></html>").append("\n");
         Log.v("DataDumper", "Writing to file...");
-        FileUtils.writeStringToFile("DataDumper", append.toString(), "lolomo.html");
+        FileUtils.writeStringToExternalStorageDirectory("DataDumper", append.toString(), "lolomo.html");
         Log.v("DataDumper", "Writing to file complete");
     }
     

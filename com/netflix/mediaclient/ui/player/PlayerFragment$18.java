@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import android.os.Process;
-import com.netflix.mediaclient.Log;
+import android.content.Intent;
+import android.content.Context;
+import android.content.BroadcastReceiver;
 
-class PlayerFragment$18 implements Runnable
+class PlayerFragment$18 extends BroadcastReceiver
 {
     final /* synthetic */ PlayerFragment this$0;
     
@@ -15,12 +16,7 @@ class PlayerFragment$18 implements Runnable
         this.this$0 = this$0;
     }
     
-    @Override
-    public void run() {
-        Log.d("PlayerFragment", "===fatal error, shutdown===");
-        final int myPid = Process.myPid();
-        Log.d("PlayerFragment", "Destroying app proces " + myPid + "...");
-        Process.killProcess(myPid);
-        Log.d("PlayerFragment", "Destroying app proces " + myPid + " done.");
+    public void onReceive(final Context context, final Intent intent) {
+        this.this$0.handleConnectivityCheck();
     }
 }

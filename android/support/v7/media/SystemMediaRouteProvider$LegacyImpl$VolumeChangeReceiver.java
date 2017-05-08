@@ -4,12 +4,6 @@
 
 package android.support.v7.media;
 
-import android.content.res.Resources;
-import java.util.Collection;
-import android.support.v7.mediarouter.R$string;
-import android.media.AudioManager;
-import android.content.IntentFilter;
-import java.util.ArrayList;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;

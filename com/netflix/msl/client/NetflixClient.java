@@ -14,7 +14,6 @@ import com.netflix.msl.msg.MessageInputStream;
 import java.io.InputStream;
 import com.netflix.msl.util.IoUtil;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nullable;
 import com.netflix.msl.msg.MslControl$MslChannel;
 import java.util.concurrent.Future;
 import java.net.MalformedURLException;
@@ -105,7 +104,7 @@ public abstract class NetflixClient
         return null;
     }
     
-    public JSONObject defaultAppbootRequest(@Nullable final Long n, @Nullable final Long n2) {
+    public JSONObject defaultAppbootRequest(final Long n, final Long n2) {
         final JSONObject jsonObject = new JSONObject();
         final JSONObject jsonObject2 = new JSONObject();
         if (n != null) {

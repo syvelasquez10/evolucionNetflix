@@ -5,7 +5,9 @@
 package android.support.v4.view;
 
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class ViewCompatKitKat
 {
     public static int getAccessibilityLiveRegion(final View view) {

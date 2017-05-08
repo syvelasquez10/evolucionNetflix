@@ -161,6 +161,12 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
+    public void cancelRequests(final Object o) {
+        if (this.mService != null && this.mService.getResourceFetcher() != null) {
+            this.mService.getResourceFetcher().cancelRequests(o);
+        }
+    }
+    
     public void consumeUmaAlert() {
         if (this.validateService()) {
             this.mService.consumeUmaAlert();
@@ -224,23 +230,18 @@ public final class ServiceManager implements IServiceManagerAccess
             try {
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
+                final int addCallback = this.addCallback(managerCallback);
                 // iftrue(Label_0073:, !Log.isLoggable())
+                Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
                 while (true) {
                     Label_0073: {
-                        while (true) {
-                            final int addCallback;
-                            Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                            break Label_0073;
-                            addCallback = this.addCallback(managerCallback);
-                            continue;
-                        }
+                        break Label_0073;
+                        this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                        b = true;
+                        return b;
                         Label_0103: {
                             Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
                         }
-                        return b;
-                        int addCallback = 0;
-                        this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
-                        b = true;
                         return b;
                     }
                     continue;

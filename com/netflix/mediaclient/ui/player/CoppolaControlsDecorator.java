@@ -135,30 +135,30 @@ public class CoppolaControlsDecorator extends PlayScreenDecorator
     private void updateMuteDrawable(final boolean b) {
         if (this.muteButton != null) {
             if (!b) {
-                this.muteButton.setImageResource(2130837835);
+                this.muteButton.setImageResource(2130837962);
                 return;
             }
-            this.muteButton.setImageResource(2130837768);
+            this.muteButton.setImageResource(2130837895);
         }
     }
     
     private void updateUI(final ViewGroup viewGroup) {
-        this.getController().getActivity().getLayoutInflater().inflate(2130903239, viewGroup);
-        this.topGradient = viewGroup.findViewById(2131690117);
-        this.bottomGradient = viewGroup.findViewById(2131690118);
-        (this.pausePlayButton = (ImageButton)viewGroup.findViewById(2131690119)).setOnClickListener((View$OnClickListener)new CoppolaControlsDecorator$1(this));
+        this.getController().getActivity().getLayoutInflater().inflate(2130903252, viewGroup);
+        this.topGradient = viewGroup.findViewById(2131755684);
+        this.bottomGradient = viewGroup.findViewById(2131755685);
+        (this.pausePlayButton = (ImageButton)viewGroup.findViewById(2131755686)).setOnClickListener((View$OnClickListener)new CoppolaControlsDecorator$1(this));
         this.currentOrientation = this.getController().getActivity().getResources().getConfiguration().orientation;
-        (this.orientationButton = (ImageButton)viewGroup.findViewById(2131690121)).setOnClickListener((View$OnClickListener)new CoppolaControlsDecorator$2(this));
+        (this.orientationButton = (ImageButton)viewGroup.findViewById(2131755688)).setOnClickListener((View$OnClickListener)new CoppolaControlsDecorator$2(this));
         this.updateUserVolume();
         if (!Coppola1Utils.isAudioOn((Context)this.getController().getActivity()) || Coppola1Utils.didUserMutePlayback(this.getController().getActivity())) {
             this.setDeviceStreamVolume(0);
         }
-        (this.muteButton = (ImageButton)viewGroup.findViewById(2131690122)).setOnClickListener((View$OnClickListener)new CoppolaControlsDecorator$3(this));
+        (this.muteButton = (ImageButton)viewGroup.findViewById(2131755689)).setOnClickListener((View$OnClickListener)new CoppolaControlsDecorator$3(this));
         this.updateMuteDrawable();
         this.volumeObserver = new CoppolaControlsDecorator$VolumeContentObserver(this, (Context)this.getController().getActivity(), new Handler());
         this.getController().getActivity().getApplicationContext().getContentResolver().registerContentObserver(Settings$System.CONTENT_URI, true, this.volumeObserver);
-        (this.timeline = (TimelineSeekBar)viewGroup.findViewById(2131690120)).setOnSeekBarChangeListener(this.getPlayScreen().getListeners().videoPositionListener);
-        this.extraSeekbarHandler = viewGroup.findViewById(2131690123);
+        (this.timeline = (TimelineSeekBar)viewGroup.findViewById(2131755687)).setOnSeekBarChangeListener(this.getPlayScreen().getListeners().videoPositionListener);
+        this.extraSeekbarHandler = viewGroup.findViewById(2131755690);
         this.updateButtonsMargins();
     }
     
@@ -264,9 +264,9 @@ public class CoppolaControlsDecorator extends PlayScreenDecorator
     @Override
     public void updatePlaybackStatus(final boolean b) {
         if (b) {
-            this.pausePlayButton.setImageResource(2130837781);
+            this.pausePlayButton.setImageResource(2130837906);
             return;
         }
-        this.pausePlayButton.setImageResource(2130837778);
+        this.pausePlayButton.setImageResource(2130837905);
     }
 }

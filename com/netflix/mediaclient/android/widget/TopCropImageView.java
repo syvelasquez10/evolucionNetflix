@@ -16,6 +16,7 @@ import android.content.Context;
 public class TopCropImageView extends AdvancedImageView
 {
     private static final String TAG = "TopCropImageView";
+    private boolean centerHorizontally;
     private int cropPointYOffset;
     private boolean isTopCropEnabled;
     private String lastScaleType;
@@ -23,18 +24,21 @@ public class TopCropImageView extends AdvancedImageView
     public TopCropImageView(final Context context) {
         super(context);
         this.isTopCropEnabled = true;
+        this.centerHorizontally = false;
         this.init(null);
     }
     
     public TopCropImageView(final Context context, final AttributeSet set) {
         super(context, set);
         this.isTopCropEnabled = true;
+        this.centerHorizontally = false;
         this.init(set);
     }
     
     public TopCropImageView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
         this.isTopCropEnabled = true;
+        this.centerHorizontally = false;
         this.init(set);
     }
     
@@ -98,7 +102,15 @@ public class TopCropImageView extends AdvancedImageView
             Log.v("TopCropImageView", "Matrix scale: " + n3 + ", drawable height: " + intrinsicHeight + ", drawable width: " + intrinsicWidth + ", view height: " + n2 + ", view width: " + n + ", crop y-offset: " + this.cropPointYOffset);
         }
         imageMatrix.setScale(n3, n3, 0.0f, (float)this.cropPointYOffset);
+        if (this.centerHorizontally && intrinsicWidth * n3 > n) {
+            imageMatrix.postTranslate(-((intrinsicWidth * n3 - n) / 2.0f), 0.0f);
+        }
         this.setImageMatrix(imageMatrix);
+    }
+    
+    public void setCenterHorizontally(final boolean centerHorizontally) {
+        this.centerHorizontally = centerHorizontally;
+        this.recomputeImgMatrix();
     }
     
     public void setCropPointYOffsetPx(final int cropPointYOffset) {

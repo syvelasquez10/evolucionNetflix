@@ -58,7 +58,6 @@ public class CollapsingToolbarLayout extends FrameLayout
     private final Rect mTmpRect;
     private Toolbar mToolbar;
     private View mToolbarDirectChild;
-    private int mToolbarDrawIndex;
     private int mToolbarId;
     
     public CollapsingToolbarLayout(final Context context) {
@@ -199,8 +198,16 @@ public class CollapsingToolbarLayout extends FrameLayout
         return viewOffsetHelper;
     }
     
-    private boolean isToolbarChildDrawnNext(final View view) {
-        return this.mToolbarDrawIndex >= 0 && this.mToolbarDrawIndex == this.indexOfChild(view) + 1;
+    private boolean isToolbarChild(final View view) {
+        if (this.mToolbarDirectChild == null || this.mToolbarDirectChild == this) {
+            if (view != this.mToolbar) {
+                return false;
+            }
+        }
+        else if (view != this.mToolbarDirectChild) {
+            return false;
+        }
+        return true;
     }
     
     private void updateDummyView() {
@@ -251,20 +258,20 @@ public class CollapsingToolbarLayout extends FrameLayout
     }
     
     protected boolean drawChild(final Canvas canvas, final View view, final long n) {
-        boolean drawChild;
-        final boolean b = drawChild = super.drawChild(canvas, view, n);
-        if (this.mContentScrim != null) {
-            drawChild = b;
-            if (this.mScrimAlpha > 0) {
-                drawChild = b;
-                if (this.isToolbarChildDrawnNext(view)) {
-                    this.mContentScrim.mutate().setAlpha(this.mScrimAlpha);
-                    this.mContentScrim.draw(canvas);
-                    drawChild = true;
-                }
-            }
+        boolean b = false;
+        boolean b2;
+        if (this.mContentScrim != null && this.mScrimAlpha > 0 && this.isToolbarChild(view)) {
+            this.mContentScrim.mutate().setAlpha(this.mScrimAlpha);
+            this.mContentScrim.draw(canvas);
+            b2 = true;
         }
-        return drawChild;
+        else {
+            b2 = false;
+        }
+        if (super.drawChild(canvas, view, n) || b2) {
+            b = true;
+        }
+        return b;
     }
     
     protected void drawableStateChanged() {
@@ -348,6 +355,10 @@ public class CollapsingToolbarLayout extends FrameLayout
         return this.getHeight() - getViewOffsetHelper(view).getLayoutTop() - view.getHeight() - ((CollapsingToolbarLayout$LayoutParams)view.getLayoutParams()).bottomMargin;
     }
     
+    int getScrimAlpha() {
+        return this.mScrimAlpha;
+    }
+    
     public long getScrimAnimationDuration() {
         return this.mScrimAnimationDuration;
     }
@@ -406,18 +417,18 @@ public class CollapsingToolbarLayout extends FrameLayout
         super.onDetachedFromWindow();
     }
     
-    protected void onLayout(final boolean b, final int n, final int n2, final int n3, final int n4) {
+    protected void onLayout(final boolean b, int i, int childCount, final int n, final int n2) {
         final boolean b2 = true;
-        super.onLayout(b, n, n2, n3, n4);
-        for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
-            final View child = this.getChildAt(i);
-            if (this.mLastInsets != null && !ViewCompat.getFitsSystemWindows(child)) {
-                final int systemWindowInsetTop = this.mLastInsets.getSystemWindowInsetTop();
-                if (child.getTop() < systemWindowInsetTop) {
+        final int n3 = 0;
+        super.onLayout(b, i, childCount, n, n2);
+        if (this.mLastInsets != null) {
+            final int systemWindowInsetTop = this.mLastInsets.getSystemWindowInsetTop();
+            for (int childCount2 = this.getChildCount(), j = 0; j < childCount2; ++j) {
+                final View child = this.getChildAt(j);
+                if (!ViewCompat.getFitsSystemWindows(child) && child.getTop() < systemWindowInsetTop) {
                     ViewCompat.offsetTopAndBottom(child, systemWindowInsetTop);
                 }
             }
-            getViewOffsetHelper(child).onViewLayout();
         }
         if (this.mCollapsingTitleEnabled && this.mDummyView != null) {
             this.mDrawCollapsingTitle = (ViewCompat.isAttachedToWindow(this.mDummyView) && this.mDummyView.getVisibility() == 0);
@@ -434,43 +445,47 @@ public class CollapsingToolbarLayout extends FrameLayout
                 ViewGroupUtils.getDescendantRect((ViewGroup)this, this.mDummyView, this.mTmpRect);
                 final CollapsingTextHelper mCollapsingTextHelper = this.mCollapsingTextHelper;
                 final int left = this.mTmpRect.left;
-                int n5;
+                int n4;
                 if (b3) {
-                    n5 = this.mToolbar.getTitleMarginEnd();
+                    n4 = this.mToolbar.getTitleMarginEnd();
                 }
                 else {
-                    n5 = this.mToolbar.getTitleMarginStart();
+                    n4 = this.mToolbar.getTitleMarginStart();
                 }
                 final int top = this.mTmpRect.top;
                 final int titleMarginTop = this.mToolbar.getTitleMarginTop();
                 final int right = this.mTmpRect.right;
+                int n5;
+                if (b3) {
+                    n5 = this.mToolbar.getTitleMarginStart();
+                }
+                else {
+                    n5 = this.mToolbar.getTitleMarginEnd();
+                }
+                mCollapsingTextHelper.setCollapsedBounds(left + n4, titleMarginTop + (top + maxOffsetForPinChild), n5 + right, maxOffsetForPinChild + this.mTmpRect.bottom - this.mToolbar.getTitleMarginBottom());
+                final CollapsingTextHelper mCollapsingTextHelper2 = this.mCollapsingTextHelper;
                 int n6;
                 if (b3) {
-                    n6 = this.mToolbar.getTitleMarginStart();
+                    n6 = this.mExpandedMarginEnd;
                 }
                 else {
-                    n6 = this.mToolbar.getTitleMarginEnd();
+                    n6 = this.mExpandedMarginStart;
                 }
-                mCollapsingTextHelper.setCollapsedBounds(left + n5, titleMarginTop + (top + maxOffsetForPinChild), n6 + right, maxOffsetForPinChild + this.mTmpRect.bottom - this.mToolbar.getTitleMarginBottom());
-                final CollapsingTextHelper mCollapsingTextHelper2 = this.mCollapsingTextHelper;
+                final int top2 = this.mTmpRect.top;
+                final int mExpandedMarginTop = this.mExpandedMarginTop;
                 int n7;
                 if (b3) {
-                    n7 = this.mExpandedMarginEnd;
-                }
-                else {
                     n7 = this.mExpandedMarginStart;
                 }
-                final int mExpandedMarginTop = this.mExpandedMarginTop;
-                int n8;
-                if (b3) {
-                    n8 = this.mExpandedMarginStart;
-                }
                 else {
-                    n8 = this.mExpandedMarginEnd;
+                    n7 = this.mExpandedMarginEnd;
                 }
-                mCollapsingTextHelper2.setExpandedBounds(n7, mExpandedMarginTop, n3 - n - n8, n4 - n2 - this.mExpandedMarginBottom);
+                mCollapsingTextHelper2.setExpandedBounds(n6, top2 + mExpandedMarginTop, n - i - n7, n2 - childCount - this.mExpandedMarginBottom);
                 this.mCollapsingTextHelper.recalculate();
             }
+        }
+        for (childCount = this.getChildCount(), i = n3; i < childCount; ++i) {
+            getViewOffsetHelper(this.getChildAt(i)).onViewLayout();
         }
         if (this.mToolbar != null) {
             if (this.mCollapsingTitleEnabled && TextUtils.isEmpty(this.mCollapsingTextHelper.getText())) {
@@ -478,15 +493,10 @@ public class CollapsingToolbarLayout extends FrameLayout
             }
             if (this.mToolbarDirectChild == null || this.mToolbarDirectChild == this) {
                 this.setMinimumHeight(getHeightWithMargins((View)this.mToolbar));
-                this.mToolbarDrawIndex = this.indexOfChild((View)this.mToolbar);
             }
             else {
                 this.setMinimumHeight(getHeightWithMargins(this.mToolbarDirectChild));
-                this.mToolbarDrawIndex = this.indexOfChild(this.mToolbarDirectChild);
             }
-        }
-        else {
-            this.mToolbarDrawIndex = -1;
         }
         this.updateScrimVisibility();
     }

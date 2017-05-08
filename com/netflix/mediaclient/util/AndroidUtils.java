@@ -22,6 +22,7 @@ import android.app.Activity;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
+import android.support.v4.os.EnvironmentCompat;
 import android.graphics.Xfermode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.PorterDuff$Mode;
@@ -280,9 +281,12 @@ public final class AndroidUtils
     }
     
     public static long getFreeSpaceOnFileSystem(final File file) {
-        if (file.exists()) {
-            return new StatFs(file.getPath()).getAvailableBytes();
+        try {
+            if (file.exists()) {
+                return new StatFs(file.getPath()).getAvailableBytes();
+            }
         }
+        catch (IllegalArgumentException ex) {}
         return 0L;
     }
     
@@ -337,6 +341,21 @@ public final class AndroidUtils
         paint.setXfermode((Xfermode)new PorterDuffXfermode(PorterDuff$Mode.SRC_IN));
         canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), rect, paint);
         return bitmap2;
+    }
+    
+    public static StatFs getStatFsForExternalStorageDir(final File file) {
+        try {
+            if (file.exists() && "mounted".equals(EnvironmentCompat.getStorageState(file))) {
+                return new StatFs(file.getPath());
+            }
+            goto Label_0071;
+        }
+        catch (Exception ex) {
+            LogUtils.reportErrorSafely("getStatFsForExternalStorageDir " + file.getAbsolutePath() + " exception " + ex);
+        }
+        catch (IllegalArgumentException ex2) {
+            goto Label_0071;
+        }
     }
     
     public static String getUserAgent(final Context context) {

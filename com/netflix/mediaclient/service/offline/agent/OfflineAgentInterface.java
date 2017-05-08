@@ -6,12 +6,15 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQuality;
+import java.util.List;
 
 public interface OfflineAgentInterface
 {
     public static final String CATEGORY_NF_OFFLINE = "com.netflix.mediaclient.intent.category.offline";
+    public static final String OFFLINE_INTENT_OSV_SPACE_USAGE_UPDATED = "com.netflix.mediaclient.intent.offline.osv.space.usage.updated";
     
     void addOfflineAgentListener(final OfflineAgentListener p0);
     
@@ -19,15 +22,21 @@ public interface OfflineAgentInterface
     
     void deleteOfflinePlayable(final String p0);
     
+    void deleteOfflinePlayables(final List<String> p0);
+    
     DownloadVideoQuality getCurrentDownloadVideoQuality();
     
     OfflinePlayableUiList getLatestOfflinePlayableList();
+    
+    OfflineStorageVolumeUiList getOfflineStorageVolumeList();
     
     boolean getRequiresUnmeteredNetwork();
     
     boolean isOfflineFeatureEnabled();
     
     void pauseDownload(final String p0);
+    
+    void recalculateSpaceUsageForOfflineStorageVolumes();
     
     void refreshUIData();
     
@@ -42,6 +51,8 @@ public interface OfflineAgentInterface
     void requestRenewPlayWindowForPlayable(final String p0);
     
     void resumeDownload(final String p0);
+    
+    void setCurrentOfflineStorageVolume(final int p0);
     
     void setDownloadVideoQuality(final DownloadVideoQuality p0);
     

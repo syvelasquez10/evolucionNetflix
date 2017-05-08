@@ -6,7 +6,9 @@ package android.support.v4.view;
 
 import android.graphics.Rect;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class ViewCompatJellybeanMr2
 {
     public static Rect getClipBounds(final View view) {

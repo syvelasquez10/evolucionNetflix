@@ -10,6 +10,7 @@ import android.widget.Adapter;
 import android.view.MotionEvent;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
+import android.os.Build$VERSION;
 import android.view.View;
 import android.view.ViewGroup$LayoutParams;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import android.graphics.drawable.Drawable;
 import android.content.res.Resources$Theme;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
-import android.os.Build$VERSION;
 import android.graphics.Rect;
 import android.widget.SpinnerAdapter;
 import android.content.Context;
@@ -28,8 +28,6 @@ import android.widget.Spinner;
 public class AppCompatSpinner extends Spinner implements TintableBackgroundView
 {
     private static final int[] ATTRS_ANDROID_SPINNERMODE;
-    private static final boolean IS_AT_LEAST_JB;
-    static final boolean IS_AT_LEAST_M;
     private AppCompatBackgroundHelper mBackgroundTintHelper;
     int mDropDownWidth;
     private ForwardingListener mForwardingListener;
@@ -40,8 +38,6 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
     final Rect mTempRect;
     
     static {
-        IS_AT_LEAST_M = (Build$VERSION.SDK_INT >= 23);
-        IS_AT_LEAST_JB = (Build$VERSION.SDK_INT >= 16);
         ATTRS_ANDROID_SPINNERMODE = new int[] { 16843505 };
     }
     
@@ -105,7 +101,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         //    75: if_icmpne       146
         //    78: getstatic       android/os/Build$VERSION.SDK_INT:I
         //    81: bipush          11
-        //    83: if_icmplt       442
+        //    83: if_icmplt       444
         //    86: aload_1        
         //    87: aload_2        
         //    88: getstatic       android/support/v7/widget/AppCompatSpinner.ATTRS_ANDROID_SPINNERMODE:[I
@@ -240,63 +236,64 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         //   353: invokespecial   android/support/v7/view/ContextThemeWrapper.<init>:(Landroid/content/Context;I)V
         //   356: putfield        android/support/v7/widget/AppCompatSpinner.mPopupContext:Landroid/content/Context;
         //   359: goto            61
-        //   362: getstatic       android/support/v7/widget/AppCompatSpinner.IS_AT_LEAST_M:Z
-        //   365: ifne            380
-        //   368: aload_1        
-        //   369: astore          5
-        //   371: aload_0        
-        //   372: aload           5
-        //   374: putfield        android/support/v7/widget/AppCompatSpinner.mPopupContext:Landroid/content/Context;
-        //   377: goto            61
-        //   380: aconst_null    
-        //   381: astore          5
-        //   383: goto            371
-        //   386: astore          9
-        //   388: aconst_null    
-        //   389: astore          8
-        //   391: aload           8
-        //   393: astore          5
-        //   395: ldc             "AppCompatSpinner"
-        //   397: ldc             "Could not read android:spinnerMode"
-        //   399: aload           9
-        //   401: invokestatic    android/util/Log.i:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   404: pop            
-        //   405: iload           4
-        //   407: istore          7
-        //   409: aload           8
-        //   411: ifnull          146
-        //   414: aload           8
-        //   416: invokevirtual   android/content/res/TypedArray.recycle:()V
-        //   419: iload           4
-        //   421: istore          7
-        //   423: goto            146
-        //   426: astore_1       
-        //   427: aconst_null    
-        //   428: astore          5
-        //   430: aload           5
-        //   432: ifnull          440
-        //   435: aload           5
-        //   437: invokevirtual   android/content/res/TypedArray.recycle:()V
-        //   440: aload_1        
-        //   441: athrow         
-        //   442: iconst_1       
-        //   443: istore          7
-        //   445: goto            146
-        //   448: astore_1       
-        //   449: goto            430
-        //   452: astore          9
-        //   454: goto            391
+        //   362: getstatic       android/os/Build$VERSION.SDK_INT:I
+        //   365: bipush          23
+        //   367: if_icmpge       382
+        //   370: aload_1        
+        //   371: astore          5
+        //   373: aload_0        
+        //   374: aload           5
+        //   376: putfield        android/support/v7/widget/AppCompatSpinner.mPopupContext:Landroid/content/Context;
+        //   379: goto            61
+        //   382: aconst_null    
+        //   383: astore          5
+        //   385: goto            373
+        //   388: astore          9
+        //   390: aconst_null    
+        //   391: astore          8
+        //   393: aload           8
+        //   395: astore          5
+        //   397: ldc             "AppCompatSpinner"
+        //   399: ldc             "Could not read android:spinnerMode"
+        //   401: aload           9
+        //   403: invokestatic    android/util/Log.i:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   406: pop            
+        //   407: iload           4
+        //   409: istore          7
+        //   411: aload           8
+        //   413: ifnull          146
+        //   416: aload           8
+        //   418: invokevirtual   android/content/res/TypedArray.recycle:()V
+        //   421: iload           4
+        //   423: istore          7
+        //   425: goto            146
+        //   428: astore_1       
+        //   429: aconst_null    
+        //   430: astore          5
+        //   432: aload           5
+        //   434: ifnull          442
+        //   437: aload           5
+        //   439: invokevirtual   android/content/res/TypedArray.recycle:()V
+        //   442: aload_1        
+        //   443: athrow         
+        //   444: iconst_1       
+        //   445: istore          7
+        //   447: goto            146
+        //   450: astore_1       
+        //   451: goto            432
+        //   454: astore          9
+        //   456: goto            393
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  86     98     386    391    Ljava/lang/Exception;
-        //  86     98     426    430    Any
-        //  106    115    452    457    Ljava/lang/Exception;
-        //  106    115    448    452    Any
-        //  119    128    452    457    Ljava/lang/Exception;
-        //  119    128    448    452    Any
-        //  395    405    448    452    Any
+        //  86     98     388    393    Ljava/lang/Exception;
+        //  86     98     428    432    Any
+        //  106    115    454    459    Ljava/lang/Exception;
+        //  106    115    450    454    Any
+        //  119    128    454    459    Ljava/lang/Exception;
+        //  119    128    450    454    Any
+        //  397    407    450    454    Any
         // 
         // The error that occurred was:
         // 
@@ -367,7 +364,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             return this.mPopup.getHorizontalOffset();
         }
-        if (AppCompatSpinner.IS_AT_LEAST_JB) {
+        if (Build$VERSION.SDK_INT >= 16) {
             return super.getDropDownHorizontalOffset();
         }
         return 0;
@@ -377,7 +374,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             return this.mPopup.getVerticalOffset();
         }
-        if (AppCompatSpinner.IS_AT_LEAST_JB) {
+        if (Build$VERSION.SDK_INT >= 16) {
             return super.getDropDownVerticalOffset();
         }
         return 0;
@@ -387,7 +384,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             return this.mDropDownWidth;
         }
-        if (AppCompatSpinner.IS_AT_LEAST_JB) {
+        if (Build$VERSION.SDK_INT >= 16) {
             return super.getDropDownWidth();
         }
         return 0;
@@ -397,7 +394,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             return this.mPopup.getBackground();
         }
-        if (AppCompatSpinner.IS_AT_LEAST_JB) {
+        if (Build$VERSION.SDK_INT >= 16) {
             return super.getPopupBackground();
         }
         return null;
@@ -407,7 +404,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             return this.mPopupContext;
         }
-        if (AppCompatSpinner.IS_AT_LEAST_M) {
+        if (Build$VERSION.SDK_INT >= 23) {
             return super.getPopupContext();
         }
         return null;
@@ -499,7 +496,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             this.mPopup.setHorizontalOffset(n);
         }
-        else if (AppCompatSpinner.IS_AT_LEAST_JB) {
+        else if (Build$VERSION.SDK_INT >= 16) {
             super.setDropDownHorizontalOffset(n);
         }
     }
@@ -508,7 +505,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             this.mPopup.setVerticalOffset(n);
         }
-        else if (AppCompatSpinner.IS_AT_LEAST_JB) {
+        else if (Build$VERSION.SDK_INT >= 16) {
             super.setDropDownVerticalOffset(n);
         }
     }
@@ -517,7 +514,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             this.mDropDownWidth = n;
         }
-        else if (AppCompatSpinner.IS_AT_LEAST_JB) {
+        else if (Build$VERSION.SDK_INT >= 16) {
             super.setDropDownWidth(n);
         }
     }
@@ -526,7 +523,7 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
         if (this.mPopup != null) {
             this.mPopup.setBackgroundDrawable(drawable);
         }
-        else if (AppCompatSpinner.IS_AT_LEAST_JB) {
+        else if (Build$VERSION.SDK_INT >= 16) {
             super.setPopupBackgroundDrawable(drawable);
         }
     }

@@ -12,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import java.util.Stack;
 import android.util.AttributeSet;
+import android.annotation.SuppressLint;
 import android.content.res.XmlResourceParser;
 import java.io.IOException;
 import android.util.Log;
@@ -29,9 +30,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable$ConstantState;
 import android.graphics.PorterDuff$Mode;
-import android.annotation.TargetApi;
 
-@TargetApi(21)
 public class VectorDrawableCompat extends VectorDrawableCommon
 {
     static final PorterDuff$Mode DEFAULT_TINT_MODE;
@@ -70,8 +69,9 @@ public class VectorDrawableCompat extends VectorDrawableCommon
         return (int)(Color.alpha(n) * n2) << 24 | (0xFFFFFF & n);
     }
     
+    @SuppressLint({ "NewApi" })
     public static VectorDrawableCompat create(final Resources resources, int next, final Resources$Theme resources$Theme) {
-        if (Build$VERSION.SDK_INT >= 23) {
+        if (Build$VERSION.SDK_INT >= 24) {
             final VectorDrawableCompat vectorDrawableCompat = new VectorDrawableCompat();
             vectorDrawableCompat.mDelegateDrawable = ResourcesCompat.getDrawable(resources, next, resources$Theme);
             vectorDrawableCompat.mCachedConstantStateDelegate = new VectorDrawableCompat$VectorDrawableDelegateState(vectorDrawableCompat.mDelegateDrawable.getConstantState());
@@ -97,6 +97,7 @@ public class VectorDrawableCompat extends VectorDrawableCommon
         }
     }
     
+    @SuppressLint({ "NewApi" })
     public static VectorDrawableCompat createFromXmlInner(final Resources resources, final XmlPullParser xmlPullParser, final AttributeSet set, final Resources$Theme resources$Theme) {
         final VectorDrawableCompat vectorDrawableCompat = new VectorDrawableCompat();
         vectorDrawableCompat.inflate(resources, xmlPullParser, set, resources$Theme);
@@ -108,11 +109,12 @@ public class VectorDrawableCompat extends VectorDrawableCommon
         final VectorDrawableCompat$VPathRenderer mvPathRenderer = mVectorState.mVPathRenderer;
         final Stack<VectorDrawableCompat$VGroup> stack = new Stack<VectorDrawableCompat$VGroup>();
         stack.push(mvPathRenderer.mRootGroup);
-        int i = xmlPullParser.getEventType();
-        int n = 1;
-        while (i != 1) {
-            int n2;
-            if (i == 2) {
+        int n = xmlPullParser.getEventType();
+        final int depth = xmlPullParser.getDepth();
+        int n2 = 1;
+        while (n != 1 && (xmlPullParser.getDepth() >= depth + 1 || n != 3)) {
+            int n3;
+            if (n == 2) {
                 final String name = xmlPullParser.getName();
                 final VectorDrawableCompat$VGroup vectorDrawableCompat$VGroup = stack.peek();
                 if ("path".equals(name)) {
@@ -122,7 +124,7 @@ public class VectorDrawableCompat extends VectorDrawableCommon
                     if (vectorDrawableCompat$VFullPath.getPathName() != null) {
                         mvPathRenderer.mVGTargetsMap.put(vectorDrawableCompat$VFullPath.getPathName(), vectorDrawableCompat$VFullPath);
                     }
-                    n = 0;
+                    n2 = 0;
                     mVectorState.mChangingConfigurations |= vectorDrawableCompat$VFullPath.mChangingConfigurations;
                 }
                 else if ("clip-path".equals(name)) {
@@ -144,22 +146,22 @@ public class VectorDrawableCompat extends VectorDrawableCommon
                     }
                     mVectorState.mChangingConfigurations |= vectorDrawableCompat$VGroup2.mChangingConfigurations;
                 }
-                n2 = n;
+                n3 = n2;
             }
             else {
-                n2 = n;
-                if (i == 3) {
-                    n2 = n;
+                n3 = n2;
+                if (n == 3) {
+                    n3 = n2;
                     if ("group".equals(xmlPullParser.getName())) {
                         stack.pop();
-                        n2 = n;
+                        n3 = n2;
                     }
                 }
             }
-            i = xmlPullParser.next();
-            n = n2;
+            n = xmlPullParser.next();
+            n2 = n3;
         }
-        if (n != 0) {
+        if (n2 != 0) {
             final StringBuffer sb = new StringBuffer();
             if (sb.length() > 0) {
                 sb.append(" or ");
@@ -169,15 +171,20 @@ public class VectorDrawableCompat extends VectorDrawableCommon
         }
     }
     
+    @SuppressLint({ "NewApi" })
     private boolean needMirroring() {
-        return false;
+        boolean b = true;
+        if (Build$VERSION.SDK_INT < 17) {
+            return false;
+        }
+        if (!this.isAutoMirrored() || this.getLayoutDirection() != 1) {
+            b = false;
+        }
+        return b;
     }
     
     private static PorterDuff$Mode parseTintModeCompat(final int n, final PorterDuff$Mode porterDuff$Mode) {
         switch (n) {
-            default: {
-                return porterDuff$Mode;
-            }
             case 3: {
                 return PorterDuff$Mode.SRC_OVER;
             }
@@ -194,9 +201,13 @@ public class VectorDrawableCompat extends VectorDrawableCommon
                 return PorterDuff$Mode.SCREEN;
             }
             case 16: {
-                return PorterDuff$Mode.ADD;
+                if (Build$VERSION.SDK_INT >= 11) {
+                    return PorterDuff$Mode.ADD;
+                }
+                break;
             }
         }
+        return porterDuff$Mode;
     }
     
     private void updateStateFromTypedArray(final TypedArray typedArray, final XmlPullParser xmlPullParser) {
@@ -337,6 +348,7 @@ public class VectorDrawableCompat extends VectorDrawableCommon
         return this.mVectorState.mVPathRenderer.mVGTargetsMap.get(s);
     }
     
+    @SuppressLint({ "NewApi" })
     public void inflate(final Resources resources, final XmlPullParser xmlPullParser, final AttributeSet set) {
         if (this.mDelegateDrawable != null) {
             this.mDelegateDrawable.inflate(resources, xmlPullParser, set);
@@ -367,6 +379,13 @@ public class VectorDrawableCompat extends VectorDrawableCommon
             return;
         }
         super.invalidateSelf();
+    }
+    
+    public boolean isAutoMirrored() {
+        if (this.mDelegateDrawable != null) {
+            return DrawableCompat.isAutoMirrored(this.mDelegateDrawable);
+        }
+        return this.mVectorState.mAutoMirrored;
     }
     
     public boolean isStateful() {
@@ -430,6 +449,14 @@ public class VectorDrawableCompat extends VectorDrawableCommon
         }
     }
     
+    public void setAutoMirrored(final boolean mAutoMirrored) {
+        if (this.mDelegateDrawable != null) {
+            DrawableCompat.setAutoMirrored(this.mDelegateDrawable, mAutoMirrored);
+            return;
+        }
+        this.mVectorState.mAutoMirrored = mAutoMirrored;
+    }
+    
     public void setColorFilter(final ColorFilter colorFilter) {
         if (this.mDelegateDrawable != null) {
             this.mDelegateDrawable.setColorFilter(colorFilter);
@@ -439,6 +466,7 @@ public class VectorDrawableCompat extends VectorDrawableCommon
         this.invalidateSelf();
     }
     
+    @SuppressLint({ "NewApi" })
     public void setTint(final int n) {
         if (this.mDelegateDrawable != null) {
             DrawableCompat.setTint(this.mDelegateDrawable, n);

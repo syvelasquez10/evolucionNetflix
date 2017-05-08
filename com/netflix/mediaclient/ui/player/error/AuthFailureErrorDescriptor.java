@@ -23,15 +23,15 @@ class AuthFailureErrorDescriptor extends PlaybackErrorDescriptor
     static AuthFailureErrorDescriptor build(final PlayerFragment playerFragment, final Error error) {
         final ExitPlayerAction exitPlayerAction = new ExitPlayerAction(playerFragment.getActivity());
         final ResetApplicationAction resetApplicationAction = new ResetApplicationAction(playerFragment.getActivity());
-        final String string = playerFragment.getString(2131230811);
+        final String string = playerFragment.getString(2131296361);
         final LaunchHelpInBrowserAction launchHelpInBrowserAction = new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384");
         AlertDialogFactory$TwoButtonAlertDialogDescriptor alertDialogFactory$TwoButtonAlertDialogDescriptor;
         if (error.checkForAuthFailureRegistrationRequired()) {
             playerFragment.getNetflixActivity().getServiceManager().getClientLogging().getErrorLogging().logHandledException("AuthFailure, RegistrationRequired");
-            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, resetApplicationAction, playerFragment.getString(2131231077), launchHelpInBrowserAction);
+            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, resetApplicationAction, playerFragment.getString(2131296633), launchHelpInBrowserAction);
         }
         else {
-            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, exitPlayerAction, playerFragment.getString(2131231077), launchHelpInBrowserAction);
+            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, exitPlayerAction, playerFragment.getString(2131296633), launchHelpInBrowserAction);
         }
         return new AuthFailureErrorDescriptor(alertDialogFactory$TwoButtonAlertDialogDescriptor);
     }

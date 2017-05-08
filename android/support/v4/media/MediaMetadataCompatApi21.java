@@ -8,7 +8,9 @@ import java.util.Set;
 import android.graphics.Bitmap;
 import android.media.MediaMetadata;
 import android.os.Parcel;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class MediaMetadataCompatApi21
 {
     public static Object createFromParcel(final Parcel parcel) {

@@ -22,6 +22,7 @@ import android.graphics.Point;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
+import org.json.JSONObject;
 import com.netflix.mediaclient.util.PlaybackVolumeMetric;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams;
@@ -49,7 +50,7 @@ public interface IMedia
     
     void changePlayer(final PlayerType p0);
     
-    void close(final String p0, final PlaybackVolumeMetric p1);
+    void close(final String p0, final PlaybackVolumeMetric p1, final JSONObject p2);
     
     AudioSubtitleDefaultOrderInfo[] getAudioSubtitleDefaultOrderInfo();
     
@@ -87,7 +88,7 @@ public interface IMedia
     
     Watermark getWatermark();
     
-    void open(final long p0, final PlayContext p1, final ConnectivityUtils$NetType p2, final long p3, final boolean p4, final PlaybackVolumeMetric p5, final long p6);
+    void open(final long p0, final PlayContext p1, final ConnectivityUtils$NetType p2, final long p3, final boolean p4, final PlaybackVolumeMetric p5, final long p6, final JSONObject p7);
     
     void pause();
     

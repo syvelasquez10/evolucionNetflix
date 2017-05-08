@@ -4,8 +4,8 @@
 
 package android.support.v7.widget;
 
+import android.content.res.AssetManager;
 import android.os.Build$VERSION;
-import android.support.v7.app.AppCompatDelegate;
 import android.content.Context;
 import android.content.res.Resources$Theme;
 import android.content.res.Resources;
@@ -15,12 +15,13 @@ import android.content.ContextWrapper;
 
 public class TintContextWrapper extends ContextWrapper
 {
-    private static final ArrayList<WeakReference<TintContextWrapper>> sCache;
+    private static final Object CACHE_LOCK;
+    private static ArrayList<WeakReference<TintContextWrapper>> sCache;
     private final Resources mResources;
     private final Resources$Theme mTheme;
     
     static {
-        sCache = new ArrayList<WeakReference<TintContextWrapper>>();
+        CACHE_LOCK = new Object();
     }
     
     private TintContextWrapper(final Context context) {
@@ -35,29 +36,71 @@ public class TintContextWrapper extends ContextWrapper
     }
     
     private static boolean shouldWrap(final Context context) {
-        return !(context instanceof TintContextWrapper) && !(context.getResources() instanceof TintResources) && !(context.getResources() instanceof VectorEnabledTintResources) && (!AppCompatDelegate.isCompatVectorFromResourcesEnabled() || Build$VERSION.SDK_INT <= 20);
+        return !(context instanceof TintContextWrapper) && !(context.getResources() instanceof TintResources) && !(context.getResources() instanceof VectorEnabledTintResources) && (Build$VERSION.SDK_INT < 21 || VectorEnabledTintResources.shouldBeUsed());
     }
     
     public static Context wrap(final Context context) {
-        Object o = context;
         if (shouldWrap(context)) {
-            for (int size = TintContextWrapper.sCache.size(), i = 0; i < size; ++i) {
-                final WeakReference<TintContextWrapper> weakReference = TintContextWrapper.sCache.get(i);
-                if (weakReference != null) {
-                    o = weakReference.get();
-                }
-                else {
-                    o = null;
-                }
-                if (o != null && ((TintContextWrapper)o).getBaseContext() == context) {
-                    return (Context)o;
+        Label_0112_Outer:
+            while (true) {
+            Label_0139_Outer:
+                while (true) {
+                    int n = 0;
+                Label_0174:
+                    while (true) {
+                    Label_0169:
+                        while (true) {
+                            Label_0162: {
+                                synchronized (TintContextWrapper.CACHE_LOCK) {
+                                    if (TintContextWrapper.sCache == null) {
+                                        TintContextWrapper.sCache = new ArrayList<WeakReference<TintContextWrapper>>();
+                                    }
+                                    else {
+                                        n = TintContextWrapper.sCache.size() - 1;
+                                        if (n >= 0) {
+                                            final WeakReference<TintContextWrapper> weakReference = TintContextWrapper.sCache.get(n);
+                                            if (weakReference == null || weakReference.get() == null) {
+                                                TintContextWrapper.sCache.remove(n);
+                                            }
+                                            break Label_0162;
+                                        }
+                                        else {
+                                            n = TintContextWrapper.sCache.size() - 1;
+                                            if (n >= 0) {
+                                                final WeakReference<TintContextWrapper> weakReference2 = TintContextWrapper.sCache.get(n);
+                                                if (weakReference2 == null) {
+                                                    break Label_0169;
+                                                }
+                                                final Object o = weakReference2.get();
+                                                if (o != null && ((TintContextWrapper)o).getBaseContext() == context) {
+                                                    return (Context)o;
+                                                }
+                                                break Label_0174;
+                                            }
+                                        }
+                                    }
+                                    final TintContextWrapper tintContextWrapper = new TintContextWrapper(context);
+                                    TintContextWrapper.sCache.add(new WeakReference<TintContextWrapper>(tintContextWrapper));
+                                    return (Context)tintContextWrapper;
+                                }
+                                break;
+                            }
+                            --n;
+                            continue Label_0112_Outer;
+                        }
+                        final Object o = null;
+                        continue;
+                    }
+                    --n;
+                    continue Label_0139_Outer;
                 }
             }
-            final TintContextWrapper tintContextWrapper = new TintContextWrapper(context);
-            TintContextWrapper.sCache.add(new WeakReference<TintContextWrapper>(tintContextWrapper));
-            return (Context)tintContextWrapper;
         }
-        return (Context)o;
+        return context;
+    }
+    
+    public AssetManager getAssets() {
+        return this.mResources.getAssets();
     }
     
     public Resources getResources() {

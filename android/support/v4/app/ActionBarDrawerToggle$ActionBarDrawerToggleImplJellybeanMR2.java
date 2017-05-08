@@ -6,7 +6,9 @@ package android.support.v4.app;
 
 import android.graphics.drawable.Drawable;
 import android.app.Activity;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class ActionBarDrawerToggle$ActionBarDrawerToggleImplJellybeanMR2 implements ActionBarDrawerToggle$ActionBarDrawerToggleImpl
 {
     @Override

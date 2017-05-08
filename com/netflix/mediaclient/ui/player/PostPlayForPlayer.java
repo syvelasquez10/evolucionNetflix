@@ -86,7 +86,7 @@ public final class PostPlayForPlayer extends PostPlay
             this.autoplayTimer.stopTimer();
             final Iterator<PostPlayItemView> iterator = this.postPlayItems.iterator();
             while (iterator.hasNext()) {
-                iterator.next().stopTimer();
+                iterator.next().stopPostPlay();
             }
             final Iterator<PostPlayBackground> iterator2 = this.postPlayBackgrounds.iterator();
             while (iterator2.hasNext()) {
@@ -101,7 +101,7 @@ public final class PostPlayForPlayer extends PostPlay
             this.autoplayTimer.startTimer();
             final Iterator<PostPlayItemView> iterator = this.postPlayItems.iterator();
             while (iterator.hasNext()) {
-                iterator.next().startTimer(this.autoplayTimer.getTime());
+                iterator.next().startPostPlay(this.autoplayTimer.getTime());
             }
             final Iterator<PostPlayBackground> iterator2 = this.postPlayBackgrounds.iterator();
             while (iterator2.hasNext()) {
@@ -145,7 +145,7 @@ public final class PostPlayForPlayer extends PostPlay
     
     @Override
     protected void findViews() {
-        this.experienceTitle = (TextView)this.mNetflixActivity.findViewById(2131690152);
+        this.experienceTitle = (TextView)this.mNetflixActivity.findViewById(2131755720);
     }
     
     @Override
@@ -221,7 +221,7 @@ public final class PostPlayForPlayer extends PostPlay
                     text = this.mPostPlayExperience.getExperienceTitle().get(0).getDisplayText();
                 }
                 else if ("recommendations".equals(this.mPostPlayExperience.getType())) {
-                    text = this.mNetflixActivity.getResources().getString(2131231195);
+                    text = this.mNetflixActivity.getResources().getString(2131296751);
                 }
                 else {
                     text = "";
@@ -248,23 +248,23 @@ public final class PostPlayForPlayer extends PostPlay
             this.mBackgroundContainer.getLayoutParams().width = DeviceUtils.getScreenWidthInPixels((Context)this.mNetflixActivity) * this.mPostPlayExperience.getItems().size();
             int n;
             if (b) {
-                n = 2130903249;
+                n = 2130903262;
             }
             else {
-                n = 2130903247;
+                n = 2130903260;
             }
             int n2;
             if (nonMemberPlayback) {
-                n2 = 2130903258;
+                n2 = 2130903271;
             }
             else if (equals) {
-                n2 = 2130903257;
+                n2 = 2130903270;
             }
             else if (b) {
-                n2 = 2130903256;
+                n2 = 2130903269;
             }
             else {
-                n2 = 2130903255;
+                n2 = 2130903268;
             }
             final Iterator<PostPlayItem> iterator = this.mPostPlayExperience.getItems().iterator();
             int n3 = 0;

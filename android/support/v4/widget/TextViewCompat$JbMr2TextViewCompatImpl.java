@@ -10,6 +10,11 @@ import android.widget.TextView;
 class TextViewCompat$JbMr2TextViewCompatImpl extends TextViewCompat$JbMr1TextViewCompatImpl
 {
     @Override
+    public Drawable[] getCompoundDrawablesRelative(final TextView textView) {
+        return TextViewCompatJbMr2.getCompoundDrawablesRelative(textView);
+    }
+    
+    @Override
     public void setCompoundDrawablesRelative(final TextView textView, final Drawable drawable, final Drawable drawable2, final Drawable drawable3, final Drawable drawable4) {
         TextViewCompatJbMr2.setCompoundDrawablesRelative(textView, drawable, drawable2, drawable3, drawable4);
     }

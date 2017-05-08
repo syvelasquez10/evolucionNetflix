@@ -10,7 +10,7 @@ final class RegisteredMediaRouteProvider$PrivateHandler extends Handler
 {
     final /* synthetic */ RegisteredMediaRouteProvider this$0;
     
-    private RegisteredMediaRouteProvider$PrivateHandler(final RegisteredMediaRouteProvider this$0) {
+    RegisteredMediaRouteProvider$PrivateHandler(final RegisteredMediaRouteProvider this$0) {
         this.this$0 = this$0;
     }
 }

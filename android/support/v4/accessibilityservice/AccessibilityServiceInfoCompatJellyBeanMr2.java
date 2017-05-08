@@ -5,7 +5,9 @@
 package android.support.v4.accessibilityservice;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class AccessibilityServiceInfoCompatJellyBeanMr2
 {
     public static int getCapabilities(final AccessibilityServiceInfo accessibilityServiceInfo) {

@@ -120,14 +120,15 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
         return obtain;
     }
     
-    private AccessibilityNodeInfoCompat createNodeForChild(final int n) {
+    private AccessibilityNodeInfoCompat createNodeForChild(int i) {
         final AccessibilityNodeInfoCompat obtain = AccessibilityNodeInfoCompat.obtain();
         obtain.setEnabled(true);
         obtain.setFocusable(true);
         obtain.setClassName("android.view.View");
         obtain.setBoundsInParent(ExploreByTouchHelper.INVALID_PARENT_BOUNDS);
         obtain.setBoundsInScreen(ExploreByTouchHelper.INVALID_PARENT_BOUNDS);
-        this.onPopulateNodeForVirtualView(n, obtain);
+        obtain.setParent(this.mHost);
+        this.onPopulateNodeForVirtualView(i, obtain);
         if (obtain.getText() == null && obtain.getContentDescription() == null) {
             throw new RuntimeException("Callbacks must add text or a content description in populateNodeForVirtualViewId()");
         }
@@ -143,9 +144,8 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
             throw new RuntimeException("Callbacks must not add ACTION_CLEAR_ACCESSIBILITY_FOCUS in populateNodeForVirtualViewId()");
         }
         obtain.setPackageName(this.mHost.getContext().getPackageName());
-        obtain.setSource(this.mHost, n);
-        obtain.setParent(this.mHost);
-        if (this.mAccessibilityFocusedVirtualViewId == n) {
+        obtain.setSource(this.mHost, i);
+        if (this.mAccessibilityFocusedVirtualViewId == i) {
             obtain.setAccessibilityFocused(true);
             obtain.addAction(128);
         }
@@ -153,7 +153,7 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
             obtain.setAccessibilityFocused(false);
             obtain.addAction(64);
         }
-        final boolean focused = this.mKeyboardFocusedVirtualViewId == n;
+        final boolean focused = this.mKeyboardFocusedVirtualViewId == i;
         if (focused) {
             obtain.addAction(2);
         }
@@ -161,16 +161,30 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
             obtain.addAction(1);
         }
         obtain.setFocused(focused);
-        if (this.intersectVisibleToUser(this.mTempParentRect)) {
-            obtain.setVisibleToUser(true);
-            obtain.setBoundsInParent(this.mTempParentRect);
-        }
+        this.mHost.getLocationOnScreen(this.mTempGlobalRect);
         obtain.getBoundsInScreen(this.mTempScreenRect);
         if (this.mTempScreenRect.equals((Object)ExploreByTouchHelper.INVALID_PARENT_BOUNDS)) {
-            this.mHost.getLocationOnScreen(this.mTempGlobalRect);
             obtain.getBoundsInParent(this.mTempScreenRect);
+            if (obtain.mParentVirtualDescendantId != -1) {
+                AccessibilityNodeInfoCompat obtain2;
+                for (obtain2 = AccessibilityNodeInfoCompat.obtain(), i = obtain.mParentVirtualDescendantId; i != -1; i = obtain2.mParentVirtualDescendantId) {
+                    obtain2.setParent(this.mHost, -1);
+                    obtain2.setBoundsInParent(ExploreByTouchHelper.INVALID_PARENT_BOUNDS);
+                    this.onPopulateNodeForVirtualView(i, obtain2);
+                    obtain2.getBoundsInParent(this.mTempParentRect);
+                    this.mTempScreenRect.offset(this.mTempParentRect.left, this.mTempParentRect.top);
+                }
+                obtain2.recycle();
+            }
             this.mTempScreenRect.offset(this.mTempGlobalRect[0] - this.mHost.getScrollX(), this.mTempGlobalRect[1] - this.mHost.getScrollY());
+        }
+        if (this.mHost.getLocalVisibleRect(this.mTempVisibleRect)) {
+            this.mTempVisibleRect.offset(this.mTempGlobalRect[0] - this.mHost.getScrollX(), this.mTempGlobalRect[1] - this.mHost.getScrollY());
+            this.mTempScreenRect.intersect(this.mTempVisibleRect);
             obtain.setBoundsInScreen(this.mTempScreenRect);
+            if (this.isVisibleToUser(this.mTempScreenRect)) {
+                obtain.setVisibleToUser(true);
+            }
         }
         return obtain;
     }
@@ -229,22 +243,19 @@ public abstract class ExploreByTouchHelper extends AccessibilityDelegateCompat
         }
     }
     
-    private boolean intersectVisibleToUser(final Rect rect) {
-        if (rect == null || rect.isEmpty()) {
-            return false;
-        }
-        if (this.mHost.getWindowVisibility() != 0) {
-            return false;
-        }
-        ViewParent viewParent;
-        View view;
-        for (viewParent = this.mHost.getParent(); viewParent instanceof View; viewParent = view.getParent()) {
-            view = (View)viewParent;
-            if (ViewCompat.getAlpha(view) <= 0.0f || view.getVisibility() != 0) {
-                return false;
+    private boolean isVisibleToUser(final Rect rect) {
+        if (rect != null && !rect.isEmpty() && this.mHost.getWindowVisibility() == 0) {
+            ViewParent viewParent;
+            View view;
+            for (viewParent = this.mHost.getParent(); viewParent instanceof View; viewParent = view.getParent()) {
+                view = (View)viewParent;
+                if (ViewCompat.getAlpha(view) <= 0.0f || view.getVisibility() != 0) {
+                    return false;
+                }
             }
+            return viewParent != null;
         }
-        return viewParent != null && this.mHost.getLocalVisibleRect(this.mTempVisibleRect) && rect.intersect(this.mTempVisibleRect);
+        return false;
     }
     
     private static int keyToDirection(final int n) {

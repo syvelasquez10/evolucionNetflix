@@ -49,11 +49,6 @@ public class ContextCompat
         return context.checkPermission(s, Process.myPid(), Process.myUid());
     }
     
-    @Deprecated
-    public static Context createDeviceEncryptedStorageContext(final Context context) {
-        return createDeviceProtectedStorageContext(context);
-    }
-    
     public static Context createDeviceProtectedStorageContext(final Context context) {
         if (BuildCompat.isAtLeastN()) {
             return ContextCompatApi24.createDeviceProtectedStorageContext(context);
@@ -171,11 +166,6 @@ public class ContextCompat
         return new File[] { file };
     }
     
-    @Deprecated
-    public static boolean isDeviceEncryptedStorage(final Context context) {
-        return isDeviceProtectedStorage(context);
-    }
-    
     public static boolean isDeviceProtectedStorage(final Context context) {
         return BuildCompat.isAtLeastN() && ContextCompatApi24.isDeviceProtectedStorage(context);
     }
@@ -195,5 +185,13 @@ public class ContextCompat
             return true;
         }
         return false;
+    }
+    
+    public static void startActivity(final Context context, final Intent intent, final Bundle bundle) {
+        if (Build$VERSION.SDK_INT >= 16) {
+            ContextCompatJellybean.startActivity(context, intent, bundle);
+            return;
+        }
+        context.startActivity(intent);
     }
 }

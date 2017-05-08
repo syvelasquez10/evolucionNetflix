@@ -19,7 +19,9 @@ import android.view.Window;
 import android.view.MenuInflater;
 import android.content.Context;
 import android.view.Window$Callback;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 abstract class AppCompatDelegateImplBase extends AppCompatDelegate
 {
     private static final boolean SHOULD_INSTALL_EXCEPTION_HANDLER;

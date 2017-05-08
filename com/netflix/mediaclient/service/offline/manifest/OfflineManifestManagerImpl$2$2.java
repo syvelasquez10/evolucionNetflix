@@ -16,6 +16,7 @@ import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
 import java.util.List;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.Log;
 import java.util.HashMap;
@@ -29,18 +30,19 @@ import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerClien
 import com.netflix.mediaclient.service.pdslogging.DownloadContext;
 import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
 
 class OfflineManifestManagerImpl$2$2 implements Runnable
 {
     final /* synthetic */ OfflineManifestManagerImpl$2 this$1;
+    final /* synthetic */ Status val$status;
     
-    OfflineManifestManagerImpl$2$2(final OfflineManifestManagerImpl$2 this$1) {
+    OfflineManifestManagerImpl$2$2(final OfflineManifestManagerImpl$2 this$1, final Status val$status) {
         this.this$1 = this$1;
+        this.val$status = val$status;
     }
     
     @Override
     public void run() {
-        this.this$1.this$0.handleManifestResponse(CommonStatus.INTERNAL_ERROR, this.this$1.val$playableId, this.this$1.val$playableDirPath, false, null, this.this$1.val$oxid, this.this$1.val$dxid, null);
+        this.this$1.this$0.handleManifestResponse(this.val$status, this.this$1.val$playableId, this.this$1.val$playableDirPath, false, null, this.this$1.val$oxid, this.this$1.val$dxid, null);
     }
 }

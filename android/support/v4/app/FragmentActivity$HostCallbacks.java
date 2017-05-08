@@ -12,6 +12,7 @@ import android.view.Window;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.annotation.SuppressLint;
 import java.io.PrintWriter;
 import java.io.FileDescriptor;
 
@@ -28,6 +29,7 @@ class FragmentActivity$HostCallbacks extends FragmentHostCallback<FragmentActivi
         this.this$0.onAttachFragment(fragment);
     }
     
+    @SuppressLint({ "NewApi" })
     @Override
     public void onDump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
         this.this$0.dump(s, fileDescriptor, printWriter, array);

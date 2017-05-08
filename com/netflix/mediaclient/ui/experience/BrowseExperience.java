@@ -9,40 +9,27 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import java.io.Serializable;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.ui.search.SearchUtils$SearchExperience;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
-import com.netflix.mediaclient.ui.lomo.BillboardView;
-import com.netflix.mediaclient.ui.lomo.RowAdapterProvider$KubrickHighDensityRowAdapterProvider;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHighDensityLoLoMoAdapter;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHighDensityGenreLoLoMoAdapter;
-import com.netflix.mediaclient.ui.kubrick_kids.details.BarkerKidsDetailsActivity;
+import com.netflix.mediaclient.ui.barker_kids.details.BarkerKidsDetailsActivity;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsSlidingMenu;
 import com.netflix.mediaclient.ui.lomo.RowAdapterProvider$KidsTabletRowAdapterProvider;
-import com.netflix.mediaclient.ui.kubrick_kids.lolomo.KubrickKidsLoLoMoAdapter;
-import com.netflix.mediaclient.ui.kubrick_kids.lolomo.KubrickKidsGenreLoLoMoAdapter;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickLolomoUtils;
-import com.netflix.mediaclient.ui.lomo.RowAdapterProvider$KubrickRowAdapterProvider;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickLoLoMoAdapter;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickGenreLoLoMoAdapter;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsActivity;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerMovieDetailsActivity;
-import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
-import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHeroView;
-import com.netflix.mediaclient.ui.kubrick.lomo.KubrickVideoView;
-import com.netflix.mediaclient.ui.kubrick.lomo.KubrickCwGalleryView;
+import com.netflix.mediaclient.ui.barker_kids.lolomo.BarkerKidsLoLoMoAdapter;
+import com.netflix.mediaclient.ui.barker_kids.lolomo.BarkerKidsGenreLoLoMoAdapter;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsActivity;
+import com.netflix.mediaclient.ui.barker.details.BarkerMovieDetailsActivity;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.lomo.CwTestVTwoView;
 import com.netflix.mediaclient.ui.lomo.CwTestView;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
-import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHighDensityCwView;
 import com.netflix.mediaclient.ui.lomo.CwView;
 import com.netflix.model.leafs.originals.BillboardSummary;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
-import com.netflix.mediaclient.ui.kubrick_kids.lolomo.KubrickKidsCharacterView;
+import com.netflix.mediaclient.ui.barker_kids.lolomo.BarkerKidsCharacterView;
 import com.netflix.mediaclient.ui.lomo.CwDiscoveryView;
 import com.netflix.mediaclient.util.CWTestUtil;
 import com.netflix.mediaclient.android.widget.VideoView;
@@ -128,7 +115,7 @@ public enum BrowseExperience implements IExperience
     protected static final String IMAGE_LOADER_CONFIG_ENUM = "IMAGE_LOADER_CONFIG_ENUM";
     protected static final String IMAGE_LOADER_CONFIG_NO_PLACEHOLDER_ENUM = "IMAGE_LOADER_CONFIG_NO_PLACEHOLDER_ENUM";
     
-    KIDS_TABLET_STANDARD("KIDS_TABLET_STANDARD", 3, (BrowseExperience$ExperienceMap)new BrowseExperience$7()) {
+    KIDS_TABLET_STANDARD("KIDS_TABLET_STANDARD", 2, (BrowseExperience$ExperienceMap)new BrowseExperience$5()) {
         private final Set<VideoType> VALID_DETAIL_TYPES;
         
         {
@@ -138,9 +125,9 @@ public enum BrowseExperience implements IExperience
         @Override
         public LoLoMoFrag$ILoLoMoAdapter createLolomoAdapter(final LoLoMoFrag loLoMoFrag, final boolean b, final String s) {
             if (b) {
-                return new KubrickKidsGenreLoLoMoAdapter(loLoMoFrag, s, false);
+                return new BarkerKidsGenreLoLoMoAdapter(loLoMoFrag, s, false);
             }
-            return new KubrickKidsLoLoMoAdapter(loLoMoFrag);
+            return new BarkerKidsLoLoMoAdapter(loLoMoFrag);
         }
         
         @Override
@@ -163,7 +150,7 @@ public enum BrowseExperience implements IExperience
         
         @Override
         public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
-            switch (BrowseExperience$21.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$LoMoType[basicLoMo.getType().ordinal()]) {
+            switch (BrowseExperience$7.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$LoMoType[basicLoMo.getType().ordinal()]) {
                 default: {
                     return 0;
                 }
@@ -171,142 +158,6 @@ public enum BrowseExperience implements IExperience
                     return 8;
                 }
             }
-        }
-        
-        @Override
-        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
-            return BrowseExperience$8.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
-        }
-        
-        @Override
-        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
-            return BrowseExperience$8.STANDARD.getViewImageUrl(context, video, clazz, n);
-        }
-    }, 
-    KUBRICK_AB_TEST_HERO_IMAGES("KUBRICK_AB_TEST_HERO_IMAGES", 4, (BrowseExperience$ExperienceMap)new BrowseExperience$9()) {
-        BrowseExperience$10(final String s, final int n, final BrowseExperience$ExperienceMap browseExperience$ExperienceMap) {
-        }
-        
-        @Override
-        public LoLoMoFrag$ILoLoMoAdapter createLolomoAdapter(final LoLoMoFrag loLoMoFrag, final boolean b, final String s) {
-            return BrowseExperience$10.KUBRICK_PRODUCTIZED.createLolomoAdapter(loLoMoFrag, b, s);
-        }
-        
-        @Override
-        public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return BrowseExperience$10.KUBRICK_PRODUCTIZED.createRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
-        }
-        
-        @Override
-        public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return BrowseExperience$10.STANDARD.createSlidingMenuAdapter(netflixActivity, drawerLayout);
-        }
-        
-        @Override
-        public Class<? extends DetailsActivity> getDetailsClassTypeForVideo(final VideoType videoType) {
-            return BrowseExperience$10.KUBRICK_PRODUCTIZED.getDetailsClassTypeForVideo(videoType);
-        }
-        
-        @Override
-        public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
-            return BrowseExperience$10.KUBRICK_PRODUCTIZED.getLomoRowTitleVisibility(netflixActivity, basicLoMo);
-        }
-        
-        @Override
-        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
-            return BrowseExperience$10.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
-        }
-        
-        @Override
-        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
-            return BrowseExperience$10.STANDARD.getViewImageUrl(context, video, clazz, n);
-        }
-    }, 
-    KUBRICK_AB_TEST_HIGH_DENSITY("KUBRICK_AB_TEST_HIGH_DENSITY", 5, (BrowseExperience$ExperienceMap)new BrowseExperience$11()) {
-        BrowseExperience$12(final String s, final int n, final BrowseExperience$ExperienceMap browseExperience$ExperienceMap) {
-        }
-        
-        @Override
-        public LoLoMoFrag$ILoLoMoAdapter createLolomoAdapter(final LoLoMoFrag loLoMoFrag, final boolean b, final String s) {
-            if (b) {
-                return new KubrickHighDensityGenreLoLoMoAdapter(loLoMoFrag, s);
-            }
-            return new KubrickHighDensityLoLoMoAdapter(loLoMoFrag);
-        }
-        
-        @Override
-        public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return new RowAdapterProvider$KubrickHighDensityRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
-        }
-        
-        @Override
-        public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return BrowseExperience$12.STANDARD.createSlidingMenuAdapter(netflixActivity, drawerLayout);
-        }
-        
-        @Override
-        public Class<? extends DetailsActivity> getDetailsClassTypeForVideo(final VideoType videoType) {
-            return BrowseExperience$12.KUBRICK_PRODUCTIZED.getDetailsClassTypeForVideo(videoType);
-        }
-        
-        @Override
-        public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
-            return BrowseExperience$12.STANDARD.getLomoRowTitleVisibility(netflixActivity, basicLoMo);
-        }
-        
-        @Override
-        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
-            return BrowseExperience$12.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
-        }
-        
-        @Override
-        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
-            return BrowseExperience$12.STANDARD.getViewImageUrl(context, video, clazz, n);
-        }
-    }, 
-    KUBRICK_PRODUCTIZED("KUBRICK_PRODUCTIZED", 2, (BrowseExperience$ExperienceMap)new BrowseExperience$5()) {
-        private final Set<VideoType> VALID_DETAIL_TYPES;
-        
-        {
-            this.VALID_DETAIL_TYPES = new HashSet<VideoType>(Arrays.asList(VideoType.MOVIE, VideoType.SHOW));
-        }
-        
-        @Override
-        public LoLoMoFrag$ILoLoMoAdapter createLolomoAdapter(final LoLoMoFrag loLoMoFrag, final boolean b, final String s) {
-            if (b) {
-                return new KubrickGenreLoLoMoAdapter(loLoMoFrag, s, true);
-            }
-            return new KubrickLoLoMoAdapter(loLoMoFrag);
-        }
-        
-        @Override
-        public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return new RowAdapterProvider$KubrickRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
-        }
-        
-        @Override
-        public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return new StandardSlidingMenu(netflixActivity, drawerLayout, true);
-        }
-        
-        @Override
-        public Class<? extends DetailsActivity> getDetailsClassTypeForVideo(final VideoType videoType) {
-            final boolean equals = VideoType.MOVIE.equals(videoType);
-            if (!this.VALID_DETAIL_TYPES.contains(videoType)) {
-                return null;
-            }
-            if (equals) {
-                return BarkerMovieDetailsActivity.class;
-            }
-            return BarkerShowDetailsActivity.class;
-        }
-        
-        @Override
-        public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
-            if (KubrickLolomoUtils.isDuplicateRow(basicLoMo)) {
-                return 8;
-            }
-            return BrowseExperience$6.STANDARD.getLomoRowTitleVisibility(netflixActivity, basicLoMo);
         }
         
         @Override
@@ -384,7 +235,7 @@ public enum BrowseExperience implements IExperience
             }
             else {
                 final ArrayList<String> list2 = new ArrayList<String>();
-                switch (BrowseExperience$21.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$LoMoType[loMoType.ordinal()]) {
+                switch (BrowseExperience$7.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$LoMoType[loMoType.ordinal()]) {
                     default: {
                         list2.add(this.getViewImageUrl(context, video, VideoView.class, 0));
                         return list2;
@@ -398,7 +249,7 @@ public enum BrowseExperience implements IExperience
                         return list2;
                     }
                     case 3: {
-                        list2.add(this.getViewImageUrl(context, video, KubrickKidsCharacterView.class, 0));
+                        list2.add(this.getViewImageUrl(context, video, BarkerKidsCharacterView.class, 0));
                         return list2;
                     }
                     case 4: {
@@ -431,13 +282,13 @@ public enum BrowseExperience implements IExperience
         @Override
         public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
             String s = null;
-            if (clazz == CwView.class || clazz == KubrickHighDensityCwView.class) {
+            if (clazz == CwView.class) {
                 if (video instanceof CWVideo) {
                     s = ((CWVideo)video).createModifiedStillUrl();
                 }
             }
             else {
-                if (clazz == CwTestView.class || clazz == KubrickKidsCharacterView.class) {
+                if (clazz == CwTestView.class || clazz == BarkerKidsCharacterView.class) {
                     return video.getBoxshotUrl();
                 }
                 if (clazz == CwTestVTwoView.class) {
@@ -449,27 +300,7 @@ public enum BrowseExperience implements IExperience
                     if (clazz == CwDiscoveryView.class) {
                         return video.getHorzDispUrl();
                     }
-                    if (clazz == KubrickCwGalleryView.class) {
-                        if (video instanceof CWVideo) {
-                            final CWVideo cwVideo = (CWVideo)video;
-                            if (this.isFlagEnabled(n, 2)) {
-                                return cwVideo.createModifiedBigStillUrl();
-                            }
-                            return cwVideo.createModifiedStillUrl();
-                        }
-                    }
-                    else if (clazz == KubrickVideoView.class) {
-                        if (this.isFlagEnabled(n, 2)) {
-                            return video.getHorzDispUrl();
-                        }
-                        return video.getHorzDispSmallUrl();
-                    }
-                    else if (clazz == KubrickHeroView.class) {
-                        if (video instanceof KubrickVideo) {
-                            return ((KubrickVideo)video).getKubrickStoryImgUrl();
-                        }
-                    }
-                    else if (clazz == VideoView.class) {
+                    if (clazz == VideoView.class) {
                         if (this.isFlagEnabled(n, 1)) {
                             return video.getHorzDispUrl();
                         }
@@ -482,228 +313,6 @@ public enum BrowseExperience implements IExperience
     };
     
     private static final String TAG = "BrowseExperience";
-    
-    TEST_LOLOMO_TITLE_ART_6725_CELL_2("TEST_LOLOMO_TITLE_ART_6725_CELL_2", 6, (BrowseExperience$ExperienceMap)new BrowseExperience$13()) {
-        private final Set<VideoType> VALID_DETAIL_TYPES;
-        
-        {
-            this.VALID_DETAIL_TYPES = new HashSet<VideoType>(Arrays.asList(VideoType.MOVIE, VideoType.SHOW));
-        }
-        
-        @Override
-        public LoLoMoFrag$ILoLoMoAdapter createLolomoAdapter(final LoLoMoFrag loLoMoFrag, final boolean b, final String s) {
-            if (b) {
-                return new GenreLoLoMoAdapter(loLoMoFrag, s);
-            }
-            return new LoLoMoAdapter(loLoMoFrag);
-        }
-        
-        @Override
-        public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return new RowAdapterProvider$StandardRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
-        }
-        
-        @Override
-        public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return new StandardSlidingMenu(netflixActivity, drawerLayout, true);
-        }
-        
-        @Override
-        public Class<? extends DetailsActivity> getDetailsClassTypeForVideo(final VideoType videoType) {
-            final boolean equals = VideoType.MOVIE.equals(videoType);
-            if (!this.VALID_DETAIL_TYPES.contains(videoType)) {
-                return null;
-            }
-            if (equals) {
-                return MovieDetailsActivity.class;
-            }
-            return ShowDetailsActivity.class;
-        }
-        
-        @Override
-        public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
-            if (basicLoMo.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(netflixActivity)) {
-                return 0;
-            }
-            return 8;
-        }
-        
-        @Override
-        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
-            return BrowseExperience$14.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
-        }
-        
-        @Override
-        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
-            return BrowseExperience$14.STANDARD.getViewImageUrl(context, video, clazz, n);
-        }
-    }, 
-    TEST_LOLOMO_TITLE_ART_6725_CELL_3("TEST_LOLOMO_TITLE_ART_6725_CELL_3", 7, (BrowseExperience$ExperienceMap)new BrowseExperience$15()) {
-        private final Set<VideoType> VALID_DETAIL_TYPES;
-        
-        {
-            this.VALID_DETAIL_TYPES = new HashSet<VideoType>(Arrays.asList(VideoType.MOVIE, VideoType.SHOW));
-        }
-        
-        @Override
-        public LoLoMoFrag$ILoLoMoAdapter createLolomoAdapter(final LoLoMoFrag loLoMoFrag, final boolean b, final String s) {
-            if (b) {
-                return new GenreLoLoMoAdapter(loLoMoFrag, s);
-            }
-            return new LoLoMoAdapter(loLoMoFrag);
-        }
-        
-        @Override
-        public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return new RowAdapterProvider$StandardRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
-        }
-        
-        @Override
-        public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return new StandardSlidingMenu(netflixActivity, drawerLayout, true);
-        }
-        
-        @Override
-        public Class<? extends DetailsActivity> getDetailsClassTypeForVideo(final VideoType videoType) {
-            final boolean equals = VideoType.MOVIE.equals(videoType);
-            if (!this.VALID_DETAIL_TYPES.contains(videoType)) {
-                return null;
-            }
-            if (equals) {
-                return MovieDetailsActivity.class;
-            }
-            return ShowDetailsActivity.class;
-        }
-        
-        @Override
-        public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
-            if (basicLoMo.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(netflixActivity)) {
-                return 0;
-            }
-            return 8;
-        }
-        
-        @Override
-        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
-            return BrowseExperience$16.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
-        }
-        
-        @Override
-        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
-            return BrowseExperience$16.STANDARD.getViewImageUrl(context, video, clazz, n);
-        }
-    }, 
-    TEST_LOLOMO_TITLE_ART_6725_CELL_4("TEST_LOLOMO_TITLE_ART_6725_CELL_4", 8, (BrowseExperience$ExperienceMap)new BrowseExperience$17()) {
-        private final Set<VideoType> VALID_DETAIL_TYPES;
-        
-        {
-            this.VALID_DETAIL_TYPES = new HashSet<VideoType>(Arrays.asList(VideoType.MOVIE, VideoType.SHOW));
-        }
-        
-        @Override
-        public LoLoMoFrag$ILoLoMoAdapter createLolomoAdapter(final LoLoMoFrag loLoMoFrag, final boolean b, final String s) {
-            if (b) {
-                return new GenreLoLoMoAdapter(loLoMoFrag, s);
-            }
-            return new LoLoMoAdapter(loLoMoFrag);
-        }
-        
-        @Override
-        public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return new RowAdapterProvider$StandardRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
-        }
-        
-        @Override
-        public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return new StandardSlidingMenu(netflixActivity, drawerLayout, true);
-        }
-        
-        @Override
-        public Class<? extends DetailsActivity> getDetailsClassTypeForVideo(final VideoType videoType) {
-            final boolean equals = VideoType.MOVIE.equals(videoType);
-            if (!this.VALID_DETAIL_TYPES.contains(videoType)) {
-                return null;
-            }
-            if (equals) {
-                return MovieDetailsActivity.class;
-            }
-            return ShowDetailsActivity.class;
-        }
-        
-        @Override
-        public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
-            if (basicLoMo.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(netflixActivity)) {
-                return 0;
-            }
-            return 8;
-        }
-        
-        @Override
-        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
-            return BrowseExperience$18.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
-        }
-        
-        @Override
-        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
-            return BrowseExperience$18.STANDARD.getViewImageUrl(context, video, clazz, n);
-        }
-    }, 
-    TEST_LOLOMO_TITLE_ART_6725_CELL_5("TEST_LOLOMO_TITLE_ART_6725_CELL_5", 9, (BrowseExperience$ExperienceMap)new BrowseExperience$19()) {
-        private final Set<VideoType> VALID_DETAIL_TYPES;
-        
-        {
-            this.VALID_DETAIL_TYPES = new HashSet<VideoType>(Arrays.asList(VideoType.MOVIE, VideoType.SHOW));
-        }
-        
-        @Override
-        public LoLoMoFrag$ILoLoMoAdapter createLolomoAdapter(final LoLoMoFrag loLoMoFrag, final boolean b, final String s) {
-            if (b) {
-                return new GenreLoLoMoAdapter(loLoMoFrag, s);
-            }
-            return new LoLoMoAdapter(loLoMoFrag);
-        }
-        
-        @Override
-        public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return new RowAdapterProvider$StandardRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
-        }
-        
-        @Override
-        public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return new StandardSlidingMenu(netflixActivity, drawerLayout, true);
-        }
-        
-        @Override
-        public Class<? extends DetailsActivity> getDetailsClassTypeForVideo(final VideoType videoType) {
-            final boolean equals = VideoType.MOVIE.equals(videoType);
-            if (!this.VALID_DETAIL_TYPES.contains(videoType)) {
-                return null;
-            }
-            if (equals) {
-                return MovieDetailsActivity.class;
-            }
-            return ShowDetailsActivity.class;
-        }
-        
-        @Override
-        public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
-            if (basicLoMo.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(netflixActivity)) {
-                return 0;
-            }
-            return 8;
-        }
-        
-        @Override
-        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
-            return BrowseExperience$20.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
-        }
-        
-        @Override
-        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
-            return BrowseExperience$20.STANDARD.getViewImageUrl(context, video, clazz, n);
-        }
-    };
-    
     protected static final String USE_KIDS_GENRES_LOMO = "USE_KIDS_GENRES_LOMO";
     protected static final String USE_LOLOMO_BOXART = "USE_LOLOMO_BOXART";
     private static final boolean USE_PRODUCTION_KUBRICK = false;
@@ -748,10 +357,6 @@ public enum BrowseExperience implements IExperience
         return BrowseExperience.currExperience == BrowseExperience.DISPLAY_PAGE_REFRESH;
     }
     
-    public static boolean isKubrick() {
-        return BrowseExperience.currExperience == BrowseExperience.KUBRICK_PRODUCTIZED || BrowseExperience.currExperience == BrowseExperience.KUBRICK_AB_TEST_HERO_IMAGES || BrowseExperience.currExperience == BrowseExperience.KUBRICK_AB_TEST_HIGH_DENSITY;
-    }
-    
     public static void refresh(final Context context, final UserProfile userProfile) {
         final PersistentExperience value = PersistentExperience.get(context);
         boolean b;
@@ -765,43 +370,15 @@ public enum BrowseExperience implements IExperience
             BrowseExperience.currExperience = BrowseExperience.KIDS_TABLET_STANDARD;
         }
         else {
-            switch (BrowseExperience$21.$SwitchMap$com$netflix$mediaclient$ui$experience$PersistentExperience[value.ordinal()]) {
-                default: {
-                    BrowseExperience currExperience;
-                    if (BarkerHelper.isInTest(context)) {
-                        currExperience = BrowseExperience.DISPLAY_PAGE_REFRESH;
-                    }
-                    else {
-                        currExperience = BrowseExperience.STANDARD;
-                    }
-                    BrowseExperience.currExperience = currExperience;
-                    break;
-                }
-                case 1: {
-                    BrowseExperience.currExperience = BrowseExperience.KUBRICK_AB_TEST_HERO_IMAGES;
-                    break;
-                }
-                case 2: {
-                    BrowseExperience.currExperience = BrowseExperience.KUBRICK_AB_TEST_HIGH_DENSITY;
-                    break;
-                }
-                case 3: {
-                    BrowseExperience.currExperience = BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_2;
-                    break;
-                }
-                case 4: {
-                    BrowseExperience.currExperience = BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_5;
-                    break;
-                }
-                case 5: {
-                    BrowseExperience.currExperience = BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_3;
-                    break;
-                }
-                case 6: {
-                    BrowseExperience.currExperience = BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_4;
-                    break;
-                }
+            final int n = BrowseExperience$7.$SwitchMap$com$netflix$mediaclient$ui$experience$PersistentExperience[value.ordinal()];
+            BrowseExperience currExperience;
+            if (BarkerHelper.isInTest(context)) {
+                currExperience = BrowseExperience.DISPLAY_PAGE_REFRESH;
             }
+            else {
+                currExperience = BrowseExperience.STANDARD;
+            }
+            BrowseExperience.currExperience = currExperience;
         }
         if (Log.isLoggable()) {
             final BrowseExperience currExperience2 = BrowseExperience.currExperience;

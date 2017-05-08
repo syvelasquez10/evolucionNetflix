@@ -183,7 +183,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         whistleEngineConfig.setSamplerate(voipSampleRateInHz);
         Log.d("nf_voip", "SSL proxy server validation is enabled, set root certificate(s)...");
         try {
-            final String rawString = FileUtils.readRawString(this.getContext(), 2131165186);
+            final String rawString = FileUtils.readRawString(this.getContext(), 2131230722);
             if (Log.isLoggable()) {
                 Log.d("nf_voip", "PEM\n" + rawString);
             }
@@ -335,7 +335,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                 }
                 Log.d("nf_voip", "Start VOIP engine");
                 try {
-                    this.mEngine.start(this, configuration, this.getContext());
+                    this.mEngine.start((WhistleEngineDelegate)this, configuration, this.getContext());
                     this.mEngineStarted = true;
                     return false;
                 }
@@ -395,14 +395,12 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         }
     }
     
-    @Override
     public void authenticationNeeded(final boolean b) {
         if (Log.isLoggable()) {
             Log.e("nf_voip", "authenticationNeeded " + b);
         }
     }
     
-    @Override
     public void callConnected(final int n) {
         while (true) {
             while (true) {
@@ -444,7 +442,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         }
     }
     
-    @Override
     public void callDisconnected(final int n) {
         synchronized (this) {
             if (Log.isLoggable()) {
@@ -456,7 +453,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         }
     }
     
-    @Override
     public void callEnded(final int n) {
         while (true) {
             Label_0175: {
@@ -493,7 +489,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     }
     // monitorexit(this)
     
-    @Override
     public void callFailed(final int p0, final String p1, final int p2) {
         // 
         // This method could not be decompiled.
@@ -717,7 +712,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    @Override
     public void callRinging(final int n) {
         if (Log.isLoggable()) {
             Log.d("nf_voip", "Outbound call ringing on line " + n);
@@ -741,14 +735,12 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         Log.e("nf_voip", "Engine is null and we received call ringing! Should not happen!");
     }
     
-    @Override
     public void callSecured(final int n, final boolean b) {
         if (Log.isLoggable()) {
             Log.d("nf_voip", "Not supported:::callSecured for line " + n + ", ? " + b);
         }
     }
     
-    @Override
     public void connectivityUpdate(final int n, final WhistleEngineDelegate$ConnectivityState whistleEngineDelegate$ConnectivityState) {
         if (Log.isLoggable()) {
             Log.d("nf_voip", "connectivityUpdate for line " + n + ", state " + whistleEngineDelegate$ConnectivityState);
@@ -814,13 +806,11 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         this.initCompleted(CommonStatus.OK);
     }
     
-    @Override
     public void engineNotReady() {
         Log.w("nf_voip", "Engine is NOT ready!");
         this.mEngineReady.set(false);
     }
     
-    @Override
     public void engineReady() {
         Log.d("nf_voip", "Engine is ready");
         this.mEngineReady.set(true);
@@ -854,7 +844,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         return 0.0f;
     }
     
-    @Override
     public void incomingCall(final int n, final String s, final String s2) {
         if (Log.isLoggable()) {
             Log.d("nf_voip", "Incomming call on line " + n + " from " + s + ", name " + s2);
@@ -890,7 +879,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         }
     }
     
-    @Override
     public void networkFailure(final int n) {
         if (Log.isLoggable()) {
             Log.d("nf_voip", "Network failure for line " + n);
@@ -916,6 +904,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                             deepErrorElement.setFatal(true);
                             deepErrorElement.setErrorCode("networkFailed");
                             final DeepErrorElement$Debug debug = new DeepErrorElement$Debug();
+                        Block_7_Outer:
                             while (true) {
                                 try {
                                     final JSONObject message = new JSONObject();
@@ -927,28 +916,29 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                     CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), (CustomerServiceLogging$TerminationReason)o2, IClientLogging$CompletionReason.failed, (Error)o);
                                     this.callCleanup();
                                     return;
+                                    // iftrue(Label_0096:, !o2.hasNext())
                                     // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
-                                    Block_7: {
-                                        break Block_7;
-                                        Label_0274: {
-                                            Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
-                                        }
-                                        return;
-                                        Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
-                                        break;
-                                    }
-                                    o2 = this.mListeners.iterator();
                                     while (true) {
-                                        Label_0244: {
-                                            break Label_0244;
-                                            o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
-                                            continue Label_0187_Outer;
+                                        while (true) {
                                             ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
+                                            Label_0244: {
+                                                break Label_0244;
+                                                o2 = this.mListeners.iterator();
+                                                break Label_0244;
+                                                Label_0274: {
+                                                    Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
+                                                }
+                                                return;
+                                            }
+                                            continue Block_7_Outer;
                                         }
+                                        o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
+                                        continue Label_0187_Outer;
                                         continue;
                                     }
+                                    Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
+                                    break;
                                 }
-                                // iftrue(Label_0096:, !o2.hasNext())
                                 catch (JSONException ex) {
                                     continue;
                                 }
@@ -972,7 +962,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         return this.mAuthorizationTokensManager.refreshAuthorizationTokens();
     }
     
-    @Override
     public void registrationSuccessful() {
         Log.w("nf_voip", "RegistrationSuccessful? This should not happen!");
     }
@@ -989,7 +978,6 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         this.mAuthorizationTokensManager.removeUserTokens();
     }
     
-    @Override
     public void selectedCodec(final int n, final String s, final int n2) {
         if (Log.isLoggable()) {
             Log.d("nf_voip", "Selected coded for line " + n + ", codec " + s + ", sample rate " + n2);

@@ -8,7 +8,9 @@ import android.media.RemoteControlClient$OnMetadataUpdateListener;
 import android.media.RemoteControlClient;
 import android.media.RemoteControlClient$MetadataEditor;
 import android.os.Bundle;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class MediaSessionCompatApi19
 {
     private static final long ACTION_SET_RATING = 128L;

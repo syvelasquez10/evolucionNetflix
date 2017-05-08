@@ -8,6 +8,7 @@ public interface PreferenceKeys
 {
     public static final String CONFIG_MINIMAL_VERSION = "config_min_version";
     public static final String CONFIG_RECOMMENDED_VERSION = "config_recommended_version";
+    public static final String DEBUG_NETWORK_SPEED_CONTROL_KEY = "debug_network_speed_Key";
     public static final String DISK_CACHE_SIZE = "disk_cache_size";
     public static final String LOLOMO_GUID_FETCH_TIME_MS = "prefs_prefetch_json_last_write_system_time_ms";
     public static final String PARAM_DEVICE_CONFIG_CACHED = "nf_device_config_cached";
@@ -114,6 +115,8 @@ public interface PreferenceKeys
     public static final String PREFERENCE_WARN_WHEN_PLAY_ON_NOWIFI = "nf_play_no_wifi_warning";
     public static final String PREFERENCE__PLAYEROVERLAY = "ui.playeroverlay";
     public static final String PREFETCH_LOLOMO_JOB_LAST_START_TIME_MS = "prefs_prefetch_lolomo_job_last_start_time_ms";
+    public static final String PREF_CHANNEL_ID_APP_LAUNCHES = "channelIdAppLaunches";
+    public static final String PREF_CHANNEL_ID_VALUE = "channelIdValue";
     public static final String PREF_DEBUG_ENABLE_ANDROID_HTTP_STACK_OVER_CRONET = "shouldUseAndroidHttpStackOverCronet";
     public static final String PREF_DEBUG_OVERLAY_ENABLED = "prefs_debug_overlay_enabled";
     public static final String PREF_DEBUG_SETTINGS_FORCE_PIN_CHECK = "prefs_debug_settings_force_pin_check";

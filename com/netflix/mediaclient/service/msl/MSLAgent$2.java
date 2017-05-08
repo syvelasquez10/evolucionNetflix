@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.IMSLClient$NetworkRequestInspector;
 import com.netflix.msl.MslConstants$ResponseCode;
 import com.netflix.msl.msg.ErrorHeader;
 import com.netflix.mediaclient.service.msl.client.MslErrorException;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.android.volley.Network;
 import com.android.volley.Cache;

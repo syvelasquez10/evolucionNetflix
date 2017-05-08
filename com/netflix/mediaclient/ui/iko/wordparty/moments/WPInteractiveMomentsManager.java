@@ -220,14 +220,14 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             }
             return;
         }
-        this.bottomPanel = view.findViewById(2131690136);
-        this.loadingProgressBar = (ProgressBar)view.findViewById(2131690412);
-        this.pugContainer = (FrameLayout)view.findViewById(2131690393);
-        this.wpContainer = (RelativeLayout)view.findViewById(2131690392);
-        this.pugImageView = (ImageView)view.findViewById(2131690396);
-        this.pugRevealView = view.findViewById(2131690394);
-        this.progressBar = (ProgressBar)view.findViewById(2131690395);
-        (this.closeButton = (IconFontTextView)view.findViewById(2131690073)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
+        this.bottomPanel = view.findViewById(2131755704);
+        this.loadingProgressBar = (ProgressBar)view.findViewById(2131755980);
+        this.pugContainer = (FrameLayout)view.findViewById(2131755961);
+        this.wpContainer = (RelativeLayout)view.findViewById(2131755960);
+        this.pugImageView = (ImageView)view.findViewById(2131755964);
+        this.pugRevealView = view.findViewById(2131755962);
+        this.progressBar = (ProgressBar)view.findViewById(2131755963);
+        (this.closeButton = (IconFontTextView)view.findViewById(2131755640)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
         this.progressBar.setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$11(this));
         this.wpContainer.setOnTouchListener((View$OnTouchListener)null);
         this.momentScreen = new WPMomentScreen(this);
@@ -267,7 +267,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             this.pugImageView.setImageBitmap(this.pugSelectedBitmap);
         }
         else {
-            this.pugImageView.setImageResource(2130837841);
+            this.pugImageView.setImageResource(2130837968);
         }
         this.pugPulsateAnimation(false);
     }
@@ -533,7 +533,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         //   203: pop            
         //   204: aload_0        
         //   205: getfield        com/netflix/mediaclient/ui/iko/wordparty/moments/WPInteractiveMomentsManager.pugImageView:Landroid/widget/ImageView;
-        //   208: ldc_w           2130837840
+        //   208: ldc_w           2130837967
         //   211: invokevirtual   android/widget/ImageView.setImageResource:(I)V
         //   214: iconst_1       
         //   215: ireturn        
@@ -859,7 +859,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         }
         this.fragment = fragment;
         final View view = fragment.getView();
-        this.ikoContainer = (RelativeLayout)view.findViewById(2131689867);
+        this.ikoContainer = (RelativeLayout)view.findViewById(2131755416);
         if (this.ikoContainer == null) {
             Log.d("WPInteractiveMomentsManager", "No interactive moments view container. Exiting the decorator.");
             return;
@@ -871,12 +871,12 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             this.ikoContainer.removeAllViews();
         }
         this.hasInteractiveMoments = false;
-        LayoutInflater.from((Context)fragment.getNetflixActivity()).inflate(2130903323, (ViewGroup)this.ikoContainer, true);
+        LayoutInflater.from((Context)fragment.getNetflixActivity()).inflate(2130903337, (ViewGroup)this.ikoContainer, true);
         this.findAndConfigureViews(view);
         if (ViewUtils.isNavigationBarBelowContent(fragment.getActivity())) {
             this.bottomPanelHeight += ViewUtils.getNavigationBarHeight((Context)fragment.getActivity(), false);
         }
-        final int dimensionPixelSize = fragment.getResources().getDimensionPixelSize(2131361948);
+        final int dimensionPixelSize = fragment.getResources().getDimensionPixelSize(2131427489);
         this.deviceWidth = DeviceUtils.getScreenWidthInPixels(this.getContext());
         this.pugRevealScale = this.deviceWidth / dimensionPixelSize * 2.5f;
         if (Log.isLoggable()) {

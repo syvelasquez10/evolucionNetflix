@@ -4,6 +4,7 @@
 
 package android.support.v4.view;
 
+import android.support.v4.content.ContextCompat;
 import android.database.DataSetObserver;
 import android.content.res.Resources$NotFoundException;
 import android.view.View$MeasureSpec;
@@ -102,6 +103,7 @@ public class ViewPager extends ViewGroup
     private List<ViewPager$OnPageChangeListener> mOnPageChangeListeners;
     private int mPageMargin;
     private ViewPager$PageTransformer mPageTransformer;
+    private int mPageTransformerLayerType;
     private boolean mPopulatePending;
     private Parcelable mRestoredAdapterState;
     private ClassLoader mRestoredClassLoader;
@@ -410,14 +412,14 @@ public class ViewPager extends ViewGroup
     
     private void enableLayers(final boolean b) {
         for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
-            int n;
+            int mPageTransformerLayerType;
             if (b) {
-                n = 2;
+                mPageTransformerLayerType = this.mPageTransformerLayerType;
             }
             else {
-                n = 0;
+                mPageTransformerLayerType = 0;
             }
-            ViewCompat.setLayerType(this.getChildAt(i), n, null);
+            ViewCompat.setLayerType(this.getChildAt(i), mPageTransformerLayerType, null);
         }
     }
     
@@ -2481,7 +2483,7 @@ public class ViewPager extends ViewGroup
     }
     
     public void setPageMarginDrawable(final int n) {
-        this.setPageMarginDrawable(this.getContext().getResources().getDrawable(n));
+        this.setPageMarginDrawable(ContextCompat.getDrawable(this.getContext(), n));
     }
     
     public void setPageMarginDrawable(final Drawable mMarginDrawable) {
@@ -2493,7 +2495,11 @@ public class ViewPager extends ViewGroup
         this.invalidate();
     }
     
-    public void setPageTransformer(final boolean b, final ViewPager$PageTransformer mPageTransformer) {
+    public void setPageTransformer(final boolean b, final ViewPager$PageTransformer viewPager$PageTransformer) {
+        this.setPageTransformer(b, viewPager$PageTransformer, 2);
+    }
+    
+    public void setPageTransformer(final boolean b, final ViewPager$PageTransformer mPageTransformer, final int mPageTransformerLayerType) {
         int mDrawingOrder = 1;
         if (Build$VERSION.SDK_INT >= 11) {
             final boolean childrenDrawingOrderEnabledCompat = mPageTransformer != null;
@@ -2511,6 +2517,7 @@ public class ViewPager extends ViewGroup
                     mDrawingOrder = 2;
                 }
                 this.mDrawingOrder = mDrawingOrder;
+                this.mPageTransformerLayerType = mPageTransformerLayerType;
             }
             else {
                 this.mDrawingOrder = 0;

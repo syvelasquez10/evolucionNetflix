@@ -7,12 +7,15 @@ package com.netflix.mediaclient.ui.player;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.model.leafs.PostPlayItem;
+import android.animation.Animator$AnimatorListener;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.LinearLayout;
 
 public abstract class PostPlayItemView extends LinearLayout
 {
+    private static final long FADE_DURATION_MS = 300L;
+    
     public PostPlayItemView(final Context context) {
         this(context, null);
     }
@@ -35,7 +38,17 @@ public abstract class PostPlayItemView extends LinearLayout
     public void onTick(final int n) {
     }
     
+    final void startPostPlay(final int n) {
+        this.setAlpha(0.0f);
+        this.animate().alpha(1.0f).setDuration(300L).start();
+        this.startTimer(n);
+    }
+    
     protected abstract void startTimer(final int p0);
+    
+    final void stopPostPlay() {
+        this.animate().alpha(0.0f).setListener((Animator$AnimatorListener)new PostPlayItemView$1(this)).setDuration(300L).start();
+    }
     
     protected abstract void stopTimer();
     

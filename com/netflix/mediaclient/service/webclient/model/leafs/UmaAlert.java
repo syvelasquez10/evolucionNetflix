@@ -7,9 +7,8 @@ package com.netflix.mediaclient.service.webclient.model.leafs;
 import com.google.gson.TypeAdapter;
 import com.google.gson.Gson;
 import java.util.concurrent.TimeUnit;
-import android.os.Parcelable;
 
-public abstract class UmaAlert implements Parcelable
+public abstract class UmaAlert
 {
     public static final String ACTION_UMA_MESSAGE_CONSUMED = "RefreshUserMessageRequest.ACTION_UMA_MESSAGE_CONSUMED";
     public static final String ACTION_UMA_MESSAGE_UPDATED = "RefreshUserMessageRequest.ACTION_UMA_MESSAGE_UPDATED";
@@ -29,7 +28,7 @@ public abstract class UmaAlert implements Parcelable
     }
     
     public static TypeAdapter<UmaAlert> typeAdapter(final Gson gson) {
-        return new $AutoValue_UmaAlert$GsonTypeAdapter(gson);
+        return new AutoValue_UmaAlert$GsonTypeAdapter(gson);
     }
     
     public abstract int abTestCell();
@@ -65,6 +64,8 @@ public abstract class UmaAlert implements Parcelable
     public abstract long timestamp();
     
     public abstract String title();
+    
+    public abstract String trackingInfo();
     
     public abstract String viewType();
 }

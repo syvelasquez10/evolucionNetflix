@@ -12,10 +12,8 @@ import io.realm.Realm$Transaction$OnError;
 import io.realm.Realm$Transaction$OnSuccess;
 import io.realm.RealmAsyncTask;
 import io.realm.internal.Table;
-import java.util.List;
 import java.util.Collections;
 import io.realm.BaseRealm$MigrationCallback;
-import io.realm.RealmMigration;
 import io.realm.Realm$3;
 import io.realm.internal.ColumnInfo;
 import java.util.Set;
@@ -41,29 +39,29 @@ import io.realm.internal.ColumnIndices;
 import io.realm.internal.RealmObjectProxy;
 import java.util.Map;
 import io.realm.BaseRealm;
+import android.content.Context;
 import io.realm.RealmModel;
 import java.util.Iterator;
 import io.realm.RealmResults;
-import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineImageUtils;
+import java.util.List;
 import io.realm.Realm$Transaction;
-import android.content.Context;
 import io.realm.Realm;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import java.util.Arrays;
+import io.realm.RealmMigration;
 import io.realm.RealmConfiguration$Builder;
 import java.util.HashMap;
 import io.realm.RealmConfiguration;
 
 public class RealmUtils
 {
-    private static final int OFFLINE_REALM_DB_SCHEMA_VERSION = 1;
     public static final String TAG = "RealmUtils";
     public static RealmConfiguration sCurrentConfig;
     private static HashMap<Long, RealmUtils$DbState> sCurrentStatesMap;
     
     static {
-        RealmUtils.sCurrentConfig = new RealmConfiguration$Builder().name("offline.realm").schemaVersion(1L).build();
+        RealmUtils.sCurrentConfig = new RealmConfiguration$Builder().name("offline.realm").modules((Object)new RealmOfflineModule(), new Object[0]).migration((RealmMigration)new RealmOfflineMigration()).schemaVersion(2L).build();
     }
     
     private static void checkAndUpdateCurrentState(final RealmUtils$DbState realmUtils$DbState, final RealmUtils$DbState realmUtils$DbState2) {
@@ -99,11 +97,6 @@ public class RealmUtils
         realm.close();
     }
     
-    public static void deleteAllOfflineData(final Context context, final Realm realm) {
-        executeTransaction(realm, new RealmUtils$1());
-        OfflineImageUtils.deleteAllOfflineImages(context);
-    }
-    
     public static void executeTransaction(final Realm realm, final Realm$Transaction realm$Transaction) {
         checkAndUpdateCurrentState(RealmUtils$DbState.INSTANCE_OBTAINED, RealmUtils$DbState.INSTANCE_OBTAINED);
         realm.executeTransaction(realm$Transaction);
@@ -114,10 +107,14 @@ public class RealmUtils
         realm.executeTransactionAsync(realm$Transaction);
     }
     
+    public static List<RealmIncompleteVideoDetails> getIncompleteVideoDetails(final Realm realm) {
+        return (List<RealmIncompleteVideoDetails>)realm.where(RealmIncompleteVideoDetails.class).findAll();
+    }
+    
     public static RealmVideoDetails getOfflineVideoDetails(final String s) {
         final Realm realmInstance = getRealmInstance();
         try {
-            final RealmResults<RealmVideoDetails> all = realmInstance.where(RealmVideoDetails.class).equalTo("id", s).findAll();
+            final RealmResults all = realmInstance.where(RealmVideoDetails.class).equalTo("id", s).findAll();
             final int size = all.size();
             if (size != 1) {
                 ErrorLoggingManager.logHandledException(String.format("SPY-10228 - Found %d records for the following video id: %s", size, s));
@@ -134,9 +131,25 @@ public class RealmUtils
         }
     }
     
+    public static RealmProfile getProfile(final String s) {
+        final Realm realmInstance = getRealmInstance();
+        try {
+            return (RealmProfile)realmInstance.where(RealmProfile.class).equalTo("id", s).findFirst();
+        }
+        finally {
+            close(realmInstance);
+        }
+    }
+    
     public static Realm getRealmInstance() {
         checkAndUpdateCurrentState(new RealmUtils$DbState[] { RealmUtils$DbState.CLOSED, RealmUtils$DbState.INSTANCE_OBTAINED }, RealmUtils$DbState.INSTANCE_OBTAINED);
-        return Realm.getInstance(RealmUtils.sCurrentConfig);
+        try {
+            return Realm.getInstance(RealmUtils.sCurrentConfig);
+        }
+        catch (IllegalArgumentException ex) {
+            Log.w("RealmUtils", "WARNING: If you downgraded the app please clear all app data");
+            throw ex;
+        }
     }
     
     public static boolean idNotExists(final Realm realm, final Class clazz, final String s) {
@@ -144,6 +157,6 @@ public class RealmUtils
     }
     
     public static void removeRecordsForPlayable(final Context context, final Realm realm, final String s) {
-        executeTransaction(realm, new RealmUtils$2(s, context));
+        executeTransaction(realm, (Realm$Transaction)new RealmUtils$1(s, context));
     }
 }

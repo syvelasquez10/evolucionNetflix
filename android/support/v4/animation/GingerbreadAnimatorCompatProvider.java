@@ -5,7 +5,9 @@
 package android.support.v4.animation;
 
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class GingerbreadAnimatorCompatProvider implements AnimatorProvider
 {
     @Override

@@ -505,9 +505,12 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
         final int mode2 = View$MeasureSpec.getMode(n2);
         n2 = View$MeasureSpec.getSize(n2);
         switch (mode2) {
-            case Integer.MIN_VALUE:
-            case 0: {
+            case Integer.MIN_VALUE: {
                 n2 = Math.min(this.getPreferredHeight(), n2);
+                break;
+            }
+            case 0: {
+                n2 = this.getPreferredHeight();
                 break;
             }
         }

@@ -5,7 +5,9 @@
 package android.support.v4.os;
 
 import android.os.Trace;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class TraceJellybeanMR2
 {
     public static void beginSection(final String s) {

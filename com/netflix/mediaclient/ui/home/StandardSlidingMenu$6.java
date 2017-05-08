@@ -39,15 +39,15 @@ import android.content.BroadcastReceiver;
 import android.widget.TextView;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.LinearLayout;
 import com.netflix.mediaclient.android.widget.StaticListView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 
-class StandardSlidingMenu$6 implements ErrorWrapper$Callback
+class StandardSlidingMenu$6 implements Runnable
 {
     final /* synthetic */ StandardSlidingMenu this$0;
     
@@ -56,8 +56,7 @@ class StandardSlidingMenu$6 implements ErrorWrapper$Callback
     }
     
     @Override
-    public void onRetryRequested() {
-        this.this$0.showGenreLoadingView();
-        this.this$0.fetchGenresDataIfReady();
+    public void run() {
+        this.this$0.drawerLayout.closeDrawers();
     }
 }

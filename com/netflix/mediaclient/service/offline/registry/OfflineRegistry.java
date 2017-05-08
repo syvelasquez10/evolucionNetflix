@@ -4,10 +4,13 @@
 
 package com.netflix.mediaclient.service.offline.registry;
 
+import android.os.StatFs;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
-import com.netflix.mediaclient.util.AndroidUtils;
 import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolume;
 import java.security.NoSuchAlgorithmException;
 import com.netflix.mediaclient.util.CryptoUtils;
 import com.google.gson.JsonSyntaxException;
@@ -18,9 +21,10 @@ import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.File;
+import java.util.ArrayList;
+import com.netflix.mediaclient.servicemgr.OfflineStorageVolumeUiListImpl;
+import java.util.List;
 import android.content.Context;
 
 public class OfflineRegistry
@@ -29,14 +33,13 @@ public class OfflineRegistry
     public static final String OFFLINE_DIRECTORY = "/.of";
     private static final String TAG = "nf_offline_registry";
     private final Context mContext;
-    private RegistryData mCurrentRegistryData;
     private MetaRegistry mMetaRegistry;
-    private final File[] mOfflineStorageDirArray;
-    private final List<RegistryData> mRegistryList;
+    private final List<OfflineStorageVolumeImpl> mOfflineStorageVolumeList;
+    private final OfflineStorageVolumeUiListImpl mUiOfflineUiStorageVolumeList;
     
-    private OfflineRegistry(final File[] mOfflineStorageDirArray, final Context mContext) {
-        this.mRegistryList = new ArrayList<RegistryData>();
-        this.mOfflineStorageDirArray = mOfflineStorageDirArray;
+    private OfflineRegistry(final Context mContext) {
+        this.mOfflineStorageVolumeList = new ArrayList<OfflineStorageVolumeImpl>();
+        this.mUiOfflineUiStorageVolumeList = new OfflineStorageVolumeUiListImpl();
         this.mContext = mContext;
     }
     
@@ -46,10 +49,12 @@ public class OfflineRegistry
         while (true) {
             final String s = "";
             file2 = new File(OfflinePathUtils.getFilePathForRegistry(file.getAbsolutePath()));
-            String byteArrayToString = s;
             String calculateChecksum = s;
             while (true) {
                 try {
+                    RegistryFileWriter.recoverRegistryDataFileAtStart(file2);
+                    String byteArrayToString = s;
+                    calculateChecksum = s;
                     if (file2.exists()) {
                         calculateChecksum = s;
                         byteArrayToString = StringUtils.byteArrayToString(FileUtils.readFileToByteArray(file2), "utf-8");
@@ -115,55 +120,50 @@ public class OfflineRegistry
         }
     }
     
-    public static OfflineRegistry create(final Context context) {
-        final File[] offlineStorageDirectoryArray = getOfflineStorageDirectoryArray(context);
-        if (offlineStorageDirectoryArray == null || offlineStorageDirectoryArray.length <= 0) {
-            return null;
+    public static OfflineRegistry create(final Context context, final OfflineStorageMonitor offlineStorageMonitor) {
+        OfflineRegistry offlineRegistry;
+        if (!(offlineRegistry = new OfflineRegistry(context)).init(offlineStorageMonitor)) {
+            offlineRegistry = null;
         }
-        final OfflineRegistry offlineRegistry = new OfflineRegistry(offlineStorageDirectoryArray, context);
-        offlineRegistry.readMetaRegistry();
-        offlineRegistry.readRegistryDataList();
-        final boolean hasAtLeastOneRegistryData = offlineRegistry.hasAtLeastOneRegistryData();
-        if (hasAtLeastOneRegistryData) {
-            offlineRegistry.ensureCurrentRegistryData();
-        }
-        if (hasAtLeastOneRegistryData) {
-            return offlineRegistry;
-        }
-        return null;
+        return offlineRegistry;
     }
     
-    private void ensureCurrentRegistryData() {
-        for (final RegistryData mCurrentRegistryData : this.mRegistryList) {
-            if (mCurrentRegistryData.mRegId == this.mMetaRegistry.mCurrentActiveRegId) {
-                if (Log.isLoggable()) {
-                    Log.i("nf_offline_registry", "found active reg " + mCurrentRegistryData.mRegId);
+    private List<OfflineStorageVolumeImpl> getOfflineStorageVolumeList() {
+        return this.mOfflineStorageVolumeList;
+    }
+    
+    private boolean init(final OfflineStorageMonitor offlineStorageMonitor) {
+        this.readMetaRegistry();
+        for (final OfflineStorageVolumeInfo offlineStorageVolumeInfo : offlineStorageMonitor.buildOfflineStorageVolumeInfoList()) {
+            final File file = new File(offlineStorageVolumeInfo.getDownloadDir().getAbsolutePath() + "/.of");
+            if (!file.isDirectory() && !file.mkdirs()) {
+                Log.e("nf_offline_registry", "OfflineRegistry can't create directory %s", file.getAbsolutePath());
+            }
+            else {
+                final RegistryData buildRegistryDataFromFile = this.buildRegistryDataFromFile(file);
+                if (buildRegistryDataFromFile == null) {
+                    continue;
                 }
-                this.mCurrentRegistryData = mCurrentRegistryData;
-                return;
+                this.removeCreatingOrFailedItemsFromRegistryData(buildRegistryDataFromFile);
+                this.mOfflineStorageVolumeList.add(new OfflineStorageVolumeImpl(this.mMetaRegistry, buildRegistryDataFromFile, offlineStorageVolumeInfo));
             }
         }
-        this.mCurrentRegistryData = this.mRegistryList.get(0);
-        this.mMetaRegistry.mCurrentActiveRegId = this.mCurrentRegistryData.mRegId;
-    }
-    
-    private static File[] getOfflineStorageDirectoryArray(final Context context) {
-        final File externalDownloadDirIfAvailable = AndroidUtils.getExternalDownloadDirIfAvailable(context);
-        if (externalDownloadDirIfAvailable != null) {
-            final File file = new File(externalDownloadDirIfAvailable.getAbsolutePath() + "/.of");
-            if (file.isDirectory() || file.mkdirs()) {
-                return new File[] { file };
+        this.mUiOfflineUiStorageVolumeList.update(this.mOfflineStorageVolumeList);
+        this.mMetaRegistry.mCurrentRegistryData = null;
+        if (this.mOfflineStorageVolumeList.size() > 0) {
+            this.mMetaRegistry.mCurrentRegistryData = this.mOfflineStorageVolumeList.get(0).mRegistryData;
+            final Iterator<OfflineStorageVolumeImpl> iterator2 = this.mOfflineStorageVolumeList.iterator();
+            while (iterator2.hasNext()) {
+                final RegistryData mRegistryData = iterator2.next().mRegistryData;
+                if (mRegistryData.mRegId == this.mMetaRegistry.mUserSelectedRegId) {
+                    Log.i("nf_offline_registry", "found selected regId=%d", mRegistryData.mRegId);
+                    this.mMetaRegistry.mCurrentRegistryData = mRegistryData;
+                    return true;
+                }
             }
-            if (Log.isLoggable()) {
-                Log.e("nf_offline_registry", "getOfflineStorageDirectoryArray can't create directory");
-                return null;
-            }
+            return true;
         }
-        return null;
-    }
-    
-    private boolean hasAtLeastOneRegistryData() {
-        return this.mRegistryList.size() > 0;
+        return false;
     }
     
     private void readMetaRegistry() {
@@ -328,17 +328,6 @@ public class OfflineRegistry
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private void readRegistryDataList() {
-        final File[] mOfflineStorageDirArray = this.mOfflineStorageDirArray;
-        for (int length = mOfflineStorageDirArray.length, i = 0; i < length; ++i) {
-            final RegistryData buildRegistryDataFromFile = this.buildRegistryDataFromFile(mOfflineStorageDirArray[i]);
-            if (buildRegistryDataFromFile != null) {
-                this.removeCreatingOrFailedItemsFromRegistryData(buildRegistryDataFromFile);
-                this.mRegistryList.add(buildRegistryDataFromFile);
-            }
-        }
-    }
-    
     private String registryDataToJson(final RegistryData registryData) {
         return NetflixApplication.getGson().toJson(registryData);
     }
@@ -357,7 +346,7 @@ public class OfflineRegistry
     }
     
     public void addToCurrentRegistryData(final OfflinePlayablePersistentData offlinePlayablePersistentData) {
-        this.mCurrentRegistryData.mOfflinePlayablePersistentDataList.add(offlinePlayablePersistentData);
+        this.mMetaRegistry.mCurrentRegistryData.mOfflinePlayablePersistentDataList.add(offlinePlayablePersistentData);
     }
     
     public boolean areDownloadsPausedByUser() {
@@ -365,14 +354,14 @@ public class OfflineRegistry
     }
     
     public void deleteDeletedList() {
-        this.mCurrentRegistryData.mDeletedPlayableList.clear();
+        this.mMetaRegistry.mCurrentRegistryData.mDeletedPlayableList.clear();
     }
     
     public List<OfflinePlayablePersistentData> getAllDeletedPlayable() {
         final ArrayList<OfflinePlayablePersistentData> list = new ArrayList<OfflinePlayablePersistentData>();
-        final Iterator<RegistryData> iterator = this.mRegistryList.iterator();
+        final Iterator<OfflineStorageVolumeImpl> iterator = this.mOfflineStorageVolumeList.iterator();
         while (iterator.hasNext()) {
-            final Iterator<OfflinePlayablePersistentData> iterator2 = iterator.next().mDeletedPlayableList.iterator();
+            final Iterator<OfflinePlayablePersistentData> iterator2 = iterator.next().mRegistryData.mDeletedPlayableList.iterator();
             while (iterator2.hasNext()) {
                 list.add(iterator2.next());
             }
@@ -381,7 +370,7 @@ public class OfflineRegistry
     }
     
     public String getCurrentOfflineStorageDirPath() {
-        return this.mCurrentRegistryData.mOfflineRootStorageDirPath;
+        return this.mMetaRegistry.mCurrentRegistryData.mOfflineRootStorageDirPath;
     }
     
     public String getGeoCountryCode() {
@@ -392,14 +381,18 @@ public class OfflineRegistry
         return this.mMetaRegistry.mPrimaryProfileGuid;
     }
     
-    public List<RegistryData> getRegistryList() {
-        return this.mRegistryList;
+    public OfflineRegistry$RegistryEnumerator getRegistryEnumerator() {
+        return new OfflineRegistry$RegistryEnumerator(this);
+    }
+    
+    public OfflineStorageVolumeUiList getUiStorageVolumeList() {
+        return this.mUiOfflineUiStorageVolumeList;
     }
     
     public boolean hasAtLeastOnePlayable() {
-        final Iterator<RegistryData> iterator = this.mRegistryList.iterator();
+        final Iterator<OfflineStorageVolumeImpl> iterator = this.mOfflineStorageVolumeList.iterator();
         while (iterator.hasNext()) {
-            if (iterator.next().mOfflinePlayablePersistentDataList.size() > 0) {
+            if (iterator.next().mRegistryData.mOfflinePlayablePersistentDataList.size() > 0) {
                 return true;
             }
         }
@@ -407,36 +400,30 @@ public class OfflineRegistry
     }
     
     public boolean persistRegistry() {
-        final Iterator<RegistryData> iterator = this.mRegistryList.iterator();
+        final Iterator<OfflineStorageVolumeImpl> iterator = this.mOfflineStorageVolumeList.iterator();
         boolean b = true;
         while (iterator.hasNext()) {
-            final RegistryData registryData = iterator.next();
-            registryData.mMetaRegistryWriteCounter = this.mMetaRegistry.mMetaRegistryWriteCounter + 1;
-            final String registryDataToJson = this.registryDataToJson(registryData);
+            final RegistryData mRegistryData = iterator.next().mRegistryData;
+            mRegistryData.mMetaRegistryWriteCounter = this.mMetaRegistry.mMetaRegistryWriteCounter + 1;
+            final String registryDataToJson = this.registryDataToJson(mRegistryData);
             if (Log.isLoggable()) {
                 Log.i("nf_offline_registry", "persistRegistry jsonData=" + registryDataToJson);
             }
-            final File file = new File(OfflinePathUtils.getFilePathForRegistry(registryData.mOfflineRootStorageDirPath));
-            if (Log.isLoggable()) {
-                Log.i("nf_offline_registry", "persistRegistry writing registry=" + file.getAbsolutePath());
-            }
-            final boolean writeBytesToFile = FileUtils.writeBytesToFile(file.getAbsolutePath(), registryDataToJson.getBytes());
-            boolean b2 = b;
+            final File file = new File(OfflinePathUtils.getFilePathForRegistry(mRegistryData.mOfflineRootStorageDirPath));
+            Log.i("nf_offline_registry", "persistRegistry writing registry=%s", file.getAbsolutePath());
+            final boolean writeRegistryFileRecoverable = RegistryFileWriter.writeRegistryFileRecoverable(file, registryDataToJson);
             if (b) {
-                b2 = writeBytesToFile;
+                b = writeRegistryFileRecoverable;
             }
-            b = b2;
-            if (writeBytesToFile) {
+            if (writeRegistryFileRecoverable) {
                 final String calculateChecksum = this.calculateChecksum(registryDataToJson);
-                b = b2;
                 if (!StringUtils.isNotEmpty(calculateChecksum)) {
                     continue;
                 }
                 if (Log.isLoggable()) {
                     Log.i("nf_offline_registry", "persistRegistry newCheckSum=" + calculateChecksum);
                 }
-                this.mMetaRegistry.updateCheckSum(registryData.mRegId, calculateChecksum);
-                b = b2;
+                this.mMetaRegistry.updateCheckSum(mRegistryData.mRegId, calculateChecksum);
             }
         }
         ++this.mMetaRegistry.mMetaRegistryWriteCounter;
@@ -444,32 +431,43 @@ public class OfflineRegistry
         if (Log.isLoggable()) {
             Log.i("nf_offline_registry", "persistRegistry metaRegistryJson=" + json);
         }
-        final boolean writeBytesToFile2 = FileUtils.writeBytesToFile(OfflinePathUtils.getFilePathForMetaRegistry(this.mContext.getFilesDir()), json.getBytes());
-        if (b && writeBytesToFile2) {
+        final boolean writeBytesToFile = FileUtils.writeBytesToFile(OfflinePathUtils.getFilePathForMetaRegistry(this.mContext.getFilesDir()), json.getBytes());
+        if (b && writeBytesToFile) {
             return true;
         }
         if (Log.isLoggable()) {
-            Log.e("nf_offline_registry", "persistRegistry can't save allRegistriesSaved=" + b + "metaRegistrySaved=" + writeBytesToFile2);
+            Log.e("nf_offline_registry", "persistRegistry can't save allRegistriesSaved=" + b + "metaRegistrySaved=" + writeBytesToFile);
         }
         return false;
     }
     
+    public void recalculateOsvSpaceUsage() {
+        for (final OfflineStorageVolumeImpl offlineStorageVolumeImpl : this.mOfflineStorageVolumeList) {
+            final StatFs statFsForExternalStorageDir = AndroidUtils.getStatFsForExternalStorageDir(offlineStorageVolumeImpl.getDownloadDir());
+            if (statFsForExternalStorageDir != null) {
+                offlineStorageVolumeImpl.mOfflineStorageVolumeInfo.updateSpaceInfo(statFsForExternalStorageDir);
+            }
+        }
+    }
+    
     public void removeFromDeletedList(final OfflinePlayablePersistentData offlinePlayablePersistentData) {
-        final Iterator<RegistryData> iterator = this.mRegistryList.iterator();
+        final Iterator<OfflineStorageVolumeImpl> iterator = this.mOfflineStorageVolumeList.iterator();
         while (iterator.hasNext()) {
-            iterator.next().mDeletedPlayableList.remove(offlinePlayablePersistentData);
+            iterator.next().mRegistryData.mDeletedPlayableList.remove(offlinePlayablePersistentData);
         }
     }
     
     public void removePlayable(final OfflinePlayablePersistentData offlinePlayablePersistentData, final boolean b) {
         RegistryData registryData = null;
+        final Iterator<OfflineStorageVolumeImpl> iterator = this.mOfflineStorageVolumeList.iterator();
     Label_0013:
-        for (final RegistryData registryData2 : this.mRegistryList) {
-            final Iterator<OfflinePlayablePersistentData> iterator2 = registryData2.mOfflinePlayablePersistentDataList.iterator();
+        while (iterator.hasNext()) {
+            final RegistryData mRegistryData = iterator.next().mRegistryData;
+            final Iterator<OfflinePlayablePersistentData> iterator2 = mRegistryData.mOfflinePlayablePersistentDataList.iterator();
             while (true) {
                 while (iterator2.hasNext()) {
                     if (iterator2.next().mPlayableId.equals(offlinePlayablePersistentData.mPlayableId)) {
-                        registryData = registryData2;
+                        registryData = mRegistryData;
                         continue Label_0013;
                     }
                 }
@@ -485,6 +483,24 @@ public class OfflineRegistry
         else if (Log.isLoggable()) {
             Log.e("nf_offline_registry", "removePlayable can't remove the playable");
         }
+    }
+    
+    public boolean setCurrentOfflineVolume(final int n) {
+        if (n >= 0 && n < this.mOfflineStorageVolumeList.size()) {
+            final OfflineStorageVolumeImpl offlineStorageVolumeImpl = this.mOfflineStorageVolumeList.get(n);
+            final Iterator<OfflineStorageVolumeImpl> iterator = this.mOfflineStorageVolumeList.iterator();
+            while (iterator.hasNext()) {
+                final RegistryData mRegistryData = iterator.next().mRegistryData;
+                if (mRegistryData.mRegId == offlineStorageVolumeImpl.getVolumeRegId()) {
+                    this.mMetaRegistry.mCurrentRegistryData = mRegistryData;
+                    this.mMetaRegistry.mUserSelectedRegId = mRegistryData.mRegId;
+                    Log.i("nf_offline_registry", "setCurrentOfflineVolume success mRegId=%d", mRegistryData.mRegId);
+                    return true;
+                }
+            }
+        }
+        Log.i("nf_offline_registry", "setCurrentOfflineVolume invalid selectedVolumeIndex=%d", n);
+        return false;
     }
     
     public void setDownloadsPausedByUser(final boolean mDownloadsPausedByUser) {

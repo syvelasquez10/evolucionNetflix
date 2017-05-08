@@ -20,7 +20,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.media.session.MediaSession;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class MediaSessionCompatApi21
 {
     public static Object createCallback(final MediaSessionCompatApi21$Callback mediaSessionCompatApi21$Callback) {

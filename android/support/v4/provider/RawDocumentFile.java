@@ -137,6 +137,11 @@ class RawDocumentFile extends DocumentFile
     }
     
     @Override
+    public boolean isVirtual() {
+        return false;
+    }
+    
+    @Override
     public long lastModified() {
         return this.mFile.lastModified();
     }

@@ -14,7 +14,9 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class DrawableWrapperLollipop extends DrawableWrapperKitKat
 {
     DrawableWrapperLollipop(final Drawable drawable) {

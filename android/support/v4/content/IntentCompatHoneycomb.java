@@ -6,7 +6,9 @@ package android.support.v4.content;
 
 import android.content.Intent;
 import android.content.ComponentName;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class IntentCompatHoneycomb
 {
     public static Intent makeMainActivity(final ComponentName componentName) {

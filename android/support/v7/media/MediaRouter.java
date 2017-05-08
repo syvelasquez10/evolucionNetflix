@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public final class MediaRouter
 {
-    private static final boolean DEBUG;
+    static final boolean DEBUG;
     static MediaRouter$GlobalMediaRouter sGlobal;
     final ArrayList<MediaRouter$CallbackRecord> mCallbackRecords;
     final Context mContext;
@@ -93,11 +93,6 @@ public final class MediaRouter
         }
     }
     
-    public MediaRouter$RouteInfo getDefaultRoute() {
-        checkCallingThread();
-        return MediaRouter.sGlobal.getDefaultRoute();
-    }
-    
     public MediaRouter$RouteInfo getSelectedRoute() {
         checkCallingThread();
         return MediaRouter.sGlobal.getSelectedRoute();
@@ -134,6 +129,11 @@ public final class MediaRouter
             throw new IllegalArgumentException("Unsupported reason to unselect route");
         }
         checkCallingThread();
-        MediaRouter.sGlobal.selectRoute(this.getDefaultRoute(), n);
+        final MediaRouter$RouteInfo chooseFallbackRoute = MediaRouter.sGlobal.chooseFallbackRoute();
+        if (MediaRouter.sGlobal.getSelectedRoute() != chooseFallbackRoute) {
+            MediaRouter.sGlobal.selectRoute(chooseFallbackRoute, n);
+            return;
+        }
+        MediaRouter.sGlobal.selectRoute(MediaRouter.sGlobal.getDefaultRoute(), n);
     }
 }

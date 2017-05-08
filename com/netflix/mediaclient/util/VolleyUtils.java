@@ -20,8 +20,8 @@ import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
 import com.netflix.mediaclient.service.webclient.volley.FalkorException;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.android.volley.NetworkResponse;
 import java.util.Collections;
@@ -38,10 +38,8 @@ public final class VolleyUtils
         TIMEOUT_ERROR = new VolleyError(new NetworkResponse(VolleyUtils.HTTP_STATUS_REQUEST_TIMEOUT, new byte[0], Collections.emptyMap(), false));
     }
     
-    public static NetflixStatus getStatus(final VolleyError volleyError, final ErrorLogging errorLogging) {
-        final StatusCode internal_ERROR = StatusCode.INTERNAL_ERROR;
+    public static NetflixStatus getStatus(final VolleyError volleyError, final ErrorLogging errorLogging, StatusCode statusCode) {
         final String message = volleyError.getMessage();
-        StatusCode statusCode;
         if (volleyError instanceof FalkorException) {
             statusCode = FalkorException.getErrorCode(message, errorLogging);
         }
@@ -57,11 +55,8 @@ public final class VolleyUtils
         else if (volleyError instanceof NoConnectionError) {
             statusCode = StatusCode.NO_CONNECTIVITY;
         }
-        else {
-            statusCode = internal_ERROR;
-            if (volleyError instanceof StatusCodeError) {
-                statusCode = ((StatusCodeError)volleyError).getStatusCode();
-            }
+        else if (volleyError instanceof StatusCodeError) {
+            statusCode = ((StatusCodeError)volleyError).getStatusCode();
         }
         Log.d("nf_volley", "getStatus statusCode: " + statusCode);
         final NetflixStatus netflixStatus = new NetflixStatus(statusCode);

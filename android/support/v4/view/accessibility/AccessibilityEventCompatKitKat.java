@@ -5,7 +5,9 @@
 package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityEvent;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class AccessibilityEventCompatKitKat
 {
     public static int getContentChangeTypes(final AccessibilityEvent accessibilityEvent) {

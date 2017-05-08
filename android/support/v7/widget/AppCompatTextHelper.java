@@ -14,7 +14,9 @@ import android.content.res.ColorStateList;
 import android.content.Context;
 import android.os.Build$VERSION;
 import android.widget.TextView;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class AppCompatTextHelper
 {
     private TintInfo mDrawableBottomTint;
@@ -62,6 +64,8 @@ class AppCompatTextHelper
     }
     
     void loadFromAttributes(final AttributeSet set, int n) {
+        final ColorStateList list = null;
+        ColorStateList colorStateList = null;
         final Context context = this.mView.getContext();
         final AppCompatDrawableManager value = AppCompatDrawableManager.get();
         final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.AppCompatTextHelper, n, 0);
@@ -80,10 +84,9 @@ class AppCompatTextHelper
         }
         obtainStyledAttributes.recycle();
         final boolean b = this.mView.getTransformationMethod() instanceof PasswordTransformationMethod;
-        ColorStateList colorStateList = null;
-        final ColorStateList list = null;
         boolean boolean1;
         int n2;
+        ColorStateList colorStateList3;
         if (resourceId != -1) {
             final TintTypedArray obtainStyledAttributes2 = TintTypedArray.obtainStyledAttributes(context, resourceId, R$styleable.TextAppearance);
             if (!b && obtainStyledAttributes2.hasValue(R$styleable.TextAppearance_textAllCaps)) {
@@ -94,18 +97,32 @@ class AppCompatTextHelper
                 n2 = 0;
                 boolean1 = false;
             }
-            colorStateList = list;
+            ColorStateList list2;
             if (Build$VERSION.SDK_INT < 23) {
-                colorStateList = list;
+                ColorStateList colorStateList2;
                 if (obtainStyledAttributes2.hasValue(R$styleable.TextAppearance_android_textColor)) {
-                    colorStateList = obtainStyledAttributes2.getColorStateList(R$styleable.TextAppearance_android_textColor);
+                    colorStateList2 = obtainStyledAttributes2.getColorStateList(R$styleable.TextAppearance_android_textColor);
+                }
+                else {
+                    colorStateList2 = null;
+                }
+                list2 = colorStateList2;
+                if (obtainStyledAttributes2.hasValue(R$styleable.TextAppearance_android_textColorHint)) {
+                    colorStateList = obtainStyledAttributes2.getColorStateList(R$styleable.TextAppearance_android_textColorHint);
+                    list2 = colorStateList2;
                 }
             }
+            else {
+                list2 = null;
+            }
             obtainStyledAttributes2.recycle();
+            colorStateList3 = list2;
         }
         else {
+            colorStateList3 = null;
             n2 = 0;
             boolean1 = false;
+            colorStateList = list;
         }
         final TintTypedArray obtainStyledAttributes3 = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.TextAppearance, n, 0);
         n = n2;
@@ -118,16 +135,25 @@ class AppCompatTextHelper
                 n = 1;
             }
         }
-        ColorStateList colorStateList2 = colorStateList;
+        ColorStateList textColor = colorStateList3;
+        ColorStateList colorStateList4 = colorStateList;
         if (Build$VERSION.SDK_INT < 23) {
-            colorStateList2 = colorStateList;
             if (obtainStyledAttributes3.hasValue(R$styleable.TextAppearance_android_textColor)) {
-                colorStateList2 = obtainStyledAttributes3.getColorStateList(R$styleable.TextAppearance_android_textColor);
+                colorStateList3 = obtainStyledAttributes3.getColorStateList(R$styleable.TextAppearance_android_textColor);
+            }
+            textColor = colorStateList3;
+            colorStateList4 = colorStateList;
+            if (obtainStyledAttributes3.hasValue(R$styleable.TextAppearance_android_textColorHint)) {
+                colorStateList4 = obtainStyledAttributes3.getColorStateList(R$styleable.TextAppearance_android_textColorHint);
+                textColor = colorStateList3;
             }
         }
         obtainStyledAttributes3.recycle();
-        if (colorStateList2 != null) {
-            this.mView.setTextColor(colorStateList2);
+        if (textColor != null) {
+            this.mView.setTextColor(textColor);
+        }
+        if (colorStateList4 != null) {
+            this.mView.setHintTextColor(colorStateList4);
         }
         if (!b && n != 0) {
             this.setAllCaps(boolean2);

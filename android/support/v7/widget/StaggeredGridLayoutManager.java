@@ -13,6 +13,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.view.ViewGroup$LayoutParams;
 import android.graphics.PointF;
+import java.util.Arrays;
 import android.view.View$MeasureSpec;
 import android.view.View;
 import android.util.AttributeSet;
@@ -35,6 +36,7 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
     private StaggeredGridLayoutManager$SavedState mPendingSavedState;
     int mPendingScrollPosition;
     int mPendingScrollPositionOffset;
+    private int[] mPrefetchDistances;
     OrientationHelper mPrimaryOrientation;
     private BitSet mRemainingSpans;
     boolean mReverseLayout;
@@ -192,45 +194,27 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
     }
     
     private int computeScrollExtent(final RecyclerView$State recyclerView$State) {
-        final boolean b = false;
+        final boolean b = true;
         if (this.getChildCount() == 0) {
             return 0;
         }
-        final OrientationHelper mPrimaryOrientation = this.mPrimaryOrientation;
-        final View firstVisibleItemClosestToStart = this.findFirstVisibleItemClosestToStart(!this.mSmoothScrollbarEnabled, true);
-        boolean b2 = b;
-        if (!this.mSmoothScrollbarEnabled) {
-            b2 = true;
-        }
-        return ScrollbarHelper.computeScrollExtent(recyclerView$State, mPrimaryOrientation, firstVisibleItemClosestToStart, this.findFirstVisibleItemClosestToEnd(b2, true), this, this.mSmoothScrollbarEnabled);
+        return ScrollbarHelper.computeScrollExtent(recyclerView$State, this.mPrimaryOrientation, this.findFirstVisibleItemClosestToStart(!this.mSmoothScrollbarEnabled), this.findFirstVisibleItemClosestToEnd(!this.mSmoothScrollbarEnabled && b), this, this.mSmoothScrollbarEnabled);
     }
     
     private int computeScrollOffset(final RecyclerView$State recyclerView$State) {
-        final boolean b = false;
+        final boolean b = true;
         if (this.getChildCount() == 0) {
             return 0;
         }
-        final OrientationHelper mPrimaryOrientation = this.mPrimaryOrientation;
-        final View firstVisibleItemClosestToStart = this.findFirstVisibleItemClosestToStart(!this.mSmoothScrollbarEnabled, true);
-        boolean b2 = b;
-        if (!this.mSmoothScrollbarEnabled) {
-            b2 = true;
-        }
-        return ScrollbarHelper.computeScrollOffset(recyclerView$State, mPrimaryOrientation, firstVisibleItemClosestToStart, this.findFirstVisibleItemClosestToEnd(b2, true), this, this.mSmoothScrollbarEnabled, this.mShouldReverseLayout);
+        return ScrollbarHelper.computeScrollOffset(recyclerView$State, this.mPrimaryOrientation, this.findFirstVisibleItemClosestToStart(!this.mSmoothScrollbarEnabled), this.findFirstVisibleItemClosestToEnd(!this.mSmoothScrollbarEnabled && b), this, this.mSmoothScrollbarEnabled, this.mShouldReverseLayout);
     }
     
     private int computeScrollRange(final RecyclerView$State recyclerView$State) {
-        final boolean b = false;
+        final boolean b = true;
         if (this.getChildCount() == 0) {
             return 0;
         }
-        final OrientationHelper mPrimaryOrientation = this.mPrimaryOrientation;
-        final View firstVisibleItemClosestToStart = this.findFirstVisibleItemClosestToStart(!this.mSmoothScrollbarEnabled, true);
-        boolean b2 = b;
-        if (!this.mSmoothScrollbarEnabled) {
-            b2 = true;
-        }
-        return ScrollbarHelper.computeScrollRange(recyclerView$State, mPrimaryOrientation, firstVisibleItemClosestToStart, this.findFirstVisibleItemClosestToEnd(b2, true), this, this.mSmoothScrollbarEnabled);
+        return ScrollbarHelper.computeScrollRange(recyclerView$State, this.mPrimaryOrientation, this.findFirstVisibleItemClosestToStart(!this.mSmoothScrollbarEnabled), this.findFirstVisibleItemClosestToEnd(!this.mSmoothScrollbarEnabled && b), this, this.mSmoothScrollbarEnabled);
     }
     
     private int convertFocusDirectionToLayoutDirection(int n) {
@@ -556,21 +540,6 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
         }
     }
     
-    private int getFirstChildPosition() {
-        if (this.getChildCount() == 0) {
-            return 0;
-        }
-        return this.getPosition(this.getChildAt(0));
-    }
-    
-    private int getLastChildPosition() {
-        final int childCount = this.getChildCount();
-        if (childCount == 0) {
-            return 0;
-        }
-        return this.getPosition(this.getChildAt(childCount - 1));
-    }
-    
     private int getMaxEnd(final int n) {
         int endLine = this.mSpans[0].getEndLine(n);
         int n2;
@@ -768,7 +737,14 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
     private void onLayoutChildren(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, final boolean b) {
         final StaggeredGridLayoutManager$AnchorInfo mAnchorInfo = this.mAnchorInfo;
         if ((this.mPendingSavedState == null && this.mPendingScrollPosition == -1) || recyclerView$State.getItemCount() != 0) {
+            boolean b2;
             if (!mAnchorInfo.mValid || this.mPendingScrollPosition != -1 || this.mPendingSavedState != null) {
+                b2 = true;
+            }
+            else {
+                b2 = false;
+            }
+            if (b2) {
                 mAnchorInfo.reset();
                 if (this.mPendingSavedState != null) {
                     this.applyPendingSavedState(mAnchorInfo);
@@ -793,9 +769,17 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
                         }
                     }
                 }
-                else {
+                else if (b2 || this.mAnchorInfo.mSpanReferenceLines == null) {
                     for (int j = 0; j < this.mSpanCount; ++j) {
                         this.mSpans[j].cacheReferenceLineAndClear(this.mShouldReverseLayout, mAnchorInfo.mOffset);
+                    }
+                    this.mAnchorInfo.saveSpanReferenceLines(this.mSpans);
+                }
+                else {
+                    for (int k = 0; k < this.mSpanCount; ++k) {
+                        final StaggeredGridLayoutManager$Span staggeredGridLayoutManager$Span = this.mSpans[k];
+                        staggeredGridLayoutManager$Span.clear();
+                        staggeredGridLayoutManager$Span.setLine(this.mAnchorInfo.mSpanReferenceLines[k]);
                     }
                 }
             }
@@ -830,9 +814,9 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
                 }
             }
             while (true) {
-                Label_0615: {
+                Label_0705: {
                     if (!b || recyclerView$State.isPreLayout()) {
-                        break Label_0615;
+                        break Label_0705;
                     }
                     int n;
                     if (this.mGapStrategy != 0 && this.getChildCount() > 0 && (this.mLaidOutInvalidFullSpan || this.hasGapsToFix() != null)) {
@@ -842,11 +826,11 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
                         n = 0;
                     }
                     if (n == 0) {
-                        break Label_0615;
+                        break Label_0705;
                     }
                     this.removeCallbacks(this.mCheckForGapsRunnable);
                     if (!this.checkForGaps()) {
-                        break Label_0615;
+                        break Label_0705;
                     }
                     final int n2 = 1;
                     if (recyclerView$State.isPreLayout()) {
@@ -1249,6 +1233,38 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
     }
     
     @Override
+    public void collectAdjacentPrefetchPositions(int i, int n, final RecyclerView$State recyclerView$State, final RecyclerView$LayoutManager$LayoutPrefetchRegistry recyclerView$LayoutManager$LayoutPrefetchRegistry) {
+        final int n2 = 0;
+        if (this.mOrientation != 0) {
+            i = n;
+        }
+        if (this.getChildCount() != 0 && i != 0) {
+            this.prepareLayoutStateForDelta(i, recyclerView$State);
+            if (this.mPrefetchDistances == null || this.mPrefetchDistances.length < this.mSpanCount) {
+                this.mPrefetchDistances = new int[this.mSpanCount];
+            }
+            int[] mPrefetchDistances;
+            for (i = 0; i < this.mSpanCount; ++i) {
+                mPrefetchDistances = this.mPrefetchDistances;
+                if (this.mLayoutState.mItemDirection == -1) {
+                    n = this.mLayoutState.mStartLine - this.mSpans[i].getStartLine(this.mLayoutState.mStartLine);
+                }
+                else {
+                    n = this.mSpans[i].getEndLine(this.mLayoutState.mEndLine) - this.mLayoutState.mEndLine;
+                }
+                mPrefetchDistances[i] = n;
+            }
+            Arrays.sort(this.mPrefetchDistances, 0, this.mSpanCount);
+            LayoutState mLayoutState;
+            for (i = n2; i < this.mSpanCount && this.mLayoutState.hasMore(recyclerView$State); ++i) {
+                recyclerView$LayoutManager$LayoutPrefetchRegistry.addPosition(this.mLayoutState.mCurrentPosition, this.mPrefetchDistances[i]);
+                mLayoutState = this.mLayoutState;
+                mLayoutState.mCurrentPosition += this.mLayoutState.mItemDirection;
+            }
+        }
+    }
+    
+    @Override
     public int computeHorizontalScrollExtent(final RecyclerView$State recyclerView$State) {
         return this.computeScrollExtent(recyclerView$State);
     }
@@ -1295,7 +1311,7 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
         return this.computeScrollRange(recyclerView$State);
     }
     
-    View findFirstVisibleItemClosestToEnd(final boolean b, final boolean b2) {
+    View findFirstVisibleItemClosestToEnd(final boolean b) {
         final int startAfterPadding = this.mPrimaryOrientation.getStartAfterPadding();
         final int endAfterPadding = this.mPrimaryOrientation.getEndAfterPadding();
         int i = this.getChildCount() - 1;
@@ -1313,8 +1329,7 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
                     if (decoratedEnd <= endAfterPadding || !b) {
                         return child;
                     }
-                    view2 = view;
-                    if (b2 && (view2 = view) == null) {
+                    if ((view2 = view) == null) {
                         view2 = child;
                     }
                 }
@@ -1325,7 +1340,7 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
         return view;
     }
     
-    View findFirstVisibleItemClosestToStart(final boolean b, final boolean b2) {
+    View findFirstVisibleItemClosestToStart(final boolean b) {
         final int startAfterPadding = this.mPrimaryOrientation.getStartAfterPadding();
         final int endAfterPadding = this.mPrimaryOrientation.getEndAfterPadding();
         final int childCount = this.getChildCount();
@@ -1343,8 +1358,7 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
                     if (decoratedStart >= startAfterPadding || !b) {
                         return child;
                     }
-                    view2 = view;
-                    if (b2 && (view2 = view) == null) {
+                    if ((view2 = view) == null) {
                         view2 = child;
                     }
                 }
@@ -1358,10 +1372,10 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
     int findFirstVisibleItemPositionInt() {
         View view;
         if (this.mShouldReverseLayout) {
-            view = this.findFirstVisibleItemClosestToEnd(true, true);
+            view = this.findFirstVisibleItemClosestToEnd(true);
         }
         else {
-            view = this.findFirstVisibleItemClosestToStart(true, true);
+            view = this.findFirstVisibleItemClosestToStart(true);
         }
         if (view == null) {
             return -1;
@@ -1396,6 +1410,21 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
             return this.mSpanCount;
         }
         return super.getColumnCountForAccessibility(recyclerView$Recycler, recyclerView$State);
+    }
+    
+    int getFirstChildPosition() {
+        if (this.getChildCount() == 0) {
+            return 0;
+        }
+        return this.getPosition(this.getChildAt(0));
+    }
+    
+    int getLastChildPosition() {
+        final int childCount = this.getChildCount();
+        if (childCount == 0) {
+            return 0;
+        }
+        return this.getPosition(this.getChildAt(childCount - 1));
     }
     
     @Override
@@ -1596,8 +1625,8 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
         super.onInitializeAccessibilityEvent(accessibilityEvent);
         if (this.getChildCount() > 0) {
             final AccessibilityRecordCompat record = AccessibilityEventCompat.asRecord(accessibilityEvent);
-            final View firstVisibleItemClosestToStart = this.findFirstVisibleItemClosestToStart(false, true);
-            final View firstVisibleItemClosestToEnd = this.findFirstVisibleItemClosestToEnd(false, true);
+            final View firstVisibleItemClosestToStart = this.findFirstVisibleItemClosestToStart(false);
+            final View firstVisibleItemClosestToEnd = this.findFirstVisibleItemClosestToEnd(false);
             if (firstVisibleItemClosestToStart != null && firstVisibleItemClosestToEnd != null) {
                 final int position = this.getPosition(firstVisibleItemClosestToStart);
                 final int position2 = this.getPosition(firstVisibleItemClosestToEnd);
@@ -1752,7 +1781,7 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
         }
     }
     
-    int scrollBy(int n, final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State) {
+    void prepareLayoutStateForDelta(final int n, final RecyclerView$State recyclerView$State) {
         int n2;
         int layoutStateDirection;
         if (n > 0) {
@@ -1767,10 +1796,16 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
         this.updateLayoutState(n2, recyclerView$State);
         this.setLayoutStateDirection(layoutStateDirection);
         this.mLayoutState.mCurrentPosition = this.mLayoutState.mItemDirection + n2;
-        final int abs = Math.abs(n);
-        this.mLayoutState.mAvailable = abs;
+        this.mLayoutState.mAvailable = Math.abs(n);
+    }
+    
+    int scrollBy(int n, final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State) {
+        if (this.getChildCount() == 0 || n == 0) {
+            return 0;
+        }
+        this.prepareLayoutStateForDelta(n, recyclerView$State);
         final int fill = this.fill(recyclerView$Recycler, this.mLayoutState, recyclerView$State);
-        if (abs >= fill) {
+        if (this.mLayoutState.mAvailable >= fill) {
             if (n < 0) {
                 n = -fill;
             }
@@ -1780,6 +1815,8 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
         }
         this.mPrimaryOrientation.offsetChildren(-n);
         this.mLastLayoutFromEnd = this.mShouldReverseLayout;
+        this.mLayoutState.mAvailable = 0;
+        this.recycle(recyclerView$Recycler, this.mLayoutState);
         return n;
     }
     

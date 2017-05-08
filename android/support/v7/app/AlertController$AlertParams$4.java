@@ -7,16 +7,15 @@ package android.support.v7.app;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView$OnItemClickListener;
 
 class AlertController$AlertParams$4 implements AdapterView$OnItemClickListener
 {
     final /* synthetic */ AlertController$AlertParams this$0;
     final /* synthetic */ AlertController val$dialog;
-    final /* synthetic */ ListView val$listView;
+    final /* synthetic */ AlertController$RecycleListView val$listView;
     
-    AlertController$AlertParams$4(final AlertController$AlertParams this$0, final ListView val$listView, final AlertController val$dialog) {
+    AlertController$AlertParams$4(final AlertController$AlertParams this$0, final AlertController$RecycleListView val$listView, final AlertController val$dialog) {
         this.this$0 = this$0;
         this.val$listView = val$listView;
         this.val$dialog = val$dialog;

@@ -5,6 +5,7 @@
 package android.support.v7.widget;
 
 import android.graphics.drawable.Drawable;
+import android.annotation.TargetApi;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityEvent;
 import android.graphics.PorterDuff$Mode;
@@ -66,6 +67,7 @@ public class AppCompatButton extends Button implements TintableBackgroundView
         accessibilityEvent.setClassName((CharSequence)Button.class.getName());
     }
     
+    @TargetApi(14)
     public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo accessibilityNodeInfo) {
         super.onInitializeAccessibilityNodeInfo(accessibilityNodeInfo);
         accessibilityNodeInfo.setClassName((CharSequence)Button.class.getName());

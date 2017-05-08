@@ -92,6 +92,7 @@ class SystemMediaRouteProvider$JellybeanImpl extends SystemMediaRouteProvider im
     }
     
     private void updateSystemRoutes() {
+        this.updateCallback();
         boolean b = false;
         final Iterator<Object> iterator = MediaRouterJellybean.getRoutes(this.mRouterObj).iterator();
         while (iterator.hasNext()) {
@@ -137,6 +138,7 @@ class SystemMediaRouteProvider$JellybeanImpl extends SystemMediaRouteProvider im
         return -1;
     }
     
+    @Override
     protected Object getDefaultRoute() {
         if (this.mGetDefaultRouteWorkaround == null) {
             this.mGetDefaultRouteWorkaround = new MediaRouterJellybean$GetDefaultRouteWorkaround();
@@ -214,7 +216,6 @@ class SystemMediaRouteProvider$JellybeanImpl extends SystemMediaRouteProvider im
         if (this.mRouteTypes != mRouteTypes || this.mActiveScan != activeScan) {
             this.mRouteTypes = mRouteTypes;
             this.mActiveScan = activeScan;
-            this.updateCallback();
             this.updateSystemRoutes();
         }
     }

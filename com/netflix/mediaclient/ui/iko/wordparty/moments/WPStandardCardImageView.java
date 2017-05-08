@@ -30,9 +30,9 @@ public class WPStandardCardImageView extends WPCardImageView
     @Override
     protected void init(final Context context) {
         final Resources resources = context.getResources();
-        final int dimensionPixelSize = resources.getDimensionPixelSize(2131361951);
-        final int dimensionPixelSize2 = resources.getDimensionPixelSize(2131361949);
-        final int dimensionPixelSize3 = resources.getDimensionPixelSize(2131361950);
+        final int dimensionPixelSize = resources.getDimensionPixelSize(2131427492);
+        final int dimensionPixelSize2 = resources.getDimensionPixelSize(2131427490);
+        final int dimensionPixelSize3 = resources.getDimensionPixelSize(2131427491);
         this.cardPlusAntiAliasBorderRight = dimensionPixelSize + 2;
         this.cardPlusShadowPlusAntiAliasBorderBottom = dimensionPixelSize3 + 2;
         this.shadowPlusAntiAliasBorderTop = dimensionPixelSize2 + 1;

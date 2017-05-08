@@ -7,6 +7,7 @@ package com.netflix.mediaclient;
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
 import io.realm.Realm;
+import com.squareup.leakcanary.LeakCanary;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
@@ -171,7 +172,7 @@ public class NetflixApplication extends MultiDexApplication
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837839).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131231424, new Object[] { n })).setContentTitle(this.getString(2131231425, new Object[] { n })).setContentText(this.getString(2131230981, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837966).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131296985, new Object[] { n })).setContentTitle(this.getString(2131296986, new Object[] { n })).setContentText(this.getString(2131296537, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -229,6 +230,10 @@ public class NetflixApplication extends MultiDexApplication
     
     public void onCreate() {
         super.onCreate();
+        if (LeakCanary.isInAnalyzerProcess((Context)this)) {
+            return;
+        }
+        LeakCanary.install(this);
         NetflixApplication.instance = this;
         Log.d("NetflixApplication", "Application onCreate");
         Log.d("NetflixApplication", "Loading native libraries");

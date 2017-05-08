@@ -21,6 +21,7 @@ import com.android.volley.Request;
 
 public abstract class ProgressiveRequest extends Request<Void>
 {
+    private static final boolean DEBUG_CONTROL_NETWORK_SPEED = false;
     private static final int IO_SIZE = 8192;
     private static final int SOCKET_READ_TIMEOUT = 10000;
     private static final String TAG = "nf_download_prog_req";

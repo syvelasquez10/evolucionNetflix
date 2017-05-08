@@ -30,7 +30,6 @@ import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.ui.kubrick.lolomo.BarkerHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.annotation.SuppressLint;
@@ -82,6 +81,7 @@ class HomeActivity$4 implements DrawerLayout$DrawerListener
     @Override
     public void onDrawerClosed(final View view) {
         Log.i("HomeActivity", "onDrawerClosed");
+        HomeActivity.currentUnreadCount = 0;
         if (this.this$0.slidingMenuAdapter instanceof StandardSlidingMenu) {
             this.this$0.cancelMarkingNotificationsAsRead();
             ((StandardSlidingMenu)this.this$0.slidingMenuAdapter).reportNotificationsImpression(false);

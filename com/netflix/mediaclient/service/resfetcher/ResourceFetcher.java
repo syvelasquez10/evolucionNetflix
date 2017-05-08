@@ -147,6 +147,10 @@ public class ResourceFetcher extends ServiceAgent
         return new ResourceFetcher$ResourceFetcherCallbackWrapper(this, resourceFetcherCallback, null);
     }
     
+    public void cancelRequests(final Object o) {
+        this.mRequestQueue.cancelAll(o);
+    }
+    
     public boolean deleteLocalResource(final String s) {
         boolean delete = false;
         if (this.mDownloadsDir.isDirectory()) {

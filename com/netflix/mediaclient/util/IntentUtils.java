@@ -82,25 +82,6 @@ public final class IntentUtils
         return registerSafelyBroadcastReceiver(context, broadcastReceiver, s, 999, array);
     }
     
-    public static boolean registerSafelyLocalBroadcastReceiver(final Context context, final BroadcastReceiver broadcastReceiver) {
-        if (context == null) {
-            Log.e(IntentUtils.TAG, "Context is null");
-            return false;
-        }
-        if (broadcastReceiver == null) {
-            Log.e(IntentUtils.TAG, "Receiver is null");
-            return false;
-        }
-        try {
-            LocalBroadcastManager.getInstance(context).unregisterReceiver(broadcastReceiver);
-            return true;
-        }
-        catch (Throwable t) {
-            Log.e(IntentUtils.TAG, "Failed to unregister ", t);
-            return false;
-        }
-    }
-    
     public static boolean registerSafelyLocalBroadcastReceiver(final Context context, final BroadcastReceiver broadcastReceiver, final IntentFilter intentFilter) {
         if (context == null) {
             throw new IllegalArgumentException("Context is null");

@@ -4,19 +4,21 @@
 
 package com.netflix.mediaclient.ui.offline;
 
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.DialogInterface;
+import android.content.Context;
 import android.content.DialogInterface$OnClickListener;
 
 final class DownloadButtonDialogHelper$15 implements DialogInterface$OnClickListener
 {
-    final /* synthetic */ DialogInterface$OnClickListener val$deleteClick;
+    final /* synthetic */ Context val$context;
     
-    DownloadButtonDialogHelper$15(final DialogInterface$OnClickListener val$deleteClick) {
-        this.val$deleteClick = val$deleteClick;
+    DownloadButtonDialogHelper$15(final Context val$context) {
+        this.val$context = val$context;
     }
     
     public void onClick(final DialogInterface dialogInterface, final int n) {
-        this.val$deleteClick.onClick(dialogInterface, n);
+        OfflineUiHelper.showAvailableDownloadsGenreList((NetflixActivity)this.val$context);
         dialogInterface.dismiss();
     }
 }

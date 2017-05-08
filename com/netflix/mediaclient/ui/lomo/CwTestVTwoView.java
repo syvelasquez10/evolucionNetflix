@@ -31,7 +31,7 @@ public class CwTestVTwoView extends CwView
     
     @Override
     protected int getLayoutId() {
-        return 2130903088;
+        return 2130903091;
     }
     
     @Override
@@ -46,9 +46,9 @@ public class CwTestVTwoView extends CwView
     @Override
     public void update(final CWVideo cwVideo, final Trackable trackable, final int n, final boolean b, final boolean b2) {
         super.update(cwVideo, trackable, n, b, b2);
-        this.episodeInfo = (TextView)this.findViewById(2131689751);
+        this.episodeInfo = (TextView)this.findViewById(2131755303);
         if (VideoType.SHOW == cwVideo.getType()) {
-            this.episodeInfo.setText((CharSequence)this.getContext().getString(2131231225, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            this.episodeInfo.setText((CharSequence)this.getContext().getString(2131296781, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
             ViewUtils.setVisibleOrGone((View)this.episodeInfo, this.showEpisodeInfo);
             return;
         }

@@ -6,32 +6,24 @@ package android.support.v7.widget;
 
 import java.util.ArrayList;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
 
 public class RecyclerView$RecycledViewPool
 {
     private int mAttachCount;
-    private SparseIntArray mMaxScrap;
-    private SparseArray<ArrayList<RecyclerView$ViewHolder>> mScrap;
+    SparseArray<RecyclerView$RecycledViewPool$ScrapData> mScrap;
     
     public RecyclerView$RecycledViewPool() {
-        this.mScrap = (SparseArray<ArrayList<RecyclerView$ViewHolder>>)new SparseArray();
-        this.mMaxScrap = new SparseIntArray();
+        this.mScrap = (SparseArray<RecyclerView$RecycledViewPool$ScrapData>)new SparseArray();
         this.mAttachCount = 0;
     }
     
-    private ArrayList<RecyclerView$ViewHolder> getScrapHeapForType(final int n) {
-        ArrayList<RecyclerView$ViewHolder> list;
-        if ((list = (ArrayList<RecyclerView$ViewHolder>)this.mScrap.get(n)) == null) {
-            final ArrayList<RecyclerView$ViewHolder> list2 = new ArrayList<RecyclerView$ViewHolder>();
-            this.mScrap.put(n, (Object)list2);
-            list = list2;
-            if (this.mMaxScrap.indexOfKey(n) < 0) {
-                this.mMaxScrap.put(n, 5);
-                list = list2;
-            }
+    private RecyclerView$RecycledViewPool$ScrapData getScrapDataForType(final int n) {
+        RecyclerView$RecycledViewPool$ScrapData recyclerView$RecycledViewPool$ScrapData;
+        if ((recyclerView$RecycledViewPool$ScrapData = (RecyclerView$RecycledViewPool$ScrapData)this.mScrap.get(n)) == null) {
+            recyclerView$RecycledViewPool$ScrapData = new RecyclerView$RecycledViewPool$ScrapData();
+            this.mScrap.put(n, (Object)recyclerView$RecycledViewPool$ScrapData);
         }
-        return list;
+        return recyclerView$RecycledViewPool$ScrapData;
     }
     
     void attach(final RecyclerView$Adapter recyclerView$Adapter) {
@@ -39,20 +31,30 @@ public class RecyclerView$RecycledViewPool
     }
     
     public void clear() {
-        this.mScrap.clear();
+        for (int i = 0; i < this.mScrap.size(); ++i) {
+            ((RecyclerView$RecycledViewPool$ScrapData)this.mScrap.valueAt(i)).mScrapHeap.clear();
+        }
     }
     
     void detach() {
         --this.mAttachCount;
     }
     
-    public RecyclerView$ViewHolder getRecycledView(int n) {
-        final ArrayList list = (ArrayList)this.mScrap.get(n);
-        if (list != null && !list.isEmpty()) {
-            n = list.size() - 1;
-            final RecyclerView$ViewHolder recyclerView$ViewHolder = list.get(n);
-            list.remove(n);
-            return recyclerView$ViewHolder;
+    void factorInBindTime(final int n, final long n2) {
+        final RecyclerView$RecycledViewPool$ScrapData scrapDataForType = this.getScrapDataForType(n);
+        scrapDataForType.mBindRunningAverageNs = this.runningAverage(scrapDataForType.mBindRunningAverageNs, n2);
+    }
+    
+    void factorInCreateTime(final int n, final long n2) {
+        final RecyclerView$RecycledViewPool$ScrapData scrapDataForType = this.getScrapDataForType(n);
+        scrapDataForType.mCreateRunningAverageNs = this.runningAverage(scrapDataForType.mCreateRunningAverageNs, n2);
+    }
+    
+    public RecyclerView$ViewHolder getRecycledView(final int n) {
+        final RecyclerView$RecycledViewPool$ScrapData recyclerView$RecycledViewPool$ScrapData = (RecyclerView$RecycledViewPool$ScrapData)this.mScrap.get(n);
+        if (recyclerView$RecycledViewPool$ScrapData != null && !recyclerView$RecycledViewPool$ScrapData.mScrapHeap.isEmpty()) {
+            final ArrayList<RecyclerView$ViewHolder> mScrapHeap = recyclerView$RecycledViewPool$ScrapData.mScrapHeap;
+            return mScrapHeap.remove(mScrapHeap.size() - 1);
         }
         return null;
     }
@@ -71,11 +73,28 @@ public class RecyclerView$RecycledViewPool
     
     public void putRecycledView(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
         final int itemViewType = recyclerView$ViewHolder.getItemViewType();
-        final ArrayList<RecyclerView$ViewHolder> scrapHeapForType = this.getScrapHeapForType(itemViewType);
-        if (this.mMaxScrap.get(itemViewType) <= scrapHeapForType.size()) {
+        final ArrayList<RecyclerView$ViewHolder> mScrapHeap = this.getScrapDataForType(itemViewType).mScrapHeap;
+        if (((RecyclerView$RecycledViewPool$ScrapData)this.mScrap.get(itemViewType)).mMaxScrap <= mScrapHeap.size()) {
             return;
         }
         recyclerView$ViewHolder.resetInternal();
-        scrapHeapForType.add(recyclerView$ViewHolder);
+        mScrapHeap.add(recyclerView$ViewHolder);
+    }
+    
+    long runningAverage(final long n, final long n2) {
+        if (n == 0L) {
+            return n2;
+        }
+        return n / 4L * 3L + n2 / 4L;
+    }
+    
+    boolean willBindInTime(final int n, final long n2, final long n3) {
+        final long mBindRunningAverageNs = this.getScrapDataForType(n).mBindRunningAverageNs;
+        return mBindRunningAverageNs == 0L || mBindRunningAverageNs + n2 < n3;
+    }
+    
+    boolean willCreateInTime(final int n, final long n2, final long n3) {
+        final long mCreateRunningAverageNs = this.getScrapDataForType(n).mCreateRunningAverageNs;
+        return mCreateRunningAverageNs == 0L || mCreateRunningAverageNs + n2 < n3;
     }
 }

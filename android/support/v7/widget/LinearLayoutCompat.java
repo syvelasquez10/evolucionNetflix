@@ -271,6 +271,10 @@ public class LinearLayoutCompat extends ViewGroup
         return this.mDividerWidth;
     }
     
+    public int getGravity() {
+        return this.mGravity;
+    }
+    
     int getLocationOffset(final View view) {
         return 0;
     }

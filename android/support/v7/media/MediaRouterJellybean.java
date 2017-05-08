@@ -4,6 +4,9 @@
 
 package android.support.v7.media;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import android.media.MediaRouter$RouteInfo;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,9 @@ import android.media.MediaRouter$RouteCategory;
 import android.media.MediaRouter$UserRouteInfo;
 import android.media.MediaRouter$Callback;
 import android.media.MediaRouter;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 final class MediaRouterJellybean
 {
     public static void addCallback(final Object o, final int n, final Object o2) {
@@ -55,6 +60,30 @@ final class MediaRouterJellybean
     
     public static Object getSelectedRoute(final Object o, final int n) {
         return ((MediaRouter)o).getSelectedRoute(n);
+    }
+    
+    static boolean isBluetoothA2dpOn(Object value) {
+        try {
+            final Field declaredField = value.getClass().getDeclaredField("sStatic");
+            declaredField.setAccessible(true);
+            value = declaredField.get(null);
+            final Method declaredMethod = value.getClass().getDeclaredMethod("isBluetoothA2dpOn", (Class<?>[])null);
+            declaredMethod.setAccessible(true);
+            return (boolean)declaredMethod.invoke(value, (Object[])null);
+        }
+        catch (NoSuchFieldException ex) {}
+        catch (IllegalAccessException ex2) {
+            goto Label_0053;
+        }
+        catch (IllegalArgumentException ex3) {
+            goto Label_0053;
+        }
+        catch (NoSuchMethodException ex4) {
+            goto Label_0053;
+        }
+        catch (InvocationTargetException ex5) {
+            goto Label_0053;
+        }
     }
     
     public static void removeCallback(final Object o, final Object o2) {

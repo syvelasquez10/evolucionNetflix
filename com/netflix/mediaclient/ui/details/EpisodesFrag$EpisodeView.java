@@ -17,7 +17,6 @@ import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
@@ -44,7 +43,6 @@ import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
-import android.view.View;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -69,6 +67,8 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableView
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.offline.OfflineUiHelper;
+import android.view.View;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.widget.ImageView;
 import android.view.View$OnClickListener;
@@ -106,8 +106,8 @@ public class EpisodesFrag$EpisodeView extends AbsEpisodeView
     public void update(final EpisodeDetails episodeDetails) {
         this.playable = episodeDetails.getPlayable();
         this.update(episodeDetails, StringUtils.safeEquals(this.this$0.showDetails.getCurrentEpisodeId(), episodeDetails.getId()));
-        this.setTag(2131689502, (Object)episodeDetails.getId());
-        this.setTag(2131689503, (Object)episodeDetails.getType().getValue());
+        this.setTag(2131755042, (Object)episodeDetails.getId());
+        this.setTag(2131755043, (Object)episodeDetails.getType().getValue());
     }
     
     @Override
@@ -117,13 +117,13 @@ public class EpisodesFrag$EpisodeView extends AbsEpisodeView
             if (serviceManager != null && serviceManager.isReady()) {
                 final OfflineAgentInterface offlineAgent = serviceManager.getOfflineAgent();
                 if (offlineAgent == null) {
-                    this.episodeDownloadButton.setVisibility(8);
+                    ViewUtils.setVisibleOrGone((View)this.episodeDownloadButton, false);
                     return;
                 }
                 this.episodeDownloadButton.setStateFromPlayable(playable, this.this$0.getNetflixActivity());
                 final OfflinePlayableViewData offlinePlayableViewData = offlineAgent.getLatestOfflinePlayableList().getOfflinePlayableViewData(playable.getPlayableId());
                 if (offlinePlayableViewData != null && OfflineUiHelper.isFullyDownloadedAndNotWatchable(offlinePlayableViewData)) {
-                    this.playButton.setVisibility(8);
+                    ViewUtils.setVisibleOrGone((View)this.playButton, false);
                 }
             }
         }

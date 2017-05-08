@@ -15,7 +15,9 @@ import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.InsetDrawable;
 import android.content.res.Resources$Theme;
 import android.graphics.drawable.Drawable;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class DrawableCompatLollipop
 {
     public static void applyTheme(final Drawable drawable, final Resources$Theme resources$Theme) {

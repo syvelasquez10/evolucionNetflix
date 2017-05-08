@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.Log;
 
 class MovieDetailsFrag$7 implements Runnable

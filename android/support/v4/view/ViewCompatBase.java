@@ -5,11 +5,15 @@
 package android.support.v4.view;
 
 import android.view.ViewParent;
+import android.view.WindowManager;
+import android.view.Display;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
 import android.view.View;
 import java.lang.reflect.Field;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class ViewCompatBase
 {
     private static final String TAG = "ViewCompatBase";
@@ -28,6 +32,13 @@ class ViewCompatBase
     static PorterDuff$Mode getBackgroundTintMode(final View view) {
         if (view instanceof TintableBackgroundView) {
             return ((TintableBackgroundView)view).getSupportBackgroundTintMode();
+        }
+        return null;
+    }
+    
+    static Display getDisplay(final View view) {
+        if (isAttachedToWindow(view)) {
+            return ((WindowManager)view.getContext().getSystemService("window")).getDefaultDisplay();
         }
         return null;
     }

@@ -80,7 +80,7 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
     }
     
     protected int getLayoutId() {
-        return 2130903090;
+        return 2130903093;
     }
     
     public PlayContext getPlayContext() {
@@ -95,15 +95,15 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
     
     protected void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837990);
+        this.setBackgroundResource(2130838134);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.getLayoutId(), (ViewGroup)this);
         LocalizationUtils.setLayoutDirection((View)this);
-        this.title = (TextView)this.findViewById(2131689749);
-        this.img = (AdvancedImageView)this.findViewById(2131689746);
-        this.progress = (ProgressBar)this.findViewById(2131689748);
-        this.info = this.findViewById(2131689750);
+        this.title = (TextView)this.findViewById(2131755301);
+        this.img = (AdvancedImageView)this.findViewById(2131755298);
+        this.progress = (ProgressBar)this.findViewById(2131755300);
+        this.info = this.findViewById(2131755302);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -117,10 +117,10 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
             return;
         }
         if (cwVideo.isNSRE()) {
-            this.setTitle(this.getContext().getString(2131231062, new Object[] { this.getText(cwVideo.getTitle()), this.getText(cwVideo.getCurrentEpisodeTitle()) }));
+            this.setTitle(this.getContext().getString(2131296618, new Object[] { this.getText(cwVideo.getTitle()), this.getText(cwVideo.getCurrentEpisodeTitle()) }));
             return;
         }
-        this.setTitle(this.getContext().getString(2131231061, new Object[] { this.getText(cwVideo.getTitle()), cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+        this.setTitle(this.getContext().getString(2131296617, new Object[] { this.getText(cwVideo.getTitle()), cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
     }
     
     protected void setTitle(final CharSequence charSequence) {
@@ -140,7 +140,7 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         }
         this.playContext = new PlayContextImp(trackable, calculateProgress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131230897), title.getTitle());
+        final String format = String.format(this.getResources().getString(2131296447), title.getTitle());
         this.setContentDescription((CharSequence)format);
         this.setTitle(title);
         final String imageUrl = this.getImageUrl(title, b2);
@@ -159,7 +159,7 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         this.progress.setProgress(calculateProgress);
         ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(((NetflixActivity)this.getContext()).getServiceManager(), title, this.playContext);
         this.setOnClickListener((View$OnClickListener)new CwView$1(this, title));
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231063), title.getTitle()));
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131296619), title.getTitle()));
         this.clicker.update(this.info, title, this.img.getPressedStateHandler());
     }
 }

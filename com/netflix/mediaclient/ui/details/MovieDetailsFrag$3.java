@@ -24,6 +24,7 @@ import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
@@ -59,11 +60,11 @@ class MovieDetailsFrag$3 extends TransitionListenerAdapter
     
     @Override
     public void onTransitionEnd(final Transition transition) {
-        this.this$0.setBackgroundResource(2131624173);
+        this.this$0.setBackgroundResource(2131689713);
     }
     
     @Override
     public void onTransitionStart(final Transition transition) {
-        this.this$0.setBackgroundResource(2131624189);
+        this.this$0.setBackgroundResource(2131689731);
     }
 }

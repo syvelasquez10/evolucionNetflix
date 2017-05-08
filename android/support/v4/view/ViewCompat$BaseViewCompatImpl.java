@@ -6,11 +6,13 @@ package android.support.v4.view;
 
 import android.graphics.Paint;
 import android.view.ViewGroup;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.ViewParent;
 import android.graphics.Matrix;
+import android.view.Display;
 import android.graphics.Rect;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
@@ -192,6 +194,11 @@ class ViewCompat$BaseViewCompatImpl implements ViewCompat$ViewCompatImpl
     @Override
     public Rect getClipBounds(final View view) {
         return null;
+    }
+    
+    @Override
+    public Display getDisplay(final View view) {
+        return ViewCompatBase.getDisplay(view);
     }
     
     @Override
@@ -492,6 +499,11 @@ class ViewCompat$BaseViewCompatImpl implements ViewCompat$ViewCompatImpl
     
     @Override
     public void setAlpha(final View view, final float n) {
+    }
+    
+    @Override
+    public void setBackground(final View view, final Drawable backgroundDrawable) {
+        view.setBackgroundDrawable(backgroundDrawable);
     }
     
     @Override

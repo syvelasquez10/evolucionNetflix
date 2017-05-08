@@ -5,7 +5,9 @@
 package android.support.v4.media.session;
 
 import android.media.session.MediaSession;
+import android.annotation.TargetApi;
 
+@TargetApi(22)
 class MediaSessionCompatApi22
 {
     public static void setRatingType(final Object o, final int ratingType) {

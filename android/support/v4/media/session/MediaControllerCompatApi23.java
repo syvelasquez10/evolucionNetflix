@@ -4,6 +4,9 @@
 
 package android.support.v4.media.session;
 
+import android.annotation.TargetApi;
+
+@TargetApi(23)
 class MediaControllerCompatApi23
 {
 }

@@ -9,7 +9,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfi
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
 import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
@@ -46,20 +45,6 @@ public class AccountConfiguration
         return this.mAccountConfigData != null && this.mAccountConfigData.enableLowBitrateStreams();
     }
     
-    public ABTestConfig getABTestConfiguration_6634() {
-        if (this.mAccountConfigData == null) {
-            return null;
-        }
-        return this.mAccountConfigData.getABTestConfiguration_6634();
-    }
-    
-    public ABTestConfig getABTestConfiguration_6725() {
-        if (this.mAccountConfigData == null) {
-            return null;
-        }
-        return this.mAccountConfigData.getABTestConfiguration_6725();
-    }
-    
     public DataSaveConfigData getBWSaveConfigData() {
         if (this.mAccountConfigData == null) {
             return null;
@@ -83,13 +68,6 @@ public class AccountConfiguration
             return null;
         }
         return this.mAccountConfigData.getJPlayerThreadConfigAsJson();
-    }
-    
-    public KubrickConfiguration getKubrickConfig() {
-        if (this.mAccountConfigData == null) {
-            return null;
-        }
-        return this.mAccountConfigData.getKubrickConfig();
     }
     
     public JSONArray getMdxBlacklist() {

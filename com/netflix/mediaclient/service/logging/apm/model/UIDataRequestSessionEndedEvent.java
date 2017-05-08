@@ -21,6 +21,7 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
     private static final String UI_DATA_NAME = "uiDataRequest";
     public static final String URL = "url";
     private Error error;
+    private ConnectionClassCustomData networkConnectionClassData;
     private IClientLogging$CompletionReason reason;
     private String requestId;
     private HttpResponse response;
@@ -43,6 +44,14 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
             this.response = HttpResponse.createInstance(JsonUtils.getJSONObject(jsonObject, "response", null));
             this.requestId = JsonUtils.getString(jsonObject, "requestId", null);
         }
+    }
+    
+    @Override
+    protected JSONObject getCustomData() {
+        if (this.networkConnectionClassData == null) {
+            return null;
+        }
+        return this.networkConnectionClassData.toJson();
     }
     
     @Override
@@ -87,6 +96,10 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
     
     public String getUrl() {
         return this.url;
+    }
+    
+    public void setConnectionClassCustomData(final ConnectionClassCustomData networkConnectionClassData) {
+        this.networkConnectionClassData = networkConnectionClassData;
     }
     
     public void setError(final Error error) {

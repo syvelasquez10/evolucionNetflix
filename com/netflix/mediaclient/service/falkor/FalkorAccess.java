@@ -16,6 +16,7 @@ import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import java.io.File;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -43,8 +44,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void dumpCacheToDisk() {
-        this.mBrowseAgent.dumpCacheToDisk();
+    public void dumpCacheToDisk(final File file) {
+        this.mBrowseAgent.dumpCacheToDisk(file);
     }
     
     @Override

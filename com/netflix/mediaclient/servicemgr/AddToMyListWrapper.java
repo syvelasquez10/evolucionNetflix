@@ -113,10 +113,10 @@ public class AddToMyListWrapper
             if (b2) {
                 int n;
                 if (b) {
-                    n = 2131231095;
+                    n = 2131296651;
                 }
                 else {
-                    n = 2131231098;
+                    n = 2131296654;
                 }
                 Toast.makeText(this.serviceMan.getContext(), n, 1).show();
             }

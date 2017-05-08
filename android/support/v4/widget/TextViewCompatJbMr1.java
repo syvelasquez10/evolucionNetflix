@@ -6,11 +6,24 @@ package android.support.v4.widget;
 
 import android.graphics.drawable.Drawable;
 import android.widget.TextView;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 class TextViewCompatJbMr1
 {
-    static Drawable[] getCompoundDrawablesRelative(final TextView textView) {
-        return textView.getCompoundDrawablesRelative();
+    public static Drawable[] getCompoundDrawablesRelative(final TextView textView) {
+        int n = 1;
+        if (textView.getLayoutDirection() != 1) {
+            n = 0;
+        }
+        final Drawable[] compoundDrawables = textView.getCompoundDrawables();
+        if (n != 0) {
+            final Drawable drawable = compoundDrawables[2];
+            final Drawable drawable2 = compoundDrawables[0];
+            compoundDrawables[0] = drawable;
+            compoundDrawables[2] = drawable2;
+        }
+        return compoundDrawables;
     }
     
     public static void setCompoundDrawablesRelative(final TextView textView, Drawable drawable, final Drawable drawable2, final Drawable drawable3, final Drawable drawable4) {

@@ -7,7 +7,9 @@ package android.support.v4.view;
 import android.os.Bundle;
 import android.view.View$AccessibilityDelegate;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class AccessibilityDelegateCompatJellyBean
 {
     public static Object getAccessibilityNodeProvider(final Object o, final View view) {

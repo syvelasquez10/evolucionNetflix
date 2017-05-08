@@ -27,7 +27,6 @@ import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.ui.lolomo.GalleryGenresLoMoFrag;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList$GenreType;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.ui.kubrick.lolomo.BarkerHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.annotation.SuppressLint;

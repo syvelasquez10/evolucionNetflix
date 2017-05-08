@@ -11,10 +11,10 @@ public final class ResourceHelperTablet extends ResourceHelper
     protected static final int TIMELINE_THUMB_OFFSET_IN_DIP = 16;
     
     ResourceHelperTablet() {
-        this.pause = 2130837778;
-        this.play = 2130837781;
-        this.zoomIn = 2130837836;
-        this.zoomOut = 2130837837;
+        this.pause = 2130837905;
+        this.play = 2130837906;
+        this.zoomIn = 2130837963;
+        this.zoomOut = 2130837964;
         this.timelineHeightInDip = 40;
         this.timelineHeightPaddingInDip = 2;
         this.timelineThumbOffsetInDip = 16;

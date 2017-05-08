@@ -21,6 +21,6 @@ class ResourceFetcher$5 implements Runnable
     
     @Override
     public void run() {
-        this.val$callback.onResourcePrefetched(this.val$resourceUrl, 0, CommonStatus.INTERNAL_ERROR);
+        this.val$callback.onResourcePrefetched(this.val$resourceUrl, 0, CommonStatus.INT_ERR_RESOURCE_URL_NULL);
     }
 }

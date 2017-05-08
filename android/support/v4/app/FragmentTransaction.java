@@ -52,6 +52,8 @@ public abstract class FragmentTransaction
     
     public abstract FragmentTransaction replace(final int p0, final Fragment p1, final String p2);
     
+    public abstract FragmentTransaction setAllowOptimization(final boolean p0);
+    
     public abstract FragmentTransaction setBreadCrumbShortTitle(final int p0);
     
     public abstract FragmentTransaction setBreadCrumbShortTitle(final CharSequence p0);

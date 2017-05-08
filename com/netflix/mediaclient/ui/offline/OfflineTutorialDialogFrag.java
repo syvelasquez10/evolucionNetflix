@@ -55,11 +55,11 @@ public class OfflineTutorialDialogFrag extends NetflixDialogFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.getDialog().getWindow().setBackgroundDrawable((Drawable)new ColorDrawable(this.getActivity().getResources().getColor(2131624166)));
+        this.getDialog().getWindow().setBackgroundDrawable((Drawable)new ColorDrawable(this.getActivity().getResources().getColor(2131689706)));
         this.setStyle(0, 16973840);
         final View viewById = this.getDialog().findViewById(this.getActivity().getResources().getIdentifier("android:id/titleDivider", (String)null, (String)null));
         if (viewById != null) {
-            viewById.setBackgroundColor(this.getResources().getColor(2131624173));
+            viewById.setBackgroundColor(this.getResources().getColor(2131689713));
         }
         return new OfflineTutorialContentBinder((Context)this.getActivity()).bind(viewGroup, this);
     }

@@ -12,11 +12,17 @@ import java.util.List;
 import android.support.v4.media.MediaMetadataCompat;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.support.v4.app.SupportActivity$ExtraData;
+import android.os.RemoteException;
+import android.util.Log;
+import android.support.v4.app.SupportActivity;
+import android.app.Activity;
 import android.os.Build$VERSION;
 import android.content.Context;
 
 public final class MediaControllerCompat
 {
+    static final String COMMAND_GET_EXTRA_BINDER = "android.support.v4.media.session.command.GET_EXTRA_BINDER";
     static final String TAG = "MediaControllerCompat";
     private final MediaControllerCompat$MediaControllerImpl mImpl;
     private final MediaSessionCompat$Token mToken;
@@ -59,6 +65,53 @@ public final class MediaControllerCompat
             return;
         }
         this.mImpl = new MediaControllerCompat$MediaControllerImplBase(this.mToken);
+    }
+    
+    public static MediaControllerCompat getMediaController(final Activity activity) {
+        final MediaControllerCompat mediaControllerCompat = null;
+        MediaControllerCompat mediaControllerCompat2;
+        if (activity instanceof SupportActivity) {
+            final MediaControllerCompat$MediaControllerExtraData mediaControllerCompat$MediaControllerExtraData = ((SupportActivity)activity).getExtraData(MediaControllerCompat$MediaControllerExtraData.class);
+            MediaControllerCompat mediaController;
+            if (mediaControllerCompat$MediaControllerExtraData != null) {
+                mediaController = mediaControllerCompat$MediaControllerExtraData.getMediaController();
+            }
+            else {
+                mediaController = null;
+            }
+            mediaControllerCompat2 = mediaController;
+        }
+        else {
+            mediaControllerCompat2 = mediaControllerCompat;
+            if (Build$VERSION.SDK_INT >= 21) {
+                final Object mediaController2 = MediaControllerCompatApi21.getMediaController(activity);
+                mediaControllerCompat2 = mediaControllerCompat;
+                if (mediaController2 != null) {
+                    final Object sessionToken = MediaControllerCompatApi21.getSessionToken(mediaController2);
+                    try {
+                        return new MediaControllerCompat((Context)activity, MediaSessionCompat$Token.fromToken(sessionToken));
+                    }
+                    catch (RemoteException ex) {
+                        Log.e("MediaControllerCompat", "Dead object in getMediaController. " + ex);
+                        return null;
+                    }
+                }
+            }
+        }
+        return mediaControllerCompat2;
+    }
+    
+    public static void setMediaController(final Activity activity, final MediaControllerCompat mediaControllerCompat) {
+        if (activity instanceof SupportActivity) {
+            ((SupportActivity)activity).putExtraData(new MediaControllerCompat$MediaControllerExtraData(mediaControllerCompat));
+        }
+        if (Build$VERSION.SDK_INT >= 21) {
+            Object fromToken = null;
+            if (mediaControllerCompat != null) {
+                fromToken = MediaControllerCompatApi21.fromToken((Context)activity, mediaControllerCompat.getSessionToken().getToken());
+            }
+            MediaControllerCompatApi21.setMediaController(activity, fromToken);
+        }
     }
     
     public void adjustVolume(final int n, final int n2) {

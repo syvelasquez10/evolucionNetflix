@@ -4,6 +4,7 @@
 
 package android.support.v4.widget;
 
+import android.support.v4.content.ContextCompat;
 import android.os.Parcelable;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.MotionEventCompat;
@@ -960,11 +961,11 @@ public class SlidingPaneLayout extends ViewGroup
     }
     
     public void setShadowResourceLeft(final int n) {
-        this.setShadowDrawableLeft(this.getResources().getDrawable(n));
+        this.setShadowDrawableLeft(ContextCompat.getDrawable(this.getContext(), n));
     }
     
     public void setShadowResourceRight(final int n) {
-        this.setShadowDrawableRight(this.getResources().getDrawable(n));
+        this.setShadowDrawableRight(ContextCompat.getDrawable(this.getContext(), n));
     }
     
     public void setSliderFadeColor(final int mSliderFadeColor) {

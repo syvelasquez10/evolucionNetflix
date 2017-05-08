@@ -16,8 +16,8 @@ import java.util.ArrayList;
 class SystemMediaRouteProvider$LegacyImpl extends SystemMediaRouteProvider
 {
     private static final ArrayList<IntentFilter> CONTROL_FILTERS;
-    private final AudioManager mAudioManager;
-    private int mLastReportedVolume;
+    final AudioManager mAudioManager;
+    int mLastReportedVolume;
     private final SystemMediaRouteProvider$LegacyImpl$VolumeChangeReceiver mVolumeChangeReceiver;
     
     static {
@@ -35,18 +35,18 @@ class SystemMediaRouteProvider$LegacyImpl extends SystemMediaRouteProvider
         this.publishRoutes();
     }
     
-    private void publishRoutes() {
-        final Resources resources = this.getContext().getResources();
-        final int streamMaxVolume = this.mAudioManager.getStreamMaxVolume(3);
-        this.mLastReportedVolume = this.mAudioManager.getStreamVolume(3);
-        this.setDescriptor(new MediaRouteProviderDescriptor$Builder().addRoute(new MediaRouteDescriptor$Builder("DEFAULT_ROUTE", resources.getString(R$string.mr_system_route_name)).addControlFilters(SystemMediaRouteProvider$LegacyImpl.CONTROL_FILTERS).setPlaybackStream(3).setPlaybackType(0).setVolumeHandling(1).setVolumeMax(streamMaxVolume).setVolume(this.mLastReportedVolume).build()).build());
-    }
-    
     @Override
     public MediaRouteProvider$RouteController onCreateRouteController(final String s) {
         if (s.equals("DEFAULT_ROUTE")) {
             return new SystemMediaRouteProvider$LegacyImpl$DefaultRouteController(this);
         }
         return null;
+    }
+    
+    void publishRoutes() {
+        final Resources resources = this.getContext().getResources();
+        final int streamMaxVolume = this.mAudioManager.getStreamMaxVolume(3);
+        this.mLastReportedVolume = this.mAudioManager.getStreamVolume(3);
+        this.setDescriptor(new MediaRouteProviderDescriptor$Builder().addRoute(new MediaRouteDescriptor$Builder("DEFAULT_ROUTE", resources.getString(R$string.mr_system_route_name)).addControlFilters(SystemMediaRouteProvider$LegacyImpl.CONTROL_FILTERS).setPlaybackStream(3).setPlaybackType(0).setVolumeHandling(1).setVolumeMax(streamMaxVolume).setVolume(this.mLastReportedVolume).build()).build());
     }
 }

@@ -8,6 +8,7 @@ import android.database.DataSetObserver;
 import android.view.ViewGroup;
 import android.view.View;
 import android.widget.ThemedSpinnerAdapter;
+import android.os.Build$VERSION;
 import android.content.res.Resources$Theme;
 import android.widget.SpinnerAdapter;
 import android.widget.ListAdapter;
@@ -23,7 +24,7 @@ class AppCompatSpinner$DropDownAdapter implements ListAdapter, SpinnerAdapter
             this.mListAdapter = (ListAdapter)mAdapter;
         }
         if (resources$Theme != null) {
-            if (AppCompatSpinner.IS_AT_LEAST_M && mAdapter instanceof ThemedSpinnerAdapter) {
+            if (Build$VERSION.SDK_INT >= 23 && mAdapter instanceof ThemedSpinnerAdapter) {
                 final ThemedSpinnerAdapter themedSpinnerAdapter = (ThemedSpinnerAdapter)mAdapter;
                 if (themedSpinnerAdapter.getDropDownViewTheme() != resources$Theme) {
                     themedSpinnerAdapter.setDropDownViewTheme(resources$Theme);

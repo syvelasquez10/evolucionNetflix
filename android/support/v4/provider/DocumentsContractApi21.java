@@ -7,7 +7,9 @@ package android.support.v4.provider;
 import android.provider.DocumentsContract;
 import android.net.Uri;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class DocumentsContractApi21
 {
     private static final String TAG = "DocumentFile";

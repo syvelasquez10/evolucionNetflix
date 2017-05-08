@@ -32,7 +32,7 @@ public final class CryptoManagerRegistry
                         }
                         Log.w("nf_msl", "Legacy crypto provider, unable to create Crypto");
                         if (cryptoManager$DrmReadyCallback != null) {
-                            cryptoManager$DrmReadyCallback.drmError(CommonStatus.MSL_FAILED_TO_CREATE_CLIENT);
+                            cryptoManager$DrmReadyCallback.drmError(CommonStatus.MSL_LEGACY_CRYPTO);
                         }
                     }
                     return;

@@ -4,12 +4,13 @@
 
 package android.support.v4.widget;
 
-import android.content.res.Resources;
+import android.support.v4.content.ContextCompat;
 import android.view.View$MeasureSpec;
 import android.util.Log;
 import android.widget.AbsListView;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
+import android.annotation.SuppressLint;
 import android.os.Build$VERSION;
 import android.graphics.drawable.Drawable;
 import android.view.animation.Interpolator;
@@ -81,7 +82,7 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
     private Animation mScaleAnimation;
     private Animation mScaleDownAnimation;
     private Animation mScaleDownToStartAnimation;
-    float mSpinnerFinalOffset;
+    int mSpinnerOffsetEnd;
     float mStartingScale;
     private View mTarget;
     private float mTotalDragDistance;
@@ -117,8 +118,8 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
         this.mCircleDiameter = (int)(40.0f * displayMetrics.density);
         this.createProgressView();
         ViewCompat.setChildrenDrawingOrderEnabled(this, true);
-        this.mSpinnerFinalOffset = displayMetrics.density * 64.0f;
-        this.mTotalDragDistance = this.mSpinnerFinalOffset;
+        this.mSpinnerOffsetEnd = (int)(displayMetrics.density * 64.0f);
+        this.mTotalDragDistance = this.mSpinnerOffsetEnd;
         this.mNestedScrollingParentHelper = new NestedScrollingParentHelper(this);
         this.mNestedScrollingChildHelper = new NestedScrollingChildHelper((View)this);
         this.setNestedScrollingEnabled(true);
@@ -202,23 +203,24 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
         return animation != null && animation.hasStarted() && !animation.hasEnded();
     }
     
+    @SuppressLint({ "NewApi" })
     private void moveSpinner(final float n) {
         this.mProgress.showArrow(true);
         final float min = Math.min(1.0f, Math.abs(n / this.mTotalDragDistance));
         final float n2 = (float)Math.max(min - 0.4, 0.0) * 5.0f / 3.0f;
         final float abs = Math.abs(n);
         final float mTotalDragDistance = this.mTotalDragDistance;
-        float mSpinnerFinalOffset;
+        float n3;
         if (this.mUsingCustomStart) {
-            mSpinnerFinalOffset = this.mSpinnerFinalOffset - this.mOriginalOffsetTop;
+            n3 = this.mSpinnerOffsetEnd - this.mOriginalOffsetTop;
         }
         else {
-            mSpinnerFinalOffset = this.mSpinnerFinalOffset;
+            n3 = this.mSpinnerOffsetEnd;
         }
-        final float max = Math.max(0.0f, Math.min(abs - mTotalDragDistance, mSpinnerFinalOffset * 2.0f) / mSpinnerFinalOffset);
-        final float n3 = (float)(max / 4.0f - Math.pow(max / 4.0f, 2.0)) * 2.0f;
+        final float max = Math.max(0.0f, Math.min(abs - mTotalDragDistance, n3 * 2.0f) / n3);
+        final float n4 = (float)(max / 4.0f - Math.pow(max / 4.0f, 2.0)) * 2.0f;
         final int mOriginalOffsetTop = this.mOriginalOffsetTop;
-        final int n4 = (int)(mSpinnerFinalOffset * min + mSpinnerFinalOffset * n3 * 2.0f);
+        final int n5 = (int)(n3 * min + n3 * n4 * 2.0f);
         if (this.mCircleView.getVisibility() != 0) {
             this.mCircleView.setVisibility(0);
         }
@@ -239,8 +241,8 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
         }
         this.mProgress.setStartEndTrim(0.0f, Math.min(0.8f, n2 * 0.8f));
         this.mProgress.setArrowScale(Math.min(1.0f, n2));
-        this.mProgress.setProgressRotation((-0.25f + n2 * 0.4f + n3 * 2.0f) * 0.5f);
-        this.setTargetOffsetTopAndBottom(n4 + mOriginalOffsetTop - this.mCurrentTargetOffsetTop, true);
+        this.mProgress.setProgressRotation((-0.25f + n2 * 0.4f + n4 * 2.0f) * 0.5f);
+        this.setTargetOffsetTopAndBottom(n5 + mOriginalOffsetTop - this.mCurrentTargetOffsetTop, true);
     }
     
     private void onSecondaryPointerUp(final MotionEvent motionEvent) {
@@ -257,6 +259,7 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
         }
     }
     
+    @SuppressLint({ "NewApi" })
     private void setColorViewAlpha(final int n) {
         this.mCircleView.getBackground().setAlpha(n);
         this.mProgress.setAlpha(n);
@@ -275,6 +278,7 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
         }
     }
     
+    @SuppressLint({ "NewApi" })
     private Animation startAlphaAnimation(final int n, final int n2) {
         if (this.mScale && this.isAlphaUsedForScale()) {
             return null;
@@ -287,6 +291,7 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
         return swipeRefreshLayout$4;
     }
     
+    @SuppressLint({ "NewApi" })
     private void startDragging(final float n) {
         if (n - this.mInitialDownY > this.mTouchSlop && !this.mIsBeingDragged) {
             this.mInitialMotionY = this.mInitialDownY + this.mTouchSlop;
@@ -295,14 +300,17 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
         }
     }
     
+    @SuppressLint({ "NewApi" })
     private void startProgressAlphaMaxAnimation() {
         this.mAlphaMaxAnimation = this.startAlphaAnimation(this.mProgress.getAlpha(), 255);
     }
     
+    @SuppressLint({ "NewApi" })
     private void startProgressAlphaStartAnimation() {
         this.mAlphaStartAnimation = this.startAlphaAnimation(this.mProgress.getAlpha(), 76);
     }
     
+    @SuppressLint({ "NewApi" })
     private void startScaleDownReturnToStartAnimation(final int mFrom, final Animation$AnimationListener animationListener) {
         this.mFrom = mFrom;
         if (this.isAlphaUsedForScale()) {
@@ -319,6 +327,7 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
         this.mCircleView.startAnimation(this.mScaleDownToStartAnimation);
     }
     
+    @SuppressLint({ "NewApi" })
     private void startScaleUpAnimation(final Animation$AnimationListener animationListener) {
         this.mCircleView.setVisibility(0);
         if (Build$VERSION.SDK_INT >= 11) {
@@ -384,6 +393,14 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
     
     public int getProgressCircleDiameter() {
         return this.mCircleDiameter;
+    }
+    
+    public int getProgressViewEndOffset() {
+        return this.mSpinnerOffsetEnd;
+    }
+    
+    public int getProgressViewStartOffset() {
+        return this.mOriginalOffsetTop;
     }
     
     public boolean hasNestedScrollingParent() {
@@ -659,10 +676,10 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
     }
     
     public void setColorSchemeResources(final int... array) {
-        final Resources resources = this.getResources();
+        final Context context = this.getContext();
         final int[] colorSchemeColors = new int[array.length];
         for (int i = 0; i < array.length; ++i) {
-            colorSchemeColors[i] = resources.getColor(array[i]);
+            colorSchemeColors[i] = ContextCompat.getColor(context, array[i]);
         }
         this.setColorSchemeColors(colorSchemeColors);
     }
@@ -701,19 +718,19 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
     }
     
     public void setProgressBackgroundColorSchemeResource(final int n) {
-        this.setProgressBackgroundColorSchemeColor(this.getResources().getColor(n));
+        this.setProgressBackgroundColorSchemeColor(ContextCompat.getColor(this.getContext(), n));
     }
     
-    public void setProgressViewEndTarget(final boolean mScale, final int n) {
-        this.mSpinnerFinalOffset = n;
+    public void setProgressViewEndTarget(final boolean mScale, final int mSpinnerOffsetEnd) {
+        this.mSpinnerOffsetEnd = mSpinnerOffsetEnd;
         this.mScale = mScale;
         this.mCircleView.invalidate();
     }
     
-    public void setProgressViewOffset(final boolean mScale, final int mOriginalOffsetTop, final int n) {
+    public void setProgressViewOffset(final boolean mScale, final int mOriginalOffsetTop, final int mSpinnerOffsetEnd) {
         this.mScale = mScale;
         this.mOriginalOffsetTop = mOriginalOffsetTop;
-        this.mSpinnerFinalOffset = n;
+        this.mSpinnerOffsetEnd = mSpinnerOffsetEnd;
         this.mUsingCustomStart = true;
         this.reset();
         this.mRefreshing = false;
@@ -722,14 +739,14 @@ public class SwipeRefreshLayout extends ViewGroup implements NestedScrollingChil
     public void setRefreshing(final boolean mRefreshing) {
         if (mRefreshing && this.mRefreshing != mRefreshing) {
             this.mRefreshing = mRefreshing;
-            int n;
+            int mSpinnerOffsetEnd;
             if (!this.mUsingCustomStart) {
-                n = (int)(this.mSpinnerFinalOffset + this.mOriginalOffsetTop);
+                mSpinnerOffsetEnd = this.mSpinnerOffsetEnd + this.mOriginalOffsetTop;
             }
             else {
-                n = (int)this.mSpinnerFinalOffset;
+                mSpinnerOffsetEnd = this.mSpinnerOffsetEnd;
             }
-            this.setTargetOffsetTopAndBottom(n - this.mCurrentTargetOffsetTop, true);
+            this.setTargetOffsetTopAndBottom(mSpinnerOffsetEnd - this.mCurrentTargetOffsetTop, true);
             this.mNotify = false;
             this.startScaleUpAnimation(this.mRefreshListener);
             return;

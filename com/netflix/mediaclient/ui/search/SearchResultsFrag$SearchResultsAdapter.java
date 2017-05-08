@@ -80,6 +80,9 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
                 }
                 break;
             }
+            case 3: {
+                searchResultView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(this.this$0.imgWidthVideo, this.this$0.imgHeightVideo));
+            }
         }
     }
     
@@ -112,7 +115,7 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     private void setResid() {
         switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
             default: {
-                this.resId = 2130903280;
+                this.resId = 2130903293;
             }
             case 2: {
                 this.resId = SearchUtils.getSearchViewLayoutPeople();

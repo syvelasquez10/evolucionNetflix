@@ -8,7 +8,9 @@ import android.animation.Animator$AnimatorListener;
 import android.animation.TimeInterpolator;
 import android.view.animation.Interpolator;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class ViewPropertyAnimatorCompatICS
 {
     public static void alpha(final View view, final float n) {

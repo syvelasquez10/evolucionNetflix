@@ -8,7 +8,9 @@ import java.net.Socket;
 import android.os.ParcelFileDescriptor;
 import java.net.DatagramSocket;
 import android.net.TrafficStats;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class TrafficStatsCompatIcs
 {
     public static void clearThreadStatsTag() {

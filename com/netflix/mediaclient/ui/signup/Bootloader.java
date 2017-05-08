@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.signup;
 
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.NrdpComponent;
 import android.net.Uri;
@@ -67,17 +68,17 @@ final class Bootloader
         return this.mUrl;
     }
     
-    public void setUrl(String s) {
+    public void setUrl(String channelId) {
         final StringBuilder sb = new StringBuilder();
-        final String query = Uri.parse(s).getQuery();
+        final String query = Uri.parse(channelId).getQuery();
         if (Log.isLoggable()) {
             Log.d("SignupActivity", "URL queryParam: " + query);
         }
         if (query != null) {
-            sb.append(s).append('&');
+            sb.append(channelId).append('&');
         }
         else {
-            sb.append(s).append("?");
+            sb.append(channelId).append("?");
         }
         sb.append("esn").append('=').append(this.urlEncode(this.mSvcManager.getESNProvider().getEsn())).append('&');
         sb.append("sdk_version").append('=').append(this.urlEncode(this.mSvcManager.getNrdpComponentVersion(NrdpComponent.NrdLib))).append('&');
@@ -88,21 +89,24 @@ final class Bootloader
         sb.append("inapp").append("=true&");
         final StringBuilder append = sb.append("isNetflixPreloaded").append('=');
         if (this.mIsPreloaded) {
-            s = "true";
+            channelId = "true";
         }
         else {
-            s = "false";
+            channelId = "false";
         }
-        append.append(s).append('&');
+        append.append(channelId).append('&');
         final StringBuilder append2 = sb.append("isPlayBillingEnabled").append('=');
         if (this.mIsPlayBillingEnabled) {
-            s = "true";
+            channelId = "true";
         }
         else {
-            s = "false";
+            channelId = "false";
         }
-        append2.append(s).append('&');
-        sb.append("channelId").append('=').append("780bd1ac-0bef-4578-bf41-5cd4d3acd5a1");
+        append2.append(channelId);
+        channelId = this.mSvcManager.getConfiguration().getChannelId();
+        if (StringUtils.isNotEmpty(channelId)) {
+            sb.append('&').append("channelId").append('=').append(channelId);
+        }
         if (this.mUuid != null) {
             sb.append('&').append("uuid").append('=').append(this.mUuid);
         }

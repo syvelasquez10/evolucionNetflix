@@ -6,7 +6,9 @@ package android.support.v4.text;
 
 import android.text.TextUtils;
 import java.util.Locale;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 class TextUtilsCompatJellybeanMr1
 {
     public static int getLayoutDirectionFromLocale(final Locale locale) {

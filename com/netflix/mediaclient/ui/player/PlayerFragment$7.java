@@ -15,7 +15,6 @@ import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
 import java.util.List;
 import java.io.Serializable;
-import android.media.AudioManager;
 import com.netflix.mediaclient.media.Watermark;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlaybackError;
 import android.view.MenuItem;
@@ -25,6 +24,7 @@ import android.view.Surface;
 import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.support.v4.media.session.MediaSessionCompat$Callback;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
@@ -44,6 +44,7 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -55,11 +56,12 @@ import android.os.Debug;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
+import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -118,6 +120,7 @@ import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import java.util.ArrayList;
@@ -137,7 +140,6 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.media.Language;
 import android.view.View$OnClickListener;
-import android.widget.SeekBar$OnSeekBarChangeListener;
 import com.netflix.mediaclient.ui.details.DetailsActivity$Reloader;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
@@ -146,12 +148,12 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import android.os.SystemClock;
 import com.netflix.mediaclient.Log;
-import android.view.MotionEvent;
-import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
+import android.media.AudioManager;
+import android.widget.SeekBar;
+import android.widget.SeekBar$OnSeekBarChangeListener;
 
-class PlayerFragment$7 implements TappableSurfaceView$TapListener
+class PlayerFragment$7 implements SeekBar$OnSeekBarChangeListener
 {
     final /* synthetic */ PlayerFragment this$0;
     
@@ -159,22 +161,28 @@ class PlayerFragment$7 implements TappableSurfaceView$TapListener
         this.this$0 = this$0;
     }
     
-    @Override
-    public void onTap(final MotionEvent motionEvent) {
-        Log.d("PlayerFragment", "PA tap");
-        if (this.this$0.mState.seekToInProgress || this.this$0.mState.audioSeekToInProgress) {
-            Log.d("PlayerFragment", "Seekto in progress, ignore");
-            return;
+    public void onProgressChanged(final SeekBar seekBar, final int n, final boolean b) {
+        if (b && this.this$0.mState.draggingAudioInProgress && this.this$0.mScreen != null) {
+            final AudioManager audioManager = (AudioManager)this.this$0.getActivity().getSystemService("audio");
+            if (audioManager == null) {
+                Log.e("PlayerFragment", "Audio manager is not available, can not change volume");
+                return;
+            }
+            audioManager.setStreamVolume(3, n, 0);
         }
-        if (this.this$0.mScreen.inInterruptedOrPendingInterrupted()) {
-            Log.d("PlayerFragment", "In interrupted state, ignore");
-            return;
-        }
-        final boolean b = motionEvent != null;
-        this.this$0.mState.setLastActionTime(SystemClock.elapsedRealtime());
-        if (!this.this$0.mScreen.inPostPlayOrPendingPostplay()) {
-            this.this$0.mState.userInteraction();
-        }
-        this.this$0.showControlScreenOverlay(b);
+    }
+    
+    public void onStartTrackingTouch(final SeekBar seekBar) {
+        this.this$0.mState.draggingAudioInProgress = true;
+        Log.d("PlayerFragment", "Start volume change, get awake clock");
+        this.this$0.keepScreenOn();
+        this.this$0.stopScreenUpdateTask();
+    }
+    
+    public void onStopTrackingTouch(final SeekBar seekBar) {
+        Log.d("PlayerFragment", "volume::onStopTrackingTouch called");
+        this.this$0.mState.draggingAudioInProgress = false;
+        this.this$0.mState.audioSeekToInProgress = false;
+        this.this$0.startScreenUpdateTask();
     }
 }

@@ -17,13 +17,14 @@ import android.view.animation.Animation$AnimationListener;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import java.util.Iterator;
 import android.content.res.TypedArray;
 import com.netflix.mediaclient.R$styleable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v4.content.ContextCompat;
-import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.util.AttributeSet;
@@ -56,9 +57,16 @@ public class DownloadButton extends LinearLayout
     public DownloadButton(final Context context, final AttributeSet set) {
         super(context, set);
         this.buttonState = DownloadButton$ButtonState.NOT_AVAILABLE;
-        final View inflate = LayoutInflater.from(this.getContext()).inflate(2130903118, (ViewGroup)this);
         this.initAttrs(context, set);
-        this.findViews(inflate);
+        final LayoutInflater from = LayoutInflater.from(this.getContext());
+        int n;
+        if (this.showPrimaryMessages) {
+            n = 2130903123;
+        }
+        else {
+            n = 2130903122;
+        }
+        this.findViews(from.inflate(n, (ViewGroup)this));
         this.initViews();
         this.setupLongPressMessages();
     }
@@ -77,8 +85,8 @@ public class DownloadButton extends LinearLayout
     }
     
     private void findViews(final View view) {
-        this.progressBar = (ProgressBar)view.findViewById(2131689799);
-        this.primaryMessageView = (TextView)view.findViewById(2131689800);
+        this.progressBar = (ProgressBar)view.findViewById(2131755351);
+        this.primaryMessageView = (TextView)view.findViewById(2131755352);
     }
     
     private Drawable getBrowseExperienceDrawable(final int n) {
@@ -87,14 +95,14 @@ public class DownloadButton extends LinearLayout
         if (this.kidsExperience) {
             drawable2 = drawable;
             if (BrowseExperience.showKidsExperience()) {
-                if (n != 2130837679) {
+                if (n != 2130837685) {
                     drawable2 = drawable;
-                    if (n != 2130837675) {
+                    if (n != 2130837681) {
                         return drawable2;
                     }
                 }
                 drawable2 = DrawableCompat.wrap(drawable.mutate());
-                DrawableCompat.setTint(drawable2, ContextCompat.getColor(this.getContext(), 2131624063));
+                DrawableCompat.setTint(drawable2, ContextCompat.getColor(this.getContext(), 2131689600));
             }
         }
         return drawable2;
@@ -109,19 +117,15 @@ public class DownloadButton extends LinearLayout
     }
     
     private void initViews() {
-        if (this.primaryMessageView != null) {
-            final TextView primaryMessageView = this.primaryMessageView;
-            int visibility;
-            if (this.showPrimaryMessages) {
-                visibility = 0;
-            }
-            else {
-                visibility = 8;
-            }
-            primaryMessageView.setVisibility(visibility);
-        }
-        this.progressBar.setBackground(this.getBrowseExperienceDrawable(2130837675));
+        this.progressBar.setBackground(this.getBrowseExperienceDrawable(2130837681));
         this.setContentDescription((CharSequence)"download_btn");
+    }
+    
+    public static void removePlayablesFromPreQueued(final List<String> list) {
+        final Iterator<String> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            DownloadButton.preQueued.remove(iterator.next());
+        }
     }
     
     public static void removePreQueued(final String s) {
@@ -150,32 +154,33 @@ public class DownloadButton extends LinearLayout
             default: {}
             case 1: {
                 this.progressBar.setProgress(0);
-                this.progressBar.setBackground(this.getBrowseExperienceDrawable(2130837679));
-                this.primaryMessageView.setText((CharSequence)this.getResources().getString(2131230926));
+                this.progressBar.setBackground(this.getBrowseExperienceDrawable(2130837685));
+                this.setPrimaryMessage(2131296481);
                 this.rotateIcon();
             }
             case 7: {
                 this.progressBar.setProgress(0);
-                this.animateIconChange(this.getBrowseExperienceDrawable(2130837682));
-                this.primaryMessageView.setText((CharSequence)this.getResources().getString(2131230927));
+                this.animateIconChange(this.getBrowseExperienceDrawable(2130837688));
+                this.setPrimaryMessage(2131296480);
             }
             case 3: {
                 this.progressBar.clearAnimation();
-                this.animateIconChange(this.getBrowseExperienceDrawable(2130837676));
-                this.primaryMessageView.setText((CharSequence)this.getResources().getString(2131230926));
+                this.animateIconChange(this.getBrowseExperienceDrawable(2130837682));
+                this.setPrimaryMessage(2131296481);
             }
             case 4: {
-                this.animateIconChange(this.getBrowseExperienceDrawable(2130837681));
-                this.primaryMessageView.setText((CharSequence)this.getResources().getString(2131230926));
+                this.animateIconChange(this.getBrowseExperienceDrawable(2130837687));
+                this.setPrimaryMessage(2131296479);
             }
             case 2: {
                 this.progressBar.setProgress(0);
-                this.animateIconChange(this.getBrowseExperienceDrawable(2130837680));
-                this.primaryMessageView.setText((CharSequence)this.getResources().getString(2131230926));
+                this.animateIconChange(this.getBrowseExperienceDrawable(2130837686));
+                this.setPrimaryMessage(2131296481);
             }
             case 8: {
                 this.progressBar.setProgress(0);
-                this.animateIconChange(this.getBrowseExperienceDrawable(2130837677));
+                this.animateIconChange(this.getBrowseExperienceDrawable(2130837683));
+                this.setPrimaryMessage(2131296482);
             }
             case 6: {
                 this.progressBar.setProgress(0);
@@ -183,10 +188,17 @@ public class DownloadButton extends LinearLayout
             }
             case 5: {
                 this.progressBar.setProgress(0);
-                this.progressBar.setBackground(this.getBrowseExperienceDrawable(2130837675));
-                this.primaryMessageView.setText((CharSequence)this.getResources().getString(2131230926));
+                this.progressBar.setBackground(this.getBrowseExperienceDrawable(2130837681));
+                this.setPrimaryMessage(2131296478);
             }
         }
+    }
+    
+    private void setPrimaryMessage(final int n) {
+        if (this.primaryMessageView == null) {
+            return;
+        }
+        this.primaryMessageView.setText((CharSequence)this.getResources().getString(n));
     }
     
     private void setupLongPressMessages() {

@@ -10,7 +10,7 @@ import android.graphics.Typeface;
 import android.support.design.widget.Snackbar$SnackbarLayout;
 import android.widget.TextView;
 import android.support.design.widget.Snackbar;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerMovieDetailsActivity;
+import com.netflix.mediaclient.ui.barker.details.BarkerMovieDetailsActivity;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;

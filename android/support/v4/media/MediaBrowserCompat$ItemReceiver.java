@@ -22,7 +22,9 @@ class MediaBrowserCompat$ItemReceiver extends ResultReceiver
     
     @Override
     protected void onReceiveResult(final int n, final Bundle bundle) {
-        bundle.setClassLoader(MediaBrowserCompat.class.getClassLoader());
+        if (bundle != null) {
+            bundle.setClassLoader(MediaBrowserCompat.class.getClassLoader());
+        }
         if (n != 0 || bundle == null || !bundle.containsKey("media_item")) {
             this.mCallback.onError(this.mMediaId);
             return;

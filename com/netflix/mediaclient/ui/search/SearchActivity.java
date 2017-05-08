@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.search;
 
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.ui.kubrick_kids.search.KubrickKidsSearchActionBar;
+import com.netflix.mediaclient.ui.barker_kids.search.BarkerKidsSearchActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
 import android.view.View$OnFocusChangeListener;
@@ -87,30 +87,30 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void createUI() {
-        this.setContentView(2130903278);
+        this.setContentView(2130903291);
         this.setupActionBar();
         this.findViews();
         this.setupLoadingWrapper();
         this.setupFragments(this.savedInstanceState);
         if (BrowseExperience.showKidsExperience()) {
-            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131624006));
-            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131624188));
+            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131689544));
+            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131689730));
             ((ViewGroup)this.leWrapper.getErrorMessageTextView().getParent()).setBackgroundColor(-1);
             ViewUtils.removeShadow(this.leWrapper.getErrorMessageTextView());
         }
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131690301);
-        this.loadingWrapper = this.findViewById(2131690299);
-        (this.mVoiceSearchBtn = this.findViewById(2131690300)).setOnClickListener((View$OnClickListener)new SearchActivity$1(this));
+        this.fragGroup = (ViewGroup)this.findViewById(2131755869);
+        this.loadingWrapper = this.findViewById(2131755867);
+        (this.mVoiceSearchBtn = this.findViewById(2131755868)).setOnClickListener((View$OnClickListener)new SearchActivity$1(this));
     }
     
     private int getSearchHintPlaceholderStringId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2131231224;
+            return 2131296780;
         }
-        return 2131231412;
+        return 2131296973;
     }
     
     private void handleKeyboardVisibility() {
@@ -246,7 +246,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             this.resultsFrag = SearchResultsFrag.create();
-            this.getFragmentManager().beginTransaction().add(2131690301, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131755869, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -258,7 +258,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131231146, false, false);
+        this.leWrapper.showErrorView(2131296702, false, false);
         this.fragGroup.setVisibility(4);
         this.setVoiceSearchVisibility(false);
         this.setSearchProgressVisibility(false);
@@ -311,7 +311,7 @@ public class SearchActivity extends NetflixActivity
     @Override
     protected NetflixActionBar createActionBar() {
         if (BrowseExperience.showKidsExperience()) {
-            return new KubrickKidsSearchActionBar(this);
+            return new BarkerKidsSearchActionBar(this);
         }
         return new SearchActionBar(this);
     }
@@ -323,9 +323,9 @@ public class SearchActivity extends NetflixActivity
     
     protected int getInitMessageStringId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2131231224;
+            return 2131296780;
         }
-        return 2131231411;
+        return 2131296972;
     }
     
     @Override
@@ -357,7 +357,7 @@ public class SearchActivity extends NetflixActivity
             SearchUtils.setSearchExperience(SearchUtils$SearchExperience.PHONE);
         }
         if (BrowseExperience.showKidsExperience()) {
-            this.setTheme(2131427762);
+            this.setTheme(2131493324);
         }
         this.createUI();
         if (savedInstanceState != null) {
@@ -400,7 +400,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131231022, true, false);
+        this.leWrapper.showErrorView(2131296578, true, false);
         this.fragGroup.setVisibility(4);
         this.setVoiceSearchVisibility(false);
         this.setSearchProgressVisibility(false);

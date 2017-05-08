@@ -5,8 +5,10 @@
 package android.support.v4.os;
 
 import android.os.Parcel;
+import android.annotation.TargetApi;
 import android.os.Parcelable$ClassLoaderCreator;
 
+@TargetApi(13)
 class ParcelableCompatCreatorHoneycombMR2<T> implements Parcelable$ClassLoaderCreator<T>
 {
     private final ParcelableCompatCreatorCallbacks<T> mCallbacks;

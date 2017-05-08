@@ -7,7 +7,6 @@ package com.netflix.mediaclient.ui.lomo;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler$FetchCallback;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickLolomoUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.Log;
@@ -31,6 +30,6 @@ public class ProgressiveStandardAdapter<V extends Video> extends BaseProgressive
         if (Log.isLoggable()) {
             Log.v("BaseProgressiveRowAdapter", String.format("fetching videos for Lomo: %s, Type: %s, Total Vids: %d, Id: %s, start: %d, end: %d", loMo.getTitle(), loMo.getType(), loMo.getNumVideos(), loMo.getId(), n, n2));
         }
-        this.getManager().getBrowse().fetchVideos(loMo, n, n2, false, BrowseExperience.shouldLoadKubrickLeavesInLolomo(), KubrickLolomoUtils.shouldFetchByLomoType("BaseProgressiveRowAdapter", loMo), new FetchVideosHandler<Object>("BaseProgressiveRowAdapter", (FetchVideosHandler$FetchCallback<Video>)this, loMo.getTitle(), n, n2));
+        this.getManager().getBrowse().fetchVideos(loMo, n, n2, false, BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, new FetchVideosHandler<Object>("BaseProgressiveRowAdapter", (FetchVideosHandler$FetchCallback<Video>)this, loMo.getTitle(), n, n2));
     }
 }

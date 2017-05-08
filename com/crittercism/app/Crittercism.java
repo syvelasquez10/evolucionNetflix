@@ -349,12 +349,15 @@ public class Crittercism
                     }
                     catch (ThreadDeath threadDeath) {
                         throw threadDeath;
-                        long nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
-                        dw.d("Crittercism finished initializing in " + nanoTime + "ms");
-                        return;
-                        nanoTime = System.nanoTime();
+                        long nanoTime = System.nanoTime();
                         c = ax.C();
                         // iftrue(Label_0142:, Build$VERSION.SDK_INT >= 14)
+                        Block_9: {
+                            break Block_9;
+                            nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
+                            dw.d("Crittercism finished initializing in " + nanoTime + "ms");
+                            return;
+                        }
                         dw.b("Crittercism is not supported for Android API less than 14 (ICS).");
                         continue;
                     }

@@ -11,10 +11,10 @@ import android.os.Handler;
 import java.util.Iterator;
 import android.os.Bundle;
 import android.util.TypedValue;
-import android.os.Build$VERSION;
 import android.text.TextUtils;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.os.Build$VERSION;
 import android.content.Context;
 import java.util.ArrayList;
 
@@ -29,6 +29,7 @@ public class MediaSessionCompat
     static final String ACTION_PREPARE_FROM_MEDIA_ID = "android.support.v4.media.session.action.PREPARE_FROM_MEDIA_ID";
     static final String ACTION_PREPARE_FROM_SEARCH = "android.support.v4.media.session.action.PREPARE_FROM_SEARCH";
     static final String ACTION_PREPARE_FROM_URI = "android.support.v4.media.session.action.PREPARE_FROM_URI";
+    static final String EXTRA_BINDER = "android.support.v4.media.session.EXTRA_BINDER";
     public static final int FLAG_HANDLES_MEDIA_BUTTONS = 1;
     public static final int FLAG_HANDLES_TRANSPORT_CONTROLS = 2;
     private static final int MAX_BITMAP_SIZE_IN_DP = 320;
@@ -41,6 +42,9 @@ public class MediaSessionCompat
     private MediaSessionCompat(final Context context, final MediaSessionCompat$MediaSessionImpl mImpl) {
         this.mActiveListeners = new ArrayList<MediaSessionCompat$OnActiveChangeListener>();
         this.mImpl = mImpl;
+        if (Build$VERSION.SDK_INT >= 21) {
+            this.setCallback(new MediaSessionCompat$1(this));
+        }
         this.mController = new MediaControllerCompat(context, this);
     }
     

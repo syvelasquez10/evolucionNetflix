@@ -115,12 +115,12 @@ public class OnRampActivity extends WebViewAccountActivity
     
     @Override
     public void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231168), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131296724), runnable)));
     }
     
     @Override
     public void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231168), runnable, this.getString(2131231008), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131296724), runnable, this.getString(2131296564), null)));
     }
     
     @Override

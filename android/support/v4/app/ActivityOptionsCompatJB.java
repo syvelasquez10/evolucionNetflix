@@ -9,7 +9,9 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.content.Context;
 import android.app.ActivityOptions;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class ActivityOptionsCompatJB
 {
     private final ActivityOptions mActivityOptions;

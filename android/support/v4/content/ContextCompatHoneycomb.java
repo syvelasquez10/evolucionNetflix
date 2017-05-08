@@ -7,7 +7,9 @@ package android.support.v4.content;
 import android.content.Intent;
 import java.io.File;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class ContextCompatHoneycomb
 {
     public static File getObbDir(final Context context) {

@@ -7,7 +7,9 @@ package android.support.v4.widget;
 import android.widget.SearchView;
 import android.view.View;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class SearchViewCompatIcs
 {
     public static View newSearchView(final Context context) {

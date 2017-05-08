@@ -4,9 +4,6 @@
 
 package android.support.v7.media;
 
-import java.util.Arrays;
-import android.content.IntentFilter;
-import java.util.Collections;
 import java.util.List;
 import android.os.Bundle;
 import java.util.Iterator;
@@ -70,6 +67,6 @@ public final class MediaRouteSelector$Builder
         }
         final Bundle bundle = new Bundle();
         bundle.putStringArrayList("controlCategories", (ArrayList)this.mControlCategories);
-        return new MediaRouteSelector(bundle, this.mControlCategories, null);
+        return new MediaRouteSelector(bundle, this.mControlCategories);
     }
 }

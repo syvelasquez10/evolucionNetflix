@@ -5,7 +5,9 @@
 package android.support.v4.media;
 
 import android.media.Rating;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class RatingCompatKitkat
 {
     public static float getPercentRating(final Object o) {

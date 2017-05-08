@@ -47,7 +47,7 @@ import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import com.netflix.model.branches.FalkorPerson;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.util.AttributeSet;
@@ -92,17 +92,17 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void findViews() {
-        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690275);
-        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690276);
-        this.knownFor = (TextView)this.findViewById(2131690280);
-        this.knownForLabel = (TextView)this.findViewById(2131690279);
-        this.spouse = (TextView)this.findViewById(2131690284);
-        this.spouseLabel = (TextView)this.findViewById(2131690283);
-        this.name = (TextView)this.findViewById(2131690278);
-        this.born = (TextView)this.findViewById(2131690282);
-        this.bornLabel = (TextView)this.findViewById(2131690281);
-        this.onNetFlixLabel = this.findViewById(2131690277);
-        this.this$0.caret = this.findViewById(2131690285);
+        this.actorStillImg = (FocalPointImageView)this.findViewById(2131755843);
+        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131755844);
+        this.knownFor = (TextView)this.findViewById(2131755848);
+        this.knownForLabel = (TextView)this.findViewById(2131755847);
+        this.spouse = (TextView)this.findViewById(2131755852);
+        this.spouseLabel = (TextView)this.findViewById(2131755851);
+        this.name = (TextView)this.findViewById(2131755846);
+        this.born = (TextView)this.findViewById(2131755850);
+        this.bornLabel = (TextView)this.findViewById(2131755849);
+        this.onNetFlixLabel = this.findViewById(2131755845);
+        this.this$0.caret = this.findViewById(2131755853);
     }
     
     private void init() {
@@ -113,7 +113,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     
     private void setupCaret() {
         if (this.this$0.caret != null) {
-            this.this$0.caret.setTranslationX((float)(-(BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362259))));
+            this.this$0.caret.setTranslationX((float)(-(BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427814))));
             this.this$0.caret.setOnClickListener((View$OnClickListener)new RoleDetailsFrag$ActorDetailsView$1(this));
         }
     }
@@ -130,7 +130,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void updateActorStillImage(final FalkorPerson falkorPerson) {
-        final View viewById = this.findViewById(2131689974);
+        final View viewById = this.findViewById(2131755517);
         if (this.actorStillImg != null) {
             this.adjustHeight(this.actorStillImg);
             this.actorStillImg.setImageLoaderInfo(null);
@@ -199,7 +199,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     
     protected void adjustHeight(final ImageView imageView) {
         if (this.this$0.stillImageHeight < 1) {
-            final float n = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362200);
+            final float n = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427754);
             final float n2 = 1;
             final ViewGroup$LayoutParams layoutParams = imageView.getLayoutParams();
             final float n3 = (BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - n * (n2 + 1.0f)) / 1;
@@ -217,7 +217,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903275;
+        return 2130903288;
     }
     
     void updateDetails(final FalkorPerson falkorPerson, final boolean b) {

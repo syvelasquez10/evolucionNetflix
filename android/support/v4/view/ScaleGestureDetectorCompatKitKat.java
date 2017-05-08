@@ -5,7 +5,9 @@
 package android.support.v4.view;
 
 import android.view.ScaleGestureDetector;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class ScaleGestureDetectorCompatKitKat
 {
     public static boolean isQuickScaleEnabled(final Object o) {

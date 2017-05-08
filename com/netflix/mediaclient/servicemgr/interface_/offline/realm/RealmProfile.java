@@ -30,7 +30,7 @@ public class RealmProfile implements RealmModel, RealmProfileRealmProxyInterface
     public static void insertProfileIfNeeded(final Realm realm, final NetflixService netflixService, final UserProfile userProfile) {
         final String profileGuid = userProfile.getProfileGuid();
         if (RealmUtils.idNotExists(realm, RealmProfile.class, profileGuid)) {
-            RealmUtils.executeTransactionAsync(realm, new RealmProfile$1(profileGuid, userProfile));
+            RealmUtils.executeTransactionAsync(realm, (Realm$Transaction)new RealmProfile$1(profileGuid, userProfile));
             OfflineImageUtils.cacheProfileImage(netflixService, userProfile.getAvatarUrl(), profileGuid);
         }
     }
@@ -55,27 +55,22 @@ public class RealmProfile implements RealmModel, RealmProfileRealmProxyInterface
         return this.realmGet$kids();
     }
     
-    @Override
     public String realmGet$iconUrl() {
         return this.iconUrl;
     }
     
-    @Override
     public String realmGet$id() {
         return this.id;
     }
     
-    @Override
     public boolean realmGet$kids() {
         return this.kids;
     }
     
-    @Override
     public String realmGet$name() {
         return this.name;
     }
     
-    @Override
     public void realmSet$iconUrl(final String iconUrl) {
         this.iconUrl = iconUrl;
     }
@@ -84,12 +79,10 @@ public class RealmProfile implements RealmModel, RealmProfileRealmProxyInterface
         this.id = id;
     }
     
-    @Override
     public void realmSet$kids(final boolean kids) {
         this.kids = kids;
     }
     
-    @Override
     public void realmSet$name(final String name) {
         this.name = name;
     }

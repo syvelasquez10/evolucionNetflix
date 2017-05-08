@@ -4,6 +4,7 @@
 
 package android.support.v4.view;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ViewParent;
 import android.support.v4.view.accessibility.AccessibilityNodeProviderCompat;
@@ -83,6 +84,11 @@ class ViewCompat$JBViewCompatImpl extends ViewCompat$ICSMr1ViewCompatImpl
     @Override
     public void requestApplyInsets(final View view) {
         ViewCompatJB.requestApplyInsets(view);
+    }
+    
+    @Override
+    public void setBackground(final View view, final Drawable drawable) {
+        ViewCompatJB.setBackground(view, drawable);
     }
     
     @Override

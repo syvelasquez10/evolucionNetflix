@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import android.content.res.Resources;
-import android.app.Activity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.CWTestUtil;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -28,8 +27,6 @@ public final class LomoConfig
         numVideosPerPageTable = new HashMap<BrowseExperience, SparseArray<SparseIntArray>>();
         lomoFragOffsetRightTable = new HashMap<BrowseExperience, SparseArray<SparseIntArray>>();
         initVideosPerPageMapStandard();
-        initVideosPerPageMapTest6725();
-        initLomoFragOffsetRight6725();
         numCWVideosPerPageTable = new SparseArray(2);
         final SparseIntArray sparseIntArray = new SparseIntArray();
         sparseIntArray.put(1, 1);
@@ -50,7 +47,7 @@ public final class LomoConfig
             return 10;
         }
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(context);
-        if (BrowseExperience.isKubrick() || BrowseExperience.isDisplayPageRefresh()) {
+        if (BrowseExperience.isDisplayPageRefresh()) {
             if (loMoType == LoMoType.CONTINUE_WATCHING) {
                 return 6;
             }
@@ -78,7 +75,9 @@ public final class LomoConfig
     }
     
     public static int getLomoFragOffsetRightPx(final NetflixActivity netflixActivity) {
-        return (int)(getPeakByOrientation(netflixActivity, DeviceUtils.getBasicScreenOrientation((Context)netflixActivity), DeviceUtils.getScreenSizeCategory((Context)netflixActivity)) * Resources.getSystem().getDisplayMetrics().density);
+        DeviceUtils.getBasicScreenOrientation((Context)netflixActivity);
+        DeviceUtils.getScreenSizeCategory((Context)netflixActivity);
+        return (int)(getPeak() * Resources.getSystem().getDisplayMetrics().density);
     }
     
     private static int getNumCWVideosPerPageTableByOrientation(final int n, final int n2) {
@@ -86,56 +85,11 @@ public final class LomoConfig
     }
     
     public static int getNumVideosPerPageTableByOrientation(final int n, final int n2) {
-        switch (LomoConfig$1.$SwitchMap$com$netflix$mediaclient$ui$experience$BrowseExperience[BrowseExperience.get().ordinal()]) {
-            default: {
-                return ((SparseIntArray)LomoConfig.numVideosPerPageTable.get(BrowseExperience.STANDARD).get(n)).get(n2);
-            }
-            case 1:
-            case 2:
-            case 3:
-            case 4: {
-                return ((SparseIntArray)LomoConfig.numVideosPerPageTable.get(BrowseExperience.get()).get(n)).get(n2);
-            }
-        }
+        return ((SparseIntArray)LomoConfig.numVideosPerPageTable.get(BrowseExperience.STANDARD).get(n)).get(n2);
     }
     
-    private static int getPeakByOrientation(final Activity activity, final int n, final int n2) {
-        switch (LomoConfig$1.$SwitchMap$com$netflix$mediaclient$ui$experience$BrowseExperience[BrowseExperience.get().ordinal()]) {
-            default: {
-                return 8;
-            }
-            case 5:
-            case 6: {
-                return 32;
-            }
-            case 2:
-            case 3: {
-                return ((SparseIntArray)LomoConfig.lomoFragOffsetRightTable.get(BrowseExperience.get()).get(n)).get(n2);
-            }
-        }
-    }
-    
-    private static void initLomoFragOffsetRight6725() {
-        final SparseArray sparseArray = new SparseArray(2);
-        final SparseIntArray sparseIntArray = new SparseIntArray();
-        final SparseIntArray sparseIntArray2 = new SparseIntArray();
-        sparseIntArray.put(3, 120);
-        sparseIntArray.put(4, 30);
-        sparseArray.put(1, (Object)sparseIntArray);
-        sparseIntArray2.put(3, 140);
-        sparseIntArray2.put(4, 50);
-        sparseArray.put(2, (Object)sparseIntArray2);
-        LomoConfig.lomoFragOffsetRightTable.put(BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_3, (SparseArray<SparseIntArray>)sparseArray);
-        final SparseArray sparseArray2 = new SparseArray(2);
-        final SparseIntArray sparseIntArray3 = new SparseIntArray();
-        final SparseIntArray sparseIntArray4 = new SparseIntArray();
-        sparseIntArray3.put(3, 30);
-        sparseIntArray3.put(4, 20);
-        sparseArray2.put(1, (Object)sparseIntArray3);
-        sparseIntArray4.put(3, 30);
-        sparseIntArray4.put(4, 20);
-        sparseArray2.put(2, (Object)sparseIntArray4);
-        LomoConfig.lomoFragOffsetRightTable.put(BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_4, (SparseArray<SparseIntArray>)sparseArray2);
+    private static int getPeak() {
+        return 8;
     }
     
     private static void initVideosPerPageMapStandard() {
@@ -153,48 +107,5 @@ public final class LomoConfig
         sparseIntArray2.put(4, 6);
         sparseArray.put(2, (Object)sparseIntArray2);
         LomoConfig.numVideosPerPageTable.put(BrowseExperience.STANDARD, (SparseArray<SparseIntArray>)sparseArray);
-    }
-    
-    private static void initVideosPerPageMapTest6725() {
-        final SparseArray sparseArray = new SparseArray(2);
-        final SparseIntArray sparseIntArray = new SparseIntArray();
-        final SparseIntArray sparseIntArray2 = new SparseIntArray();
-        sparseIntArray.put(3, 4);
-        sparseIntArray.put(4, 5);
-        sparseArray.put(1, (Object)sparseIntArray);
-        sparseIntArray2.put(3, 6);
-        sparseIntArray2.put(4, 7);
-        sparseArray.put(2, (Object)sparseIntArray2);
-        LomoConfig.numVideosPerPageTable.put(BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_2, (SparseArray<SparseIntArray>)sparseArray);
-        final SparseArray sparseArray2 = new SparseArray(2);
-        final SparseIntArray sparseIntArray3 = new SparseIntArray();
-        final SparseIntArray sparseIntArray4 = new SparseIntArray();
-        sparseIntArray3.put(3, 2);
-        sparseIntArray3.put(4, 3);
-        sparseArray2.put(1, (Object)sparseIntArray3);
-        sparseIntArray4.put(3, 3);
-        sparseIntArray4.put(4, 4);
-        sparseArray2.put(2, (Object)sparseIntArray4);
-        LomoConfig.numVideosPerPageTable.put(BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_3, (SparseArray<SparseIntArray>)sparseArray2);
-        final SparseArray sparseArray3 = new SparseArray(2);
-        final SparseIntArray sparseIntArray5 = new SparseIntArray();
-        final SparseIntArray sparseIntArray6 = new SparseIntArray();
-        sparseIntArray5.put(3, 3);
-        sparseIntArray5.put(4, 4);
-        sparseArray3.put(1, (Object)sparseIntArray5);
-        sparseIntArray6.put(3, 4);
-        sparseIntArray6.put(4, 5);
-        sparseArray3.put(2, (Object)sparseIntArray6);
-        LomoConfig.numVideosPerPageTable.put(BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_4, (SparseArray<SparseIntArray>)sparseArray3);
-        final SparseArray sparseArray4 = new SparseArray(2);
-        final SparseIntArray sparseIntArray7 = new SparseIntArray();
-        final SparseIntArray sparseIntArray8 = new SparseIntArray();
-        sparseIntArray7.put(3, 3);
-        sparseIntArray7.put(4, 4);
-        sparseArray4.put(1, (Object)sparseIntArray7);
-        sparseIntArray8.put(3, 5);
-        sparseIntArray8.put(4, 6);
-        sparseArray4.put(2, (Object)sparseIntArray8);
-        LomoConfig.numVideosPerPageTable.put(BrowseExperience.TEST_LOLOMO_TITLE_ART_6725_CELL_5, (SparseArray<SparseIntArray>)sparseArray4);
     }
 }

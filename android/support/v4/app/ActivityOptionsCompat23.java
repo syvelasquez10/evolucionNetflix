@@ -12,7 +12,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.app.ActivityOptions;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class ActivityOptionsCompat23
 {
     private final ActivityOptions mActivityOptions;

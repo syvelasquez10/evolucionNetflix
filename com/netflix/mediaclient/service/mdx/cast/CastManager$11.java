@@ -13,7 +13,9 @@ import java.util.Iterator;
 import android.support.v7.media.MediaRouter$ProviderInfo;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONException;
+import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
+import com.google.android.gms.cast.CastDevice;
 import java.util.HashMap;
 import android.support.v7.media.MediaRouter;
 import android.support.v7.media.MediaRouteSelector;
@@ -23,25 +25,23 @@ import java.util.Map;
 import android.os.Handler;
 import android.content.Context;
 import android.support.v7.media.MediaRouter$Callback;
-import com.google.chromecast.background.Channel;
-import com.netflix.mediaclient.Log;
-import com.google.android.gms.cast.CastDevice;
 
 class CastManager$11 implements Runnable
 {
     final /* synthetic */ CastManager this$0;
-    final /* synthetic */ CastDevice val$castDevice;
     final /* synthetic */ String val$msg;
+    final /* synthetic */ String val$reqUrl;
+    final /* synthetic */ String val$uuid;
     
-    CastManager$11(final CastManager this$0, final CastDevice val$castDevice, final String val$msg) {
+    CastManager$11(final CastManager this$0, final String val$msg, final String val$uuid, final String val$reqUrl) {
         this.this$0 = this$0;
-        this.val$castDevice = val$castDevice;
         this.val$msg = val$msg;
+        this.val$uuid = val$uuid;
+        this.val$reqUrl = val$reqUrl;
     }
     
     @Override
     public void run() {
-        Log.d(CastManager.TAG, "send message to cast device, " + this.val$castDevice + ", " + this.val$msg);
-        Log.d(CastManager.TAG, "returns " + Channel.sendMessage(this.val$castDevice, this.val$msg));
+        this.this$0.nativeMessageReceived(this.val$msg, this.val$uuid, this.val$reqUrl);
     }
 }

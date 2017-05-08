@@ -17,9 +17,12 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
+import com.facebook.network.connectionclass.ConnectionClassManager;
+import com.android.volley.NetworkDispatcher;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.servicemgr.ExceptionLoggingCl;
 import com.netflix.mediaclient.servicemgr.OfflineLogging;
 import com.netflix.mediaclient.servicemgr.IkoLogging;
 import com.netflix.mediaclient.servicemgr.SignInLogging;
@@ -33,6 +36,8 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.error.CrittercismErrorLoggingImpl;
 import com.netflix.mediaclient.service.logging.breadcrumb.CrittercismBreadcrumbLoggingImpl;
+import java.util.Random;
+import com.android.volley.NetworkDispatcher$NetworkDispatcherListener;
 import android.os.HandlerThread;
 import android.os.Handler;
 import com.netflix.mediaclient.javabridge.ui.Log;
@@ -44,6 +49,7 @@ import com.netflix.mediaclient.servicemgr.CustomerEventLogging;
 import com.netflix.mediaclient.servicemgr.CmpEventLogging;
 import com.netflix.mediaclient.servicemgr.BreadcrumbLogging;
 import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingManager;
+import com.facebook.network.connectionclass.ConnectionClassManager$ConnectionClassStateChangeListener;
 import java.util.concurrent.ThreadFactory;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent$ConfigAgentListener;
@@ -55,11 +61,13 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     private static final long EVENT_POST_TIMEOUT_MS = 60000L;
     static final String ICL_REPOSITORY_DIR = "iclevents";
     static final String LOGBLOB_REPOSITORY_DIR = "logblobs";
-    static final int NEXT_DELIVERY_ATTEMPT_TIMEOUT_IN_MS = 60000;
+    private static final int NEXT_DELIVERY_ATTEMPT_TIMEOUT_IN_MS = 60000;
     static final String PDSEVENT_REPOSITORY_DIR = "pdsevents";
     static final String PT_REPOSITORY_DIR = "ptevents";
     private static final String TAG = "nf_log";
+    public static final long gCritSessionId;
     private static final ThreadFactory sThreadFactory;
+    private ConnectionClassManager$ConnectionClassStateChangeListener connectionClassManagerListener;
     private AdvertiserIdLoggingManager mAdvertiserIdLoggingManager;
     private BreadcrumbLogging mBreadcrumbLogging;
     private CmpEventLogging mCmpEventLogging;
@@ -77,8 +85,10 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     private long mStartedTime;
     private final Handler mWorkerHandler;
     private HandlerThread mWorkerThread;
+    private NetworkDispatcher$NetworkDispatcherListener networkDispatcherListener;
     
     static {
+        gCritSessionId = new Random().nextLong();
         sThreadFactory = new LoggingAgent$1();
     }
     
@@ -136,8 +146,12 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
             intentFilter.addAction(actions7[n4]);
         }
         final String[] actions8 = OfflineLogging.ACTIONS;
-        for (int length8 = actions8.length, n5 = n; n5 < length8; ++n5) {
+        for (int length8 = actions8.length, n5 = 0; n5 < length8; ++n5) {
             intentFilter.addAction(actions8[n5]);
+        }
+        final String[] actions9 = ExceptionLoggingCl.ACTIONS;
+        for (int length9 = actions9.length, n6 = n; n6 < length9; ++n6) {
+            intentFilter.addAction(actions9[n6]);
         }
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intentFilter.setPriority(999);
@@ -173,6 +187,8 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     public void destroy() {
         com.netflix.mediaclient.Log.d("nf_log", "PNA:: destroy and unregister receiver");
         IntentUtils.unregisterSafelyLocalBroadcastReceiver(this.getContext(), this.mLoggerReceiver);
+        NetworkDispatcher.removeNetworkDispatcherListener(this.networkDispatcherListener);
+        ConnectionClassManager.getInstance().remove(this.connectionClassManagerListener);
         if (this.mAdvertiserIdLoggingManager != null) {
             this.mAdvertiserIdLoggingManager.destroy();
         }
@@ -208,7 +224,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         this.mLogblobLogging.init(this.mExecutor);
         this.mPdsLogging.init(this.mExecutor);
         this.registerReceiver();
-        ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getApplicationId(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
+        ErrorLoggingManager.onConfigurationChanged(this.getContext(), LoggingAgent.gCritSessionId, this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
         this.addConfigurationChangeListener();
         (this.mNrdpLog = this.getNrdController().getNrdp().getLog()).setAppIdChangedListener(this);
         this.initCompleted(CommonStatus.OK);
@@ -354,7 +370,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         }
         if (status.isSucces()) {
             com.netflix.mediaclient.Log.v("nf_log", "Refresh configuration for error and breadcrumb logging");
-            ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getApplicationId(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
+            ErrorLoggingManager.onConfigurationChanged(this.getContext(), LoggingAgent.gCritSessionId, this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
         }
     }
     

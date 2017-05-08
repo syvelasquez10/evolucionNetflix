@@ -7,7 +7,9 @@ package android.support.v4.app;
 import android.os.Bundle;
 import android.app.PendingIntent;
 import android.graphics.Rect;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 class ActivityOptionsCompat$ActivityOptionsImpl24 extends ActivityOptionsCompat
 {
     private final ActivityOptionsCompat24 mImpl;

@@ -32,7 +32,7 @@ public final class MdxMenu
             throw new IllegalArgumentException("Activity that uses MdxMenu must own a reference to mdxFrag!");
         }
         mdxMiniPlayerFrag.attachMenuItem(this);
-        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131231226))).setShowAsAction(1);
+        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131296782))).setShowAsAction(1);
         this.mdxItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MdxMenu$1(this));
         this.setEnabled(mdxMiniPlayerFrag.isMdxMenuEnabled());
         this.update();
@@ -48,15 +48,15 @@ public final class MdxMenu
     
     private int getIcon() {
         if (this.activity.isConnectingToTarget()) {
-            return 2130837712;
+            return 2130837720;
         }
         if (MdxUtils.isTargetReadyToControl(this.activity.getServiceManager())) {
-            return 2130837711;
+            return 2130837719;
         }
         if (this.useDarkIcon) {
-            return 2130837749;
+            return 2130837783;
         }
-        return 2130837716;
+        return 2130837721;
     }
     
     private void updateAlpha() {

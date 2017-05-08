@@ -22,6 +22,7 @@ import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.Asset;
+import java.io.File;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import com.netflix.falkor.BranchNode;
@@ -31,6 +32,7 @@ import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
@@ -670,6 +672,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         }
         Log.d("FalkorAgent", "schedulePrefetchLolomoJob: registering JobExecutor PrefetchLolomoSchedulerJob with NetflixService ");
         this.getService().registerJobExecutor(netflixJobId, new FalkorAgent$PrefetchLolomoSchedulerJob(this, null));
+        PreferenceUtils.putLongPref((Context)this.getService(), "prefs_prefetch_lolomo_job_last_start_time_ms", -1L);
     }
     
     private boolean shouldBeNotificationSentToStatusBar(final IrisNotificationSummary irisNotificationSummary) {
@@ -712,11 +715,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.initCompleted(CommonStatus.OK);
     }
     
-    public void dumpCacheToDisk() {
+    public void dumpCacheToDisk(final File file) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.dumpCacheToDisk();
+        this.cmp.dumpCacheToDisk(file);
     }
     
     public void endBrowsePlaySession(final long n, final int n2, final int n3, final int n4) {

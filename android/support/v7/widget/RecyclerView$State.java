@@ -26,16 +26,16 @@ public class RecyclerView$State
     
     public RecyclerView$State() {
         this.mTargetPosition = -1;
-        this.mLayoutStep = 1;
-        this.mItemCount = 0;
         this.mPreviousLayoutItemCount = 0;
         this.mDeletedInvisibleItemCountSincePreviousLayout = 0;
+        this.mLayoutStep = 1;
+        this.mItemCount = 0;
         this.mStructureChanged = false;
         this.mInPreLayout = false;
-        this.mRunSimpleAnimations = false;
-        this.mRunPredictiveAnimations = false;
         this.mTrackOldChangeHolders = false;
         this.mIsMeasuring = false;
+        this.mRunSimpleAnimations = false;
+        this.mRunPredictiveAnimations = false;
     }
     
     void assertLayoutStep(final int n) {
@@ -61,6 +61,15 @@ public class RecyclerView$State
     
     public boolean isPreLayout() {
         return this.mInPreLayout;
+    }
+    
+    void prepareForNestedPrefetch(final RecyclerView$Adapter recyclerView$Adapter) {
+        this.mLayoutStep = 1;
+        this.mItemCount = recyclerView$Adapter.getItemCount();
+        this.mStructureChanged = false;
+        this.mInPreLayout = false;
+        this.mTrackOldChangeHolders = false;
+        this.mIsMeasuring = false;
     }
     
     @Override

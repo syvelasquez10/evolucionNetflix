@@ -7,7 +7,9 @@ package android.support.v4.content.res;
 import android.graphics.drawable.Drawable;
 import android.content.res.Resources$Theme;
 import android.content.res.Resources;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class ResourcesCompatApi21
 {
     public static Drawable getDrawable(final Resources resources, final int n, final Resources$Theme resources$Theme) {

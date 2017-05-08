@@ -12,15 +12,22 @@ import android.os.Bundle;
 
 public final class MediaRouteProviderDescriptor
 {
-    private final Bundle mBundle;
-    private List<MediaRouteDescriptor> mRoutes;
+    final Bundle mBundle;
+    List<MediaRouteDescriptor> mRoutes;
     
-    private MediaRouteProviderDescriptor(final Bundle mBundle, final List<MediaRouteDescriptor> mRoutes) {
+    MediaRouteProviderDescriptor(final Bundle mBundle, final List<MediaRouteDescriptor> mRoutes) {
         this.mBundle = mBundle;
         this.mRoutes = mRoutes;
     }
     
-    private void ensureRoutes() {
+    public static MediaRouteProviderDescriptor fromBundle(final Bundle bundle) {
+        if (bundle != null) {
+            return new MediaRouteProviderDescriptor(bundle, null);
+        }
+        return null;
+    }
+    
+    void ensureRoutes() {
         if (this.mRoutes == null) {
             final ArrayList parcelableArrayList = this.mBundle.getParcelableArrayList("routes");
             if (parcelableArrayList == null || parcelableArrayList.isEmpty()) {
@@ -34,13 +41,6 @@ public final class MediaRouteProviderDescriptor
                 }
             }
         }
-    }
-    
-    public static MediaRouteProviderDescriptor fromBundle(final Bundle bundle) {
-        if (bundle != null) {
-            return new MediaRouteProviderDescriptor(bundle, null);
-        }
-        return null;
     }
     
     public List<MediaRouteDescriptor> getRoutes() {

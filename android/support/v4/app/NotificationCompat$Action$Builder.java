@@ -4,6 +4,8 @@
 
 package android.support.v4.app;
 
+import java.util.Collection;
+import java.util.Arrays;
 import java.util.ArrayList;
 import android.app.PendingIntent;
 import android.os.Bundle;
@@ -18,18 +20,28 @@ public final class NotificationCompat$Action$Builder
     private final CharSequence mTitle;
     
     public NotificationCompat$Action$Builder(final int n, final CharSequence charSequence, final PendingIntent pendingIntent) {
-        this(n, charSequence, pendingIntent, new Bundle());
+        this(n, charSequence, pendingIntent, new Bundle(), null, true);
     }
     
-    private NotificationCompat$Action$Builder(final int mIcon, final CharSequence charSequence, final PendingIntent mIntent, final Bundle mExtras) {
+    private NotificationCompat$Action$Builder(final int mIcon, final CharSequence charSequence, final PendingIntent mIntent, final Bundle mExtras, final RemoteInput[] array, final boolean mAllowGeneratedReplies) {
+        this.mAllowGeneratedReplies = true;
         this.mIcon = mIcon;
         this.mTitle = NotificationCompat$Builder.limitCharSequenceLength(charSequence);
         this.mIntent = mIntent;
         this.mExtras = mExtras;
+        ArrayList<RemoteInput> mRemoteInputs;
+        if (array == null) {
+            mRemoteInputs = null;
+        }
+        else {
+            mRemoteInputs = new ArrayList<RemoteInput>(Arrays.asList(array));
+        }
+        this.mRemoteInputs = mRemoteInputs;
+        this.mAllowGeneratedReplies = mAllowGeneratedReplies;
     }
     
     public NotificationCompat$Action$Builder(final NotificationCompat$Action notificationCompat$Action) {
-        this(notificationCompat$Action.icon, notificationCompat$Action.title, notificationCompat$Action.actionIntent, new Bundle(notificationCompat$Action.mExtras));
+        this(notificationCompat$Action.icon, notificationCompat$Action.title, notificationCompat$Action.actionIntent, new Bundle(notificationCompat$Action.mExtras), notificationCompat$Action.getRemoteInputs(), notificationCompat$Action.getAllowGeneratedReplies());
     }
     
     public NotificationCompat$Action$Builder addExtras(final Bundle bundle) {

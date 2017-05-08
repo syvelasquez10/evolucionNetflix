@@ -8,5 +8,7 @@ import android.net.ConnectivityManager;
 
 interface ConnectivityManagerCompat$ConnectivityManagerCompatImpl
 {
+    int getRestrictBackgroundStatus(final ConnectivityManager p0);
+    
     boolean isActiveNetworkMetered(final ConnectivityManager p0);
 }

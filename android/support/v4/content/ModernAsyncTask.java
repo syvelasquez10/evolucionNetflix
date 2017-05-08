@@ -8,8 +8,8 @@ import android.os.Handler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -27,9 +27,10 @@ abstract class ModernAsyncTask<Params, Progress, Result>
     private static ModernAsyncTask$InternalHandler sHandler;
     private static final BlockingQueue<Runnable> sPoolWorkQueue;
     private static final ThreadFactory sThreadFactory;
+    private final AtomicBoolean mCancelled;
     private final FutureTask<Result> mFuture;
     private volatile ModernAsyncTask$Status mStatus;
-    final AtomicBoolean mTaskInvoked;
+    private final AtomicBoolean mTaskInvoked;
     private final ModernAsyncTask$WorkerRunnable<Params, Result> mWorker;
     
     static {
@@ -54,22 +55,27 @@ abstract class ModernAsyncTask<Params, Progress, Result>
         //    12: new             Ljava/util/concurrent/atomic/AtomicBoolean;
         //    15: dup            
         //    16: invokespecial   java/util/concurrent/atomic/AtomicBoolean.<init>:()V
-        //    19: putfield        android/support/v4/content/ModernAsyncTask.mTaskInvoked:Ljava/util/concurrent/atomic/AtomicBoolean;
+        //    19: putfield        android/support/v4/content/ModernAsyncTask.mCancelled:Ljava/util/concurrent/atomic/AtomicBoolean;
         //    22: aload_0        
-        //    23: new             new            !!! ERROR
+        //    23: new             Ljava/util/concurrent/atomic/AtomicBoolean;
         //    26: dup            
-        //    27: aload_0        
-        //    28: invokespecial   invokespecial  !!! ERROR
-        //    31: putfield        android/support/v4/content/ModernAsyncTask.mWorker:Landroid/support/v4/content/ModernAsyncTask$WorkerRunnable;
-        //    34: aload_0        
-        //    35: new             new            !!! ERROR
-        //    38: dup            
-        //    39: aload_0        
-        //    40: aload_0        
-        //    41: getfield        android/support/v4/content/ModernAsyncTask.mWorker:Landroid/support/v4/content/ModernAsyncTask$WorkerRunnable;
-        //    44: invokespecial   invokespecial  !!! ERROR
-        //    47: putfield        android/support/v4/content/ModernAsyncTask.mFuture:Ljava/util/concurrent/FutureTask;
-        //    50: return         
+        //    27: invokespecial   java/util/concurrent/atomic/AtomicBoolean.<init>:()V
+        //    30: putfield        android/support/v4/content/ModernAsyncTask.mTaskInvoked:Ljava/util/concurrent/atomic/AtomicBoolean;
+        //    33: aload_0        
+        //    34: new             new            !!! ERROR
+        //    37: dup            
+        //    38: aload_0        
+        //    39: invokespecial   invokespecial  !!! ERROR
+        //    42: putfield        android/support/v4/content/ModernAsyncTask.mWorker:Landroid/support/v4/content/ModernAsyncTask$WorkerRunnable;
+        //    45: aload_0        
+        //    46: new             new            !!! ERROR
+        //    49: dup            
+        //    50: aload_0        
+        //    51: aload_0        
+        //    52: getfield        android/support/v4/content/ModernAsyncTask.mWorker:Landroid/support/v4/content/ModernAsyncTask$WorkerRunnable;
+        //    55: invokespecial   invokespecial  !!! ERROR
+        //    58: putfield        android/support/v4/content/ModernAsyncTask.mFuture:Ljava/util/concurrent/FutureTask;
+        //    61: return         
         // 
         // The error that occurred was:
         // 
@@ -136,6 +142,7 @@ abstract class ModernAsyncTask<Params, Progress, Result>
     }
     
     public final boolean cancel(final boolean b) {
+        this.mCancelled.set(true);
         return this.mFuture.cancel(b);
     }
     
@@ -186,7 +193,7 @@ abstract class ModernAsyncTask<Params, Progress, Result>
     }
     
     public final boolean isCancelled() {
-        return this.mFuture.isCancelled();
+        return this.mCancelled.get();
     }
     
     protected void onCancelled() {

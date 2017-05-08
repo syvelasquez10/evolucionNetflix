@@ -12,7 +12,9 @@ import android.app.RemoteInput;
 import android.os.Bundle;
 import android.app.Notification$Action$Builder;
 import android.app.Notification$Builder;
+import android.annotation.TargetApi;
 
+@TargetApi(20)
 class NotificationCompatApi20
 {
     public static void addAction(final Notification$Builder notification$Builder, final NotificationCompatBase$Action notificationCompatBase$Action) {

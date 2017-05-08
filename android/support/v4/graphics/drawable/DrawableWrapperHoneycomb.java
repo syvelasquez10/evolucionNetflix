@@ -6,7 +6,9 @@ package android.support.v4.graphics.drawable;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class DrawableWrapperHoneycomb extends DrawableWrapperGingerbread
 {
     DrawableWrapperHoneycomb(final Drawable drawable) {

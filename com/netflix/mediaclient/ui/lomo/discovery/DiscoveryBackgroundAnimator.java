@@ -65,24 +65,24 @@ public class DiscoveryBackgroundAnimator implements PaginatedDiscoveryAdapter$Bl
     
     private void addBottomGradientIfNeeded() {
         Log.i("DiscoveryBackgroundAnimator", "addBottomGradientIfNeeded()");
-        this.bottomGradient = (ImageView)this.bottomView.findViewById(2131689482);
+        this.bottomGradient = (ImageView)this.bottomView.findViewById(2131755018);
         if (this.bottomGradient == null) {
-            (this.bottomGradient = new ImageView(this.context)).setImageResource(2130837994);
-            this.bottomGradient.setId(2131689482);
+            (this.bottomGradient = new ImageView(this.context)).setImageResource(2130838138);
+            this.bottomGradient.setId(2131755018);
             (this.blurredTopImageView = new ImageView(this.context)).setScaleType(ImageView$ScaleType.CENTER_CROP);
-            this.blurredTopImageView.setId(2131689481);
+            this.blurredTopImageView.setId(2131755017);
             (this.blurredBottomImageView = new ImageView(this.context)).setScaleType(ImageView$ScaleType.CENTER_CROP);
-            this.blurredBottomImageView.setId(2131689480);
+            this.blurredBottomImageView.setId(2131755016);
             final ViewGroup viewGroup = (ViewGroup)this.bottomView;
-            viewGroup.addView((View)this.bottomGradient, 0, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.context.getResources().getDimension(2131362086), 80));
+            viewGroup.addView((View)this.bottomGradient, 0, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.context.getResources().getDimension(2131427633), 80));
             viewGroup.addView((View)this.blurredTopImageView, 0, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1, 80));
             viewGroup.addView((View)this.blurredBottomImageView, 0, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1, 80));
-            LayoutInflater.from(this.context).inflate(2130903178, viewGroup);
+            LayoutInflater.from(this.context).inflate(2130903181, viewGroup);
         }
         else {
             Log.i("DiscoveryBackgroundAnimator", "bottomGradient view was found!");
-            this.blurredTopImageView = (ImageView)this.bottomView.findViewById(2131689481);
-            this.blurredBottomImageView = (ImageView)this.bottomView.findViewById(2131689480);
+            this.blurredTopImageView = (ImageView)this.bottomView.findViewById(2131755017);
+            this.blurredBottomImageView = (ImageView)this.bottomView.findViewById(2131755016);
         }
         this.leWrapper = new LoadingAndErrorWrapper(this.bottomView, this.errorCallback);
     }

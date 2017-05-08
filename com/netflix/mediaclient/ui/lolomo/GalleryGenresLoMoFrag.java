@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
+import android.view.View;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.view.View;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
@@ -56,7 +56,7 @@ public class GalleryGenresLoMoFrag extends LoLoMoFrag
     
     private void setupRecyclerViewAdapter() {
         (this.adapter = new GalleryGenresLoMoFrag$ProgressiveAdapter(this, false, this.numColumns, new GalleryGenresLoMoFrag$2(this))).addHeaderView(ViewUtils.createActionBarDummyView(this.getNetflixActivity()));
-        final int dimensionPixelSize = this.getActivity().getResources().getDimensionPixelSize(2131362226);
+        final int dimensionPixelSize = this.getActivity().getResources().getDimensionPixelSize(2131427780);
         this.recyclerView.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
         this.recyclerView.setAdapter(this.adapter);
     }
@@ -65,20 +65,15 @@ public class GalleryGenresLoMoFrag extends LoLoMoFrag
         final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
         layoutManager.setSpanSizeLookup(new GalleryGenresLoMoFrag$1(this));
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362224), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427778), this.numColumns));
     }
     
     @Override
     protected int getLayoutId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2130903162;
+            return 2130903166;
         }
-        return 2130903277;
-    }
-    
-    @Override
-    protected View getMainView() {
-        return (View)this.recyclerView;
+        return 2130903290;
     }
     
     @Override

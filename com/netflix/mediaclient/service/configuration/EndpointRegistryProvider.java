@@ -25,7 +25,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
-    private static final String ANDROID_API_ENDPOINT_PATH = "/android/4.12.2/api";
+    private static final String ANDROID_API_ENDPOINT_PATH = "/android/4.13/api";
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
@@ -228,7 +228,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         if (s != null) {
             sb.append(s);
         }
-        sb.append("/android/4.12.2/api");
+        sb.append("/android/4.13/api");
         return sb.toString();
     }
     
@@ -245,7 +245,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/4.12.2/api");
+        sb.append("/android/4.13/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");

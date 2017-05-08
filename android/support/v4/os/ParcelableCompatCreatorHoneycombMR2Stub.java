@@ -5,7 +5,9 @@
 package android.support.v4.os;
 
 import android.os.Parcelable$Creator;
+import android.annotation.TargetApi;
 
+@TargetApi(13)
 class ParcelableCompatCreatorHoneycombMR2Stub
 {
     static <T> Parcelable$Creator<T> instantiate(final ParcelableCompatCreatorCallbacks<T> parcelableCompatCreatorCallbacks) {

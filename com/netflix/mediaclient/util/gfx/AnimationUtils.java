@@ -26,7 +26,7 @@ public class AnimationUtils
     
     private static void alphaAnimateView(final View view, final float alpha, final float n, final int n2, final Animator$AnimatorListener listener) {
         view.setAlpha(alpha);
-        view.animate().alpha(n).setDuration((long)n2).setListener(listener).start();
+        view.animate().withLayer().alpha(n).setDuration((long)n2).setListener(listener).start();
     }
     
     public static LayoutAnimationController createGridLayoutAnimator(final Context context) {

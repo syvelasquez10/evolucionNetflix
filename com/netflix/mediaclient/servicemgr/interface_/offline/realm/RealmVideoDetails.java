@@ -76,7 +76,7 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
     
     public static void insertInRealm(final Realm realm, final NetflixService netflixService, final VideoDetails videoDetails, final List<SeasonDetails> list, final String s) {
         if (RealmUtils.idNotExists(realm, RealmVideoDetails.class, videoDetails.getId())) {
-            RealmUtils.executeTransaction(realm, new RealmVideoDetails$1(videoDetails, s, list, netflixService));
+            RealmUtils.executeTransaction(realm, (Realm$Transaction)new RealmVideoDetails$1(videoDetails, s, list, netflixService));
         }
     }
     

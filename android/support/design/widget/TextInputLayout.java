@@ -8,10 +8,12 @@ import android.support.design.R$string;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v4.content.ContextCompat;
 import android.support.design.R$color;
+import android.support.design.R$id;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.method.TransformationMethod;
-import android.os.Parcelable;
-import android.graphics.Typeface;
 import android.graphics.Canvas;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.widget.FrameLayout$LayoutParams;
 import android.support.v4.widget.TextViewCompat;
 import android.graphics.drawable.ColorDrawable;
@@ -42,6 +44,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.View;
 import android.util.AttributeSet;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.Rect;
 import android.graphics.Paint;
 import android.graphics.PorterDuff$Mode;
@@ -93,8 +96,10 @@ public class TextInputLayout extends LinearLayout
     private PorterDuff$Mode mPasswordToggleTintMode;
     private CheckableImageButton mPasswordToggleView;
     private boolean mPasswordToggledVisible;
+    private boolean mRestoringSavedState;
     private Paint mTmpPaint;
     private final Rect mTmpRect;
+    private Typeface mTypeface;
     
     public TextInputLayout(final Context context) {
         this(context, null);
@@ -136,7 +141,7 @@ public class TextInputLayout extends LinearLayout
         this.setCounterMaxLength(obtainStyledAttributes.getInt(R$styleable.TextInputLayout_counterMaxLength, -1));
         this.mCounterTextAppearance = obtainStyledAttributes.getResourceId(R$styleable.TextInputLayout_counterTextAppearance, 0);
         this.mCounterOverflowTextAppearance = obtainStyledAttributes.getResourceId(R$styleable.TextInputLayout_counterOverflowTextAppearance, 0);
-        this.mPasswordToggleEnabled = obtainStyledAttributes.getBoolean(R$styleable.TextInputLayout_passwordToggleEnabled, true);
+        this.mPasswordToggleEnabled = obtainStyledAttributes.getBoolean(R$styleable.TextInputLayout_passwordToggleEnabled, false);
         this.mPasswordToggleDrawable = obtainStyledAttributes.getDrawable(R$styleable.TextInputLayout_passwordToggleDrawable);
         this.mPasswordToggleContentDesc = obtainStyledAttributes.getText(R$styleable.TextInputLayout_passwordToggleContentDescription);
         if (obtainStyledAttributes.hasValue(R$styleable.TextInputLayout_passwordToggleTint)) {
@@ -173,19 +178,6 @@ public class TextInputLayout extends LinearLayout
     
     private void adjustIndicatorPadding() {
         ViewCompat.setPaddingRelative((View)this.mIndicatorArea, ViewCompat.getPaddingStart((View)this.mEditText), 0, ViewCompat.getPaddingEnd((View)this.mEditText), this.mEditText.getPaddingBottom());
-    }
-    
-    private void animateToExpansionFraction(final float n) {
-        if (this.mCollapsingTextHelper.getExpansionFraction() == n) {
-            return;
-        }
-        if (this.mAnimator == null) {
-            (this.mAnimator = ViewUtils.createAnimator()).setInterpolator(AnimationUtils.LINEAR_INTERPOLATOR);
-            this.mAnimator.setDuration(200L);
-            this.mAnimator.addUpdateListener(new TextInputLayout$5(this));
-        }
-        this.mAnimator.setFloatValues(this.mCollapsingTextHelper.getExpansionFraction(), n);
-        this.mAnimator.start();
     }
     
     private void applyPasswordToggleTint() {
@@ -245,7 +237,7 @@ public class TextInputLayout extends LinearLayout
                     this.mHasReconstructedEditTextBackground = DrawableUtils.setContainerConstantState((DrawableContainer)background, drawable.getConstantState());
                 }
                 if (!this.mHasReconstructedEditTextBackground) {
-                    this.mEditText.setBackgroundDrawable(drawable);
+                    ViewCompat.setBackground((View)this.mEditText, drawable);
                     this.mHasReconstructedEditTextBackground = true;
                 }
             }
@@ -301,7 +293,7 @@ public class TextInputLayout extends LinearLayout
         }
         this.mCollapsingTextHelper.setExpandedTextSize(this.mEditText.getTextSize());
         final int gravity = this.mEditText.getGravity();
-        this.mCollapsingTextHelper.setCollapsedTextGravity((0x800007 & gravity) | 0x30);
+        this.mCollapsingTextHelper.setCollapsedTextGravity((gravity & 0xFFFFFF8F) | 0x30);
         this.mCollapsingTextHelper.setExpandedTextGravity(gravity);
         this.mEditText.addTextChangedListener((TextWatcher)new TextInputLayout$1(this));
         if (this.mDefaultTextColor == null) {
@@ -423,6 +415,7 @@ public class TextInputLayout extends LinearLayout
                     this.mPasswordToggleView.setOnClickListener((View$OnClickListener)new TextInputLayout$4(this));
                 }
                 this.mPasswordToggleView.setVisibility(0);
+                this.mPasswordToggleView.setChecked(this.mPasswordToggledVisible);
                 if (this.mPasswordToggleDummyDrawable == null) {
                     this.mPasswordToggleDummyDrawable = (Drawable)new ColorDrawable();
                 }
@@ -438,22 +431,46 @@ public class TextInputLayout extends LinearLayout
             if (this.mPasswordToggleView != null && this.mPasswordToggleView.getVisibility() == 0) {
                 this.mPasswordToggleView.setVisibility(8);
             }
-            final Drawable[] compoundDrawablesRelative2 = TextViewCompat.getCompoundDrawablesRelative((TextView)this.mEditText);
-            if (compoundDrawablesRelative2[2] == this.mPasswordToggleDummyDrawable) {
-                TextViewCompat.setCompoundDrawablesRelative((TextView)this.mEditText, compoundDrawablesRelative2[0], compoundDrawablesRelative2[1], this.mOriginalEditTextEndDrawable, compoundDrawablesRelative2[3]);
+            if (this.mPasswordToggleDummyDrawable != null) {
+                final Drawable[] compoundDrawablesRelative2 = TextViewCompat.getCompoundDrawablesRelative((TextView)this.mEditText);
+                if (compoundDrawablesRelative2[2] == this.mPasswordToggleDummyDrawable) {
+                    TextViewCompat.setCompoundDrawablesRelative((TextView)this.mEditText, compoundDrawablesRelative2[0], compoundDrawablesRelative2[1], this.mOriginalEditTextEndDrawable, compoundDrawablesRelative2[3]);
+                    this.mPasswordToggleDummyDrawable = null;
+                }
             }
         }
     }
     
     public void addView(final View view, final int n, final ViewGroup$LayoutParams layoutParams) {
         if (view instanceof EditText) {
-            this.mInputFrame.addView(view, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(layoutParams));
+            final FrameLayout$LayoutParams frameLayout$LayoutParams = new FrameLayout$LayoutParams(layoutParams);
+            frameLayout$LayoutParams.gravity = ((frameLayout$LayoutParams.gravity & 0xFFFFFF8F) | 0x10);
+            this.mInputFrame.addView(view, (ViewGroup$LayoutParams)frameLayout$LayoutParams);
             this.mInputFrame.setLayoutParams(layoutParams);
             this.updateInputLayoutMargins();
             this.setEditText((EditText)view);
             return;
         }
         super.addView(view, n, layoutParams);
+    }
+    
+    void animateToExpansionFraction(final float n) {
+        if (this.mCollapsingTextHelper.getExpansionFraction() == n) {
+            return;
+        }
+        if (this.mAnimator == null) {
+            (this.mAnimator = ViewUtils.createAnimator()).setInterpolator(AnimationUtils.LINEAR_INTERPOLATOR);
+            this.mAnimator.setDuration(200L);
+            this.mAnimator.addUpdateListener(new TextInputLayout$5(this));
+        }
+        this.mAnimator.setFloatValues(this.mCollapsingTextHelper.getExpansionFraction(), n);
+        this.mAnimator.start();
+    }
+    
+    protected void dispatchRestoreInstanceState(final SparseArray<Parcelable> sparseArray) {
+        this.mRestoringSavedState = true;
+        super.dispatchRestoreInstanceState((SparseArray)sparseArray);
+        this.mRestoringSavedState = false;
     }
     
     public void draw(final Canvas canvas) {
@@ -513,7 +530,7 @@ public class TextInputLayout extends LinearLayout
     }
     
     public Typeface getTypeface() {
-        return this.mCollapsingTextHelper.getCollapsedTypeface();
+        return this.mTypeface;
     }
     
     public boolean isCounterEnabled() {
@@ -597,18 +614,22 @@ public class TextInputLayout extends LinearLayout
         if (this.mCounterEnabled == mCounterEnabled) {
             return;
         }
-    Label_0071:
+    Label_0095:
         while (true) {
             if (!mCounterEnabled) {
                 this.removeIndicator(this.mCounterView);
                 this.mCounterView = null;
-                break Label_0071;
+                break Label_0095;
+            }
+            (this.mCounterView = new AppCompatTextView(this.getContext())).setId(R$id.textinput_counter);
+            if (this.mTypeface != null) {
+                this.mCounterView.setTypeface(this.mTypeface);
             }
             while (true) {
-                (this.mCounterView = new TextView(this.getContext())).setMaxLines(1);
+                this.mCounterView.setMaxLines(1);
                 while (true) {
                     try {
-                        this.mCounterView.setTextAppearance(this.getContext(), this.mCounterTextAppearance);
+                        TextViewCompat.setTextAppearance(this.mCounterView, this.mCounterTextAppearance);
                         this.addIndicator(this.mCounterView, -1);
                         if (this.mEditText == null) {
                             this.updateCounter(0);
@@ -617,14 +638,14 @@ public class TextInputLayout extends LinearLayout
                         }
                     }
                     catch (Exception ex) {
-                        this.mCounterView.setTextAppearance(this.getContext(), android.support.v7.appcompat.R$style.TextAppearance_AppCompat_Caption);
+                        TextViewCompat.setTextAppearance(this.mCounterView, android.support.v7.appcompat.R$style.TextAppearance_AppCompat_Caption);
                         this.mCounterView.setTextColor(ContextCompat.getColor(this.getContext(), R$color.design_textinput_error_color_light));
                         continue;
                     }
                     break;
                 }
                 this.updateCounter(this.mEditText.getText().length());
-                continue Label_0071;
+                continue Label_0095;
             }
             break;
         }
@@ -667,20 +688,23 @@ public class TextInputLayout extends LinearLayout
             ViewCompat.animate((View)this.mErrorView).cancel();
         }
         while (true) {
-            Label_0159: {
+            Label_0179: {
                 if (!mErrorEnabled) {
-                    break Label_0159;
+                    break Label_0179;
+                }
+                (this.mErrorView = new AppCompatTextView(this.getContext())).setId(R$id.textinput_error);
+                if (this.mTypeface != null) {
+                    this.mErrorView.setTypeface(this.mTypeface);
                 }
                 while (true) {
-                    this.mErrorView = new TextView(this.getContext());
                     while (true) {
-                        Label_0184: {
+                        Label_0204: {
                             try {
-                                this.mErrorView.setTextAppearance(this.getContext(), this.mErrorTextAppearance);
+                                TextViewCompat.setTextAppearance(this.mErrorView, this.mErrorTextAppearance);
                                 if (Build$VERSION.SDK_INT >= 23 && this.mErrorView.getTextColors().getDefaultColor() == -65281) {
                                     final int n = 1;
                                     if (n != 0) {
-                                        this.mErrorView.setTextAppearance(this.getContext(), android.support.v7.appcompat.R$style.TextAppearance_AppCompat_Caption);
+                                        TextViewCompat.setTextAppearance(this.mErrorView, android.support.v7.appcompat.R$style.TextAppearance_AppCompat_Caption);
                                         this.mErrorView.setTextColor(ContextCompat.getColor(this.getContext(), R$color.design_textinput_error_color_light));
                                     }
                                     this.mErrorView.setVisibility(4);
@@ -689,7 +713,7 @@ public class TextInputLayout extends LinearLayout
                                     this.mErrorEnabled = mErrorEnabled;
                                     return;
                                 }
-                                break Label_0184;
+                                break Label_0204;
                             }
                             catch (Exception ex) {
                                 final int n = 1;
@@ -707,6 +731,13 @@ public class TextInputLayout extends LinearLayout
             this.removeIndicator(this.mErrorView);
             this.mErrorView = null;
             continue;
+        }
+    }
+    
+    public void setErrorTextAppearance(final int mErrorTextAppearance) {
+        this.mErrorTextAppearance = mErrorTextAppearance;
+        if (this.mErrorView != null) {
+            TextViewCompat.setTextAppearance(this.mErrorView, mErrorTextAppearance);
         }
     }
     
@@ -811,8 +842,17 @@ public class TextInputLayout extends LinearLayout
         this.applyPasswordToggleTint();
     }
     
-    public void setTypeface(final Typeface typefaces) {
-        this.mCollapsingTextHelper.setTypefaces(typefaces);
+    public void setTypeface(final Typeface typeface) {
+        if (typeface != this.mTypeface) {
+            this.mTypeface = typeface;
+            this.mCollapsingTextHelper.setTypefaces(typeface);
+            if (this.mCounterView != null) {
+                this.mCounterView.setTypeface(typeface);
+            }
+            if (this.mErrorView != null) {
+                this.mErrorView.setTypeface(typeface);
+            }
+        }
     }
     
     void updateCounter(final int n) {
@@ -825,7 +865,6 @@ public class TextInputLayout extends LinearLayout
             this.mCounterOverflowed = (n > this.mCounterMaxLength);
             if (mCounterOverflowed != this.mCounterOverflowed) {
                 final TextView mCounterView = this.mCounterView;
-                final Context context = this.getContext();
                 int n2;
                 if (this.mCounterOverflowed) {
                     n2 = this.mCounterOverflowTextAppearance;
@@ -833,7 +872,7 @@ public class TextInputLayout extends LinearLayout
                 else {
                     n2 = this.mCounterTextAppearance;
                 }
-                mCounterView.setTextAppearance(context, n2);
+                TextViewCompat.setTextAppearance(mCounterView, n2);
             }
             this.mCounterView.setText((CharSequence)this.getContext().getString(R$string.character_counter_pattern, new Object[] { n, this.mCounterMaxLength }));
         }
@@ -870,9 +909,12 @@ public class TextInputLayout extends LinearLayout
             this.mCollapsingTextHelper.setCollapsedTextColor(this.mDefaultTextColor);
         }
         if (b3 || (this.isEnabled() && (arrayContains || b2))) {
-            this.collapseHint(b);
-            return;
+            if (this.mHintExpanded) {
+                this.collapseHint(b);
+            }
         }
-        this.expandHint(b);
+        else if (!this.mHintExpanded) {
+            this.expandHint(b);
+        }
     }
 }

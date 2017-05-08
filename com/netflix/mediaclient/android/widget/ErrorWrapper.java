@@ -31,10 +31,10 @@ public class ErrorWrapper
         this.showRetry = true;
         this.retryClickListener = (View$OnClickListener)new ErrorWrapper$2(this);
         this.callback = callback;
-        (this.errorGroup = view.findViewById(2131689850)).setVisibility(0);
-        this.errorMsg = (TextView)view.findViewById(2131689851);
-        (this.retryBtn = (NetflixTextButton)this.errorGroup.findViewById(2131689852)).setOnClickListener(this.retryClickListener);
-        this.viewMyDownloads = (NetflixTextButton)this.errorGroup.findViewById(2131689853);
+        (this.errorGroup = view.findViewById(2131755399)).setVisibility(0);
+        this.errorMsg = (TextView)view.findViewById(2131755400);
+        (this.retryBtn = (NetflixTextButton)this.errorGroup.findViewById(2131755401)).setOnClickListener(this.retryClickListener);
+        this.viewMyDownloads = (NetflixTextButton)this.errorGroup.findViewById(2131755402);
         if (this.viewMyDownloads != null) {
             this.viewMyDownloads.setOnClickListener((View$OnClickListener)new ErrorWrapper$1(this));
         }
@@ -47,24 +47,24 @@ public class ErrorWrapper
     
     private void configureViewsForKidsExperience(final NetflixActivity netflixActivity) {
         final Resources resources = netflixActivity.getResources();
-        this.errorMsg.setTextColor(resources.getColor(2131624006));
-        ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361881);
+        this.errorMsg.setTextColor(resources.getColor(2131689544));
+        ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131427421);
         ViewUtils.setTextViewToBold(this.errorMsg);
-        this.retryBtn.applyFrom(2131427596);
-        this.retryBtn.getLayoutParams().height = resources.getDimensionPixelOffset(2131362188);
+        this.retryBtn.applyFrom(2131493148);
+        this.retryBtn.getLayoutParams().height = resources.getDimensionPixelOffset(2131427742);
         this.retryBtn.setAllCaps(false);
-        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361875);
-        final Drawable drawable = resources.getDrawable(2130837744);
+        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131427415);
+        final Drawable drawable = resources.getDrawable(2130837778);
         final int dipToPixels = AndroidUtils.dipToPixels((Context)netflixActivity, 32);
         final int dipToPixels2 = AndroidUtils.dipToPixels((Context)netflixActivity, 8);
         drawable.setBounds(dipToPixels2, 0, dipToPixels + dipToPixels2, dipToPixels);
         this.retryBtn.setCompoundDrawables(null, null, drawable, null);
         this.retryBtn.setCompoundDrawablePadding(AndroidUtils.dipToPixels((Context)netflixActivity, 8));
-        this.viewMyDownloads.applyFrom(2131427596);
-        this.viewMyDownloads.getLayoutParams().height = resources.getDimensionPixelOffset(2131362188);
+        this.viewMyDownloads.applyFrom(2131493148);
+        this.viewMyDownloads.getLayoutParams().height = resources.getDimensionPixelOffset(2131427742);
         this.viewMyDownloads.setAllCaps(false);
-        this.viewMyDownloads.setText(2131231322);
-        ViewUtils.setTextViewSizeByRes((TextView)this.viewMyDownloads, 2131361875);
+        this.viewMyDownloads.setText(2131296878);
+        ViewUtils.setTextViewSizeByRes((TextView)this.viewMyDownloads, 2131427415);
         this.errorGroup.setBackgroundColor(-1);
     }
     

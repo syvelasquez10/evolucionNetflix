@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.IMSLClient$NetworkRequestInspector;
 import com.netflix.msl.MslConstants$ResponseCode;
 import com.netflix.msl.msg.ErrorHeader;
 import com.netflix.mediaclient.service.msl.client.MslErrorException;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.android.volley.Network;
 import com.android.volley.Cache;
@@ -81,14 +82,16 @@ public class MSLAgent extends ServiceAgent implements IMSLClient
             catch (MslErrorException ex) {
                 this.mEnabled = false;
                 Log.w("nf_msl", ex, "MSLAgent::doInit appboot failed!");
-                if (!this.inspectMslError(ex.getErrorHeader())) {
-                    this.initCompleted(CommonStatus.MSL_FAILED_TO_CREATE_CLIENT);
-                    Log.d("nf_msl", "MSLAgent::doInit failed.");
+                if (this.isBlacklisted(ex.getErrorHeader())) {
+                    ErrorLoggingManager.logHandledException("MSL_ERROR_2: Failed to create MSL, disabled.");
+                    continue;
                 }
+                ErrorLoggingManager.logHandledException("MSL_ERROR_3: Failed to create MSL, disabled. Cause: " + ex.getMessage());
                 continue;
             }
             catch (Throwable t) {
                 Log.e("nf_msl", t, "MSLAgent::doInit failed!", new Object[0]);
+                ErrorLoggingManager.logHandledException("MSL_ERROR_4: Failed to create MSL, disabled. Cause: " + t.getMessage());
                 this.mEnabled = false;
                 continue;
             }
@@ -96,7 +99,8 @@ public class MSLAgent extends ServiceAgent implements IMSLClient
         }
     }
     
-    private boolean inspectMslError(final ErrorHeader errorHeader) {
+    private boolean isBlacklisted(final ErrorHeader errorHeader) {
+        final boolean b = false;
         if (Log.isLoggable()) {
             Log.d("nf_msl", "Error message: " + errorHeader.getErrorMessage());
             Log.d("nf_msl", "Error code: " + errorHeader.getErrorCode());
@@ -104,11 +108,16 @@ public class MSLAgent extends ServiceAgent implements IMSLClient
             Log.d("nf_msl", "Error user message: " + errorHeader.getUserMessage());
             Log.d("nf_msl", "Error internal code: " + errorHeader.getInternalCode());
         }
-        if (errorHeader.getErrorCode() == MslConstants$ResponseCode.TRANSIENT_FAILURE && errorHeader.getInternalCode() == 109000) {
-            Log.d("nf_msl", "Our device is one of black listed, we need to default to legacy crypto and offline is NOT supported!");
-            this.mEnabled = false;
+        boolean b2 = b;
+        if (errorHeader.getErrorCode() == MslConstants$ResponseCode.TRANSIENT_FAILURE) {
+            b2 = b;
+            if (errorHeader.getInternalCode() == 109000) {
+                Log.d("nf_msl", "Our device is one of black listed, we need to default to legacy crypto and offline is NOT supported!");
+                this.mEnabled = false;
+                b2 = true;
+            }
         }
-        return true;
+        return b2;
     }
     
     @Override

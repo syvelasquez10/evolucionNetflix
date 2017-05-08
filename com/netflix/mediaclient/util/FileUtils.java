@@ -11,16 +11,17 @@ import java.util.Scanner;
 import java.nio.charset.Charset;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
+import android.os.Build$VERSION;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.Log;
 import android.os.Environment;
 import java.util.LinkedList;
 import java.io.FileOutputStream;
 import java.net.URL;
-import java.io.File;
 import android.content.Context;
 import java.io.OutputStream;
 import java.io.InputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.Closeable;
 
@@ -41,6 +42,22 @@ public final class FileUtils
             closeable.close();
         }
         catch (IOException ex) {}
+    }
+    
+    public static boolean contains(final File file, final File file2) {
+        if (file == null || file2 == null) {
+            return false;
+        }
+        final String absolutePath = file.getAbsolutePath();
+        final String absolutePath2 = file2.getAbsolutePath();
+        if (absolutePath.equals(absolutePath2)) {
+            return true;
+        }
+        String string = absolutePath;
+        if (!absolutePath.endsWith("/")) {
+            string = absolutePath + "/";
+        }
+        return absolutePath2.startsWith(string);
     }
     
     public static long copy(final InputStream inputStream, final OutputStream outputStream) {
@@ -382,6 +399,29 @@ public final class FileUtils
         return file.getUsableSpace();
     }
     
+    public static boolean isExternalStorageRemovable(final File file) {
+        if (Build$VERSION.SDK_INT >= 21) {
+            return Environment.isExternalStorageRemovable(file);
+        }
+        return isExternalStorageRemovablePreL(file);
+    }
+    
+    public static boolean isExternalStorageRemovable(final String s) {
+        return isExternalStorageRemovable(new File(s));
+    }
+    
+    private static boolean isExternalStorageRemovablePreL(final File file) {
+        final boolean externalStorageRemovable = Environment.isExternalStorageRemovable();
+        File externalStorageDirectory = null;
+        try {
+            externalStorageDirectory = Environment.getExternalStorageDirectory();
+            return contains(externalStorageDirectory, file) && externalStorageRemovable;
+        }
+        catch (Throwable t) {
+            return contains(externalStorageDirectory, file) && externalStorageRemovable;
+        }
+    }
+    
     public static boolean moveFile(final String s, final String s2) {
         return new File(s).renameTo(new File(s2));
     }
@@ -574,7 +614,7 @@ public final class FileUtils
         //    30: ireturn        
         //    31: astore_0       
         //    32: ldc             "FileUtils"
-        //    34: ldc_w           "persistManifest close IO Exception "
+        //    34: ldc_w           "writeBytesToFile close IOException "
         //    37: aload_0        
         //    38: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //    41: pop            
@@ -605,7 +645,7 @@ public final class FileUtils
         //    85: ireturn        
         //    86: astore_0       
         //    87: ldc             "FileUtils"
-        //    89: ldc_w           "persistManifest close IO Exception "
+        //    89: ldc_w           "writeBytesToFile close IOException "
         //    92: aload_0        
         //    93: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //    96: pop            
@@ -636,7 +676,7 @@ public final class FileUtils
         //   141: ireturn        
         //   142: astore_0       
         //   143: ldc             "FileUtils"
-        //   145: ldc_w           "persistManifest close IO Exception "
+        //   145: ldc_w           "writeBytesToFile close IOException "
         //   148: aload_0        
         //   149: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //   152: pop            
@@ -651,7 +691,7 @@ public final class FileUtils
         //   165: athrow         
         //   166: astore_1       
         //   167: ldc             "FileUtils"
-        //   169: ldc_w           "persistManifest close IO Exception "
+        //   169: ldc_w           "writeBytesToFile close IOException "
         //   172: aload_1        
         //   173: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //   176: pop            
@@ -710,7 +750,7 @@ public final class FileUtils
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public static boolean writeStringToFile(final String s, final String s2, final String s3) {
+    public static boolean writeStringToExternalStorageDirectory(final String s, final String s2, final String s3) {
         try {
             final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + s3);
             file.getParentFile().mkdirs();
@@ -721,6 +761,24 @@ public final class FileUtils
             Log.v(s, "*****************************************************************");
             Log.v(s, "Wrote string to file: " + file);
             Log.v(s, "Get file with command: adb pull /sdcard/" + s3);
+            Log.v(s, "*****************************************************************");
+            return true;
+        }
+        catch (IOException ex) {
+            Log.handleException(s, ex);
+            return false;
+        }
+    }
+    
+    public static boolean writeStringToFile(final String s, final String s2, final File file) {
+        try {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            final FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(s2);
+            fileWriter.close();
+            Log.v(s, "*****************************************************************");
+            Log.v(s, "Wrote string to file: " + file);
             Log.v(s, "*****************************************************************");
             return true;
         }

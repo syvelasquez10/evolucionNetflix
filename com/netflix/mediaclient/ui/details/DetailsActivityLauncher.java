@@ -24,7 +24,7 @@ import com.netflix.mediaclient.ui.mdx.MementoMovieDetailsActivity;
 import com.netflix.mediaclient.ui.mdx.MementoBarkerShowDetailsActivity;
 import com.netflix.mediaclient.ui.mdx.MementoBarkerMovieDetailsActivity;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 

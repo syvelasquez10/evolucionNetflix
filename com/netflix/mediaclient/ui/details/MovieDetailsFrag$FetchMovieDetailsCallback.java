@@ -24,6 +24,7 @@ import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;

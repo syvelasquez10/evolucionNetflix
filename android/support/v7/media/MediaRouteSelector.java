@@ -6,8 +6,8 @@ package android.support.v7.media;
 
 import java.util.Arrays;
 import android.content.IntentFilter;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 import android.os.Bundle;
 
@@ -15,24 +15,15 @@ public final class MediaRouteSelector
 {
     public static final MediaRouteSelector EMPTY;
     private final Bundle mBundle;
-    private List<String> mControlCategories;
+    List<String> mControlCategories;
     
     static {
         EMPTY = new MediaRouteSelector(new Bundle(), null);
     }
     
-    private MediaRouteSelector(final Bundle mBundle, final List<String> mControlCategories) {
+    MediaRouteSelector(final Bundle mBundle, final List<String> mControlCategories) {
         this.mBundle = mBundle;
         this.mControlCategories = mControlCategories;
-    }
-    
-    private void ensureControlCategories() {
-        if (this.mControlCategories == null) {
-            this.mControlCategories = (List<String>)this.mBundle.getStringArrayList("controlCategories");
-            if (this.mControlCategories == null || this.mControlCategories.isEmpty()) {
-                this.mControlCategories = Collections.emptyList();
-            }
-        }
     }
     
     public static MediaRouteSelector fromBundle(final Bundle bundle) {
@@ -53,6 +44,15 @@ public final class MediaRouteSelector
             return this.mControlCategories.containsAll(mediaRouteSelector.mControlCategories);
         }
         return false;
+    }
+    
+    void ensureControlCategories() {
+        if (this.mControlCategories == null) {
+            this.mControlCategories = (List<String>)this.mBundle.getStringArrayList("controlCategories");
+            if (this.mControlCategories == null || this.mControlCategories.isEmpty()) {
+                this.mControlCategories = Collections.emptyList();
+            }
+        }
     }
     
     @Override

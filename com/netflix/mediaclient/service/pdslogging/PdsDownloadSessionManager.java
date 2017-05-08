@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.pdslogging;
 
+import java.util.Iterator;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.IntentUtils;
@@ -230,6 +232,20 @@ public class PdsDownloadSessionManager implements OfflineAgentListener
             return;
         }
         this.handleProgressMessage(downloadSessionForEvent, n);
+    }
+    
+    @Override
+    public void onOfflinePlayablesDeleted(final List<String> list, final Status status) {
+        if (status.isSucces()) {
+            final Iterator<String> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                this.removeDownloadSession(iterator.next());
+            }
+        }
+    }
+    
+    @Override
+    public void onOfflineStorageVolumeAddedOrRemoved(final boolean b) {
     }
     
     @Override

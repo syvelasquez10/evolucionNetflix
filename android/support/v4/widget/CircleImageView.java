@@ -4,6 +4,7 @@
 
 package android.support.v4.widget;
 
+import android.support.v4.content.ContextCompat;
 import android.os.Build$VERSION;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -32,20 +33,20 @@ class CircleImageView extends ImageView
         final int n = (int)(1.75f * density);
         final int n2 = (int)(0.0f * density);
         this.mShadowRadius = (int)(3.5f * density);
-        ShapeDrawable backgroundDrawable;
+        ShapeDrawable shapeDrawable;
         if (this.elevationSupported()) {
-            backgroundDrawable = new ShapeDrawable((Shape)new OvalShape());
+            shapeDrawable = new ShapeDrawable((Shape)new OvalShape());
             ViewCompat.setElevation((View)this, density * 4.0f);
         }
         else {
-            backgroundDrawable = new ShapeDrawable((Shape)new CircleImageView$OvalShadow(this, this.mShadowRadius));
-            ViewCompat.setLayerType((View)this, 1, backgroundDrawable.getPaint());
-            backgroundDrawable.getPaint().setShadowLayer((float)this.mShadowRadius, (float)n2, (float)n, 503316480);
+            shapeDrawable = new ShapeDrawable((Shape)new CircleImageView$OvalShadow(this, this.mShadowRadius));
+            ViewCompat.setLayerType((View)this, 1, shapeDrawable.getPaint());
+            shapeDrawable.getPaint().setShadowLayer((float)this.mShadowRadius, (float)n2, (float)n, 503316480);
             final int mShadowRadius = this.mShadowRadius;
             this.setPadding(mShadowRadius, mShadowRadius, mShadowRadius, mShadowRadius);
         }
-        backgroundDrawable.getPaint().setColor(color);
-        this.setBackgroundDrawable((Drawable)backgroundDrawable);
+        shapeDrawable.getPaint().setColor(color);
+        ViewCompat.setBackground((View)this, (Drawable)shapeDrawable);
     }
     
     private boolean elevationSupported() {
@@ -84,6 +85,6 @@ class CircleImageView extends ImageView
     }
     
     public void setBackgroundColorRes(final int n) {
-        this.setBackgroundColor(this.getContext().getResources().getColor(n));
+        this.setBackgroundColor(ContextCompat.getColor(this.getContext(), n));
     }
 }

@@ -8,7 +8,9 @@ import android.view.Window$Callback;
 import android.view.Window;
 import android.content.Context;
 import android.app.UiModeManager;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class AppCompatDelegateImplV23 extends AppCompatDelegateImplV14
 {
     private final UiModeManager mUiModeManager;

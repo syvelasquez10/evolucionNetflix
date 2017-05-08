@@ -4,9 +4,35 @@
 
 package android.support.v4.app;
 
+import android.support.v4.util.DebugUtils;
+import android.os.Looper;
+import android.content.IntentSender;
+import android.util.AttributeSet;
+import android.view.MenuInflater;
+import android.view.Menu;
+import android.view.ContextMenu$ContextMenuInfo;
+import android.view.ContextMenu;
+import android.view.animation.Animation;
+import android.view.MenuItem;
+import android.content.res.Configuration;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.view.LayoutInflater;
+import java.io.PrintWriter;
+import java.io.FileDescriptor;
+import android.content.Context;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
+import android.os.Bundle;
+import android.support.v4.util.SimpleArrayMap;
+import android.view.View$OnCreateContextMenuListener;
+import android.content.ComponentCallbacks;
 
-class Fragment$1 extends FragmentContainer
+class Fragment$1 implements Runnable
 {
     final /* synthetic */ Fragment this$0;
     
@@ -15,15 +41,7 @@ class Fragment$1 extends FragmentContainer
     }
     
     @Override
-    public View onFindViewById(final int n) {
-        if (this.this$0.mView == null) {
-            throw new IllegalStateException("Fragment does not have a view");
-        }
-        return this.this$0.mView.findViewById(n);
-    }
-    
-    @Override
-    public boolean onHasView() {
-        return this.this$0.mView != null;
+    public void run() {
+        this.this$0.callStartTransitionListener();
     }
 }

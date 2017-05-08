@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.ui.offline;
 
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.widget.Toast;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.support.v7.widget.RecyclerView$Adapter;
 import android.support.v7.widget.RecyclerView$AdapterDataObserver;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData$ViewType;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
@@ -105,12 +107,17 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
             Log.d("OfflineFragment", "Activity is null - can't continue init");
             return;
         }
-        if (this.getServiceManager() == null) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager == null) {
             Log.d("OfflineFragment", "Manager not available - can't continue init");
             return;
         }
         if (this.mRecyclerView == null) {
             Log.d("OfflineFragment", "Views are not initialized - can't continue init");
+            return;
+        }
+        if (!serviceManager.isOfflineFeatureAvailable()) {
+            Log.d("OfflineFragment", "Offline Feature not available!");
             return;
         }
         (this.mOfflineAgentInterface = this.getNetflixActivity().getServiceManager().getOfflineAgent()).addOfflineAgentListener(this);
@@ -154,21 +161,21 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
     
     private void setupClicks(final View view) {
         final boolean b = this.mOfflinePlayableAdapter instanceof OfflineEpisodesAdapter;
-        final NetflixTextButton netflixTextButton = (NetflixTextButton)view.findViewById(2131689858);
+        final NetflixTextButton netflixTextButton = (NetflixTextButton)view.findViewById(2131755407);
         if (netflixTextButton != null) {
             if (BrowseExperience.showKidsExperience()) {
-                netflixTextButton.applyFrom(2131427594);
+                netflixTextButton.applyFrom(2131493146);
             }
             if (b) {
-                netflixTextButton.setText((CharSequence)this.getResources().getString(2131231309));
+                netflixTextButton.setText((CharSequence)this.getResources().getString(2131296865));
             }
             else {
                 int text;
                 if (this.mOfflinePlayableAdapter.getItemCount() > 0) {
-                    text = 2131231310;
+                    text = 2131296866;
                 }
                 else {
-                    text = 2131231319;
+                    text = 2131296875;
                 }
                 netflixTextButton.setText(text);
             }
@@ -177,9 +184,9 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
     }
     
     private void setupMainView(final View view) {
-        this.mEmptyState = view.findViewById(2131689860);
-        this.mEmptyStateImage = view.findViewById(2131689861);
-        this.mRecyclerView = (RecyclerView)view.findViewById(2131689859);
+        this.mEmptyState = view.findViewById(2131755409);
+        this.mEmptyStateImage = view.findViewById(2131755410);
+        this.mRecyclerView = (RecyclerView)view.findViewById(2131755408);
         this.mLayoutManager = new LinearLayoutManager(this.mRecyclerView.getContext());
         this.mRecyclerView.setLayoutManager(this.mLayoutManager);
     }
@@ -303,7 +310,7 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
     }
     
     protected int getLayoutId() {
-        return 2130903138;
+        return 2130903143;
     }
     
     public int getSelectedItemsCount() {
@@ -420,6 +427,24 @@ public class OfflineFragment extends NetflixFrag implements OfflineAgentListener
                 }
                 ++i;
             }
+        }
+    }
+    
+    @Override
+    public void onOfflinePlayablesDeleted(final List<String> list, final Status status) {
+        this.updatePlayableList();
+    }
+    
+    @Override
+    public void onOfflineStorageVolumeAddedOrRemoved(final boolean b) {
+        final NetflixActivity netflixActivity = this.getNetflixActivity();
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
+            Toast.makeText((Context)netflixActivity, 2131296908, 1).show();
+            if (!b) {
+                netflixActivity.finish();
+                return;
+            }
+            this.updatePlayableList();
         }
     }
     

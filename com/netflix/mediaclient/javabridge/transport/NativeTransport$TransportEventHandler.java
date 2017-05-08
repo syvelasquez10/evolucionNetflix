@@ -4,12 +4,16 @@
 
 package com.netflix.mediaclient.javabridge.transport;
 
+import org.json.JSONObject;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import com.netflix.mediaclient.service.logging.StorageLogblobInfo;
 import com.netflix.mediaclient.util.MediaUtils;
 import com.netflix.mediaclient.util.SubtitleUtils;
 import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
+import com.netflix.mediaclient.service.logging.LoggingAgent;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.javabridge.error.CrashReport;

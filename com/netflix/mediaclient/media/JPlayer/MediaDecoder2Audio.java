@@ -498,16 +498,21 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
     }
     
     public void setAudioDuck(final boolean b) {
-        if (this.mAudioTrack != null && this.mAudioTrack.getState() != 0) {
-            float volume = 1.0f;
-            if (b) {
-                volume = 0.3f;
-            }
-            if (AndroidUtils.getAndroidVersion() < 21) {
+        try {
+            if (this.mAudioTrack != null && this.mAudioTrack.getState() != 0) {
+                float volume = 1.0f;
+                if (b) {
+                    volume = 0.3f;
+                }
+                if (AndroidUtils.getAndroidVersion() >= 21) {
+                    this.mAudioTrack.setVolume(volume);
+                    return;
+                }
                 this.mAudioTrack.setStereoVolume(volume, volume);
-                return;
             }
-            this.mAudioTrack.setVolume(volume);
+        }
+        catch (Throwable t) {
+            Log.d("MediaDecoder2Audio", "has exception setAudioDuck");
         }
     }
     

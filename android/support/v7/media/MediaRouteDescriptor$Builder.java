@@ -4,10 +4,6 @@
 
 package android.support.v7.media;
 
-import java.util.Arrays;
-import android.text.TextUtils;
-import android.content.IntentSender;
-import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Collection;
@@ -19,6 +15,7 @@ public final class MediaRouteDescriptor$Builder
 {
     private final Bundle mBundle;
     private ArrayList<IntentFilter> mControlFilters;
+    private ArrayList<String> mGroupMemberIds;
     
     public MediaRouteDescriptor$Builder(final MediaRouteDescriptor mediaRouteDescriptor) {
         if (mediaRouteDescriptor == null) {
@@ -67,9 +64,13 @@ public final class MediaRouteDescriptor$Builder
         if (this.mControlFilters != null) {
             this.mBundle.putParcelableArrayList("controlFilters", (ArrayList)this.mControlFilters);
         }
-        return new MediaRouteDescriptor(this.mBundle, this.mControlFilters, null);
+        if (this.mGroupMemberIds != null) {
+            this.mBundle.putStringArrayList("groupMemberIds", (ArrayList)this.mGroupMemberIds);
+        }
+        return new MediaRouteDescriptor(this.mBundle, this.mControlFilters);
     }
     
+    @Deprecated
     public MediaRouteDescriptor$Builder setConnecting(final boolean b) {
         this.mBundle.putBoolean("connecting", b);
         return this;
@@ -77,6 +78,11 @@ public final class MediaRouteDescriptor$Builder
     
     public MediaRouteDescriptor$Builder setDescription(final String s) {
         this.mBundle.putString("status", s);
+        return this;
+    }
+    
+    public MediaRouteDescriptor$Builder setDeviceType(final int n) {
+        this.mBundle.putInt("deviceType", n);
         return this;
     }
     

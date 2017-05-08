@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewParent;
 import android.graphics.RectF;
 import android.graphics.Matrix;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class ViewGroupUtilsHoneycomb
 {
     private static final ThreadLocal<Matrix> sMatrix;

@@ -16,6 +16,8 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.AnimatorSet;
 import android.animation.StateListAnimator;
+import android.os.Build$VERSION;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.Rect;
 import android.graphics.drawable.InsetDrawable;
 import android.annotation.TargetApi;
@@ -56,6 +58,11 @@ class FloatingActionButtonLollipop extends FloatingActionButtonIcs
     }
     
     @Override
+    GradientDrawable newGradientDrawableForShape() {
+        return new FloatingActionButtonLollipop$AlwaysStatefulGradientDrawable();
+    }
+    
+    @Override
     void onCompatShadowChanged() {
         this.updatePadding();
     }
@@ -65,27 +72,42 @@ class FloatingActionButtonLollipop extends FloatingActionButtonIcs
     }
     
     @Override
-    void onElevationsChanged(final float n, final float n2) {
-        final StateListAnimator stateListAnimator = new StateListAnimator();
-        final AnimatorSet set = new AnimatorSet();
-        set.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { n }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { n2 }).setDuration(100L));
-        set.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
-        stateListAnimator.addState(FloatingActionButtonLollipop.PRESSED_ENABLED_STATE_SET, (Animator)set);
-        final AnimatorSet set2 = new AnimatorSet();
-        set2.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { n }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { n2 }).setDuration(100L));
-        set2.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
-        stateListAnimator.addState(FloatingActionButtonLollipop.FOCUSED_ENABLED_STATE_SET, (Animator)set2);
-        final AnimatorSet set3 = new AnimatorSet();
-        final AnimatorSet set4 = new AnimatorSet();
-        set4.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { 0.0f }).setDuration(100L)).after(100L);
-        set3.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { n }).setDuration(0L)).with((Animator)set4);
-        set3.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
-        stateListAnimator.addState(FloatingActionButtonLollipop.ENABLED_STATE_SET, (Animator)set3);
-        final AnimatorSet set5 = new AnimatorSet();
-        set5.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { 0.0f }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { 0.0f }).setDuration(0L));
-        set5.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
-        stateListAnimator.addState(FloatingActionButtonLollipop.EMPTY_STATE_SET, (Animator)set5);
-        this.mView.setStateListAnimator(stateListAnimator);
+    void onElevationsChanged(final float elevation, final float translationZ) {
+        if (Build$VERSION.SDK_INT == 21) {
+            if (this.mView.isEnabled()) {
+                this.mView.setElevation(elevation);
+                if (this.mView.isFocused() || this.mView.isPressed()) {
+                    this.mView.setTranslationZ(translationZ);
+                }
+                else {
+                    this.mView.setTranslationZ(0.0f);
+                }
+            }
+            else {
+                this.mView.setElevation(0.0f);
+                this.mView.setTranslationZ(0.0f);
+            }
+        }
+        else {
+            final StateListAnimator stateListAnimator = new StateListAnimator();
+            final AnimatorSet set = new AnimatorSet();
+            set.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { elevation }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { translationZ }).setDuration(100L));
+            set.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
+            stateListAnimator.addState(FloatingActionButtonLollipop.PRESSED_ENABLED_STATE_SET, (Animator)set);
+            final AnimatorSet set2 = new AnimatorSet();
+            set2.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { elevation }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { translationZ }).setDuration(100L));
+            set2.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
+            stateListAnimator.addState(FloatingActionButtonLollipop.FOCUSED_ENABLED_STATE_SET, (Animator)set2);
+            final AnimatorSet set3 = new AnimatorSet();
+            set3.playSequentially(new Animator[] { ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { elevation }).setDuration(0L), ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { this.mView.getTranslationZ() }).setDuration(100L), ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { 0.0f }).setDuration(100L) });
+            set3.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
+            stateListAnimator.addState(FloatingActionButtonLollipop.ENABLED_STATE_SET, (Animator)set3);
+            final AnimatorSet set4 = new AnimatorSet();
+            set4.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { 0.0f }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { 0.0f }).setDuration(0L));
+            set4.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
+            stateListAnimator.addState(FloatingActionButtonLollipop.EMPTY_STATE_SET, (Animator)set4);
+            this.mView.setStateListAnimator(stateListAnimator);
+        }
         if (this.mShadowViewDelegate.isCompatPaddingEnabled()) {
             this.updatePadding();
         }

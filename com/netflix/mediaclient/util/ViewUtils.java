@@ -130,7 +130,7 @@ public class ViewUtils
     
     public static View createActionBarDummyView(final NetflixActivity netflixActivity, final int n) {
         final View view = new View((Context)netflixActivity);
-        view.setId(2131689474);
+        view.setId(2131755010);
         view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, n));
         return view;
     }
@@ -167,7 +167,7 @@ public class ViewUtils
     }
     
     public static int getDefaultActionBarHeight(final Context context) {
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130772055 });
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130772060 });
         final int n = (int)obtainStyledAttributes.getDimension(0, 0.0f);
         obtainStyledAttributes.recycle();
         return n;
@@ -452,28 +452,17 @@ public class ViewUtils
     }
     
     public static void safeShowDialogFragment(final DialogFragment dialogFragment, final FragmentManager fragmentManager, final FragmentTransaction fragmentTransaction, final String s) {
-        if (dialogFragment == null || fragmentManager == null || StringUtils.isEmpty(s) || fragmentTransaction == null) {
-            return;
+        if (dialogFragment != null && fragmentManager != null && !StringUtils.isEmpty(s) && fragmentTransaction != null) {
+            fragmentManager.executePendingTransactions();
+            if (!dialogFragment.isAdded()) {
+                if (fragmentManager.findFragmentByTag(s) == null) {
+                    dialogFragment.show(fragmentTransaction, s);
+                    return;
+                }
+                logSafeShowDialogFragmentError(s, dialogFragment);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
         }
-        fragmentManager.executePendingTransactions();
-        if (fragmentManager.findFragmentByTag(s) == null) {
-            dialogFragment.show(fragmentTransaction, s);
-            return;
-        }
-        logSafeShowDialogFragmentError(s, dialogFragment);
-        fragmentTransaction.commitAllowingStateLoss();
-    }
-    
-    public static void safeShowDialogFragment(final DialogFragment dialogFragment, final FragmentManager fragmentManager, final String s) {
-        if (dialogFragment == null || fragmentManager == null || StringUtils.isEmpty(s)) {
-            return;
-        }
-        fragmentManager.executePendingTransactions();
-        if (fragmentManager.findFragmentByTag(s) == null) {
-            dialogFragment.show(fragmentManager, s);
-            return;
-        }
-        logSafeShowDialogFragmentError(s, dialogFragment);
     }
     
     public static void setDrawableTint(final Drawable drawable, final int n) {

@@ -11,8 +11,10 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import java.util.Map;
 import java.util.HashMap;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.PlaybackBookmark;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
@@ -60,6 +62,15 @@ public class BookmarkStore
     
     private void persistBookmarkData() {
         new BackgroundTask().execute(new BookmarkStore$2(this));
+    }
+    
+    private void saveBookmarkToFile() {
+        synchronized (this) {
+            final boolean writeBytesToFile = FileUtils.writeBytesToFile(this.mBookmarkStoreFile.getAbsolutePath(), NetflixApplication.getGson().toJson(this.mBookmarkData).getBytes());
+            if (Log.isLoggable()) {
+                Log.i("nf_BookmarkStore", "setBookmark saving to file result=" + writeBytesToFile);
+            }
+        }
     }
     
     private void setBookmarkNoPersist(final String s, final PlaybackBookmark playbackBookmark) {
@@ -142,10 +153,10 @@ public class BookmarkStore
         while (true) {
         Label_0120_Outer:
             while (true) {
-            Label_0248:
+            Label_0249:
                 while (true) {
-                    Label_0242: {
-                        Label_0239: {
+                    Label_0243: {
+                        Label_0240: {
                             synchronized (this) {
                                 Object mContext = this.mContext;
                                 if (mContext != null && list != null && s != null) {
@@ -166,16 +177,16 @@ public class BookmarkStore
                                             final long seconds = TimeUnit.MILLISECONDS.toSeconds(bookmark.mBookmarkUpdateTimeInUTCMs - ((Playable)mContext).getPlayableBookmarkUpdateTime());
                                             Log.i("nf_BookmarkStore", "bookMarkStoreTimeIsNewBySeconds=" + seconds);
                                             if (seconds >= 0L) {
-                                                break Label_0242;
+                                                break Label_0243;
                                             }
                                             n = 1;
                                         }
                                         if (n != 0) {
                                             this.setBookmarkNoPersist(s, new PlaybackBookmark(((Playable)mContext).getPlayableBookmarkPosition(), ((Playable)mContext).getPlayableBookmarkUpdateTime(), ((Playable)mContext).getPlayableId()));
                                             b = true;
-                                            break Label_0248;
+                                            break Label_0249;
                                         }
-                                        break Label_0239;
+                                        break Label_0240;
                                     }
                                     else if (b) {
                                         this.persistBookmarkData();
@@ -184,7 +195,7 @@ public class BookmarkStore
                                 return;
                             }
                         }
-                        break Label_0248;
+                        break Label_0249;
                     }
                     int n = 0;
                     continue;
@@ -196,11 +207,11 @@ public class BookmarkStore
     
     public void setBookmark(final String s, final PlaybackBookmark playbackBookmark) {
         while (true) {
-            Label_0038: {
+            Label_0039: {
                 synchronized (this) {
                     if (this.mContext != null) {
                         if (s != null && playbackBookmark != null) {
-                            break Label_0038;
+                            break Label_0039;
                         }
                         Log.e("nf_BookmarkStore", "setBookmark not valid data");
                     }

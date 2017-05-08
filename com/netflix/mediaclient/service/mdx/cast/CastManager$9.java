@@ -40,6 +40,6 @@ class CastManager$9 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.nativeSendMessageResult(this.val$success, this.val$uuid);
+        this.this$0.nativeLaunchResult(this.val$success, this.val$uuid);
     }
 }

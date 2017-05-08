@@ -7,7 +7,9 @@ package android.support.v4.hardware.display;
 import android.content.Context;
 import android.hardware.display.DisplayManager;
 import android.view.Display;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 final class DisplayManagerJellybeanMr1
 {
     public static Display getDisplay(final Object o, final int n) {

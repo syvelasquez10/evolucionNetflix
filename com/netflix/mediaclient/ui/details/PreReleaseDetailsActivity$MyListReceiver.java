@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.details;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Build$VERSION;
 import android.graphics.Typeface;
 import android.support.design.widget.Snackbar$SnackbarLayout;
 import android.widget.TextView;

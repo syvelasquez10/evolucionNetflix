@@ -47,7 +47,7 @@ class CWExtendedDiscoveryFrag$CollectionAdapter extends RecyclerView$Adapter<Rec
     
     @Override
     public RecyclerView$ViewHolder onCreateViewHolder(final ViewGroup viewGroup, int dimensionPixelOffset) {
-        dimensionPixelOffset = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362150);
+        dimensionPixelOffset = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427700);
         final float n = (DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - dimensionPixelOffset * 2) / 1;
         final CwDiscoveryView cwDiscoveryView = new CwDiscoveryView((Context)this.this$0.getActivity());
         cwDiscoveryView.setLayoutParams(new ViewGroup$LayoutParams((int)n, (int)(0.5625f * n)));

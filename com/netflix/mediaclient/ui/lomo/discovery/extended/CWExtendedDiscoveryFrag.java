@@ -29,7 +29,7 @@ public class CWExtendedDiscoveryFrag extends BaseExtendedDiscoveryFrag
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.titleView.setText(2131231020);
+        this.titleView.setText(2131296576);
     }
     
     @Override

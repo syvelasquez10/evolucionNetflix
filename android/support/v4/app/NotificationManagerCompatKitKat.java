@@ -8,7 +8,9 @@ import android.content.pm.ApplicationInfo;
 import java.lang.reflect.InvocationTargetException;
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class NotificationManagerCompatKitKat
 {
     private static final String CHECK_OP_NO_THROW = "checkOpNoThrow";

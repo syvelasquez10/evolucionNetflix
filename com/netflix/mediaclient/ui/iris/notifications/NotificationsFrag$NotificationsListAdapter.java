@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.app.Activity;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.util.IrisUtils;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -111,12 +114,12 @@ class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
         }
         final NotificationViewHolder notificationViewHolder = (NotificationViewHolder)inflate.getTag();
         if (!this.this$0.areMoreNotificationsAvailable() && !this.this$0.mAreNotificationsPresent) {
-            BaseNotification.showSingleLineText(notificationViewHolder, 2131230968);
+            BaseNotification.showSingleLineText(notificationViewHolder, 2131296524);
             inflate.setOnClickListener((View$OnClickListener)null);
         }
         else {
             if (this.this$0.areMoreNotificationsAvailable() && n == this.getCount() - 1) {
-                BaseNotification.showSingleLineText(notificationViewHolder, 2131230966);
+                BaseNotification.showSingleLineText(notificationViewHolder, 2131296522);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 this.this$0.loadMoreNotifications();
                 return inflate;
@@ -125,7 +128,7 @@ class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
                 if (Log.isLoggable()) {
                     Log.e(NotificationsFrag.TAG, "Got null notification for type: " + item.getType());
                 }
-                BaseNotification.showSingleLineText(notificationViewHolder, 2131231301);
+                BaseNotification.showSingleLineText(notificationViewHolder, 2131296857);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 return inflate;
             }

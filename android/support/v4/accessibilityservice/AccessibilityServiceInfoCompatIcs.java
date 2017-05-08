@@ -6,7 +6,9 @@ package android.support.v4.accessibilityservice;
 
 import android.content.pm.ResolveInfo;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class AccessibilityServiceInfoCompatIcs
 {
     public static boolean getCanRetrieveWindowContent(final AccessibilityServiceInfo accessibilityServiceInfo) {

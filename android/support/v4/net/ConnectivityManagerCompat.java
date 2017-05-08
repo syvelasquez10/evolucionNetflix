@@ -12,8 +12,15 @@ import android.os.Build$VERSION;
 public final class ConnectivityManagerCompat
 {
     private static final ConnectivityManagerCompat$ConnectivityManagerCompatImpl IMPL;
+    public static final int RESTRICT_BACKGROUND_STATUS_DISABLED = 1;
+    public static final int RESTRICT_BACKGROUND_STATUS_ENABLED = 3;
+    public static final int RESTRICT_BACKGROUND_STATUS_WHITELISTED = 2;
     
     static {
+        if (Build$VERSION.SDK_INT >= 24) {
+            IMPL = new ConnectivityManagerCompat$Api24ConnectivityManagerCompatImpl();
+            return;
+        }
         if (Build$VERSION.SDK_INT >= 16) {
             IMPL = new ConnectivityManagerCompat$JellyBeanConnectivityManagerCompatImpl();
             return;
@@ -31,6 +38,10 @@ public final class ConnectivityManagerCompat
             return connectivityManager.getNetworkInfo(networkInfo.getType());
         }
         return null;
+    }
+    
+    public static int getRestrictBackgroundStatus(final ConnectivityManager connectivityManager) {
+        return ConnectivityManagerCompat.IMPL.getRestrictBackgroundStatus(connectivityManager);
     }
     
     public static boolean isActiveNetworkMetered(final ConnectivityManager connectivityManager) {

@@ -31,6 +31,7 @@ import android.support.v7.view.menu.MenuPresenter;
 public class NavigationMenuPresenter implements MenuPresenter
 {
     private static final String STATE_ADAPTER = "android:menu:adapter";
+    private static final String STATE_HEADER = "android:menu:header";
     private static final String STATE_HIERARCHY = "android:menu:list";
     NavigationMenuPresenter$NavigationMenuAdapter mAdapter;
     private MenuPresenter$Callback mCallback;
@@ -152,6 +153,10 @@ public class NavigationMenuPresenter implements MenuPresenter
             if (bundle2 != null) {
                 this.mAdapter.restoreInstanceState(bundle2);
             }
+            final SparseArray sparseParcelableArray2 = bundle.getSparseParcelableArray("android:menu:header");
+            if (sparseParcelableArray2 != null) {
+                this.mHeaderLayout.restoreHierarchyState(sparseParcelableArray2);
+            }
         }
     }
     
@@ -166,6 +171,11 @@ public class NavigationMenuPresenter implements MenuPresenter
             }
             if (this.mAdapter != null) {
                 bundle.putBundle("android:menu:adapter", this.mAdapter.createInstanceState());
+            }
+            if (this.mHeaderLayout != null) {
+                final SparseArray sparseArray2 = new SparseArray();
+                this.mHeaderLayout.saveHierarchyState(sparseArray2);
+                bundle.putSparseParcelableArray("android:menu:header", sparseArray2);
             }
             return (Parcelable)bundle;
         }

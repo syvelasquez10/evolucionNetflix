@@ -21,6 +21,6 @@ public class ActionId12ErrorDescriptor extends PlaybackErrorDescriptor
     
     static ActionId12ErrorDescriptor build(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.d("nf_play_error", "ActionID 12 NFErr_MC_StaleCredentials");
-        return new ActionId12ErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131230779), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231077), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new ActionId12ErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131296329), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131296633), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
 }

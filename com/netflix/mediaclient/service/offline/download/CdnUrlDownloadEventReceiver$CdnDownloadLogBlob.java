@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.offline.download;
 
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 import com.netflix.mediaclient.service.logging.logblob.LogBlobType;
 import com.netflix.mediaclient.service.logging.logblob.BaseLogblob;
 
@@ -32,7 +34,7 @@ class CdnUrlDownloadEventReceiver$CdnDownloadLogBlob extends BaseLogblob
         return LogBlobType.OFFLINE_CDN_URL_DOWNLOAD.getValue();
     }
     
-    void populateJson(final CommonCdnLogBlobData commonCdnLogBlobData, final CdnUrl cdnUrl, final long n, final long n2, final long n3, final long n4) {
+    void populateJson(final CommonCdnLogBlobData commonCdnLogBlobData, final CdnUrl cdnUrl, final long n, final long n2, final long n3, final long n4, final ConnectivityUtils$NetType connectivityUtils$NetType) {
         this.mJson.put("offlinedlreport", (Object)LogBlobType.OFFLINE_CDN_URL_DOWNLOAD.getValue());
         this.mJson.put("oxid", (Object)commonCdnLogBlobData.mOxId);
         this.mJson.put("dxid", (Object)commonCdnLogBlobData.mDxId);
@@ -43,6 +45,7 @@ class CdnUrlDownloadEventReceiver$CdnDownloadLogBlob extends BaseLogblob
         this.mJson.put("dlid", (Object)commonCdnLogBlobData.mDownloadableId);
         this.mJson.put("bytes", n4);
         this.mJson.put("duration", n3);
+        ConnectivityUtils.fillNetworkType(this.mJson, connectivityUtils$NetType);
     }
     
     @Override

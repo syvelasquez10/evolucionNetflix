@@ -11,7 +11,9 @@ import android.widget.SearchView$OnCloseListener;
 import android.content.Context;
 import android.widget.SearchView;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class SearchViewCompatHoneycomb
 {
     public static void checkIfLegalArg(final View view) {

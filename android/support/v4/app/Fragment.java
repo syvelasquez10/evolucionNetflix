@@ -5,6 +5,7 @@
 package android.support.v4.app;
 
 import android.support.v4.util.DebugUtils;
+import android.os.Looper;
 import android.content.IntentSender;
 import android.util.AttributeSet;
 import android.view.MenuInflater;
@@ -24,9 +25,9 @@ import java.io.FileDescriptor;
 import android.content.Context;
 import android.os.Parcelable;
 import android.util.SparseArray;
+import android.view.View;
 import android.view.ViewGroup;
 import android.os.Bundle;
-import android.view.View;
 import android.support.v4.util.SimpleArrayMap;
 import android.view.View$OnCreateContextMenuListener;
 import android.content.ComponentCallbacks;
@@ -42,9 +43,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     static final Object USE_DEFAULT_TRANSITION;
     private static final SimpleArrayMap<String, Class<?>> sClassMap;
     boolean mAdded;
-    Boolean mAllowEnterTransitionOverlap;
-    Boolean mAllowReturnTransitionOverlap;
-    View mAnimatingAway;
+    Fragment$AnimationInfo mAnimationInfo;
     Bundle mArguments;
     int mBackStackNesting;
     boolean mCalled;
@@ -55,36 +54,28 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     int mContainerId;
     boolean mDeferStart;
     boolean mDetached;
-    Object mEnterTransition;
-    SharedElementCallback mEnterTransitionCallback;
-    Object mExitTransition;
-    SharedElementCallback mExitTransitionCallback;
     int mFragmentId;
     FragmentManagerImpl mFragmentManager;
     boolean mFromLayout;
     boolean mHasMenu;
     boolean mHidden;
+    boolean mHiddenChanged;
     FragmentHostCallback mHost;
     boolean mInLayout;
     int mIndex;
     View mInnerView;
+    boolean mIsNewlyAdded;
     LoaderManagerImpl mLoaderManager;
     boolean mLoadersStarted;
     boolean mMenuVisible;
-    int mNextAnim;
     Fragment mParentFragment;
-    Object mReenterTransition;
     boolean mRemoving;
     boolean mRestored;
     boolean mRetainInstance;
     boolean mRetaining;
-    Object mReturnTransition;
     Bundle mSavedFragmentState;
     SparseArray<Parcelable> mSavedViewState;
-    Object mSharedElementEnterTransition;
-    Object mSharedElementReturnTransition;
     int mState;
-    int mStateAfterAnimating;
     String mTag;
     Fragment mTarget;
     int mTargetIndex;
@@ -104,14 +95,25 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         this.mTargetIndex = -1;
         this.mMenuVisible = true;
         this.mUserVisibleHint = true;
-        this.mEnterTransition = null;
-        this.mReturnTransition = Fragment.USE_DEFAULT_TRANSITION;
-        this.mExitTransition = null;
-        this.mReenterTransition = Fragment.USE_DEFAULT_TRANSITION;
-        this.mSharedElementEnterTransition = null;
-        this.mSharedElementReturnTransition = Fragment.USE_DEFAULT_TRANSITION;
-        this.mEnterTransitionCallback = null;
-        this.mExitTransitionCallback = null;
+    }
+    
+    private void callStartTransitionListener() {
+        Fragment$OnStartEnterTransitionListener mStartEnterTransitionListener = null;
+        if (this.mAnimationInfo != null) {
+            this.mAnimationInfo.mEnterTransitionPostponed = false;
+            mStartEnterTransitionListener = this.mAnimationInfo.mStartEnterTransitionListener;
+            this.mAnimationInfo.mStartEnterTransitionListener = null;
+        }
+        if (mStartEnterTransitionListener != null) {
+            mStartEnterTransitionListener.onStartEnterTransition();
+        }
+    }
+    
+    private Fragment$AnimationInfo ensureAnimationInfo() {
+        if (this.mAnimationInfo == null) {
+            this.mAnimationInfo = new Fragment$AnimationInfo();
+        }
+        return this.mAnimationInfo;
     }
     
     public static Fragment instantiate(final Context context, final String s) {
@@ -236,10 +238,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             printWriter.print(" mTargetRequestCode=");
             printWriter.println(this.mTargetRequestCode);
         }
-        if (this.mNextAnim != 0) {
+        if (this.getNextAnim() != 0) {
             printWriter.print(s);
             printWriter.print("mNextAnim=");
-            printWriter.println(this.mNextAnim);
+            printWriter.println(this.getNextAnim());
         }
         if (this.mContainer != null) {
             printWriter.print(s);
@@ -256,13 +258,13 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             printWriter.print("mInnerView=");
             printWriter.println(this.mView);
         }
-        if (this.mAnimatingAway != null) {
+        if (this.getAnimatingAway() != null) {
             printWriter.print(s);
             printWriter.print("mAnimatingAway=");
-            printWriter.println(this.mAnimatingAway);
+            printWriter.println(this.getAnimatingAway());
             printWriter.print(s);
             printWriter.print("mStateAfterAnimating=");
-            printWriter.println(this.mStateAfterAnimating);
+            printWriter.println(this.getStateAfterAnimating());
         }
         if (this.mLoaderManager != null) {
             printWriter.print(s);
@@ -299,11 +301,18 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public boolean getAllowEnterTransitionOverlap() {
-        return this.mAllowEnterTransitionOverlap == null || this.mAllowEnterTransitionOverlap;
+        return this.mAnimationInfo == null || this.mAnimationInfo.mAllowEnterTransitionOverlap == null || this.mAnimationInfo.mAllowEnterTransitionOverlap;
     }
     
     public boolean getAllowReturnTransitionOverlap() {
-        return this.mAllowReturnTransitionOverlap == null || this.mAllowReturnTransitionOverlap;
+        return this.mAnimationInfo == null || this.mAnimationInfo.mAllowReturnTransitionOverlap == null || this.mAnimationInfo.mAllowReturnTransitionOverlap;
+    }
+    
+    View getAnimatingAway() {
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        return this.mAnimationInfo.mAnimatingAway;
     }
     
     public final Bundle getArguments() {
@@ -337,11 +346,31 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public Object getEnterTransition() {
-        return this.mEnterTransition;
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        return this.mAnimationInfo.mEnterTransition;
+    }
+    
+    SharedElementCallback getEnterTransitionCallback() {
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        return this.mAnimationInfo.mEnterTransitionCallback;
     }
     
     public Object getExitTransition() {
-        return this.mExitTransition;
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        return this.mAnimationInfo.mExitTransition;
+    }
+    
+    SharedElementCallback getExitTransitionCallback() {
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        return this.mAnimationInfo.mExitTransitionCallback;
     }
     
     public final FragmentManager getFragmentManager() {
@@ -377,15 +406,39 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return this.mLoaderManager = this.mHost.getLoaderManager(this.mWho, this.mLoadersStarted, true);
     }
     
+    int getNextAnim() {
+        if (this.mAnimationInfo == null) {
+            return 0;
+        }
+        return this.mAnimationInfo.mNextAnim;
+    }
+    
+    int getNextTransition() {
+        if (this.mAnimationInfo == null) {
+            return 0;
+        }
+        return this.mAnimationInfo.mNextTransition;
+    }
+    
+    int getNextTransitionStyle() {
+        if (this.mAnimationInfo == null) {
+            return 0;
+        }
+        return this.mAnimationInfo.mNextTransitionStyle;
+    }
+    
     public final Fragment getParentFragment() {
         return this.mParentFragment;
     }
     
     public Object getReenterTransition() {
-        if (this.mReenterTransition == Fragment.USE_DEFAULT_TRANSITION) {
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        if (this.mAnimationInfo.mReenterTransition == Fragment.USE_DEFAULT_TRANSITION) {
             return this.getExitTransition();
         }
-        return this.mReenterTransition;
+        return this.mAnimationInfo.mReenterTransition;
     }
     
     public final Resources getResources() {
@@ -400,21 +453,37 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public Object getReturnTransition() {
-        if (this.mReturnTransition == Fragment.USE_DEFAULT_TRANSITION) {
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        if (this.mAnimationInfo.mReturnTransition == Fragment.USE_DEFAULT_TRANSITION) {
             return this.getEnterTransition();
         }
-        return this.mReturnTransition;
+        return this.mAnimationInfo.mReturnTransition;
     }
     
     public Object getSharedElementEnterTransition() {
-        return this.mSharedElementEnterTransition;
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        return this.mAnimationInfo.mSharedElementEnterTransition;
     }
     
     public Object getSharedElementReturnTransition() {
-        if (this.mSharedElementReturnTransition == Fragment.USE_DEFAULT_TRANSITION) {
+        if (this.mAnimationInfo == null) {
+            return null;
+        }
+        if (this.mAnimationInfo.mSharedElementReturnTransition == Fragment.USE_DEFAULT_TRANSITION) {
             return this.getSharedElementEnterTransition();
         }
-        return this.mSharedElementReturnTransition;
+        return this.mAnimationInfo.mSharedElementReturnTransition;
+    }
+    
+    int getStateAfterAnimating() {
+        if (this.mAnimationInfo == null) {
+            return 0;
+        }
+        return this.mAnimationInfo.mStateAfterAnimating;
     }
     
     public final String getString(final int n) {
@@ -482,7 +551,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     void instantiateChildFragmentManager() {
-        (this.mChildFragmentManager = new FragmentManagerImpl()).attachController(this.mHost, new Fragment$1(this), this);
+        (this.mChildFragmentManager = new FragmentManagerImpl()).attachController(this.mHost, new Fragment$2(this), this);
     }
     
     public final boolean isAdded() {
@@ -497,6 +566,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         return this.mHidden;
     }
     
+    boolean isHideReplaced() {
+        return this.mAnimationInfo != null && this.mAnimationInfo.mIsHideReplaced;
+    }
+    
     final boolean isInBackStack() {
         return this.mBackStackNesting > 0;
     }
@@ -507,6 +580,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     
     public final boolean isMenuVisible() {
         return this.mMenuVisible;
+    }
+    
+    boolean isPostponed() {
+        return this.mAnimationInfo != null && this.mAnimationInfo.mEnterTransitionPostponed;
     }
     
     public final boolean isRemoving() {
@@ -684,6 +761,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     
     public void onViewStateRestored(final Bundle bundle) {
         this.mCalled = true;
+    }
+    
+    FragmentManager peekChildFragmentManager() {
+        return this.mChildFragmentManager;
     }
     
     void performActivityCreated(final Bundle bundle) {
@@ -941,6 +1022,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         }
     }
     
+    public void postponeEnterTransition() {
+        this.ensureAnimationInfo().mEnterTransitionPostponed = true;
+    }
+    
     public void registerForContextMenu(final View view) {
         view.setOnCreateContextMenuListener((View$OnCreateContextMenuListener)this);
     }
@@ -979,11 +1064,15 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public void setAllowEnterTransitionOverlap(final boolean b) {
-        this.mAllowEnterTransitionOverlap = b;
+        this.ensureAnimationInfo().mAllowEnterTransitionOverlap = b;
     }
     
     public void setAllowReturnTransitionOverlap(final boolean b) {
-        this.mAllowReturnTransitionOverlap = b;
+        this.ensureAnimationInfo().mAllowReturnTransitionOverlap = b;
+    }
+    
+    void setAnimatingAway(final View mAnimatingAway) {
+        this.ensureAnimationInfo().mAnimatingAway = mAnimatingAway;
     }
     
     public void setArguments(final Bundle mArguments) {
@@ -994,19 +1083,19 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public void setEnterSharedElementCallback(final SharedElementCallback mEnterTransitionCallback) {
-        this.mEnterTransitionCallback = mEnterTransitionCallback;
+        this.ensureAnimationInfo().mEnterTransitionCallback = mEnterTransitionCallback;
     }
     
-    public void setEnterTransition(final Object mEnterTransition) {
-        this.mEnterTransition = mEnterTransition;
+    public void setEnterTransition(final Object o) {
+        this.ensureAnimationInfo().mEnterTransition = o;
     }
     
     public void setExitSharedElementCallback(final SharedElementCallback mExitTransitionCallback) {
-        this.mExitTransitionCallback = mExitTransitionCallback;
+        this.ensureAnimationInfo().mExitTransitionCallback = mExitTransitionCallback;
     }
     
-    public void setExitTransition(final Object mExitTransition) {
-        this.mExitTransition = mExitTransition;
+    public void setExitTransition(final Object o) {
+        this.ensureAnimationInfo().mExitTransition = o;
     }
     
     public void setHasOptionsMenu(final boolean mHasMenu) {
@@ -1016,6 +1105,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
                 this.mHost.onSupportInvalidateOptionsMenu();
             }
         }
+    }
+    
+    void setHideReplaced(final boolean mIsHideReplaced) {
+        this.ensureAnimationInfo().mIsHideReplaced = mIsHideReplaced;
     }
     
     final void setIndex(final int mIndex, final Fragment fragment) {
@@ -1050,24 +1143,59 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         }
     }
     
-    public void setReenterTransition(final Object mReenterTransition) {
-        this.mReenterTransition = mReenterTransition;
+    void setNextAnim(final int mNextAnim) {
+        if (this.mAnimationInfo == null && mNextAnim == 0) {
+            return;
+        }
+        this.ensureAnimationInfo().mNextAnim = mNextAnim;
+    }
+    
+    void setNextTransition(final int mNextTransition, final int mNextTransitionStyle) {
+        if (this.mAnimationInfo == null && mNextTransition == 0 && mNextTransitionStyle == 0) {
+            return;
+        }
+        this.ensureAnimationInfo();
+        this.mAnimationInfo.mNextTransition = mNextTransition;
+        this.mAnimationInfo.mNextTransitionStyle = mNextTransitionStyle;
+    }
+    
+    void setOnStartEnterTransitionListener(final Fragment$OnStartEnterTransitionListener mStartEnterTransitionListener) {
+        this.ensureAnimationInfo();
+        if (mStartEnterTransitionListener != this.mAnimationInfo.mStartEnterTransitionListener) {
+            if (mStartEnterTransitionListener != null && this.mAnimationInfo.mStartEnterTransitionListener != null) {
+                throw new IllegalStateException("Trying to set a replacement startPostponedEnterTransition on " + this);
+            }
+            if (this.mAnimationInfo.mEnterTransitionPostponed) {
+                this.mAnimationInfo.mStartEnterTransitionListener = mStartEnterTransitionListener;
+            }
+            if (mStartEnterTransitionListener != null) {
+                mStartEnterTransitionListener.startListening();
+            }
+        }
+    }
+    
+    public void setReenterTransition(final Object o) {
+        this.ensureAnimationInfo().mReenterTransition = o;
     }
     
     public void setRetainInstance(final boolean mRetainInstance) {
         this.mRetainInstance = mRetainInstance;
     }
     
-    public void setReturnTransition(final Object mReturnTransition) {
-        this.mReturnTransition = mReturnTransition;
+    public void setReturnTransition(final Object o) {
+        this.ensureAnimationInfo().mReturnTransition = o;
     }
     
-    public void setSharedElementEnterTransition(final Object mSharedElementEnterTransition) {
-        this.mSharedElementEnterTransition = mSharedElementEnterTransition;
+    public void setSharedElementEnterTransition(final Object o) {
+        this.ensureAnimationInfo().mSharedElementEnterTransition = o;
     }
     
-    public void setSharedElementReturnTransition(final Object mSharedElementReturnTransition) {
-        this.mSharedElementReturnTransition = mSharedElementReturnTransition;
+    public void setSharedElementReturnTransition(final Object o) {
+        this.ensureAnimationInfo().mSharedElementReturnTransition = o;
+    }
+    
+    void setStateAfterAnimating(final int mStateAfterAnimating) {
+        this.ensureAnimationInfo().mStateAfterAnimating = mStateAfterAnimating;
     }
     
     public void setTargetFragment(final Fragment mTarget, final int mTargetRequestCode) {
@@ -1114,6 +1242,18 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
         this.mHost.onStartIntentSenderFromFragment(this, intentSender, n, intent, n2, n3, n4, bundle);
+    }
+    
+    public void startPostponedEnterTransition() {
+        if (this.mFragmentManager == null || this.mFragmentManager.mHost == null) {
+            this.ensureAnimationInfo().mEnterTransitionPostponed = false;
+            return;
+        }
+        if (Looper.myLooper() != this.mFragmentManager.mHost.getHandler().getLooper()) {
+            this.mFragmentManager.mHost.getHandler().postAtFrontOfQueue((Runnable)new Fragment$1(this));
+            return;
+        }
+        this.callStartTransitionListener();
     }
     
     @Override

@@ -7,8 +7,10 @@ package com.netflix.mediaclient.ui.lolomo;
 import android.os.Parcel;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.List;
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 
+@SuppressLint({ "ParcelCreator" })
 class GalleryGenresLoMoFrag$FlatGenre implements Genre
 {
     final /* synthetic */ GalleryGenresLoMoFrag this$0;

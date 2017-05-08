@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import java.util.Iterator;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.widget.ImageView;
 import android.app.FragmentTransaction;
 import android.app.Fragment;

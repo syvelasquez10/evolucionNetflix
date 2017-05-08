@@ -15,6 +15,9 @@ abstract class SystemMediaRouteProvider extends MediaRouteProvider
     }
     
     public static SystemMediaRouteProvider obtain(final Context context, final SystemMediaRouteProvider$SyncCallback systemMediaRouteProvider$SyncCallback) {
+        if (Build$VERSION.SDK_INT >= 24) {
+            return new SystemMediaRouteProvider$Api24Impl(context, systemMediaRouteProvider$SyncCallback);
+        }
         if (Build$VERSION.SDK_INT >= 18) {
             return new SystemMediaRouteProvider$JellybeanMr2Impl(context, systemMediaRouteProvider$SyncCallback);
         }
@@ -25,6 +28,10 @@ abstract class SystemMediaRouteProvider extends MediaRouteProvider
             return new SystemMediaRouteProvider$JellybeanImpl(context, systemMediaRouteProvider$SyncCallback);
         }
         return new SystemMediaRouteProvider$LegacyImpl(context);
+    }
+    
+    protected Object getDefaultRoute() {
+        return null;
     }
     
     public void onSyncRouteAdded(final MediaRouter$RouteInfo mediaRouter$RouteInfo) {

@@ -13,6 +13,7 @@ import com.netflix.mediaclient.ui.details.IEpisodeView;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup$LayoutParams;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import android.widget.FrameLayout;
 import android.content.Context;
 import java.util.ArrayList;
@@ -57,7 +58,9 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     private static View createFrameView(final Context context) {
         final FrameLayout frameLayout = new FrameLayout(context);
-        ((View)frameLayout).setLayoutParams(new ViewGroup$LayoutParams(-1, -2));
+        if (!BarkerHelper.isInTest(context)) {
+            ((View)frameLayout).setLayoutParams(new ViewGroup$LayoutParams(-1, -2));
+        }
         return (View)frameLayout;
     }
     

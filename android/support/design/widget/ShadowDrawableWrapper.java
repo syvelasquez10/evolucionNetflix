@@ -12,9 +12,10 @@ import android.graphics.Shader$TileMode;
 import android.graphics.Path$FillType;
 import android.graphics.Rect;
 import android.graphics.Paint$Style;
+import android.support.v4.content.ContextCompat;
 import android.support.design.R$color;
 import android.graphics.drawable.Drawable;
-import android.content.res.Resources;
+import android.content.Context;
 import android.graphics.Path;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -48,14 +49,14 @@ class ShadowDrawableWrapper extends DrawableWrapper
         COS_45 = Math.cos(Math.toRadians(45.0));
     }
     
-    public ShadowDrawableWrapper(final Resources resources, final Drawable drawable, final float n, final float n2, final float n3) {
+    public ShadowDrawableWrapper(final Context context, final Drawable drawable, final float n, final float n2, final float n3) {
         super(drawable);
         this.mDirty = true;
         this.mAddPaddingForCorners = true;
         this.mPrintedShadowClipWarning = false;
-        this.mShadowStartColor = resources.getColor(R$color.design_fab_shadow_start_color);
-        this.mShadowMiddleColor = resources.getColor(R$color.design_fab_shadow_mid_color);
-        this.mShadowEndColor = resources.getColor(R$color.design_fab_shadow_end_color);
+        this.mShadowStartColor = ContextCompat.getColor(context, R$color.design_fab_shadow_start_color);
+        this.mShadowMiddleColor = ContextCompat.getColor(context, R$color.design_fab_shadow_mid_color);
+        this.mShadowEndColor = ContextCompat.getColor(context, R$color.design_fab_shadow_end_color);
         (this.mCornerShadowPaint = new Paint(5)).setStyle(Paint$Style.FILL);
         this.mCornerRadius = Math.round(n);
         this.mContentBounds = new RectF();

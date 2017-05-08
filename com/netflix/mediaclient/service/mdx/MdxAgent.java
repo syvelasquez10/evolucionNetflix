@@ -209,9 +209,9 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         }
         else {
             final Playable playable = this.mVideoDetails.getPlayable();
-            string = this.getContext().getString(2131231088, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), this.mVideoDetails.getTitle() });
+            string = this.getContext().getString(2131296644, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), this.mVideoDetails.getTitle() });
             if (this.mVideoDetails.isNSRE()) {
-                return this.getContext().getString(2131231089, new Object[] { this.mVideoDetails.getTitle() });
+                return this.getContext().getString(2131296645, new Object[] { this.mVideoDetails.getTitle() });
             }
         }
         return string;
@@ -254,9 +254,9 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             return null;
         }
         final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetailsPostplay;
-        final String string = this.getContext().getString(2131231088, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        final String string = this.getContext().getString(2131296644, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         if (episodeDetails.isNSRE()) {
-            return this.getContext().getString(2131231089, new Object[] { episodeDetails.getTitle() });
+            return this.getContext().getString(2131296645, new Object[] { episodeDetails.getTitle() });
         }
         return string;
     }
@@ -512,7 +512,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             if (videoDetails.getType() == VideoType.EPISODE) {
                 String s;
                 if (b) {
-                    s = this.getContext().getString(2131231129);
+                    s = this.getContext().getString(2131296685);
                 }
                 else {
                     s = videoDetails.getPlayable().getParentTitle();
@@ -609,7 +609,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         this.mTargetManager = new TargetManager(this.mNotifier, this.mMdxController, this.getConfigurationAgent().getEsnProvider().getEsn(), this.mMdxNrdpLogger);
         this.mCommandHandler = new CommandHandler(this.mTargetManager);
         if (this.mMdxController == null || this.mNotifier == null || this.mTargetManager == null || this.mCommandHandler == null) {
-            this.initCompleted(CommonStatus.INTERNAL_ERROR);
+            this.initCompleted(CommonStatus.INT_ERR_MDX_INIT);
             return;
         }
         this.mReady.set(false);

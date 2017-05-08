@@ -9,24 +9,35 @@ import java.util.ArrayList;
 import java.util.List;
 import android.support.v4.media.VolumeProviderCompat;
 import android.support.v4.media.MediaMetadataCompat;
+import android.app.PendingIntent;
+import java.lang.ref.WeakReference;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.os.Bundle;
 import android.os.Build$VERSION;
 import android.content.Context;
-import android.app.PendingIntent;
+import android.os.RemoteCallbackList;
 
 class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$MediaSessionImpl
 {
-    private PendingIntent mMediaButtonIntent;
+    private boolean mDestroyed;
+    private final RemoteCallbackList<IMediaControllerCallback> mExtraControllerCallbacks;
+    private MediaSessionCompat$MediaSessionImplApi21$ExtraSession mExtraSessionBinder;
+    private PlaybackStateCompat mPlaybackState;
+    int mRatingType;
     private final Object mSessionObj;
     private final MediaSessionCompat$Token mToken;
     
     public MediaSessionCompat$MediaSessionImplApi21(final Context context, final String s) {
+        this.mDestroyed = false;
+        this.mExtraControllerCallbacks = (RemoteCallbackList<IMediaControllerCallback>)new RemoteCallbackList();
         this.mSessionObj = MediaSessionCompatApi21.createSession(context, s);
         this.mToken = new MediaSessionCompat$Token(MediaSessionCompatApi21.getSessionToken(this.mSessionObj));
     }
     
     public MediaSessionCompat$MediaSessionImplApi21(final Object o) {
+        this.mDestroyed = false;
+        this.mExtraControllerCallbacks = (RemoteCallbackList<IMediaControllerCallback>)new RemoteCallbackList();
         this.mSessionObj = MediaSessionCompatApi21.verifySession(o);
         this.mToken = new MediaSessionCompat$Token(MediaSessionCompatApi21.getSessionToken(this.mSessionObj));
     }
@@ -37,6 +48,13 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
             return null;
         }
         return MediaSessionCompatApi24.getCallingPackage(this.mSessionObj);
+    }
+    
+    MediaSessionCompat$MediaSessionImplApi21$ExtraSession getExtraSessionBinder() {
+        if (this.mExtraSessionBinder == null) {
+            this.mExtraSessionBinder = new MediaSessionCompat$MediaSessionImplApi21$ExtraSession(this);
+        }
+        return this.mExtraSessionBinder;
     }
     
     @Override
@@ -61,12 +79,45 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
     
     @Override
     public void release() {
+        this.mDestroyed = true;
         MediaSessionCompatApi21.release(this.mSessionObj);
     }
     
     @Override
     public void sendSessionEvent(final String s, final Bundle bundle) {
-        MediaSessionCompatApi21.sendSessionEvent(this.mSessionObj, s, bundle);
+    Label_0018_Outer:
+        while (true) {
+            if (Build$VERSION.SDK_INT >= 23) {
+                break Label_0058;
+            }
+            int n = this.mExtraControllerCallbacks.beginBroadcast() - 1;
+        Label_0044_Outer:
+            while (true) {
+                Label_0051: {
+                    if (n < 0) {
+                        break Label_0051;
+                    }
+                    final IMediaControllerCallback mediaControllerCallback = (IMediaControllerCallback)this.mExtraControllerCallbacks.getBroadcastItem(n);
+                    while (true) {
+                        try {
+                            mediaControllerCallback.onEvent(s, bundle);
+                            --n;
+                            continue Label_0044_Outer;
+                            MediaSessionCompatApi21.sendSessionEvent(this.mSessionObj, s, bundle);
+                            return;
+                            this.mExtraControllerCallbacks.finishBroadcast();
+                            continue Label_0018_Outer;
+                        }
+                        catch (RemoteException ex) {
+                            continue;
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+            break;
+        }
     }
     
     @Override
@@ -85,6 +136,7 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
             mCallbackObj = mediaSessionCompat$Callback.mCallbackObj;
         }
         MediaSessionCompatApi21.setCallback(mSessionObj, mCallbackObj, handler);
+        mediaSessionCompat$Callback.mSessionImpl = new WeakReference<MediaSessionCompat$MediaSessionImpl>(this);
     }
     
     @Override
@@ -98,9 +150,8 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
     }
     
     @Override
-    public void setMediaButtonReceiver(final PendingIntent mMediaButtonIntent) {
-        this.mMediaButtonIntent = mMediaButtonIntent;
-        MediaSessionCompatApi21.setMediaButtonReceiver(this.mSessionObj, mMediaButtonIntent);
+    public void setMediaButtonReceiver(final PendingIntent pendingIntent) {
+        MediaSessionCompatApi21.setMediaButtonReceiver(this.mSessionObj, pendingIntent);
     }
     
     @Override
@@ -117,16 +168,55 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
     }
     
     @Override
-    public void setPlaybackState(final PlaybackStateCompat playbackStateCompat) {
-        final Object mSessionObj = this.mSessionObj;
-        Object playbackState;
-        if (playbackStateCompat == null) {
-            playbackState = null;
+    public void setPlaybackState(PlaybackStateCompat playbackState) {
+    Label_0023_Outer:
+        while (true) {
+            if (Build$VERSION.SDK_INT >= 22) {
+                break Label_0060;
+            }
+            this.mPlaybackState = playbackState;
+            int n = this.mExtraControllerCallbacks.beginBroadcast() - 1;
+        Label_0046_Outer:
+            while (true) {
+                Label_0053: {
+                    if (n < 0) {
+                        break Label_0053;
+                    }
+                    final IMediaControllerCallback mediaControllerCallback = (IMediaControllerCallback)this.mExtraControllerCallbacks.getBroadcastItem(n);
+                Block_5_Outer:
+                    while (true) {
+                        try {
+                            mediaControllerCallback.onPlaybackStateChanged(playbackState);
+                            --n;
+                            continue Label_0046_Outer;
+                            Label_0077: {
+                                playbackState = (PlaybackStateCompat)playbackState.getPlaybackState();
+                            }
+                            // iftrue(Label_0077:, playbackState != null)
+                            while (true) {
+                                while (true) {
+                                    final Object mSessionObj;
+                                    MediaSessionCompatApi21.setPlaybackState(mSessionObj, playbackState);
+                                    return;
+                                    playbackState = null;
+                                    continue Block_5_Outer;
+                                }
+                                final Object mSessionObj = this.mSessionObj;
+                                continue;
+                            }
+                            this.mExtraControllerCallbacks.finishBroadcast();
+                            continue Label_0023_Outer;
+                        }
+                        catch (RemoteException ex) {
+                            continue;
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+            break;
         }
-        else {
-            playbackState = playbackStateCompat.getPlaybackState();
-        }
-        MediaSessionCompatApi21.setPlaybackState(mSessionObj, playbackState);
     }
     
     @Override
@@ -158,11 +248,12 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
     }
     
     @Override
-    public void setRatingType(final int n) {
+    public void setRatingType(final int mRatingType) {
         if (Build$VERSION.SDK_INT < 22) {
+            this.mRatingType = mRatingType;
             return;
         }
-        MediaSessionCompatApi22.setRatingType(this.mSessionObj, n);
+        MediaSessionCompatApi22.setRatingType(this.mSessionObj, mRatingType);
     }
     
     @Override

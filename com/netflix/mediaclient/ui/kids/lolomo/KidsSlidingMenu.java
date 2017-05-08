@@ -21,20 +21,20 @@ public class KidsSlidingMenu extends StandardSlidingMenu
     
     public KidsSlidingMenu(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
         super(netflixActivity, drawerLayout, false);
-        this.notificationsDivider.setBackgroundColor(netflixActivity.getResources().getColor(2131624093));
+        this.notificationsDivider.setBackgroundColor(netflixActivity.getResources().getColor(2131689630));
         this.notificationsDivider.setVisibility(0);
-        drawerLayout.findViewById(2131690342).setVisibility(8);
-        drawerLayout.findViewById(2131690349).setVisibility(8);
-        drawerLayout.findViewById(2131690336).getLayoutParams().height = netflixActivity.getResources().getDimensionPixelSize(2131362151);
-        this.kidsItemTextColor = netflixActivity.getResources().getColor(2131624058);
+        drawerLayout.findViewById(2131755910).setVisibility(8);
+        drawerLayout.findViewById(2131755917).setVisibility(8);
+        drawerLayout.findViewById(2131755904).getLayoutParams().height = netflixActivity.getResources().getDimensionPixelSize(2131427701);
+        this.kidsItemTextColor = netflixActivity.getResources().getColor(2131689595);
         this.profileName.setTextColor(this.kidsItemTextColor);
         ViewUtils.setTextViewToBold(this.profileName);
         this.homeText.setTextColor(this.kidsItemTextColor);
         ViewUtils.setTextViewToBold(this.homeText);
-        ((FrameLayout$LayoutParams)this.genresList.getLayoutParams()).bottomMargin = (int)netflixActivity.getResources().getDimension(2131362150);
+        ((FrameLayout$LayoutParams)this.genresList.getLayoutParams()).bottomMargin = (int)netflixActivity.getResources().getDimension(2131427700);
         ViewUtils.removeShadow(this.homeText);
-        this.homeText.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131362191)));
-        drawerLayout.findViewById(2131690331).setBackgroundResource(2131624057);
+        this.homeText.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131427745)));
+        drawerLayout.findViewById(2131755899).setBackgroundResource(2131689594);
     }
     
     @Override
@@ -51,7 +51,7 @@ public class KidsSlidingMenu extends StandardSlidingMenu
             n = 0;
         }
         tv.setTypeface(typeface, n);
-        standardSlidingMenu$GenreRowHolder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131362191)));
+        standardSlidingMenu$GenreRowHolder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131427745)));
         ViewUtils.removeShadow(standardSlidingMenu$GenreRowHolder.tv);
     }
     

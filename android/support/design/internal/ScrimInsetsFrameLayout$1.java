@@ -25,7 +25,7 @@ class ScrimInsetsFrameLayout$1 implements OnApplyWindowInsetsListener
         }
         this.this$0.mInsets.set(windowInsetsCompat.getSystemWindowInsetLeft(), windowInsetsCompat.getSystemWindowInsetTop(), windowInsetsCompat.getSystemWindowInsetRight(), windowInsetsCompat.getSystemWindowInsetBottom());
         this.this$0.onInsetsChanged(windowInsetsCompat);
-        this.this$0.setWillNotDraw(this.this$0.mInsets.isEmpty() || this.this$0.mInsetForeground == null);
+        this.this$0.setWillNotDraw(!windowInsetsCompat.hasSystemWindowInsets() || this.this$0.mInsetForeground == null);
         ViewCompat.postInvalidateOnAnimation((View)this.this$0);
         return windowInsetsCompat.consumeSystemWindowInsets();
     }

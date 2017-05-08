@@ -9,6 +9,10 @@ import android.app.Notification;
 public class NotificationCompat$BuilderExtender
 {
     public Notification build(final NotificationCompat$Builder notificationCompat$Builder, final NotificationBuilderWithBuilderAccessor notificationBuilderWithBuilderAccessor) {
-        return notificationBuilderWithBuilderAccessor.build();
+        final Notification build = notificationBuilderWithBuilderAccessor.build();
+        if (notificationCompat$Builder.mContentView != null) {
+            build.contentView = notificationCompat$Builder.mContentView;
+        }
+        return build;
     }
 }

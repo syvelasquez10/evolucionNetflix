@@ -13,13 +13,14 @@ import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import java.io.File;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface IBrowseManager
 {
     boolean addToQueue(final String p0, final VideoType p1, final int p2, final boolean p3, final String p4, final ManagerCallback p5);
     
-    void dumpCacheToDisk();
+    void dumpCacheToDisk(final File p0);
     
     void dumpHomeLoLoMosAndVideos(final String p0, final String p1);
     

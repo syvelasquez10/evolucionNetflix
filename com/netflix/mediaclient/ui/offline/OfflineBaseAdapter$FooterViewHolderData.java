@@ -16,6 +16,6 @@ public class OfflineBaseAdapter$FooterViewHolderData extends RecyclerView$ViewHo
     public OfflineBaseAdapter$FooterViewHolderData(final OfflineBaseAdapter this$0, final View view) {
         this.this$0 = this$0;
         super(view);
-        this.allProfilesButton = (TextView)view.findViewById(2131690058);
+        this.allProfilesButton = (TextView)view.findViewById(2131755622);
     }
 }

@@ -27,15 +27,15 @@ class DownloadButton$1 implements View$OnLongClickListener
             case 1:
             case 2:
             case 3: {
-                charSequence = this.this$0.getResources().getString(2131231312);
+                charSequence = this.this$0.getResources().getString(2131296868);
                 break;
             }
             case 4: {
-                charSequence = this.this$0.getResources().getString(2131231317);
+                charSequence = this.this$0.getResources().getString(2131296873);
                 break;
             }
             case 5: {
-                charSequence = this.this$0.getResources().getString(2131231320);
+                charSequence = this.this$0.getResources().getString(2131296876);
                 break;
             }
             case 6: {
@@ -43,7 +43,7 @@ class DownloadButton$1 implements View$OnLongClickListener
                 break;
             }
             case 7: {
-                charSequence = this.this$0.getResources().getString(2131230925);
+                charSequence = this.this$0.getResources().getString(2131296477);
                 break;
             }
         }

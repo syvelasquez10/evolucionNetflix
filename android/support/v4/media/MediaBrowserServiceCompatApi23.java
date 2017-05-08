@@ -5,7 +5,9 @@
 package android.support.v4.media;
 
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class MediaBrowserServiceCompatApi23
 {
     public static Object createService(final Context context, final MediaBrowserServiceCompatApi23$ServiceCompatProxy mediaBrowserServiceCompatApi23$ServiceCompatProxy) {

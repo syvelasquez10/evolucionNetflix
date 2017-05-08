@@ -10,16 +10,17 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.GsonBuilder;
 import java.io.Writer;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.model.branches.MementoVideoSwatch;
 import java.util.LinkedHashSet;
 import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
+import java.io.File;
 import com.fasterxml.jackson.core.JsonFactory;
 import java.io.Reader;
 import java.util.Date;
@@ -35,6 +36,8 @@ import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.mediaclient.service.NetflixService;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.Map;
@@ -96,7 +99,11 @@ abstract class CachedModelProxy$CmpTask implements Runnable
         if (Log.isLoggable()) {
             Log.v("CachedModelProxy", "Creating remote request for task " + this.getClass().getSimpleName() + " with pqls: " + list);
         }
-        return new CachedModelProxy$CmpTask$1(this, (Context)this.this$0.getService(), list);
+        final CachedModelProxy$CmpTask$1 cachedModelProxy$CmpTask$1 = new CachedModelProxy$CmpTask$1(this, (Context)this.this$0.getService(), list);
+        if (this.getTag() != null) {
+            cachedModelProxy$CmpTask$1.setTag(this.getTag());
+        }
+        return cachedModelProxy$CmpTask$1;
     }
     
     private void doTask() {
@@ -140,7 +147,7 @@ abstract class CachedModelProxy$CmpTask implements Runnable
         final BrowseAgentCallback access$000 = this.this$0.createHandlerWrapper(this.callback);
         if (this.getResult == null && !this.shouldUseCallMethod() && !this.shouldCustomHandleResponse() && !this.shouldSkipCache()) {
             Log.w("CachedModelProxy", "GetResult is null - shouldn't happen - forcing failure");
-            this.handleFailure(access$000, CommonStatus.INTERNAL_ERROR);
+            this.handleFailure(access$000, CommonStatus.INT_ERR_CMP_RESP_NULL);
         }
         else {
             this.fetchResultsAndCallbackForSuccess(access$000, this.getResult);
@@ -167,12 +174,22 @@ abstract class CachedModelProxy$CmpTask implements Runnable
         return null;
     }
     
+    protected Object getTag() {
+        return null;
+    }
+    
     protected VolleyError handleJsonError(final JsonObject jsonObject) {
         return new FalkorException("error found in json response - " + FalkorParseUtils.getErrorMessage(jsonObject, "CachedModelProxy"));
     }
     
     protected boolean isAllDataLocalToCache() {
         return this.isAllDataLocalToCache;
+    }
+    
+    protected void onTaskCompleted() {
+    }
+    
+    protected void onTaskStarted() {
     }
     
     @Override
@@ -186,7 +203,7 @@ abstract class CachedModelProxy$CmpTask implements Runnable
         }
         catch (Exception ex) {
             Log.handleException("CachedModelProxy", ex);
-            final NetflixStatus netflixStatus = new NetflixStatus(StatusCode.INTERNAL_ERROR);
+            final NetflixStatus netflixStatus = new NetflixStatus(StatusCode.INT_ERR_CMP);
             netflixStatus.setDisplayMessage(false);
             netflixStatus.setMessage(ex.getMessage());
             this.handleFailure(this.this$0.createHandlerWrapper(this.callback), netflixStatus);

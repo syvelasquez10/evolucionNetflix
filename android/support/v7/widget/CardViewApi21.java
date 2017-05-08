@@ -8,7 +8,9 @@ import android.view.View;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class CardViewApi21 implements CardViewImpl
 {
     private RoundRectDrawable getCardBackground(final CardViewDelegate cardViewDelegate) {

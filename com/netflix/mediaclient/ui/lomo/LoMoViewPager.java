@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.lomo;
 import android.view.ViewParent;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
@@ -65,7 +65,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         ThreadUtils.assertOnMain();
         this.handler = new Handler();
         this.pageIndicator = pageIndicator;
-        this.setAdapter(this.adapter = new LoMoViewPagerAdapter(this, serviceManager, objectRecycler$ViewRecycler, view, b));
+        this.setAdapter((PagerAdapter)(this.adapter = new LoMoViewPagerAdapter(this, serviceManager, objectRecycler$ViewRecycler, view, b)));
         if (BrowseExperience.showKidsExperience()) {
             this.setTouchSlop((int)(this.getTouchSlop() * 0.75f));
         }
@@ -161,21 +161,16 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     private void setPagesToOverlap(final boolean b, final LoMoType loMoType, final LoMoViewPagerAdapter$Type loMoViewPagerAdapter$Type) {
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         final LoMoUtils$LoMoWidthType standard = LoMoUtils$LoMoWidthType.STANDARD;
-        LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType = null;
-        Label_0031: {
-            if (loMoViewPagerAdapter$Type == LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN && BrowseExperience.shouldShowLargePeakForKidsTopTen()) {
-                loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW;
-            }
-            else if (BrowseExperience.showKidsExperience() && loMoType == LoMoType.CHARACTERS) {
-                loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW;
-            }
-            else {
-                if (!BrowseExperience.isKubrick()) {
-                    loMoUtils$LoMoWidthType = standard;
-                    if (!BrowseExperience.isDisplayPageRefresh()) {
-                        break Label_0031;
-                    }
-                }
+        LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType;
+        if (loMoViewPagerAdapter$Type == LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN && BrowseExperience.shouldShowLargePeakForKidsTopTen()) {
+            loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW;
+        }
+        else if (BrowseExperience.showKidsExperience() && loMoType == LoMoType.CHARACTERS) {
+            loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW;
+        }
+        else {
+            loMoUtils$LoMoWidthType = standard;
+            if (BrowseExperience.isDisplayPageRefresh()) {
                 loMoUtils$LoMoWidthType = standard;
                 if (loMoType == LoMoType.CONTINUE_WATCHING) {
                     loMoUtils$LoMoWidthType = BarkerUtils.getCwGalleryWidthType(netflixActivity);
@@ -277,7 +272,6 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         return super.onInterceptTouchEvent(motionEvent);
     }
     
-    @Override
     protected void onPageScrolled(final int n, final float n2, final int n3) {
         super.onPageScrolled(n, n2, n3);
         this.adapter.onPageScrolled(n, n2, n3);
@@ -301,7 +295,6 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     }
     
     @SuppressLint({ "ClickableViewAccessibility" })
-    @Override
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         this.handleTouchEvent(motionEvent);
         return super.onTouchEvent(motionEvent);
@@ -338,19 +331,16 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         this.adapter.trackPresentation(n);
     }
     
-    @Override
     public void setCurrentItem(final int currentItem) {
         super.setCurrentItem(currentItem);
         this.onCurrentItemSet(currentItem);
     }
     
-    @Override
     public void setCurrentItem(final int n, final boolean b) {
         super.setCurrentItem(n, b);
         this.onCurrentItemSet(n);
     }
     
-    @Override
     public void setCurrentItem(final int n, final boolean b, final boolean b2) {
         super.setCurrentItem(n, b, b2);
         this.onCurrentItemSet(n);

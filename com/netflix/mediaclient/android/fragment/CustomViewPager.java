@@ -23,13 +23,13 @@ public class CustomViewPager extends ViewPager
     
     public CustomViewPager(final Context context) {
         super(context);
-        this.onPageChangeListener = new CustomViewPager$1(this);
+        this.onPageChangeListener = (ViewPager$OnPageChangeListener)new CustomViewPager$1(this);
         this.init();
     }
     
     public CustomViewPager(final Context context, final AttributeSet set) {
         super(context, set);
-        this.onPageChangeListener = new CustomViewPager$1(this);
+        this.onPageChangeListener = (ViewPager$OnPageChangeListener)new CustomViewPager$1(this);
         this.init();
     }
     
@@ -43,14 +43,13 @@ public class CustomViewPager extends ViewPager
         Log.v("CustomViewPager", "Created view pager");
     }
     
-    @Override
     protected ViewPager$ItemInfo addNewItem(final int position, final int n) {
         if (!LocalizationUtils.isCurrentLocaleRTL()) {
             return super.addNewItem(position, n);
         }
         final ViewPager$ItemInfo viewPager$ItemInfo = new ViewPager$ItemInfo();
         viewPager$ItemInfo.position = position;
-        viewPager$ItemInfo.object = this.getAdapter().instantiateItem(this, position);
+        viewPager$ItemInfo.object = this.getAdapter().instantiateItem((ViewGroup)this, position);
         viewPager$ItemInfo.widthFactor = this.getAdapter().getPageWidth(position);
         if (viewPager$ItemInfo.object instanceof LoadingView && LocalizationUtils.isCurrentLocaleRTL()) {
             if (Log.isLoggable()) {
@@ -74,7 +73,6 @@ public class CustomViewPager extends ViewPager
         return this.onPageChangeListener;
     }
     
-    @Override
     public boolean onInterceptTouchEvent(final MotionEvent motionEvent) {
         final boolean onInterceptTouchEvent = super.onInterceptTouchEvent(motionEvent);
         if (onInterceptTouchEvent) {

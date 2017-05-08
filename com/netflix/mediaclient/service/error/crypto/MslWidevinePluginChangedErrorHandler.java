@@ -25,6 +25,6 @@ class MslWidevinePluginChangedErrorHandler extends BaseMslCryptoErrorHandler
     public ErrorDescriptor handle(final Context context, final Throwable t) {
         Log.d(MslWidevinePluginChangedErrorHandler.TAG, "MediaDrm Widevine plugin changed, unregister device and logout user");
         this.logHandledException(CryptoErrorManager.createMediaDrmErrorMessage(this.getStatusCode(), t));
-        return new WidevineErrorDescriptor(context, this.getStatusCode(), this.getForceStopTask(context), 2131231081);
+        return new WidevineErrorDescriptor(context, this.getStatusCode(), this.getForceStopTask(context), 2131296637);
     }
 }

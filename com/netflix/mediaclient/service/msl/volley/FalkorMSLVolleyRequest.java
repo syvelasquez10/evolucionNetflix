@@ -11,9 +11,9 @@ import com.android.volley.NetworkResponse;
 import com.netflix.msl.client.ApiHttpWrapper;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
-import com.netflix.mediaclient.StatusCode;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.util.VolleyUtils;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.MultiValuedMap;
@@ -161,7 +161,7 @@ public abstract class FalkorMSLVolleyRequest<T> extends MSLVolleyRequest<T>
     }
     
     protected boolean handleNotAuthorized(final FalkorException ex) {
-        final NetflixStatus status = VolleyUtils.getStatus(ex, this.mErrorLogger);
+        final NetflixStatus status = VolleyUtils.getStatus(ex, this.mErrorLogger, StatusCode.INT_ERR_FALKOR_EXCEPTION);
         if (status == null || status.getStatusCode() != StatusCode.USER_NOT_AUTHORIZED) {
             Log.d("FalkorMSLVolleyRequest", "handleNotAuthorized:: regular API failure");
             return false;

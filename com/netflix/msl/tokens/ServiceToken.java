@@ -596,6 +596,7 @@ public class ServiceToken implements JSONString
                             break Label_0296;
                         }
                         long serialNumber = masterToken.getSerialNumber();
+                    Label_0095_Outer:
                         while (true) {
                             this.mtSerialNumber = serialNumber;
                             Label_0304: {
@@ -603,56 +604,59 @@ public class ServiceToken implements JSONString
                                     break Label_0304;
                                 }
                                 long serialNumber2 = userIdToken.getSerialNumber();
-                                this.uitSerialNumber = serialNumber2;
-                                this.servicedata = servicedata;
-                                this.encrypted = encrypted;
-                                byte[] encrypt = compress;
-                                Label_0135: {
-                                    if (!encrypted) {
-                                        break Label_0135;
-                                    }
-                                    encrypt = compress;
-                                    try {
-                                        if (compress.length > 0) {
-                                            encrypt = cryptoContext.encrypt(compress);
+                                while (true) {
+                                    this.uitSerialNumber = serialNumber2;
+                                    this.servicedata = servicedata;
+                                    this.encrypted = encrypted;
+                                    byte[] encrypt = compress;
+                                    Label_0135: {
+                                        if (!encrypted) {
+                                            break Label_0135;
                                         }
+                                        encrypt = compress;
                                         try {
-                                            final JSONObject jsonObject = new JSONObject();
-                                            jsonObject.put("name", this.name);
-                                            if (this.mtSerialNumber != -1L) {
-                                                jsonObject.put("mtserialnumber", this.mtSerialNumber);
+                                            if (compress.length > 0) {
+                                                encrypt = cryptoContext.encrypt(compress);
                                             }
-                                            if (this.uitSerialNumber != -1L) {
-                                                jsonObject.put("uitserialnumber", this.uitSerialNumber);
+                                            try {
+                                                final JSONObject jsonObject = new JSONObject();
+                                                jsonObject.put("name", this.name);
+                                                if (this.mtSerialNumber != -1L) {
+                                                    jsonObject.put("mtserialnumber", this.mtSerialNumber);
+                                                }
+                                                if (this.uitSerialNumber != -1L) {
+                                                    jsonObject.put("uitserialnumber", this.uitSerialNumber);
+                                                }
+                                                jsonObject.put("encrypted", this.encrypted);
+                                                if (this.compressionAlgo != null) {
+                                                    jsonObject.put("compressionalgo", this.compressionAlgo.name());
+                                                }
+                                                jsonObject.put("servicedata", Base64.encode(encrypt));
+                                                this.tokendata = jsonObject.toString().getBytes(MslConstants.DEFAULT_CHARSET);
+                                                this.signature = cryptoContext.sign(this.tokendata);
+                                                this.verified = true;
+                                                return;
+                                                serialNumber = -1L;
+                                                continue Label_0095_Outer;
+                                                this.compressionAlgo = null;
+                                                compress = servicedata;
+                                                continue Label_0077_Outer;
+                                                serialNumber2 = -1L;
+                                                continue;
+                                                this.compressionAlgo = null;
+                                                compress = servicedata;
                                             }
-                                            jsonObject.put("encrypted", this.encrypted);
-                                            if (this.compressionAlgo != null) {
-                                                jsonObject.put("compressionalgo", this.compressionAlgo.name());
+                                            catch (JSONException ex) {
+                                                throw new MslEncodingException(MslError.JSON_ENCODE_ERROR, "servicetoken", ex).setMasterToken(masterToken).setUserIdToken(userIdToken);
                                             }
-                                            jsonObject.put("servicedata", Base64.encode(encrypt));
-                                            this.tokendata = jsonObject.toString().getBytes(MslConstants.DEFAULT_CHARSET);
-                                            this.signature = cryptoContext.sign(this.tokendata);
-                                            this.verified = true;
-                                            return;
-                                            this.compressionAlgo = null;
-                                            compress = servicedata;
-                                            continue Label_0077_Outer;
-                                            this.compressionAlgo = null;
-                                            compress = servicedata;
-                                            continue Label_0077_Outer;
-                                            serialNumber = -1L;
-                                            continue;
-                                            serialNumber2 = -1L;
                                         }
-                                        catch (JSONException ex) {
-                                            throw new MslEncodingException(MslError.JSON_ENCODE_ERROR, "servicetoken", ex).setMasterToken(masterToken).setUserIdToken(userIdToken);
+                                        catch (MslCryptoException ex2) {
+                                            ex2.setMasterToken(masterToken);
+                                            ex2.setUserIdToken(userIdToken);
+                                            throw ex2;
                                         }
                                     }
-                                    catch (MslCryptoException ex2) {
-                                        ex2.setMasterToken(masterToken);
-                                        ex2.setUserIdToken(userIdToken);
-                                        throw ex2;
-                                    }
+                                    break;
                                 }
                             }
                             break;

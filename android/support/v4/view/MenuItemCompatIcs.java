@@ -6,7 +6,9 @@ package android.support.v4.view;
 
 import android.view.MenuItem$OnActionExpandListener;
 import android.view.MenuItem;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class MenuItemCompatIcs
 {
     public static boolean collapseActionView(final MenuItem menuItem) {

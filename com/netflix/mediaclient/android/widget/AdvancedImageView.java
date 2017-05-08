@@ -19,8 +19,9 @@ import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import com.makeramen.RoundedImageView;
 
-public class AdvancedImageView extends LoggingImageView
+public class AdvancedImageView extends RoundedImageView
 {
     private static final String TAG = "AdvancedImageView";
     private int defaultForegroundResId;
@@ -29,21 +30,21 @@ public class AdvancedImageView extends LoggingImageView
     
     public AdvancedImageView(final Context context) {
         super(context);
-        this.defaultForegroundResId = 2130837985;
+        this.defaultForegroundResId = 2130838129;
         this.pressedHandler = null;
         this.init(null);
     }
     
     public AdvancedImageView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.defaultForegroundResId = 2130837985;
+        this.defaultForegroundResId = 2130838129;
         this.pressedHandler = null;
         this.init(set);
     }
     
     public AdvancedImageView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.defaultForegroundResId = 2130837985;
+        this.defaultForegroundResId = 2130838129;
         this.pressedHandler = null;
         this.init(set);
     }
@@ -69,9 +70,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     protected void dispatchSetPressed(final boolean b) {
-        if (this.shouldDispatchToPressHandler()) {
-            this.pressedHandler.handleSetPressed(b);
-        }
+        this.pressedHandler.handleSetPressed(b);
         super.dispatchSetPressed(b);
     }
     
@@ -95,7 +94,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public AdvancedImageView$ImageLoaderInfo getImageLoaderInfo() {
-        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131689488);
+        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131755024);
     }
     
     @Override
@@ -105,6 +104,10 @@ public class AdvancedImageView extends LoggingImageView
     
     public PressedStateHandler getPressedStateHandler() {
         return this.pressedHandler;
+    }
+    
+    public boolean isImageLoaded() {
+        return this.getImageLoaderInfo() != null && this.getImageLoaderInfo().loaded;
     }
     
     public void jumpDrawablesToCurrentState() {
@@ -179,15 +182,11 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public void setImageLoaderInfo(final AdvancedImageView$ImageLoaderInfo advancedImageView$ImageLoaderInfo) {
-        this.setTag(2131689488, (Object)advancedImageView$ImageLoaderInfo);
+        this.setTag(2131755024, (Object)advancedImageView$ImageLoaderInfo);
     }
     
     public void setPressedStateHandlerEnabled(final boolean enabled) {
         this.pressedHandler.setEnabled(enabled);
-    }
-    
-    protected boolean shouldDispatchToPressHandler() {
-        return true;
     }
     
     protected boolean verifyDrawable(final Drawable drawable) {

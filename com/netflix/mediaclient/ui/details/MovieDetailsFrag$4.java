@@ -11,7 +11,7 @@ import com.netflix.mediaclient.android.widget.VideoView;
 import android.view.View;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import com.netflix.mediaclient.ui.mdx.MementoMovieDetailsActivity;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 
@@ -32,7 +32,7 @@ class MovieDetailsFrag$4 implements RecyclerViewHeaderAdapter$IViewCreator
             detailsPageContentWidth = BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity());
         }
         else {
-            detailsPageContentWidth = DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.recyclerView.getPaddingLeft() - this.this$0.recyclerView.getPaddingRight() - (this.this$0.numColumns + 1) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362082);
+            detailsPageContentWidth = DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.recyclerView.getPaddingLeft() - this.this$0.recyclerView.getPaddingRight() - (this.this$0.numColumns + 1) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427629);
         }
         this.width = detailsPageContentWidth / this.this$0.numColumns;
         this.height = (int)(this.width * 1.43f);

@@ -6,7 +6,9 @@ package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 import java.util.List;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class AccessibilityNodeInfoCompatJellybeanMr2
 {
     public static List<Object> findAccessibilityNodeInfosByViewId(final Object o, final String s) {

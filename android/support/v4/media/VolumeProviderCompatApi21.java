@@ -5,7 +5,9 @@
 package android.support.v4.media;
 
 import android.media.VolumeProvider;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class VolumeProviderCompatApi21
 {
     public static Object createVolumeProvider(final int n, final int n2, final int n3, final VolumeProviderCompatApi21$Delegate volumeProviderCompatApi21$Delegate) {

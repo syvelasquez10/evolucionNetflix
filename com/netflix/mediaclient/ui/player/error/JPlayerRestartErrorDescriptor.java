@@ -29,7 +29,7 @@ public class JPlayerRestartErrorDescriptor extends PlaybackErrorDescriptor
     }
     
     static JPlayerRestartErrorDescriptor build(final PlayerFragment playerFragment, final Error error) {
-        return new JPlayerRestartErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131230811), null, new RestartApplicationAction(playerFragment.getActivity()), playerFragment.getString(2131231077), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new JPlayerRestartErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131296361), null, new RestartApplicationAction(playerFragment.getActivity()), playerFragment.getString(2131296633), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     static boolean isValid(final Error error, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {

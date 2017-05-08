@@ -25,7 +25,7 @@ public abstract class SessionEvent extends Event
     
     public SessionEvent(final String sessionName) {
         if (StringUtils.isEmpty(sessionName)) {
-            throw new IllegalArgumentException("Seasssion name can not be null!");
+            throw new IllegalArgumentException("Session name can not be null!");
         }
         this.category = "uiQOE";
         this.sessionName = sessionName;

@@ -12,7 +12,7 @@ class BidiFormatter$DirectionalityEstimator
     private final boolean isHtml;
     private char lastChar;
     private final int length;
-    private final String text;
+    private final CharSequence text;
     
     static {
         DIR_TYPE_CACHE = new byte[1792];
@@ -21,7 +21,7 @@ class BidiFormatter$DirectionalityEstimator
         }
     }
     
-    BidiFormatter$DirectionalityEstimator(final String text, final boolean isHtml) {
+    BidiFormatter$DirectionalityEstimator(final CharSequence text, final boolean isHtml) {
         this.text = text;
         this.isHtml = isHtml;
         this.length = text.length();
@@ -37,7 +37,7 @@ class BidiFormatter$DirectionalityEstimator
     private byte skipEntityBackward() {
         final int charIndex = this.charIndex;
         while (this.charIndex > 0) {
-            final String text = this.text;
+            final CharSequence text = this.text;
             final int charIndex2 = this.charIndex - 1;
             this.charIndex = charIndex2;
             this.lastChar = text.charAt(charIndex2);
@@ -61,7 +61,7 @@ class BidiFormatter$DirectionalityEstimator
     private byte skipTagBackward() {
         final int charIndex = this.charIndex;
         while (this.charIndex > 0) {
-            final String text = this.text;
+            final CharSequence text = this.text;
             final int charIndex2 = this.charIndex - 1;
             this.charIndex = charIndex2;
             this.lastChar = text.charAt(charIndex2);
@@ -76,7 +76,7 @@ class BidiFormatter$DirectionalityEstimator
             }
             final char lastChar = this.lastChar;
             while (this.charIndex > 0) {
-                final String text2 = this.text;
+                final CharSequence text2 = this.text;
                 final int charIndex3 = this.charIndex - 1;
                 this.charIndex = charIndex3;
                 if ((this.lastChar = text2.charAt(charIndex3)) != lastChar) {

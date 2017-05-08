@@ -10,12 +10,12 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableView
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.lomo.CwView;
+import android.view.View;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.media.BookmarkStore;
 import android.content.Context;
 import android.text.format.Formatter;
 import com.netflix.mediaclient.util.TimeUtils;
-import android.view.View;
-import com.netflix.mediaclient.util.ViewUtils;
 import android.support.v7.widget.RecyclerView$ViewHolder;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineAdapterData;
@@ -97,17 +97,11 @@ public class OfflineEpisodesAdapter extends OfflineBaseAdapter
         final OfflineBaseAdapter$OfflineViewHolderData offlineBaseAdapter$OfflineViewHolderData = (OfflineBaseAdapter$OfflineViewHolderData)recyclerView$ViewHolder;
         final RealmVideoDetails realmVideoDetails = this.episodesArray[n];
         final boolean longClickable = realmVideoDetails.getType() == VideoType.EPISODE;
-        ViewUtils.setVisibleOrInvisible((View)offlineBaseAdapter$OfflineViewHolderData.info, longClickable);
-        ViewUtils.setVisibleOrInvisible((View)offlineBaseAdapter$OfflineViewHolderData.profileName, !longClickable);
-        ViewUtils.setVisibleOrInvisible((View)offlineBaseAdapter$OfflineViewHolderData.title, longClickable);
-        ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.showIndicator, false);
-        ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.downloadButton, longClickable);
-        ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.boxShot, longClickable);
         boolean fullyDownloadedAndWatchable;
         if (longClickable) {
             final OfflinePlayableViewData offlinePlayableViewData = this.mOfflineAgent.getLatestOfflinePlayableList().getOfflinePlayableViewData(realmVideoDetails.getId());
             if (offlinePlayableViewData != null) {
-                offlineBaseAdapter$OfflineViewHolderData.info.setText((CharSequence)this.mActivity.getString(2131231167, new Object[] { this.mActivity.getResources().getString(2131231164, new Object[] { TimeUtils.convertSecondsToMinutes(realmVideoDetails.getPlayable().getRuntime()) }), Formatter.formatShortFileSize((Context)this.mActivity, offlinePlayableViewData.getTotalEstimatedSpace()) }));
+                offlineBaseAdapter$OfflineViewHolderData.info.setText((CharSequence)this.mActivity.getString(2131296723, new Object[] { this.mActivity.getResources().getString(2131296720, new Object[] { TimeUtils.convertSecondsToMinutes(realmVideoDetails.getPlayable().getRuntime()) }), Formatter.formatShortFileSize((Context)this.mActivity, offlinePlayableViewData.getTotalEstimatedSpace()) }));
                 if (offlinePlayableViewData.getPercentageDownloaded() < 100) {
                     offlineBaseAdapter$OfflineViewHolderData.downloadButton.setProgress(offlinePlayableViewData.getPercentageDownloaded());
                 }
@@ -119,8 +113,6 @@ public class OfflineEpisodesAdapter extends OfflineBaseAdapter
                 }
                 fullyDownloadedAndWatchable = false;
             }
-            offlineBaseAdapter$OfflineViewHolderData.itemView.getLayoutParams().height = (int)this.mActivity.getResources().getDimension(2131362277);
-            offlineBaseAdapter$OfflineViewHolderData.boxShot.getLayoutParams().width = (int)this.mActivity.getResources().getDimension(2131362276);
             offlineBaseAdapter$OfflineViewHolderData.title.setText((CharSequence)String.format("%d. %s", realmVideoDetails.getPlayable().getEpisodeNumber(), realmVideoDetails.getTitle()));
             offlineBaseAdapter$OfflineViewHolderData.downloadButton.setStateFromPlayable(realmVideoDetails.getPlayable(), this.mActivity);
             PlaybackBookmark bookmark;
@@ -137,11 +129,16 @@ public class OfflineEpisodesAdapter extends OfflineBaseAdapter
                 offlineBaseAdapter$OfflineViewHolderData.progress.setProgress(CwView.calculateProgress(realmVideoDetails.getPlayable().getRuntime(), bookmark.mBookmarkInSecond));
             }
             NetflixActivity.getImageLoader((Context)this.mActivity).showImg(offlineBaseAdapter$OfflineViewHolderData.boxShot, realmVideoDetails.getRealmHorzDispUrl((Context)this.mActivity), IClientLogging$AssetType.boxArt, "boxart", ImageLoader$StaticImgConfig.DARK, true);
+            offlineBaseAdapter$OfflineViewHolderData.profileName.setText((CharSequence)null);
+            offlineBaseAdapter$OfflineViewHolderData.itemHeader.setVisibility(8);
+            offlineBaseAdapter$OfflineViewHolderData.profileAvatar.setVisibility(0);
+            offlineBaseAdapter$OfflineViewHolderData.itemContent.setVisibility(0);
         }
         else {
-            offlineBaseAdapter$OfflineViewHolderData.itemView.getLayoutParams().height = (int)this.mActivity.getResources().getDimension(2131362272);
             offlineBaseAdapter$OfflineViewHolderData.profileName.setText((CharSequence)realmVideoDetails.getTitle());
-            ViewUtils.setVisibleOrGone((View)offlineBaseAdapter$OfflineViewHolderData.progress, false);
+            offlineBaseAdapter$OfflineViewHolderData.itemHeader.setVisibility(0);
+            offlineBaseAdapter$OfflineViewHolderData.profileAvatar.setVisibility(8);
+            offlineBaseAdapter$OfflineViewHolderData.itemContent.setVisibility(8);
             fullyDownloadedAndWatchable = false;
         }
         this.applyColorScheme(offlineBaseAdapter$OfflineViewHolderData);

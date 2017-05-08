@@ -6,7 +6,9 @@ package android.support.v4.app;
 
 import android.os.IBinder;
 import android.os.Bundle;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class BundleCompatJellybeanMR2
 {
     public static IBinder getBinder(final Bundle bundle, final String s) {

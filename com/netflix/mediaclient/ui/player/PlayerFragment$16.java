@@ -16,7 +16,7 @@ class PlayerFragment$16 implements Runnable
     
     @Override
     public void run() {
-        Log.d("PlayerFragment", "Playback canceled when not longer on WiFi");
+        Log.d("PlayerFragment", "pause has timed out, exit playback");
         this.this$0.cleanupAndExit();
     }
 }

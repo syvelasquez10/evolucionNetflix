@@ -7,7 +7,9 @@ package android.support.v4.widget;
 import android.util.Log;
 import android.widget.PopupWindow;
 import java.lang.reflect.Field;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class PopupWindowCompatApi21
 {
     private static final String TAG = "PopupWindowCompatApi21";

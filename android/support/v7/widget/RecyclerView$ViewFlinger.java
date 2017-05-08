@@ -8,8 +8,8 @@ import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.view.View$MeasureSpec;
+import android.view.Display;
 import android.view.FocusFinder;
-import android.view.ViewParent;
 import android.graphics.Canvas;
 import android.os.Parcelable;
 import android.util.SparseArray;
@@ -20,6 +20,7 @@ import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.view.accessibility.AccessibilityEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import android.view.ViewParent;
 import android.view.ViewGroup$LayoutParams;
 import android.content.res.TypedArray;
 import android.support.v7.recyclerview.R$styleable;
@@ -49,7 +50,7 @@ import android.view.animation.Interpolator;
 class RecyclerView$ViewFlinger implements Runnable
 {
     private boolean mEatRunOnAnimationRequest;
-    private Interpolator mInterpolator;
+    Interpolator mInterpolator;
     private int mLastFlingX;
     private int mLastFlingY;
     private boolean mReSchedulePostAnimationCallback;
@@ -145,7 +146,7 @@ class RecyclerView$ViewFlinger implements Runnable
         this.this$0.consumePendingUpdateOperations();
         final ScrollerCompat mScroller = this.mScroller;
         final RecyclerView$SmoothScroller mSmoothScroller = this.this$0.mLayout.mSmoothScroller;
-        Label_0618: {
+        Label_0634: {
             if (mScroller.computeScrollOffset()) {
                 final int currX = mScroller.getCurrX();
                 final int currY = mScroller.getCurrY();
@@ -162,9 +163,9 @@ class RecyclerView$ViewFlinger implements Runnable
                 int n7 = 0;
                 int n8 = 0;
                 while (true) {
-                    Label_0723: {
+                    Label_0739: {
                         if (this.this$0.mAdapter == null) {
-                            break Label_0723;
+                            break Label_0739;
                         }
                         this.this$0.eatRequestLayout();
                         this.this$0.onEnterLayoutOrScroll();
@@ -186,21 +187,21 @@ class RecyclerView$ViewFlinger implements Runnable
                         n5 = n6;
                         n3 = scrollHorizontallyBy;
                         if (mSmoothScroller == null) {
-                            break Label_0723;
+                            break Label_0739;
                         }
                         n7 = n8;
                         n4 = scrollVerticallyBy;
                         n5 = n6;
                         n3 = scrollHorizontallyBy;
                         if (mSmoothScroller.isPendingInitialRun()) {
-                            break Label_0723;
+                            break Label_0739;
                         }
                         n7 = n8;
                         n4 = scrollVerticallyBy;
                         n5 = n6;
                         n3 = scrollHorizontallyBy;
                         if (!mSmoothScroller.isRunning()) {
-                            break Label_0723;
+                            break Label_0739;
                         }
                         final int itemCount = this.this$0.mState.getItemCount();
                         int n9;
@@ -217,7 +218,7 @@ class RecyclerView$ViewFlinger implements Runnable
                                 n5 = n6;
                                 n4 = scrollVerticallyBy;
                                 n7 = n8;
-                                break Label_0723;
+                                break Label_0739;
                             }
                             mSmoothScroller.setTargetPosition(itemCount - 1);
                             mSmoothScroller.onAnimation(n - n6, n2 - n8);
@@ -300,10 +301,18 @@ class RecyclerView$ViewFlinger implements Runnable
                         }
                         if (mScroller.isFinished() || !b3) {
                             this.this$0.setScrollState(0);
-                            break Label_0618;
+                            if (RecyclerView.ALLOW_THREAD_GAP_WORK) {
+                                this.this$0.mPrefetchRegistry.clearPrefetchPositions();
+                            }
+                            break Label_0634;
                         }
-                        this.postOnAnimation();
-                        break Label_0618;
+                        else {
+                            this.postOnAnimation();
+                            if (this.this$0.mGapWorker != null) {
+                                this.this$0.mGapWorker.postFromTraversal(this.this$0, n, n2);
+                            }
+                            break Label_0634;
+                        }
                     }
                     int n10 = n5;
                     n8 = n7;
@@ -346,6 +355,15 @@ class RecyclerView$ViewFlinger implements Runnable
         this.mLastFlingX = 0;
         this.mScroller.startScroll(0, 0, n, n2, n3);
         this.postOnAnimation();
+    }
+    
+    public void smoothScrollBy(final int n, final int n2, final Interpolator interpolator) {
+        final int computeScrollDuration = this.computeScrollDuration(n, n2, 0, 0);
+        Interpolator sQuinticInterpolator = interpolator;
+        if (interpolator == null) {
+            sQuinticInterpolator = RecyclerView.sQuinticInterpolator;
+        }
+        this.smoothScrollBy(n, n2, computeScrollDuration, sQuinticInterpolator);
     }
     
     public void stop() {

@@ -16,10 +16,10 @@ import android.view.View;
 class AppCompatBackgroundHelper
 {
     private int mBackgroundResId;
-    private AppCompatBackgroundHelper$BackgroundTintInfo mBackgroundTint;
+    private TintInfo mBackgroundTint;
     private final AppCompatDrawableManager mDrawableManager;
-    private AppCompatBackgroundHelper$BackgroundTintInfo mInternalBackgroundTint;
-    private AppCompatBackgroundHelper$BackgroundTintInfo mTmpInfo;
+    private TintInfo mInternalBackgroundTint;
+    private TintInfo mTmpInfo;
     private final View mView;
     
     AppCompatBackgroundHelper(final View mView) {
@@ -30,9 +30,9 @@ class AppCompatBackgroundHelper
     
     private boolean applyFrameworkTintUsingColorFilter(final Drawable drawable) {
         if (this.mTmpInfo == null) {
-            this.mTmpInfo = new AppCompatBackgroundHelper$BackgroundTintInfo();
+            this.mTmpInfo = new TintInfo();
         }
-        final AppCompatBackgroundHelper$BackgroundTintInfo mTmpInfo = this.mTmpInfo;
+        final TintInfo mTmpInfo = this.mTmpInfo;
         mTmpInfo.clear();
         final ColorStateList backgroundTintList = ViewCompat.getBackgroundTintList(this.mView);
         if (backgroundTintList != null) {
@@ -51,26 +51,28 @@ class AppCompatBackgroundHelper
         return false;
     }
     
-    private boolean updateBackgroundTint() {
-        if (this.mBackgroundTint != null && this.mBackgroundTint.mHasTintList) {
-            if (this.mBackgroundResId >= 0) {
-                final ColorStateList tintList = this.mDrawableManager.getTintList(this.mView.getContext(), this.mBackgroundResId, this.mBackgroundTint.mOriginalTintList);
-                if (tintList != null) {
-                    this.mBackgroundTint.mTintList = tintList;
-                    return true;
+    private boolean shouldApplyFrameworkTintUsingColorFilter() {
+        final boolean b = true;
+        final int sdk_INT = Build$VERSION.SDK_INT;
+        boolean b2;
+        if (sdk_INT < 21) {
+            b2 = false;
+        }
+        else {
+            b2 = b;
+            if (sdk_INT != 21) {
+                b2 = b;
+                if (this.mInternalBackgroundTint == null) {
+                    return false;
                 }
             }
-            if (this.mBackgroundTint.mTintList != this.mBackgroundTint.mOriginalTintList) {
-                this.mBackgroundTint.mTintList = this.mBackgroundTint.mOriginalTintList;
-                return true;
-            }
         }
-        return false;
+        return b2;
     }
     
     void applySupportBackgroundTint() {
         final Drawable background = this.mView.getBackground();
-        if (background != null && (Build$VERSION.SDK_INT != 21 || !this.applyFrameworkTintUsingColorFilter(background))) {
+        if (background != null && (!this.shouldApplyFrameworkTintUsingColorFilter() || !this.applyFrameworkTintUsingColorFilter(background))) {
             if (this.mBackgroundTint != null) {
                 AppCompatDrawableManager.tintDrawable(background, this.mBackgroundTint, this.mView.getDrawableState());
                 return;
@@ -120,9 +122,7 @@ class AppCompatBackgroundHelper
     void onSetBackgroundDrawable(final Drawable drawable) {
         this.mBackgroundResId = -1;
         this.setInternalBackgroundTint(null);
-        if (this.updateBackgroundTint()) {
-            this.applySupportBackgroundTint();
-        }
+        this.applySupportBackgroundTint();
     }
     
     void onSetBackgroundResource(final int mBackgroundResId) {
@@ -135,15 +135,13 @@ class AppCompatBackgroundHelper
             tintList = null;
         }
         this.setInternalBackgroundTint(tintList);
-        if (this.updateBackgroundTint()) {
-            this.applySupportBackgroundTint();
-        }
+        this.applySupportBackgroundTint();
     }
     
     void setInternalBackgroundTint(final ColorStateList mTintList) {
         if (mTintList != null) {
             if (this.mInternalBackgroundTint == null) {
-                this.mInternalBackgroundTint = new AppCompatBackgroundHelper$BackgroundTintInfo();
+                this.mInternalBackgroundTint = new TintInfo();
             }
             this.mInternalBackgroundTint.mTintList = mTintList;
             this.mInternalBackgroundTint.mHasTintList = true;
@@ -154,21 +152,18 @@ class AppCompatBackgroundHelper
         this.applySupportBackgroundTint();
     }
     
-    void setSupportBackgroundTintList(final ColorStateList mOriginalTintList) {
+    void setSupportBackgroundTintList(final ColorStateList mTintList) {
         if (this.mBackgroundTint == null) {
-            this.mBackgroundTint = new AppCompatBackgroundHelper$BackgroundTintInfo();
+            this.mBackgroundTint = new TintInfo();
         }
-        this.mBackgroundTint.mOriginalTintList = mOriginalTintList;
-        this.mBackgroundTint.mTintList = null;
+        this.mBackgroundTint.mTintList = mTintList;
         this.mBackgroundTint.mHasTintList = true;
-        if (this.updateBackgroundTint()) {
-            this.applySupportBackgroundTint();
-        }
+        this.applySupportBackgroundTint();
     }
     
     void setSupportBackgroundTintMode(final PorterDuff$Mode mTintMode) {
         if (this.mBackgroundTint == null) {
-            this.mBackgroundTint = new AppCompatBackgroundHelper$BackgroundTintInfo();
+            this.mBackgroundTint = new TintInfo();
         }
         this.mBackgroundTint.mTintMode = mTintMode;
         this.mBackgroundTint.mHasTintMode = true;

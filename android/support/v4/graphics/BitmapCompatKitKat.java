@@ -5,7 +5,9 @@
 package android.support.v4.graphics;
 
 import android.graphics.Bitmap;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class BitmapCompatKitKat
 {
     static int getAllocationByteCount(final Bitmap bitmap) {

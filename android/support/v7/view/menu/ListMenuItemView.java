@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.support.v7.appcompat.R$id;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.appcompat.R$layout;
@@ -114,7 +115,7 @@ public class ListMenuItemView extends LinearLayout implements MenuView$ItemView
     
     protected void onFinishInflate() {
         super.onFinishInflate();
-        this.setBackgroundDrawable(this.mBackground);
+        ViewCompat.setBackground((View)this, this.mBackground);
         this.mTitleView = (TextView)this.findViewById(R$id.title);
         if (this.mTextAppearance != -1) {
             this.mTitleView.setTextAppearance(this.mTextAppearanceContext, this.mTextAppearance);

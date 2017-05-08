@@ -10,6 +10,11 @@ import android.net.ConnectivityManager;
 class ConnectivityManagerCompat$BaseConnectivityManagerCompatImpl implements ConnectivityManagerCompat$ConnectivityManagerCompatImpl
 {
     @Override
+    public int getRestrictBackgroundStatus(final ConnectivityManager connectivityManager) {
+        return 3;
+    }
+    
+    @Override
     public boolean isActiveNetworkMetered(final ConnectivityManager connectivityManager) {
         final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         if (activeNetworkInfo != null) {

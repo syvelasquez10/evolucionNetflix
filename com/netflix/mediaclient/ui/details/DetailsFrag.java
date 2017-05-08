@@ -76,11 +76,11 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903313;
+        return 2130903327;
     }
     
     protected int getPrimaryViewId() {
-        return 2131690383;
+        return 2131755951;
     }
     
     public String getTitle() {

@@ -63,8 +63,8 @@ public class SearchActionBar extends NetflixActionBar
         this.editTextView = (EditText)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
         if (this.editTextView != null) {
             final int color = this.searchView.getResources().getColor(this.getSearchViewTextColorResId());
-            final int color2 = this.searchView.getResources().getColor(2131624178);
-            this.editTextView.setTextSize((float)this.activity.getResources().getInteger(2131492889));
+            final int color2 = this.searchView.getResources().getColor(2131689720);
+            this.editTextView.setTextSize((float)this.activity.getResources().getInteger(2131558429));
             this.editTextView.setHintTextColor(color2);
             this.editTextView.setTextColor(color);
             this.editTextView.setImeOptions(33554432);
@@ -101,11 +101,11 @@ public class SearchActionBar extends NetflixActionBar
     
     @SuppressLint({ "InflateParams" })
     private void initViews() {
-        final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903069, (ViewGroup)null);
+        final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903070, (ViewGroup)null);
         if (inflate != null) {
-            this.searchView = (SearchView)inflate.findViewById(2131689614);
+            this.searchView = (SearchView)inflate.findViewById(2131755156);
             final ActionBar$LayoutParams actionBar$LayoutParams = new ActionBar$LayoutParams(-1, -2, 8388613);
-            this.progressSpinner = (ProgressBar)inflate.findViewById(2131689615);
+            this.progressSpinner = (ProgressBar)inflate.findViewById(2131755157);
             this.systemActionBar.setCustomView(inflate, actionBar$LayoutParams);
         }
     }
@@ -128,7 +128,7 @@ public class SearchActionBar extends NetflixActionBar
             return;
         }
         this.searchView.setImeOptions(33554435);
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131231410));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131296971));
         this.searchView.setInputType(8192);
         this.searchView.setQueryRefinementEnabled(true);
         this.searchView.setSubmitButtonEnabled(false);
@@ -164,7 +164,7 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getActiveSearchIconResId() {
-        return 2130837815;
+        return 2130837938;
     }
     
     protected Integer getSearchCloseButtonTint() {
@@ -172,18 +172,18 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130837974;
+        return 2130838118;
     }
     
     protected int getSearchViewRightBgResId() {
         if (this.showVoiceSearch) {
-            return 2130837976;
+            return 2130838120;
         }
-        return 2131624173;
+        return 2131689713;
     }
     
     protected int getSearchViewTextColorResId() {
-        return 2131624117;
+        return 2131689656;
     }
     
     protected Integer getSearchVoiceButtonTint() {

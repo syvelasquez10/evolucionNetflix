@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.resfetcher.volley;
 
+import android.text.TextUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import android.graphics.drawable.Drawable;
 import com.android.volley.Request;
@@ -15,7 +16,6 @@ import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.util.UriUtil;
-import android.graphics.Bitmap$Config;
 import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.os.Looper;
@@ -32,16 +32,19 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
+import android.graphics.Bitmap$Config;
 
 class ImageLoader$ValidatingListener extends ImageLoader$ImageInteractionTrackingListener
 {
+    protected final Bitmap$Config bitmapConfig;
     protected final ImageLoader$StaticImgConfig staticImgConfig;
     final /* synthetic */ ImageLoader this$0;
     
-    public ImageLoader$ValidatingListener(final ImageLoader this$0, final AdvancedImageView advancedImageView, final String s, final ImageLoader$StaticImgConfig staticImgConfig) {
+    public ImageLoader$ValidatingListener(final ImageLoader this$0, final AdvancedImageView advancedImageView, final String s, final ImageLoader$StaticImgConfig staticImgConfig, final Bitmap$Config bitmapConfig) {
         this.this$0 = this$0;
         super(this$0, advancedImageView, s);
         this.staticImgConfig = staticImgConfig;
+        this.bitmapConfig = bitmapConfig;
     }
     
     private boolean responseIsOutdated() {
@@ -75,7 +78,14 @@ class ImageLoader$ValidatingListener extends ImageLoader$ImageInteractionTrackin
             return;
         }
         final Bitmap bitmap = imageLoader$ImageContainer.getBitmap();
-        if (bitmap != null && imageLoader$Type.isImmediate()) {
+        if (bitmap == null) {
+            this.updateView(this.view, bitmap);
+            return;
+        }
+        if (this.view.getImageLoaderInfo() != null) {
+            this.view.getImageLoaderInfo().setLoaded(true);
+        }
+        if (imageLoader$Type.isImmediate()) {
             this.this$0.setDrawableBitmap(this.view, bitmap);
             return;
         }

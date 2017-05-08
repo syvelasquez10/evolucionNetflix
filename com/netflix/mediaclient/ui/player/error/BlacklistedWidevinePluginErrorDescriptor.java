@@ -23,7 +23,7 @@ public class BlacklistedWidevinePluginErrorDescriptor extends ActionId1ErrorDesc
     
     static BlacklistedWidevinePluginErrorDescriptor build(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.d("nf_user_error", "actionID 1 15003, Widevine blacklisted...");
-        return new BlacklistedWidevinePluginErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131230878, new Object[] { 15003 }), null, new FailbackToLegacyCryptoAction(playerFragment.getActivity()), playerFragment.getString(2131231077), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new BlacklistedWidevinePluginErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131296428, new Object[] { 15003 }), null, new FailbackToLegacyCryptoAction(playerFragment.getActivity()), playerFragment.getString(2131296633), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     static boolean canHandle(final NccpActionId nccpActionId) {

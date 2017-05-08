@@ -82,7 +82,6 @@ public final class du
                                     }
                                     n = 1;
                                 }
-                            Block_10_Outer:
                                 while (true) {
                                     if (n == 0) {
                                         continue Label_0086_Outer;
@@ -91,28 +90,25 @@ public final class du
                                         a.put(s, opt);
                                         b = true;
                                         continue Label_0086_Outer;
+                                        n = 0;
+                                        continue Label_0129_Outer;
                                         // iftrue(Label_0031:, !b)
+                                        // iftrue(Label_0173:, opt2.equals(opt))
                                         Block_11: {
                                             break Block_11;
                                             Label_0173: {
                                                 n = 0;
                                             }
-                                            continue Block_10_Outer;
+                                            continue;
+                                            n = 1;
+                                            continue;
+                                            n = 0;
+                                            continue;
                                         }
                                         this.b(a);
                                         this.a(true);
                                         return;
-                                        n = 0;
-                                        continue Label_0129_Outer;
-                                        while (true) {
-                                            n = 1;
-                                            continue Block_10_Outer;
-                                            n = 0;
-                                            continue Block_10_Outer;
-                                            continue;
-                                        }
                                     }
-                                    // iftrue(Label_0173:, opt2.equals(opt))
                                     catch (JSONException ex) {}
                                     break;
                                 }

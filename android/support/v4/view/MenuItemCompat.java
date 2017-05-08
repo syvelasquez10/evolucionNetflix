@@ -21,12 +21,11 @@ public final class MenuItemCompat
     private static final String TAG = "MenuItemCompat";
     
     static {
-        final int sdk_INT = Build$VERSION.SDK_INT;
-        if (sdk_INT >= 14) {
+        if (Build$VERSION.SDK_INT >= 14) {
             IMPL = new MenuItemCompat$IcsMenuVersionImpl();
             return;
         }
-        if (sdk_INT >= 11) {
+        if (Build$VERSION.SDK_INT >= 11) {
             IMPL = new MenuItemCompat$HoneycombMenuVersionImpl();
             return;
         }

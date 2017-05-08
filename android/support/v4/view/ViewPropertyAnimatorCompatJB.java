@@ -6,7 +6,9 @@ package android.support.v4.view;
 
 import android.animation.Animator$AnimatorListener;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class ViewPropertyAnimatorCompatJB
 {
     public static void setListener(final View view, final ViewPropertyAnimatorListener viewPropertyAnimatorListener) {

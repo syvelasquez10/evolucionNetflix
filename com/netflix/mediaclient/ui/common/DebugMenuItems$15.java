@@ -4,16 +4,17 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.util.net.CronetHttpURLConnectionFactory;
-import com.netflix.mediaclient.util.PreferenceUtils;
+import android.view.SubMenu;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.os.Handler;
 import android.os.Debug;
-import com.netflix.mediaclient.ui.home.HomeActivity;
-import android.content.Context;
 import com.netflix.mediaclient.android.debug.DebugOverlay;
+import com.netflix.mediaclient.ui.home.HomeActivity;
+import com.netflix.mediaclient.util.net.CronetHttpURLConnectionFactory;
+import android.content.Context;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
@@ -29,8 +30,8 @@ class DebugMenuItems$15 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Log.d(this.this$0.logTag, "Making refreshLolomo() call");
-        this.this$0.activity.getServiceManager().getBrowse().refreshLolomo();
+        Log.d(this.this$0.logTag, "Making refreshIq() call");
+        this.this$0.activity.getServiceManager().getBrowse().refreshIq();
         return true;
     }
 }

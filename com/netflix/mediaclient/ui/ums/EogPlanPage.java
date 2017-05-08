@@ -49,25 +49,25 @@ public class EogPlanPage
     
     EogPlanPage(final EndOfGrandfatheringActivity mOwner) {
         this.mOwner = mOwner;
-        this.mTitle = (TextView)this.mOwner.findViewById(2131689819);
-        this.mSelect = (TextView)this.mOwner.findViewById(2131689820);
-        this.mSdName = (TextView)this.mOwner.findViewById(2131689823);
-        this.mSdValue = (TextView)this.mOwner.findViewById(2131689824);
-        this.mHdName = (TextView)this.mOwner.findViewById(2131689827);
-        this.mHdValue = (TextView)this.mOwner.findViewById(2131689828);
-        this.mUhdName = (TextView)this.mOwner.findViewById(2131689831);
-        this.mUhdValue = (TextView)this.mOwner.findViewById(2131689832);
-        this.mAccount = (TextView)this.mOwner.findViewById(2131689833);
-        this.mContinue = (TextView)this.mOwner.findViewById(2131689835);
-        this.mDisclaimer = (TextView)this.mOwner.findViewById(2131689836);
-        this.mSdCheckBox = (CheckBox)this.mOwner.findViewById(2131689822);
-        this.mHdCheckBox = (CheckBox)this.mOwner.findViewById(2131689826);
-        this.mUhdCheckBox = (CheckBox)this.mOwner.findViewById(2131689830);
-        this.mSdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689821);
-        this.mHdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689825);
-        this.mUhdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689829);
-        this.mInactive_plan_drawable = ContextCompat.getDrawable(this.mOwner.getApplicationContext(), 2130837688);
-        this.mActive_plan_drawable = ContextCompat.getDrawable(this.mOwner.getApplicationContext(), 2130837687);
+        this.mTitle = (TextView)this.mOwner.findViewById(2131755371);
+        this.mSelect = (TextView)this.mOwner.findViewById(2131755372);
+        this.mSdName = (TextView)this.mOwner.findViewById(2131755375);
+        this.mSdValue = (TextView)this.mOwner.findViewById(2131755376);
+        this.mHdName = (TextView)this.mOwner.findViewById(2131755379);
+        this.mHdValue = (TextView)this.mOwner.findViewById(2131755380);
+        this.mUhdName = (TextView)this.mOwner.findViewById(2131755383);
+        this.mUhdValue = (TextView)this.mOwner.findViewById(2131755384);
+        this.mAccount = (TextView)this.mOwner.findViewById(2131755385);
+        this.mContinue = (TextView)this.mOwner.findViewById(2131755387);
+        this.mDisclaimer = (TextView)this.mOwner.findViewById(2131755388);
+        this.mSdCheckBox = (CheckBox)this.mOwner.findViewById(2131755374);
+        this.mHdCheckBox = (CheckBox)this.mOwner.findViewById(2131755378);
+        this.mUhdCheckBox = (CheckBox)this.mOwner.findViewById(2131755382);
+        this.mSdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131755373);
+        this.mHdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131755377);
+        this.mUhdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131755381);
+        this.mInactive_plan_drawable = ContextCompat.getDrawable(this.mOwner.getApplicationContext(), 2130837694);
+        this.mActive_plan_drawable = ContextCompat.getDrawable(this.mOwner.getApplicationContext(), 2130837693);
     }
     
     private void logPlanChangeEventByUser(final int n) {
@@ -187,7 +187,7 @@ public class EogPlanPage
                 }
                 return false;
             }
-            case 2131689834: {
+            case 2131755386: {
                 this.mOwner.recordPlanSelection();
                 if (EndOfGrandfatheringActivity.shouldBlockUser(this.mOwner.getEogAlert().isBlocking())) {
                     this.mOwner.startActivity(HomeActivity.createStartIntent(this.mOwner));
@@ -210,22 +210,22 @@ public class EogPlanPage
                 }
                 return false;
             }
-            case 2131689821:
-            case 2131689822: {
+            case 2131755373:
+            case 2131755374: {
                 Log.d("eog_plan_page", "Clicked on SD plan");
                 this.setPlanSelectionUi(0);
                 this.logPlanChangeEventByUser(0);
                 return true;
             }
-            case 2131689825:
-            case 2131689826: {
+            case 2131755377:
+            case 2131755378: {
                 Log.d("eog_plan_page", "Clicked on HD plan");
                 this.setPlanSelectionUi(1);
                 this.logPlanChangeEventByUser(1);
                 return true;
             }
-            case 2131689829:
-            case 2131689830: {
+            case 2131755381:
+            case 2131755382: {
                 Log.d("eog_plan_page", "Clicked on UHD plan");
                 this.setPlanSelectionUi(2);
                 this.logPlanChangeEventByUser(2);

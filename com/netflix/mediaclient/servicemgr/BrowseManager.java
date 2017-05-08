@@ -16,6 +16,7 @@ import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.service.browse.DataDumper;
+import java.io.File;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -49,10 +50,10 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void dumpCacheToDisk() {
+    public void dumpCacheToDisk(final File file) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().dumpCacheToDisk();
+            service.getBrowse().dumpCacheToDisk(file);
             return;
         }
         Log.w("ServiceManagerBrowse", "dumpCacheToDisk:: service is not available");
@@ -693,38 +694,45 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final boolean b3, final ManagerCallback managerCallback) {
+    public boolean fetchVideos(final LoMo loMo, final int n, final int n2, boolean b, final boolean b2, final boolean b3, ManagerCallback service) {
         // monitorenter(this)
         Label_0018: {
             if (loMo == null) {
                 break Label_0018;
             }
-            try {
-                boolean b4;
-                if (StringUtils.isEmpty(loMo.getId())) {
-                    LogUtils.reportErrorSafely("SPY-10830 LoLoMo refresh crash, lomo is null = " + (loMo == null), null);
-                    b4 = false;
-                }
-                else {
-                    final int requestId = this.mgr.getRequestId(managerCallback);
-                    if (Log.isLoggable()) {
-                        Log.d("ServiceManagerBrowse", "fetchVideos requestId=" + requestId + " loMoId=" + loMo.getId() + " fromVideo=" + n + " toVideo=" + n2);
-                    }
-                    final INetflixService service = this.mgr.getService();
-                    if (service != null) {
-                        service.getBrowse().fetchVideos(loMo, n, n2, b, b2, b3, this.mgr.getClientId(), requestId);
-                        b4 = true;
-                    }
-                    else {
-                        Log.w("ServiceManagerBrowse", "fetchVideos:: service is not available");
-                        b4 = false;
+            while (true) {
+                try {
+                    if (StringUtils.isEmpty(loMo.getId())) {
+                        service = (ManagerCallback)new StringBuilder("SPY-10830 LoLoMo refresh crash");
+                        if (loMo == null) {
+                            ((StringBuilder)service).append(", lomo == null");
+                        }
+                        else {
+                            ((StringBuilder)service).append(", lomo.id == ").append(loMo.getId()).append(", lomo.title = ").append(loMo.getTitle()).append(", lomo.class = ").append(loMo.getClass());
+                        }
+                        LogUtils.reportErrorSafely(((StringBuilder)service).toString());
+                        b = false;
+                        return b;
                     }
                 }
-                return b4;
+                finally {
+                }
+                // monitorexit(this)
+                final int requestId = this.mgr.getRequestId(service);
+                final LoMo loMo2;
+                if (Log.isLoggable()) {
+                    Log.d("ServiceManagerBrowse", "fetchVideos requestId=" + requestId + " loMoId=" + loMo2.getId() + " fromVideo=" + n + " toVideo=" + n2);
+                }
+                service = (ManagerCallback)this.mgr.getService();
+                if (service != null) {
+                    ((INetflixService)service).getBrowse().fetchVideos(loMo2, n, n2, b, b2, b3, this.mgr.getClientId(), requestId);
+                    b = true;
+                    return b;
+                }
+                Log.w("ServiceManagerBrowse", "fetchVideos:: service is not available");
+                b = false;
+                return b;
             }
-            finally {
-            }
-            // monitorexit(this)
         }
     }
     

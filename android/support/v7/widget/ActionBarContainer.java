@@ -14,6 +14,7 @@ import android.widget.FrameLayout$LayoutParams;
 import android.content.res.TypedArray;
 import android.support.v7.appcompat.R$id;
 import android.support.v7.appcompat.R$styleable;
+import android.support.v4.view.ViewCompat;
 import android.os.Build$VERSION;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -40,14 +41,14 @@ public class ActionBarContainer extends FrameLayout
     
     public ActionBarContainer(final Context context, final AttributeSet set) {
         super(context, set);
-        ActionBarBackgroundDrawable backgroundDrawable;
+        ActionBarBackgroundDrawable actionBarBackgroundDrawable;
         if (Build$VERSION.SDK_INT >= 21) {
-            backgroundDrawable = new ActionBarBackgroundDrawableV21(this);
+            actionBarBackgroundDrawable = new ActionBarBackgroundDrawableV21(this);
         }
         else {
-            backgroundDrawable = new ActionBarBackgroundDrawable(this);
+            actionBarBackgroundDrawable = new ActionBarBackgroundDrawable(this);
         }
-        this.setBackgroundDrawable((Drawable)backgroundDrawable);
+        ViewCompat.setBackground((View)this, actionBarBackgroundDrawable);
         final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.ActionBar);
         this.mBackground = obtainStyledAttributes.getDrawable(R$styleable.ActionBar_background);
         this.mStackedBackground = obtainStyledAttributes.getDrawable(R$styleable.ActionBar_backgroundStacked);

@@ -35,11 +35,11 @@ class DialerScreen$5 implements Runnable
     @Override
     public void run() {
         if (this.val$dialPadVisible) {
-            this.this$0.mDialpadIcon.setImageResource(2130837736);
+            this.this$0.mDialpadIcon.setImageResource(2130837738);
             this.this$0.mDialpadIcon.setSelected(false);
             return;
         }
-        this.this$0.mDialpadIcon.setImageResource(2130837737);
+        this.this$0.mDialpadIcon.setImageResource(2130837739);
         this.this$0.mDialpadIcon.setSelected(true);
     }
 }

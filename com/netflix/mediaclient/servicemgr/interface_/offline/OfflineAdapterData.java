@@ -9,10 +9,10 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmPlayable
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import java.util.Map;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
 
 public class OfflineAdapterData
@@ -20,11 +20,6 @@ public class OfflineAdapterData
     private static final String TAG = "OfflineAdapterData";
     private final RealmVideoDetails[] episodes;
     private final OfflineAdapterData$VideoAndProfileData videoAndProfileData;
-    
-    public OfflineAdapterData(final RealmProfile realmProfile) {
-        this.videoAndProfileData = new OfflineAdapterData$VideoAndProfileData(OfflineAdapterData$ViewType.PROFILE, realmProfile, null, 0);
-        this.episodes = null;
-    }
     
     public OfflineAdapterData(final RealmVideoDetails realmVideoDetails, final List<RealmVideoDetails> list, final Map<String, OfflinePlayableViewData> map) {
         if (realmVideoDetails.getType() == VideoType.MOVIE) {

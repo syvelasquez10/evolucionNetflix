@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.lomo;
 import android.view.ViewParent;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;

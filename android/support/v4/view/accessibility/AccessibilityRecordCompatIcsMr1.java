@@ -5,7 +5,9 @@
 package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityRecord;
+import android.annotation.TargetApi;
 
+@TargetApi(15)
 class AccessibilityRecordCompatIcsMr1
 {
     public static int getMaxScrollX(final Object o) {

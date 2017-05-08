@@ -23,6 +23,6 @@ public class DisplayPageRefreshConfig extends PersistentConfigurable
     
     @Override
     public String getTestId() {
-        return "7196";
+        return "7842";
     }
 }

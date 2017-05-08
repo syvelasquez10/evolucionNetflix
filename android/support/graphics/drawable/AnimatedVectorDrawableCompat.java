@@ -17,6 +17,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff$Mode;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.content.res.TypedArray;
 import android.animation.AnimatorInflater;
 import android.graphics.Region;
 import android.graphics.Rect;
@@ -30,7 +31,6 @@ import android.animation.ObjectAnimator;
 import android.animation.AnimatorSet;
 import android.support.v4.util.ArrayMap;
 import android.os.Build$VERSION;
-import android.content.res.TypedArray;
 import java.util.ArrayList;
 import android.animation.Animator;
 import android.content.res.Resources$Theme;
@@ -40,10 +40,10 @@ import android.content.res.Resources;
 import android.content.Context;
 import android.graphics.drawable.Drawable$Callback;
 import android.animation.ArgbEvaluator;
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Animatable;
 
-@TargetApi(21)
+@SuppressLint({ "NewApi" })
 public class AnimatedVectorDrawableCompat extends VectorDrawableCommon implements Animatable
 {
     private AnimatedVectorDrawableCompat$AnimatedVectorDrawableCompatState mAnimatedVectorState;
@@ -87,13 +87,6 @@ public class AnimatedVectorDrawableCompat extends VectorDrawableCommon implement
             }
         }
         return false;
-    }
-    
-    static TypedArray obtainAttributes(final Resources resources, final Resources$Theme resources$Theme, final AttributeSet set, final int[] array) {
-        if (resources$Theme == null) {
-            return resources.obtainAttributes(set, array);
-        }
-        return resources$Theme.obtainStyledAttributes(set, array, 0, 0);
     }
     
     private void setupAnimatorsForTarget(final String s, final Animator animator) {
@@ -204,11 +197,11 @@ public class AnimatedVectorDrawableCompat extends VectorDrawableCommon implement
             DrawableCompat.inflate(this.mDelegateDrawable, resources, xmlPullParser, set, resources$Theme);
         }
         else {
-            for (int i = xmlPullParser.getEventType(); i != 1; i = xmlPullParser.next()) {
-                if (i == 2) {
+            for (int n = xmlPullParser.getEventType(), depth = xmlPullParser.getDepth(); n != 1 && (xmlPullParser.getDepth() >= depth + 1 || n != 3); n = xmlPullParser.next()) {
+                if (n == 2) {
                     final String name = xmlPullParser.getName();
                     if ("animated-vector".equals(name)) {
-                        final TypedArray obtainAttributes = obtainAttributes(resources, resources$Theme, set, AndroidResources.styleable_AnimatedVectorDrawable);
+                        final TypedArray obtainAttributes = VectorDrawableCommon.obtainAttributes(resources, resources$Theme, set, AndroidResources.styleable_AnimatedVectorDrawable);
                         final int resourceId = obtainAttributes.getResourceId(0, 0);
                         if (resourceId != 0) {
                             final VectorDrawableCompat create = VectorDrawableCompat.create(resources, resourceId, resources$Theme);
@@ -238,6 +231,13 @@ public class AnimatedVectorDrawableCompat extends VectorDrawableCommon implement
         }
     }
     
+    public boolean isAutoMirrored() {
+        if (this.mDelegateDrawable != null) {
+            return DrawableCompat.isAutoMirrored(this.mDelegateDrawable);
+        }
+        return this.mAnimatedVectorState.mVectorDrawable.isAutoMirrored();
+    }
+    
     public boolean isRunning() {
         if (this.mDelegateDrawable != null) {
             return ((AnimatedVectorDrawable)this.mDelegateDrawable).isRunning();
@@ -261,9 +261,8 @@ public class AnimatedVectorDrawableCompat extends VectorDrawableCommon implement
     public Drawable mutate() {
         if (this.mDelegateDrawable != null) {
             this.mDelegateDrawable.mutate();
-            return this;
         }
-        throw new IllegalStateException("Mutate() is not supported for older platform");
+        return this;
     }
     
     @Override
@@ -296,6 +295,14 @@ public class AnimatedVectorDrawableCompat extends VectorDrawableCommon implement
             return;
         }
         this.mAnimatedVectorState.mVectorDrawable.setAlpha(n);
+    }
+    
+    public void setAutoMirrored(final boolean b) {
+        if (this.mDelegateDrawable != null) {
+            this.mDelegateDrawable.setAutoMirrored(b);
+            return;
+        }
+        this.mAnimatedVectorState.mVectorDrawable.setAutoMirrored(b);
     }
     
     public void setColorFilter(final ColorFilter colorFilter) {

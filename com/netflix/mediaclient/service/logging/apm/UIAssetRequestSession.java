@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.apm;
 
+import com.netflix.mediaclient.service.logging.apm.model.ConnectionClassCustomData;
 import com.netflix.mediaclient.service.logging.apm.model.UIAssetRequestSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
@@ -30,6 +31,7 @@ public class UIAssetRequestSession extends BaseApmSession
         uiAssetRequestSessionEndedEvent.setError(error);
         uiAssetRequestSessionEndedEvent.setReason(reason);
         uiAssetRequestSessionEndedEvent.setResponse(response);
+        uiAssetRequestSessionEndedEvent.setConnectionClassCustomData(new ConnectionClassCustomData());
         return uiAssetRequestSessionEndedEvent;
     }
     

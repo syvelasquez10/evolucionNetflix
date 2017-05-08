@@ -19,7 +19,9 @@ import android.app.Notification$BigTextStyle;
 import android.app.Notification$BigPictureStyle;
 import android.graphics.Bitmap;
 import java.lang.reflect.Field;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class NotificationCompatJellybean
 {
     static final String EXTRA_ACTION_EXTRAS = "android.support.actionExtras";

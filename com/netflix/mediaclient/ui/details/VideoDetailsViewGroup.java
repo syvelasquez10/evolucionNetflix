@@ -13,6 +13,7 @@ import java.util.Map;
 import com.netflix.mediaclient.android.widget.PressedStateHandler$DelayedOnClickListener;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.LinearLayout$LayoutParams;
 import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
@@ -34,7 +35,7 @@ import android.content.Context;
 import android.content.BroadcastReceiver;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.offline.DownloadButton;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.android.widget.TopCropImageView;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -62,7 +63,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     protected TextView episodeBadge;
     protected TextView episodeTitle;
     private ViewGroup footerViewGroup;
-    protected AdvancedImageView horzDispImg;
+    protected TopCropImageView horzDispImg;
     protected ViewGroup imgGroup;
     private DownloadButton mMovieDownloadButton;
     protected View$OnClickListener onCWClickListener;
@@ -162,7 +163,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private int getBadgesPadding() {
-        return this.getResources().getDimensionPixelSize(2131362150);
+        return this.getResources().getDimensionPixelSize(2131427700);
     }
     
     private String getIfValidOrFallback(final String s, final String s2) {
@@ -228,7 +229,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void alignViews() {
         if (Coppola1Utils.isCoppolaContext(this.getContext())) {
-            final View viewById = this.findViewById(2131689759);
+            final View viewById = this.findViewById(2131755309);
             if (viewById != null) {
                 ((LinearLayout$LayoutParams)viewById.getLayoutParams()).topMargin = 0;
             }
@@ -254,27 +255,27 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected void findViews() {
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131689625);
-        this.addToMyListGroup = this.findViewById(2131690042);
-        this.addToMyList = (TextView)this.findViewById(2131689762);
-        this.addToMyListLabel = (TextView)this.findViewById(2131690043);
-        this.mMovieDownloadButton = (DownloadButton)this.findViewById(2131689910);
-        this.basicInfo = (TextView)this.findViewById(2131689760);
-        this.episodeBadge = (TextView)this.findViewById(2131689934);
-        this.episodeTitle = (TextView)this.findViewById(2131689935);
-        this.supplemental = (TextView)this.findViewById(2131689656);
-        this.synopsis = (TextView)this.findViewById(2131689658);
-        this.starring = (TextView)this.findViewById(2131689936);
-        this.creators = (TextView)this.findViewById(2131689937);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131689649);
-        this.title = (TextView)this.findViewById(2131689663);
-        this.imgGroup = (ViewGroup)this.findViewById(2131689763);
-        this.backgroundImg = (ImageView)this.findViewById(2131689868);
-        this.relatedTitle = (TextView)this.findViewById(2131689666);
-        this.basicInfoBadges = (TextView)this.findViewById(2131689761);
-        this.footerViewGroup = (ViewGroup)this.findViewById(2131689665);
-        this.copyright = (ViewGroup)this.findViewById(2131690380);
-        this.play = this.findViewById(2131689664);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131755167);
+        this.addToMyListGroup = this.findViewById(2131755189);
+        this.addToMyList = (TextView)this.findViewById(2131755312);
+        this.addToMyListLabel = (TextView)this.findViewById(2131755597);
+        this.mMovieDownloadButton = (DownloadButton)this.findViewById(2131755190);
+        this.basicInfo = (TextView)this.findViewById(2131755310);
+        this.episodeBadge = (TextView)this.findViewById(2131755193);
+        this.episodeTitle = (TextView)this.findViewById(2131755194);
+        this.supplemental = (TextView)this.findViewById(2131755208);
+        this.synopsis = (TextView)this.findViewById(2131755210);
+        this.starring = (TextView)this.findViewById(2131755479);
+        this.creators = (TextView)this.findViewById(2131755480);
+        this.horzDispImg = (TopCropImageView)this.findViewById(2131755200);
+        this.title = (TextView)this.findViewById(2131755215);
+        this.imgGroup = (ViewGroup)this.findViewById(2131755313);
+        this.backgroundImg = (ImageView)this.findViewById(2131755417);
+        this.relatedTitle = (TextView)this.findViewById(2131755218);
+        this.basicInfoBadges = (TextView)this.findViewById(2131755311);
+        this.footerViewGroup = (ViewGroup)this.findViewById(2131755217);
+        this.copyright = (ViewGroup)this.findViewById(2131755948);
+        this.play = this.findViewById(2131755216);
         LocalizationUtils.setLayoutDirection((View)this.ratingBar);
         LocalizationUtils.setLayoutDirection((View)this.addToMyList);
         LocalizationUtils.setLayoutDirection((View)this.mMovieDownloadButton);
@@ -319,7 +320,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected int getlayoutId() {
-        return 2130903319;
+        return 2130903333;
     }
     
     public void hideRelatedTitle() {
@@ -430,7 +431,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         this.videoId = details.getId();
         this.details = details;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        this.updateImage(details, netflixActivity, String.format(this.getResources().getString(2131230897), details.getTitle()));
+        this.updateImage(details, netflixActivity, String.format(this.getResources().getString(2131296447), details.getTitle()));
         this.updateRelatedTitle(details);
         this.updateTitle(details);
         this.updateBasicInfo(details, videoDetailsViewGroup$DetailsStringProvider);
@@ -473,7 +474,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         if (this.showCurrentEpisodeDetails(videoDetails)) {
             s2 = this.getIfValidOrFallback(((ShowDetails)videoDetails).getCurrentEpisodeHorzDispUrl(), s2);
         }
-        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, s2, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true);
+        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, s2, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true, 1);
         this.setupImageClicks(videoDetails, netflixActivity);
     }
     
@@ -481,7 +482,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         final String currentEpisodeTitle = showDetails.getCurrentEpisodeTitle();
         LoMoUtils.toggleEpisodeBadge(showDetails.getCurrentEpisodeBadges(), this.episodeBadge);
         if (currentEpisodeTitle != null) {
-            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231089, new Object[] { currentEpisodeTitle }));
+            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131296645, new Object[] { currentEpisodeTitle }));
             this.supplemental.setText((CharSequence)showDetails.getSupplementalMessage());
             this.supplemental.setVisibility(0);
             this.starring.setVisibility(8);
@@ -496,7 +497,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231239, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131296795, new Object[] { videoDetails.getTitle() }));
         }
     }
     

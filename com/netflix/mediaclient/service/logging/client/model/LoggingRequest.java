@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.logging.client.model;
 
 import java.util.Iterator;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import java.util.Collection;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -24,6 +25,7 @@ public class LoggingRequest
     public static final String EVENTS = "events";
     public static final String LOCALE = "locale";
     public static final String NETFLIX_ID = "netflixId";
+    public static final String TEST_ALLOCATIONS = "testAllocations";
     public static final String TIME = "time";
     public static final String VERSION = "version";
     @SerializedName("appName")
@@ -133,6 +135,9 @@ public class LoggingRequest
         }
         if (this.locale != null) {
             jsonObject.put("locale", (Object)this.locale);
+        }
+        if (ABTestConfigData.getRawABConfig() != null) {
+            jsonObject.put("testAllocations", (Object)new JSONObject(ABTestConfigData.getRawABConfig().toJsonString()));
         }
         if (this.events != null) {
             final JSONArray jsonArray = new JSONArray();

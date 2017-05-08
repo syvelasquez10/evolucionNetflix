@@ -170,6 +170,10 @@ public class FloatingActionButton extends VisibilityAwareImageButton
         return b;
     }
     
+    public int getRippleColor() {
+        return this.mRippleColor;
+    }
+    
     public int getSize() {
         return this.mSize;
     }
@@ -219,7 +223,15 @@ public class FloatingActionButton extends VisibilityAwareImageButton
     }
     
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        return (!this.getContentRect(this.mTouchArea) || this.mTouchArea.contains((int)motionEvent.getX(), (int)motionEvent.getY())) && super.onTouchEvent(motionEvent);
+        switch (motionEvent.getAction()) {
+            case 0: {
+                if (this.getContentRect(this.mTouchArea) && !this.mTouchArea.contains((int)motionEvent.getX(), (int)motionEvent.getY())) {
+                    return false;
+                }
+                break;
+            }
+        }
+        return super.onTouchEvent(motionEvent);
     }
     
     public void setBackgroundColor(final int n) {

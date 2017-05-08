@@ -11,6 +11,7 @@ import android.view.ViewParent;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import com.netflix.mediaclient.ui.details.IEpisodeView;
 import android.view.ViewGroup$LayoutParams;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import android.widget.FrameLayout;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;

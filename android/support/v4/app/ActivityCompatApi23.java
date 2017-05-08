@@ -6,7 +6,9 @@ package android.support.v4.app;
 
 import android.app.Activity;
 import android.app.SharedElementCallback;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class ActivityCompatApi23
 {
     private static SharedElementCallback createCallback(final ActivityCompatApi23$SharedElementCallback23 activityCompatApi23$SharedElementCallback23) {

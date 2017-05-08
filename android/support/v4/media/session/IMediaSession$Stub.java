@@ -6,10 +6,10 @@ package android.support.v4.media.session;
 
 import android.support.v4.media.MediaMetadataCompat;
 import android.app.PendingIntent;
-import android.text.TextUtils;
-import java.util.List;
 import android.support.v4.media.RatingCompat;
 import android.net.Uri;
+import android.text.TextUtils;
+import java.util.List;
 import android.view.KeyEvent;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -207,135 +207,6 @@ public abstract class IMediaSession$Stub extends Binder implements IMediaSession
                 parcel2.writeNoException();
                 return true;
             }
-            case 13: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.play();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 14: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                final String string2 = parcel.readString();
-                Bundle bundle2;
-                if (parcel.readInt() != 0) {
-                    bundle2 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                }
-                else {
-                    bundle2 = null;
-                }
-                this.playFromMediaId(string2, bundle2);
-                parcel2.writeNoException();
-                return true;
-            }
-            case 15: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                final String string3 = parcel.readString();
-                Bundle bundle3;
-                if (parcel.readInt() != 0) {
-                    bundle3 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                }
-                else {
-                    bundle3 = null;
-                }
-                this.playFromSearch(string3, bundle3);
-                parcel2.writeNoException();
-                return true;
-            }
-            case 16: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                Uri uri;
-                if (parcel.readInt() != 0) {
-                    uri = (Uri)Uri.CREATOR.createFromParcel(parcel);
-                }
-                else {
-                    uri = null;
-                }
-                Bundle bundle4;
-                if (parcel.readInt() != 0) {
-                    bundle4 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                }
-                else {
-                    bundle4 = null;
-                }
-                this.playFromUri(uri, bundle4);
-                parcel2.writeNoException();
-                return true;
-            }
-            case 17: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.skipToQueueItem(parcel.readLong());
-                parcel2.writeNoException();
-                return true;
-            }
-            case 18: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.pause();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 19: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.stop();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 20: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.next();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 21: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.previous();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 22: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.fastForward();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 23: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.rewind();
-                parcel2.writeNoException();
-                return true;
-            }
-            case 24: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                this.seekTo(parcel.readLong());
-                parcel2.writeNoException();
-                return true;
-            }
-            case 25: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                RatingCompat ratingCompat;
-                if (parcel.readInt() != 0) {
-                    ratingCompat = (RatingCompat)RatingCompat.CREATOR.createFromParcel(parcel);
-                }
-                else {
-                    ratingCompat = null;
-                }
-                this.rate(ratingCompat);
-                parcel2.writeNoException();
-                return true;
-            }
-            case 26: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                final String string4 = parcel.readString();
-                Bundle bundle5;
-                if (parcel.readInt() != 0) {
-                    bundle5 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                }
-                else {
-                    bundle5 = null;
-                }
-                this.sendCustomAction(string4, bundle5);
-                parcel2.writeNoException();
-                return true;
-            }
             case 27: {
                 parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
                 final MediaMetadataCompat metadata = this.getMetadata();
@@ -406,6 +277,74 @@ public abstract class IMediaSession$Stub extends Binder implements IMediaSession
             }
             case 34: {
                 parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                final String string2 = parcel.readString();
+                Bundle bundle2;
+                if (parcel.readInt() != 0) {
+                    bundle2 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    bundle2 = null;
+                }
+                this.prepareFromMediaId(string2, bundle2);
+                parcel2.writeNoException();
+                return true;
+            }
+            case 35: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                final String string3 = parcel.readString();
+                Bundle bundle3;
+                if (parcel.readInt() != 0) {
+                    bundle3 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    bundle3 = null;
+                }
+                this.prepareFromSearch(string3, bundle3);
+                parcel2.writeNoException();
+                return true;
+            }
+            case 36: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                Uri uri;
+                if (parcel.readInt() != 0) {
+                    uri = (Uri)Uri.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    uri = null;
+                }
+                Bundle bundle4;
+                if (parcel.readInt() != 0) {
+                    bundle4 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    bundle4 = null;
+                }
+                this.prepareFromUri(uri, bundle4);
+                parcel2.writeNoException();
+                return true;
+            }
+            case 13: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.play();
+                parcel2.writeNoException();
+                return true;
+            }
+            case 14: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                final String string4 = parcel.readString();
+                Bundle bundle5;
+                if (parcel.readInt() != 0) {
+                    bundle5 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    bundle5 = null;
+                }
+                this.playFromMediaId(string4, bundle5);
+                parcel2.writeNoException();
+                return true;
+            }
+            case 15: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
                 final String string5 = parcel.readString();
                 Bundle bundle6;
                 if (parcel.readInt() != 0) {
@@ -414,25 +353,11 @@ public abstract class IMediaSession$Stub extends Binder implements IMediaSession
                 else {
                     bundle6 = null;
                 }
-                this.prepareFromMediaId(string5, bundle6);
+                this.playFromSearch(string5, bundle6);
                 parcel2.writeNoException();
                 return true;
             }
-            case 35: {
-                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
-                final String string6 = parcel.readString();
-                Bundle bundle7;
-                if (parcel.readInt() != 0) {
-                    bundle7 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
-                }
-                else {
-                    bundle7 = null;
-                }
-                this.prepareFromSearch(string6, bundle7);
-                parcel2.writeNoException();
-                return true;
-            }
-            case 36: {
+            case 16: {
                 parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
                 Uri uri2;
                 if (parcel.readInt() != 0) {
@@ -441,6 +366,81 @@ public abstract class IMediaSession$Stub extends Binder implements IMediaSession
                 else {
                     uri2 = null;
                 }
+                Bundle bundle7;
+                if (parcel.readInt() != 0) {
+                    bundle7 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    bundle7 = null;
+                }
+                this.playFromUri(uri2, bundle7);
+                parcel2.writeNoException();
+                return true;
+            }
+            case 17: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.skipToQueueItem(parcel.readLong());
+                parcel2.writeNoException();
+                return true;
+            }
+            case 18: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.pause();
+                parcel2.writeNoException();
+                return true;
+            }
+            case 19: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.stop();
+                parcel2.writeNoException();
+                return true;
+            }
+            case 20: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.next();
+                parcel2.writeNoException();
+                return true;
+            }
+            case 21: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.previous();
+                parcel2.writeNoException();
+                return true;
+            }
+            case 22: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.fastForward();
+                parcel2.writeNoException();
+                return true;
+            }
+            case 23: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.rewind();
+                parcel2.writeNoException();
+                return true;
+            }
+            case 24: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                this.seekTo(parcel.readLong());
+                parcel2.writeNoException();
+                return true;
+            }
+            case 25: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                RatingCompat ratingCompat;
+                if (parcel.readInt() != 0) {
+                    ratingCompat = (RatingCompat)RatingCompat.CREATOR.createFromParcel(parcel);
+                }
+                else {
+                    ratingCompat = null;
+                }
+                this.rate(ratingCompat);
+                parcel2.writeNoException();
+                return true;
+            }
+            case 26: {
+                parcel.enforceInterface("android.support.v4.media.session.IMediaSession");
+                final String string6 = parcel.readString();
                 Bundle bundle8;
                 if (parcel.readInt() != 0) {
                     bundle8 = (Bundle)Bundle.CREATOR.createFromParcel(parcel);
@@ -448,7 +448,7 @@ public abstract class IMediaSession$Stub extends Binder implements IMediaSession
                 else {
                     bundle8 = null;
                 }
-                this.prepareFromUri(uri2, bundle8);
+                this.sendCustomAction(string6, bundle8);
                 parcel2.writeNoException();
                 return true;
             }

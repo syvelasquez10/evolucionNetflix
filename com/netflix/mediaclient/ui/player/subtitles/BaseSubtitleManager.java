@@ -62,7 +62,7 @@ abstract class BaseSubtitleManager implements SubtitleManager
         Log.v("nf_subtitles_render", "Create handler.");
         this.mHandler = new Handler();
         final View view = this.mPlayerFragment.getView();
-        this.mDisplayArea = (RelativeLayout)view.findViewById(2131690127);
+        this.mDisplayArea = (RelativeLayout)view.findViewById(2131755694);
         if (this.mDisplayArea.getWidth() == 0 || this.mDisplayArea.getHeight() == 0) {
             Log.w("nf_subtitles_render", "Display area w/h are 0, display area is not visible yet!");
         }
@@ -77,9 +77,9 @@ abstract class BaseSubtitleManager implements SubtitleManager
             n = 46;
         }
         this.mBottomPanelPadding = AndroidUtils.dipToPixels((Context)netflixActivity, n);
-        this.mBottomPanelHeight = mPlayerFragment.getResources().getDimensionPixelSize(2131362286);
+        this.mBottomPanelHeight = mPlayerFragment.getResources().getDimensionPixelSize(2131427850);
         this.mTopPanelPadding = AndroidUtils.dipToPixels((Context)netflixActivity, 5);
-        this.mTopPanel = view.findViewById(2131690133);
+        this.mTopPanel = view.findViewById(2131755701);
     }
     
     protected abstract Runnable createRunnable(final SubtitleBlock p0, final boolean p1);

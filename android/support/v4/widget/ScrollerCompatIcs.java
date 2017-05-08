@@ -5,7 +5,9 @@
 package android.support.v4.widget;
 
 import android.widget.OverScroller;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class ScrollerCompatIcs
 {
     public static float getCurrVelocity(final Object o) {

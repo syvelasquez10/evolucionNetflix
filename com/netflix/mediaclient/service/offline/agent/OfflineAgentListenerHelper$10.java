@@ -32,7 +32,7 @@ class OfflineAgentListenerHelper$10 implements Runnable
         this.this$0.removeDeadListeners();
         final Iterator<OfflineAgentListener> iterator = this.this$0.mOfflineAgentListeners.iterator();
         while (iterator.hasNext()) {
-            iterator.next().onPlayWindowRenewDone(this.val$offlinePlayableViewData, this.val$status);
+            iterator.next().onLicenseRefreshDone(this.val$offlinePlayableViewData, this.val$status);
         }
     }
 }

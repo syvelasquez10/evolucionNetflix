@@ -6,7 +6,9 @@ package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityWindowInfo;
 import android.graphics.Rect;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class AccessibilityWindowInfoCompatApi21
 {
     public static void getBoundsInScreen(final Object o, final Rect rect) {

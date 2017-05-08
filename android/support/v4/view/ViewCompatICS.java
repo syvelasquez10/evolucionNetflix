@@ -8,7 +8,9 @@ import android.view.View$AccessibilityDelegate;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class ViewCompatICS
 {
     public static boolean canScrollHorizontally(final View view, final int n) {

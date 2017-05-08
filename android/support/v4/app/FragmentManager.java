@@ -58,7 +58,11 @@ public abstract class FragmentManager
     
     public abstract void putFragment(final Bundle p0, final String p1, final Fragment p2);
     
+    public abstract void registerFragmentLifecycleCallbacks(final FragmentManager$FragmentLifecycleCallbacks p0, final boolean p1);
+    
     public abstract void removeOnBackStackChangedListener(final FragmentManager$OnBackStackChangedListener p0);
     
     public abstract Fragment$SavedState saveFragmentInstanceState(final Fragment p0);
+    
+    public abstract void unregisterFragmentLifecycleCallbacks(final FragmentManager$FragmentLifecycleCallbacks p0);
 }

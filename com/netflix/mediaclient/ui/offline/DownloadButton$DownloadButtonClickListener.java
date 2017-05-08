@@ -12,6 +12,7 @@ import android.view.animation.Animation$AnimationListener;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import java.util.Iterator;
 import android.content.res.TypedArray;
 import com.netflix.mediaclient.R$styleable;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -137,17 +138,21 @@ class DownloadButton$DownloadButtonClickListener implements View$OnClickListener
                         DownloadButtonDialogHelper.createWatchDeleteDialog(this.this$0.getContext(), this.this$0, this.playableId, this.videoType, this.this$0.showViewMyDownloads, playContext).show();
                     }
                     case 3: {
-                        DownloadButtonDialogHelper.createDownloadingMenu(this.this$0.getContext(), this.this$0, this.playableId, this.this$0.showViewMyDownloads).show();
+                        this.netflixActivity.showMenu(DownloadButtonDialogHelper.createDownloadingMenu(this.this$0.getContext(), this.this$0, this.playableId, this.this$0.showViewMyDownloads));
                     }
                     case 1:
                     case 2: {
-                        DownloadButtonDialogHelper.createPausedMenu(this.this$0.getContext(), this.this$0, this.playableId, this.this$0.showViewMyDownloads, b).show();
+                        this.netflixActivity.showMenu(DownloadButtonDialogHelper.createPausedMenu(this.this$0.getContext(), this.this$0, this.playableId, this.this$0.showViewMyDownloads, b));
                     }
                     case 4: {
-                        DownloadButtonDialogHelper.createPausedMenu(this.this$0.getContext(), this.this$0, this.playableId, this.this$0.showViewMyDownloads, b).show();
+                        this.netflixActivity.showMenu(DownloadButtonDialogHelper.createPausedMenu(this.this$0.getContext(), this.this$0, this.playableId, this.this$0.showViewMyDownloads, b));
                     }
                     case 8: {
-                        this.netflixActivity.showDialog(OfflineErrorDialog.createOfflineErrorStateDialog(this.videoType, offlinePlayableViewData, offlineAgent));
+                        final OfflineErrorDialog offlineErrorStateDialog = OfflineErrorDialog.createOfflineErrorStateDialog(this.videoType, offlinePlayableViewData, offlineAgent);
+                        if (this.netflixActivity.isDialogFragmentVisible()) {
+                            this.netflixActivity.removeDialogFrag();
+                        }
+                        this.netflixActivity.showDialog(offlineErrorStateDialog);
                     }
                 }
             }

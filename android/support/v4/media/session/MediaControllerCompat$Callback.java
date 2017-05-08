@@ -15,6 +15,7 @@ public abstract class MediaControllerCompat$Callback implements IBinder$DeathRec
 {
     private final Object mCallbackObj;
     MediaControllerCompat$Callback$MessageHandler mHandler;
+    boolean mHasExtraCallback;
     boolean mRegistered;
     
     public MediaControllerCompat$Callback() {

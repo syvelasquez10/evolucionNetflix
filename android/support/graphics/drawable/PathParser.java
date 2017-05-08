@@ -12,6 +12,18 @@ class PathParser
         list.add(new PathParser$PathDataNode(c, array));
     }
     
+    public static boolean canMorph(final PathParser$PathDataNode[] array, final PathParser$PathDataNode[] array2) {
+        if (array != null && array2 != null && array.length == array2.length) {
+            for (int i = 0; i < array.length; ++i) {
+                if (array[i].type != array2[i].type || array[i].params.length != array2[i].params.length) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+    
     static float[] copyOfRange(final float[] array, final int n, int n2) {
         if (n > n2) {
             throw new IllegalArgumentException();
@@ -179,5 +191,14 @@ class PathParser
             ++i;
         }
         return i;
+    }
+    
+    public static void updateNodes(final PathParser$PathDataNode[] array, final PathParser$PathDataNode[] array2) {
+        for (int i = 0; i < array2.length; ++i) {
+            array[i].type = array2[i].type;
+            for (int j = 0; j < array2[i].params.length; ++j) {
+                array[i].params[j] = array2[i].params[j];
+            }
+        }
     }
 }

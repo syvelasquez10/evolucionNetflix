@@ -58,6 +58,9 @@ class BatteryStats
     
     public void updateBatteryStat(final boolean b) {
         final Intent registerReceiver = this.mContext.registerReceiver((BroadcastReceiver)null, new IntentFilter("android.intent.action.BATTERY_CHANGED"));
+        if (registerReceiver == null) {
+            return;
+        }
         final int intExtra = registerReceiver.getIntExtra("level", -1);
         final int intExtra2 = registerReceiver.getIntExtra("health", 0);
         final int intExtra3 = registerReceiver.getIntExtra("plugged", 0);

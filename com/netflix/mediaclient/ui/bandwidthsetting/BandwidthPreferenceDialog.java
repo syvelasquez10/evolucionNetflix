@@ -44,7 +44,7 @@ public class BandwidthPreferenceDialog extends DialogPreference
     public BandwidthPreferenceDialog(final Context context, final AttributeSet set) {
         super(context, set);
         this.setPersistent(false);
-        this.setDialogLayoutResource(2130903267);
+        this.setDialogLayoutResource(2130903280);
     }
     
     private void enableManualViews(final boolean enabled) {
@@ -99,27 +99,27 @@ public class BandwidthPreferenceDialog extends DialogPreference
     }
     
     private void initViews(final View view, final boolean checked, final int n) {
-        this.mRbOff = (RadioButton)view.findViewById(2131690230);
-        this.mRbLow = (RadioButton)view.findViewById(2131690234);
-        this.mRbMedium = (RadioButton)view.findViewById(2131690238);
-        this.mRbHigh = (RadioButton)view.findViewById(2131690242);
-        this.mRbUnlimited = (RadioButton)view.findViewById(2131690246);
-        this.mTextOff = (TextView)view.findViewById(2131690231);
-        this.mTextOffDetail = (TextView)view.findViewById(2131690232);
-        this.mTextLow = (TextView)view.findViewById(2131690235);
-        this.mTextLowDetail = (TextView)view.findViewById(2131690236);
-        this.mTextMedium = (TextView)view.findViewById(2131690239);
-        this.mTextMediumDetail = (TextView)view.findViewById(2131690240);
-        this.mTextHigh = (TextView)view.findViewById(2131690243);
-        this.mTextHighDetail = (TextView)view.findViewById(2131690244);
-        this.mTextUnlimited = (TextView)view.findViewById(2131690247);
-        this.getmTextUnlimitedDetail = (TextView)view.findViewById(2131690248);
-        this.mRbGroupOff = (RelativeLayout)view.findViewById(2131690229);
-        this.mRbGroupLow = (RelativeLayout)view.findViewById(2131690233);
-        this.mRbGroupMedium = (RelativeLayout)view.findViewById(2131690237);
-        this.mRbGroupHigh = (RelativeLayout)view.findViewById(2131690241);
-        this.mRbGroupUnlimited = (RelativeLayout)view.findViewById(2131690245);
-        (this.mBandwidthControlAuto = (SwitchCompat)view.findViewById(2131690225)).setChecked(checked);
+        this.mRbOff = (RadioButton)view.findViewById(2131755798);
+        this.mRbLow = (RadioButton)view.findViewById(2131755802);
+        this.mRbMedium = (RadioButton)view.findViewById(2131755806);
+        this.mRbHigh = (RadioButton)view.findViewById(2131755810);
+        this.mRbUnlimited = (RadioButton)view.findViewById(2131755814);
+        this.mTextOff = (TextView)view.findViewById(2131755799);
+        this.mTextOffDetail = (TextView)view.findViewById(2131755800);
+        this.mTextLow = (TextView)view.findViewById(2131755803);
+        this.mTextLowDetail = (TextView)view.findViewById(2131755804);
+        this.mTextMedium = (TextView)view.findViewById(2131755807);
+        this.mTextMediumDetail = (TextView)view.findViewById(2131755808);
+        this.mTextHigh = (TextView)view.findViewById(2131755811);
+        this.mTextHighDetail = (TextView)view.findViewById(2131755812);
+        this.mTextUnlimited = (TextView)view.findViewById(2131755815);
+        this.getmTextUnlimitedDetail = (TextView)view.findViewById(2131755816);
+        this.mRbGroupOff = (RelativeLayout)view.findViewById(2131755797);
+        this.mRbGroupLow = (RelativeLayout)view.findViewById(2131755801);
+        this.mRbGroupMedium = (RelativeLayout)view.findViewById(2131755805);
+        this.mRbGroupHigh = (RelativeLayout)view.findViewById(2131755809);
+        this.mRbGroupUnlimited = (RelativeLayout)view.findViewById(2131755813);
+        (this.mBandwidthControlAuto = (SwitchCompat)view.findViewById(2131755793)).setChecked(checked);
         this.enableManualViews(!checked);
         if (!checked) {
             this.selectManualChoice(BandwidthPreferenceDialog$ManualBwChoice.create(n));

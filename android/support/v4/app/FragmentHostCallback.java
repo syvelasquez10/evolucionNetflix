@@ -38,7 +38,14 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
     }
     
     public FragmentHostCallback(final Context context, final Handler handler, final int n) {
-        this(null, context, handler, n);
+        Activity activity;
+        if (context instanceof Activity) {
+            activity = (Activity)context;
+        }
+        else {
+            activity = null;
+        }
+        this(activity, context, handler, n);
     }
     
     FragmentHostCallback(final FragmentActivity fragmentActivity) {

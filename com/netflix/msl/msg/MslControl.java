@@ -103,11 +103,11 @@ public class MslControl
                                     final byte[] array = new byte[16];
                                     this.NULL_MASTER_TOKEN = new MasterToken(mslControl$DummyMslContext, new Date(), new Date(), 1L, 1L, new JSONObject(), "dummy", new SecretKeySpec(array, "AES"), new SecretKeySpec(array, "HmacSHA256"));
                                     return;
+                                    streamFactory = new MessageStreamFactory();
+                                    continue Label_0058_Outer;
                                     this.executor = new MslControl$SynchronousExecutor(null);
                                     continue;
                                 }
-                                streamFactory = new MessageStreamFactory();
-                                continue Label_0058_Outer;
                                 messageRegistry = new MslControl$DummyMessageRegistry(null);
                                 continue Label_0075_Outer;
                             }
@@ -377,10 +377,10 @@ public class MslControl
                                 userIdToken = null;
                                 continue;
                                 userIdToken = null;
+                                continue Label_0052_Outer;
+                                userIdToken = null;
                                 continue;
                             }
-                            userIdToken = null;
-                            continue Label_0052_Outer;
                         }
                         catch (MslException ex) {
                             this.releaseMasterToken(mslContext, newestMasterToken);

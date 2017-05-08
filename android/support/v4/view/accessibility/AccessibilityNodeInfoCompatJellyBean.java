@@ -7,7 +7,9 @@ package android.support.v4.view.accessibility;
 import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class AccessibilityNodeInfoCompatJellyBean
 {
     public static void addChild(final Object o, final View view, final int n) {

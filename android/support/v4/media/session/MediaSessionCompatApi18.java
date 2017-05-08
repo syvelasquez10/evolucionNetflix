@@ -12,7 +12,9 @@ import android.media.AudioManager;
 import android.content.ComponentName;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class MediaSessionCompatApi18
 {
     private static final long ACTION_SEEK_TO = 256L;

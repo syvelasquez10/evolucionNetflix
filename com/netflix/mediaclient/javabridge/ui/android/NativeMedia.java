@@ -602,8 +602,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void close(final String s, final PlaybackVolumeMetric playbackVolumeMetric) {
-        this.bridge.getNrdProxy().invokeMethod(new Close(s, playbackVolumeMetric));
+    public void close(final String s, final PlaybackVolumeMetric playbackVolumeMetric, final JSONObject jsonObject) {
+        this.bridge.getNrdProxy().invokeMethod(new Close(s, playbackVolumeMetric, jsonObject));
     }
     
     @Override
@@ -792,8 +792,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void open(final long n, final PlayContext playContext, final ConnectivityUtils$NetType connectivityUtils$NetType, final long n2, final boolean b, final PlaybackVolumeMetric playbackVolumeMetric, final long n3) {
-        this.bridge.getNrdProxy().invokeMethod(new Open(n, new AuthorizationParams(this.bridge.getContext(), playContext, connectivityUtils$NetType, b), n2, playbackVolumeMetric, n3));
+    public void open(final long n, final PlayContext playContext, final ConnectivityUtils$NetType connectivityUtils$NetType, final long n2, final boolean b, final PlaybackVolumeMetric playbackVolumeMetric, final long n3, final JSONObject jsonObject) {
+        this.bridge.getNrdProxy().invokeMethod(new Open(n, new AuthorizationParams(this.bridge.getContext(), playContext, connectivityUtils$NetType, b), n2, playbackVolumeMetric, n3, jsonObject));
         Log.d("nf-bridge", "invokeMethod just called...");
     }
     

@@ -9,7 +9,9 @@ import android.util.Log;
 import android.os.IBinder;
 import android.os.Bundle;
 import java.lang.reflect.Method;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class BundleCompatGingerbread
 {
     private static final String TAG = "BundleCompatGingerbread";

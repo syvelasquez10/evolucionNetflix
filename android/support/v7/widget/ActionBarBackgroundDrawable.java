@@ -6,8 +6,10 @@ package android.support.v7.widget;
 
 import android.graphics.ColorFilter;
 import android.graphics.Canvas;
+import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
 
+@TargetApi(9)
 class ActionBarBackgroundDrawable extends Drawable
 {
     final ActionBarContainer mContainer;

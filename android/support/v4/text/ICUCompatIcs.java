@@ -8,7 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import android.util.Log;
 import java.lang.reflect.Method;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class ICUCompatIcs
 {
     private static final String TAG = "ICUCompatIcs";

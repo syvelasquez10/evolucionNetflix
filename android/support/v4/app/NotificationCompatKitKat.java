@@ -8,7 +8,9 @@ import android.util.SparseArray;
 import android.app.Notification$Action;
 import android.os.Bundle;
 import android.app.Notification;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class NotificationCompatKitKat
 {
     public static NotificationCompatBase$Action getAction(final Notification notification, final int n, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {

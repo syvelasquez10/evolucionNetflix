@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerWorkflowState
 {
+    private static boolean ignorePlayerUserInteractionEnabled;
     boolean audioSeekToInProgress;
     boolean draggingAudioInProgress;
     boolean draggingInProgress;
@@ -29,6 +30,10 @@ public class PlayerWorkflowState
     boolean videoPrepared;
     long volumeChangeInProgress;
     
+    static {
+        PlayerWorkflowState.ignorePlayerUserInteractionEnabled = false;
+    }
+    
     public PlayerWorkflowState() {
         this.playStartInProgress = new AtomicBoolean();
         this.playerState = PlayerFragment$PlayerFragmentState.ACTIVITY_NOTREADY;
@@ -42,6 +47,14 @@ public class PlayerWorkflowState
         this.timelineExitOnSnap = false;
         this.timelinePreviousSeekPosition = 0;
         this.timelineInSnapZone = true;
+    }
+    
+    public static boolean ignorePlayerUserInteraction() {
+        return false;
+    }
+    
+    public static void toggleIgnorePlayerUserIntercation() {
+        PlayerWorkflowState.ignorePlayerUserInteractionEnabled = !PlayerWorkflowState.ignorePlayerUserInteractionEnabled;
     }
     
     public long getLastActionTime() {
@@ -162,6 +175,9 @@ public class PlayerWorkflowState
     }
     
     public void userInteraction() {
+        if (ignorePlayerUserInteraction()) {
+            return;
+        }
         this.userInteraction = true;
     }
 }

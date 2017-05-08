@@ -4,17 +4,13 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.RelativeLayout$LayoutParams;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.text.TextUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper$BarkerBars;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper$BarkerBars;
 import android.widget.TextView;
 import android.widget.Button;
 import android.view.ViewGroup;
@@ -26,7 +22,7 @@ import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerMovieDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerMovieDetailsFrag;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.Log;
@@ -41,7 +37,7 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup$FetchSup
     
     public BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup$FetchSupplementalsCallback(final BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup this$1, final long requestId) {
         this.this$1 = this$1;
-        super("PreReleaseVideoDetailsViewGroup");
+        super("BarkerPreReleaseVideoDetailsViewGroup");
         this.requestId = requestId;
     }
     
@@ -49,7 +45,7 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup$FetchSup
     public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
         super.onMovieDetailsFetched(movieDetails, status);
         if (this.requestId != this.this$1.this$0.requestId || this.this$1.this$0.isDestroyed()) {
-            Log.v("PreReleaseVideoDetailsViewGroup", "Ignoring stale callback");
+            Log.v("BarkerPreReleaseVideoDetailsViewGroup", "Ignoring stale callback");
         }
         else if (movieDetails != null) {
             this.setupTrailerPlay(movieDetails.getPlayable());

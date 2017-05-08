@@ -25,8 +25,8 @@ public class PostPlayItemMetadata extends PostPlayItemView
     
     @Override
     protected void findViews() {
-        this.itemBasic = (PostPlayItemBasic)this.findViewById(2131690178);
-        this.metadata = (PostPlayMetadata)this.findViewById(2131690186);
+        this.itemBasic = (PostPlayItemBasic)this.findViewById(2131755746);
+        this.metadata = (PostPlayMetadata)this.findViewById(2131755754);
     }
     
     @Override

@@ -4,35 +4,27 @@
 
 package android.support.v7.media;
 
-import android.os.Messenger;
-import android.os.IBinder;
-import java.util.List;
-import android.content.Intent;
-import android.content.Context;
-import android.util.Log;
-import java.util.ArrayList;
-import android.content.ComponentName;
-import android.content.ServiceConnection;
-
 final class RegisteredMediaRouteProvider$Controller extends MediaRouteProvider$RouteController
 {
     private RegisteredMediaRouteProvider$Connection mConnection;
     private int mControllerId;
     private int mPendingSetVolume;
     private int mPendingUpdateVolumeDelta;
+    private final String mRouteGroupId;
     private final String mRouteId;
     private boolean mSelected;
     final /* synthetic */ RegisteredMediaRouteProvider this$0;
     
-    public RegisteredMediaRouteProvider$Controller(final RegisteredMediaRouteProvider this$0, final String mRouteId) {
+    public RegisteredMediaRouteProvider$Controller(final RegisteredMediaRouteProvider this$0, final String mRouteId, final String mRouteGroupId) {
         this.this$0 = this$0;
         this.mPendingSetVolume = -1;
         this.mRouteId = mRouteId;
+        this.mRouteGroupId = mRouteGroupId;
     }
     
     public void attachConnection(final RegisteredMediaRouteProvider$Connection mConnection) {
         this.mConnection = mConnection;
-        this.mControllerId = mConnection.createRouteController(this.mRouteId);
+        this.mControllerId = mConnection.createRouteController(this.mRouteId, this.mRouteGroupId);
         if (this.mSelected) {
             mConnection.selectRoute(this.mControllerId);
             if (this.mPendingSetVolume >= 0) {

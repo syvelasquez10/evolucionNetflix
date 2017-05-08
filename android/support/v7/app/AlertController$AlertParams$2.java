@@ -9,7 +9,6 @@ import android.widget.CheckedTextView;
 import android.view.View;
 import android.database.Cursor;
 import android.content.Context;
-import android.widget.ListView;
 import android.widget.CursorAdapter;
 
 class AlertController$AlertParams$2 extends CursorAdapter
@@ -18,9 +17,9 @@ class AlertController$AlertParams$2 extends CursorAdapter
     private final int mLabelIndex;
     final /* synthetic */ AlertController$AlertParams this$0;
     final /* synthetic */ AlertController val$dialog;
-    final /* synthetic */ ListView val$listView;
+    final /* synthetic */ AlertController$RecycleListView val$listView;
     
-    AlertController$AlertParams$2(final AlertController$AlertParams this$0, final Context context, final Cursor cursor, final boolean b, final ListView val$listView, final AlertController val$dialog) {
+    AlertController$AlertParams$2(final AlertController$AlertParams this$0, final Context context, final Cursor cursor, final boolean b, final AlertController$RecycleListView val$listView, final AlertController val$dialog) {
         this.this$0 = this$0;
         this.val$listView = val$listView;
         this.val$dialog = val$dialog;

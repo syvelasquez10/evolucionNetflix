@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.experience;
 
-import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
@@ -55,70 +54,6 @@ public enum PersistentExperience
     }
     
     public static void update(final Context context, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        PersistentExperience persistentExperience2;
-        final PersistentExperience persistentExperience = persistentExperience2 = PersistentExperience.NON_KUBRICK;
-        if (serviceAgent$ConfigurationAgentInterface != null) {
-            persistentExperience2 = persistentExperience;
-            if (serviceAgent$ConfigurationAgentInterface.getDeviceCategory() == DeviceCategory.TABLET) {
-                persistentExperience2 = persistentExperience;
-                if (serviceAgent$ConfigurationAgentInterface.getKubrickConfiguration() != null) {
-                    persistentExperience2 = updateKubrickConfiguration(serviceAgent$ConfigurationAgentInterface);
-                }
-                if (serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6725() != null) {
-                    persistentExperience2 = updateABTest_6725(serviceAgent$ConfigurationAgentInterface);
-                }
-            }
-        }
-        if (Log.isLoggable()) {
-            if (serviceAgent$ConfigurationAgentInterface == null) {
-                Log.v("PersistentExperience", "null config interface - can't update");
-            }
-            else {
-                final DeviceCategory deviceCategory = serviceAgent$ConfigurationAgentInterface.getDeviceCategory();
-                Serializable cell;
-                if (serviceAgent$ConfigurationAgentInterface.getKubrickConfiguration() == null) {
-                    cell = "null Kubrick config";
-                }
-                else {
-                    cell = serviceAgent$ConfigurationAgentInterface.getKubrickConfiguration().getCell();
-                }
-                Log.v("PersistentExperience", String.format("Updating - Device cat: %s, Kubrick cell: %s, experience: %s", deviceCategory, cell, persistentExperience2));
-            }
-        }
-        PreferenceUtils.putStringPref(context, "persistent_experience_key", persistentExperience2.toString());
-    }
-    
-    private static PersistentExperience updateABTest_6725(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6725().getCell().ordinal()]) {
-            default: {
-                return PersistentExperience.NON_KUBRICK;
-            }
-            case 1: {
-                return PersistentExperience.LOLOMO_TITLE_ART_SMALL_BOXART;
-            }
-            case 2: {
-                return PersistentExperience.LOLOMO_TITLE_ART_LARGE_HORIZONTAL;
-            }
-            case 3: {
-                return PersistentExperience.LOLOMO_TITLE_ART_SMALL_HORIZONTAL;
-            }
-            case 4: {
-                return PersistentExperience.LOLOMO_TITLE_ART_LARGE_PORTRAIT_BOXART;
-            }
-        }
-    }
-    
-    private static PersistentExperience updateKubrickConfiguration(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$KubrickConfigData$KubrickCell[serviceAgent$ConfigurationAgentInterface.getKubrickConfiguration().getCell().ordinal()]) {
-            default: {
-                return PersistentExperience.NON_KUBRICK;
-            }
-            case 1: {
-                return PersistentExperience.KUBRICK_HERO_IMGS;
-            }
-            case 2: {
-                return PersistentExperience.KUBRICK_HIGH_DENSITY;
-            }
-        }
+        PreferenceUtils.putStringPref(context, "persistent_experience_key", PersistentExperience.NON_KUBRICK.toString());
     }
 }

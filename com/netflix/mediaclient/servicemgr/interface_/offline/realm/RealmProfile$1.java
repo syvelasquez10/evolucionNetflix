@@ -24,7 +24,6 @@ final class RealmProfile$1 implements Realm$Transaction
         this.val$curProfile = val$curProfile;
     }
     
-    @Override
     public void execute(final Realm realm) {
         if (RealmUtils.idNotExists(realm, RealmProfile.class, this.val$curProfileId)) {
             realm.createObject(RealmProfile.class, this.val$curProfileId).fillForRealm(this.val$curProfile);

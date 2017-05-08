@@ -9,7 +9,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.content.ContentResolver;
 import android.os.OperationCanceledException;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class ContentResolverCompatJellybean
 {
     static boolean isFrameworkOperationCanceledException(final Exception ex) {

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;

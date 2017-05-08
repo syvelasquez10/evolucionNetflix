@@ -90,46 +90,49 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
         this.mBlockedByUmaAlert = false;
         this.mUserMessageUpdatedReceiver = new StandardSlidingMenu$1(this);
         this.mNetworkChangeReceiver = new StandardSlidingMenu$2(this);
-        this.genresErrorCallback = new StandardSlidingMenu$6(this);
-        this.onHomeClickListener = (View$OnClickListener)new StandardSlidingMenu$7(this);
-        this.onSwitchProfileClickListener = (View$OnClickListener)new StandardSlidingMenu$8(this);
-        this.onGenreRowClickListener = (AdapterView$OnItemClickListener)new StandardSlidingMenu$9(this);
-        this.onAppRowClickListener = (AdapterView$OnItemClickListener)new StandardSlidingMenu$15(this);
+        this.genresErrorCallback = new StandardSlidingMenu$7(this);
+        this.onHomeClickListener = (View$OnClickListener)new StandardSlidingMenu$8(this);
+        this.onSwitchProfileClickListener = (View$OnClickListener)new StandardSlidingMenu$9(this);
+        this.onGenreRowClickListener = (AdapterView$OnItemClickListener)new StandardSlidingMenu$10(this);
+        this.onAppRowClickListener = (AdapterView$OnItemClickListener)new StandardSlidingMenu$16(this);
         this.activity = activity;
         this.drawerLayout = drawerLayout;
         this.canLoadNotifications = canLoadNotifications;
-        final View inflate = activity.getLayoutInflater().inflate(2130903300, (ViewGroup)drawerLayout);
-        (this.contentLayout = (LinearLayout)drawerLayout.findViewById(2131690337)).setOnClickListener((View$OnClickListener)null);
-        this.genresLeWrapper = new LoadingAndErrorWrapper(drawerLayout.findViewById(2131690347), this.genresErrorCallback);
-        this.notificationsDivider = drawerLayout.findViewById(2131690342);
-        this.notificationsHeader = drawerLayout.findViewById(2131690338);
+        final View inflate = activity.getLayoutInflater().inflate(2130903314, (ViewGroup)drawerLayout);
+        (this.contentLayout = (LinearLayout)drawerLayout.findViewById(2131755905)).setOnClickListener((View$OnClickListener)null);
+        this.genresLeWrapper = new LoadingAndErrorWrapper(drawerLayout.findViewById(2131755915), this.genresErrorCallback);
+        this.notificationsDivider = drawerLayout.findViewById(2131755910);
+        this.notificationsHeader = drawerLayout.findViewById(2131755906);
         if (this.notificationsHeader != null) {
-            final TextView textView = (TextView)this.notificationsHeader.findViewById(2131690074);
-            textView.setText((CharSequence)activity.getString(2131231300));
+            final TextView textView = (TextView)this.notificationsHeader.findViewById(2131755641);
+            textView.setText((CharSequence)activity.getString(2131296856));
             textView.setPadding(0, 0, 0, 0);
         }
         if (this.canLoadNotifications) {
             Log.v("StandardSlidingMenu", "Inflating notifications into layout");
-            (this.notificationsStub = (ViewStub)inflate.findViewById(2131690341)).inflate();
-            (this.notificationsFrag = (SlidingMenuNotificationsFrag)activity.getFragmentManager().findFragmentById(2131689924)).setNotificationsListStatusListener(new StandardSlidingMenu$3(this));
+            (this.notificationsStub = (ViewStub)inflate.findViewById(2131755909)).inflate();
+            (this.notificationsFrag = (SlidingMenuNotificationsFrag)activity.getFragmentManager().findFragmentById(2131755472)).setNotificationsListStatusListener(new StandardSlidingMenu$3(this));
             if (Log.isLoggable()) {
                 Log.v("StandardSlidingMenu", "Notifications frag: " + this.notificationsFrag);
             }
             this.setNotificationsVisible(this.notificationsFrag.areNotificationsPresent());
+            final View viewById = this.contentLayout.findViewById(2131755906);
+            viewById.setBackgroundResource(2130838126);
+            viewById.setOnClickListener((View$OnClickListener)new StandardSlidingMenu$4(this, activity));
         }
         else {
             this.notificationsDivider.setVisibility(8);
             this.notificationsHeader.setVisibility(8);
         }
-        (this.profilesGroup = inflate.findViewById(2131690332)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131690333);
-        this.profileName = (TextView)this.profilesGroup.findViewById(2131690335);
-        (this.profileImg = (AdvancedImageView)this.profilesGroup.findViewById(2131690334)).setPressedStateHandlerEnabled(false);
-        (this.genresList = (StaticListView)this.contentLayout.findViewById(2131690348)).setFocusable(false);
+        (this.profilesGroup = inflate.findViewById(2131755900)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131755901);
+        this.profileName = (TextView)this.profilesGroup.findViewById(2131755903);
+        (this.profileImg = (AdvancedImageView)this.profilesGroup.findViewById(2131755902)).setPressedStateHandlerEnabled(false);
+        (this.genresList = (StaticListView)this.contentLayout.findViewById(2131755916)).setFocusable(false);
         this.homeGenreRow = this.createHomeRow();
         this.genresList.addHeaderView(this.homeGenreRow, (Object)null, false);
         this.setSelectedGenre(StandardSlidingMenu.HOME_LOLOMO);
-        (this.appList = (StaticListView)this.contentLayout.findViewById(2131690350)).setFocusable(false);
+        (this.appList = (StaticListView)this.contentLayout.findViewById(2131755918)).setFocusable(false);
         this.setAppActions();
         this.fetchGenresDataIfReady();
         activity.registerReceiverWithAutoUnregister(this.mNetworkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
@@ -137,7 +140,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private void applyGenreSelectionStyle(final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder) {
         ViewUtils.setTextViewToBold(standardSlidingMenu$GenreRowHolder.tv);
-        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131624144));
+        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131689683));
         standardSlidingMenu$GenreRowHolder.selectionIndicator.setVisibility(0);
     }
     
@@ -157,16 +160,16 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             return list;
         }
         if (netflixActivity.showSettingsInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231243), new StandardSlidingMenu$10(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131296799), new StandardSlidingMenu$11(netflixActivity)));
         }
         if (netflixActivity.showAccountInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231242), new StandardSlidingMenu$11(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131296798), new StandardSlidingMenu$12(netflixActivity)));
         }
         if (netflixActivity.showAboutInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131230975), new StandardSlidingMenu$12(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131296531), new StandardSlidingMenu$13(netflixActivity)));
         }
         if (netflixActivity.showContactUsInSlidingMenu() && netflixActivity.getServiceManager().getVoip() != null && netflixActivity.getServiceManager().getVoip().isEnabled()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231018), new StandardSlidingMenu$13(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131296574), new StandardSlidingMenu$14(netflixActivity)));
         }
         else if (Log.isLoggable()) {
             Log.w("StandardSlidingMenu", "Show Contact Us In SlidingMenu: " + netflixActivity.showContactUsInSlidingMenu());
@@ -174,7 +177,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             Log.w("StandardSlidingMenu", "VOIP is enabled: " + (netflixActivity.getServiceManager().getVoip() != null && netflixActivity.getServiceManager().getVoip().isEnabled() && b));
         }
         if (netflixActivity.showSignOutInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231236), new StandardSlidingMenu$14(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131296792), new StandardSlidingMenu$15(netflixActivity)));
         }
         if (Log.isLoggable()) {
             Log.d("StandardSlidingMenu", "App section should exist " + list.size());
@@ -183,42 +186,42 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     }
     
     private View createHomeRow() {
-        final View inflate = this.activity.getLayoutInflater().inflate(2130903301, (ViewGroup)null);
-        (this.homeText = (TextView)inflate.findViewById(2131690074)).setText(2131231113);
-        inflate.setBackgroundResource(2130837982);
+        final View inflate = this.activity.getLayoutInflater().inflate(2130903315, (ViewGroup)null);
+        (this.homeText = (TextView)inflate.findViewById(2131755641)).setText(2131296669);
+        inflate.setBackgroundResource(2130838126);
         inflate.setOnClickListener(this.onHomeClickListener);
-        inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(this.homeText, inflate.findViewById(2131690075)));
+        inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(this.homeText, inflate.findViewById(2131755642)));
         return inflate;
     }
     
     private void createOfflineRowIfNeeded() {
         if (this.activity.showOfflineInMenu() && this.activity.getServiceManager().isOfflineFeatureAvailable()) {
-            final View viewById = this.contentLayout.findViewById(2131690343);
-            final View viewById2 = viewById.findViewById(2131690351);
-            final View viewById3 = viewById.findViewById(2131690345);
+            final View viewById = this.contentLayout.findViewById(2131755911);
+            final View viewById2 = viewById.findViewById(2131755919);
+            final View viewById3 = viewById.findViewById(2131755913);
             viewById2.setVisibility(0);
             if (BrowseExperience.showKidsExperience()) {
-                viewById2.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131362151);
-                viewById3.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131362151);
+                viewById2.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131427701);
+                viewById3.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131427701);
             }
-            final TextView textView = (TextView)viewById.findViewById(2131690074);
+            final TextView textView = (TextView)viewById.findViewById(2131755641);
             textView.setPadding(0, 0, 0, 0);
-            textView.setText((CharSequence)this.activity.getString(2131231078));
+            textView.setText((CharSequence)this.activity.getString(2131296634));
             if (BrowseExperience.showKidsExperience()) {
-                textView.setTextColor(ContextCompat.getColor((Context)this.activity, 2131624058));
+                textView.setTextColor(ContextCompat.getColor((Context)this.activity, 2131689595));
             }
-            final ImageView imageView = (ImageView)viewById.findViewById(2131690344);
+            final ImageView imageView = (ImageView)viewById.findViewById(2131755912);
             Drawable imageDrawable;
-            final Drawable drawable = imageDrawable = ContextCompat.getDrawable((Context)this.activity, 2130837675);
+            final Drawable drawable = imageDrawable = ContextCompat.getDrawable((Context)this.activity, 2130837681);
             if (BrowseExperience.showKidsExperience()) {
                 imageDrawable = DrawableCompat.wrap(drawable.mutate());
-                final int color = ContextCompat.getColor((Context)this.activity, 2131624058);
+                final int color = ContextCompat.getColor((Context)this.activity, 2131689595);
                 textView.setTextColor(color);
                 DrawableCompat.setTint(imageDrawable, color);
             }
             imageView.setImageDrawable(imageDrawable);
-            viewById.setBackgroundResource(2130837982);
-            viewById.setOnClickListener((View$OnClickListener)new StandardSlidingMenu$4(this));
+            viewById.setBackgroundResource(2130838126);
+            viewById.setOnClickListener((View$OnClickListener)new StandardSlidingMenu$5(this));
             viewById.setVisibility(0);
         }
     }
@@ -241,7 +244,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private void removeGenreSelectionStyle(final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder) {
         ViewUtils.setTextViewToNormal(standardSlidingMenu$GenreRowHolder.tv);
-        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131624145));
+        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131689684));
         standardSlidingMenu$GenreRowHolder.selectionIndicator.setVisibility(8);
     }
     
@@ -356,7 +359,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     public void closeDrawersWithDelay() {
         final DrawerLayout drawerLayout = this.drawerLayout;
-        final StandardSlidingMenu$5 standardSlidingMenu$5 = new StandardSlidingMenu$5(this);
+        final StandardSlidingMenu$6 standardSlidingMenu$6 = new StandardSlidingMenu$6(this);
         long n;
         if (Build$VERSION.SDK_INT >= 21) {
             n = 300L;
@@ -364,7 +367,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
         else {
             n = 0L;
         }
-        drawerLayout.postDelayed((Runnable)standardSlidingMenu$5, n);
+        drawerLayout.postDelayed((Runnable)standardSlidingMenu$6, n);
     }
     
     public void markNotificationsAsRead() {

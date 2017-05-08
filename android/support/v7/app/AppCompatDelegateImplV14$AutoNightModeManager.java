@@ -37,6 +37,7 @@ final class AppCompatDelegateImplV14$AutoNightModeManager
     }
     
     final int getApplyableNightMode() {
+        this.mIsNight = this.mTwilightManager.isNight();
         if (this.mIsNight) {
             return 2;
         }

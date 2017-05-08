@@ -11,7 +11,9 @@ import android.app.PendingIntent;
 import android.graphics.Bitmap;
 import android.media.RemoteControlClient$MetadataEditor;
 import android.os.Bundle;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class MediaSessionCompatApi14
 {
     private static final long ACTION_FAST_FORWARD = 64L;

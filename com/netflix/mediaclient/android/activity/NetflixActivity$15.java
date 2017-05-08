@@ -4,6 +4,9 @@
 
 package com.netflix.mediaclient.android.activity;
 
+import android.content.Context;
+import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+
 class NetflixActivity$15 implements Runnable
 {
     final /* synthetic */ NetflixActivity this$0;
@@ -14,6 +17,7 @@ class NetflixActivity$15 implements Runnable
     
     @Override
     public void run() {
+        this.this$0.startActivity(ProfileSelectionActivity.createStartIntentSingleTop((Context)this.this$0.getNetflixApplication()));
         this.this$0.finish();
     }
 }

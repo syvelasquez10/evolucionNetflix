@@ -211,11 +211,11 @@ public abstract class MSLVolleyRequest<T> extends Request<T> implements IMSLClie
             status = new NetflixStatus(StatusCode.SERVER_ERROR);
         }
         else if (volleyError instanceof TimeoutError || volleyError instanceof NetworkError) {
-            status = VolleyUtils.getStatus(volleyError, this.mErrorLogger);
+            status = VolleyUtils.getStatus(volleyError, this.mErrorLogger, StatusCode.INT_ERR_FETCH_TIMEOUT);
         }
         NetflixStatus netflixStatus;
         if ((netflixStatus = status) == null) {
-            netflixStatus = new NetflixStatus(StatusCode.INTERNAL_ERROR);
+            netflixStatus = new NetflixStatus(StatusCode.INT_ERR_FETCH_ERROR);
         }
         if (netflixStatus.getError() == null) {
             Log.d("nf_volleyrequest", "Error is not set yet, add it.");

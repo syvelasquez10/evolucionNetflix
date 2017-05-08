@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.offline.agent;
 
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.android.app.Status;
@@ -29,6 +30,10 @@ public interface OfflineAgentListener
     void onOfflinePlayableDeleted(final String p0, final Status p1);
     
     void onOfflinePlayableProgress(final OfflinePlayableViewData p0, final int p1);
+    
+    void onOfflinePlayablesDeleted(final List<String> p0, final Status p1);
+    
+    void onOfflineStorageVolumeAddedOrRemoved(final boolean p0);
     
     void onPlayWindowRenewDone(final OfflinePlayableViewData p0, final Status p1);
 }

@@ -130,7 +130,7 @@ public class NavigationMenuItemView extends ForegroundLinearLayout implements Me
         }
         this.setVisibility(visibility);
         if (this.getBackground() == null) {
-            this.setBackgroundDrawable((Drawable)this.createDefaultBackground());
+            ViewCompat.setBackground((View)this, (Drawable)this.createDefaultBackground());
         }
         this.setCheckable(mItemData.isCheckable());
         this.setChecked(mItemData.isChecked());
@@ -215,8 +215,8 @@ public class NavigationMenuItemView extends ForegroundLinearLayout implements Me
     public void setShortcut(final boolean b, final char c) {
     }
     
-    public void setTextAppearance(final Context context, final int n) {
-        this.mTextView.setTextAppearance(context, n);
+    public void setTextAppearance(final int n) {
+        TextViewCompat.setTextAppearance((TextView)this.mTextView, n);
     }
     
     public void setTextColor(final ColorStateList textColor) {

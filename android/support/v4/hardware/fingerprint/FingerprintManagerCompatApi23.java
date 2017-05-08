@@ -10,23 +10,33 @@ import android.os.CancellationSignal;
 import android.os.Handler;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager$CryptoObject;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 public final class FingerprintManagerCompatApi23
 {
     public static void authenticate(final Context context, final FingerprintManagerCompatApi23$CryptoObject fingerprintManagerCompatApi23$CryptoObject, final int n, final Object o, final FingerprintManagerCompatApi23$AuthenticationCallback fingerprintManagerCompatApi23$AuthenticationCallback, final Handler handler) {
-        getFingerprintManager(context).authenticate(wrapCryptoObject(fingerprintManagerCompatApi23$CryptoObject), (CancellationSignal)o, n, wrapCallback(fingerprintManagerCompatApi23$AuthenticationCallback), handler);
+        final FingerprintManager fingerprintManagerOrNull = getFingerprintManagerOrNull(context);
+        if (fingerprintManagerOrNull != null) {
+            fingerprintManagerOrNull.authenticate(wrapCryptoObject(fingerprintManagerCompatApi23$CryptoObject), (CancellationSignal)o, n, wrapCallback(fingerprintManagerCompatApi23$AuthenticationCallback), handler);
+        }
     }
     
-    private static FingerprintManager getFingerprintManager(final Context context) {
-        return (FingerprintManager)context.getSystemService((Class)FingerprintManager.class);
+    private static FingerprintManager getFingerprintManagerOrNull(final Context context) {
+        if (context.getPackageManager().hasSystemFeature("android.hardware.fingerprint")) {
+            return (FingerprintManager)context.getSystemService((Class)FingerprintManager.class);
+        }
+        return null;
     }
     
     public static boolean hasEnrolledFingerprints(final Context context) {
-        return getFingerprintManager(context).hasEnrolledFingerprints();
+        final FingerprintManager fingerprintManagerOrNull = getFingerprintManagerOrNull(context);
+        return fingerprintManagerOrNull != null && fingerprintManagerOrNull.hasEnrolledFingerprints();
     }
     
     public static boolean isHardwareDetected(final Context context) {
-        return getFingerprintManager(context).isHardwareDetected();
+        final FingerprintManager fingerprintManagerOrNull = getFingerprintManagerOrNull(context);
+        return fingerprintManagerOrNull != null && fingerprintManagerOrNull.isHardwareDetected();
     }
     
     private static FingerprintManagerCompatApi23$CryptoObject unwrapCryptoObject(final FingerprintManager$CryptoObject fingerprintManager$CryptoObject) {

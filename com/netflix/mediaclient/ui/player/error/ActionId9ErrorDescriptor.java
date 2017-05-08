@@ -20,7 +20,7 @@ class ActionId9ErrorDescriptor extends PlaybackErrorDescriptor
         final String message = nccpActionId.getMessage();
         String string;
         if (message == null) {
-            string = playerFragment.getString(2131230785);
+            string = playerFragment.getString(2131296335);
             Log.e("nf_play_error", "ActionID 9 NFErr_MC_NCCP_UnsupportedVersion: force exit app, generic message");
         }
         else {

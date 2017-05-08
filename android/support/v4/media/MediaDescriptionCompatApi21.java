@@ -9,7 +9,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.media.MediaDescription;
 import android.os.Parcel;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class MediaDescriptionCompatApi21
 {
     public static Object fromParcel(final Parcel parcel) {

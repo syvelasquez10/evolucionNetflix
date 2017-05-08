@@ -64,6 +64,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
     private Subtitle mCurrentSubtitleTrack;
     private String mDxid;
     private boolean mEndPlayLogged;
+    private boolean mErrorLogged;
     private final IClientLogging mLoggingAgent;
     private final Handler mMainHandler;
     private final long mMovieId;
@@ -235,8 +236,8 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
     
     private void reportEndPlay(final OfflinePlaybackSession$EndPlayReason offlinePlaybackSession$EndPlayReason, final String s, final String s2, final String s3) {
         Log.d("OfflinePlayback_Session", "reportEndPlay: ");
-        if (this.mEndPlayLogged) {
-            Log.d("OfflinePlayback_Session", "reportEndPlay: Already logged");
+        if (this.mEndPlayLogged || this.mErrorLogged) {
+            Log.d("OfflinePlayback_Session", "reportEndPlay: Already logged or error reported");
             return;
         }
         this.mBatteryStats.updateBatteryStat(false);
@@ -247,6 +248,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
         LogArguments$LogLevel logArguments$LogLevel = LogArguments$LogLevel.INFO;
         if (offlinePlaybackSession$EndPlayReason == OfflinePlaybackSession$EndPlayReason.error) {
             logArguments$LogLevel = LogArguments$LogLevel.ERROR;
+            this.mErrorLogged = true;
         }
         JSONObject playbackStatJSON = null;
         if (this.mOfflinePlayer != null) {
@@ -283,6 +285,9 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
         while (true) {
             try {
                 this.sendBlob(new StartPlay(logArguments$LogLevel, this.mMovieId, this.mPlayContext.getTrackId(), this.mXid, this.mOxid, this.mDxid, n, this.mBookmark, this.mVdlid, this.mVBitrate, this.mAdlid, this.mABitrate, n, connectedOrConnecting, s, s2, s3));
+                if (s != null) {
+                    this.mErrorLogged = true;
+                }
                 this.mStartPlayLogged = true;
             }
             catch (JSONException ex) {

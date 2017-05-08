@@ -12,7 +12,7 @@ import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerMovieDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerMovieDetailsFrag;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -28,7 +28,7 @@ class BarkerPreReleaseDetailsFrag$FetchShowDetailsCallback extends LoggingManage
     
     public BarkerPreReleaseDetailsFrag$FetchShowDetailsCallback(final BarkerPreReleaseDetailsFrag this$0, final long requestId) {
         this.this$0 = this$0;
-        super("PreReleaseDetailsFrag");
+        super("BarkerPreReleaseDetailsFrag");
         this.requestId = requestId;
     }
     
@@ -36,21 +36,21 @@ class BarkerPreReleaseDetailsFrag$FetchShowDetailsCallback extends LoggingManage
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
         super.onShowDetailsFetched(showDetails, status);
         if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getNetflixActivity())) {
-            Log.v("PreReleaseDetailsFrag", "Activity state is invalid");
+            Log.v("BarkerPreReleaseDetailsFrag", "Activity state is invalid");
             return;
         }
         if (this.requestId != this.this$0.requestId || this.this$0.isDestroyed()) {
-            Log.v("PreReleaseDetailsFrag", "Ignoring stale callback");
+            Log.v("BarkerPreReleaseDetailsFrag", "Ignoring stale callback");
             return;
         }
         this.this$0.isLoading = false;
         if (status.isError()) {
-            Log.w("PreReleaseDetailsFrag", "Invalid status code");
+            Log.w("BarkerPreReleaseDetailsFrag", "Invalid status code");
             this.this$0.showErrorView();
             return;
         }
         if (showDetails == null) {
-            Log.v("PreReleaseDetailsFrag", "No details in response");
+            Log.v("BarkerPreReleaseDetailsFrag", "No details in response");
             this.this$0.showErrorView();
             return;
         }

@@ -6,7 +6,9 @@ package android.support.v4.net;
 
 import android.net.TrafficStats;
 import java.net.DatagramSocket;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 public class TrafficStatsCompatApi24
 {
     public static void tagDatagramSocket(final DatagramSocket datagramSocket) {

@@ -30,7 +30,7 @@ class ActionId3ErrorDescriptor extends PlaybackErrorDescriptor
         final ExitPlayerAction exitPlayerAction = new ExitPlayerAction(playerFragment.getActivity());
         String string;
         if (StringUtils.isEmpty(message)) {
-            string = playerFragment.getString(2131230782);
+            string = playerFragment.getString(2131296332);
             Log.e("nf_play_error", "ActionID 3 NFErr_MC_NCCP_CustomError: Error message expected, but not received, displaying generic error");
         }
         else {

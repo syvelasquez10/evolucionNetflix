@@ -58,10 +58,10 @@ class AnimatedVectorDrawableCompat$AnimatedVectorDrawableCompatState extends Dra
     }
     
     public Drawable newDrawable() {
-        throw new IllegalStateException("No constant state support for SDK < 23.");
+        throw new IllegalStateException("No constant state support for SDK < 24.");
     }
     
     public Drawable newDrawable(final Resources resources) {
-        throw new IllegalStateException("No constant state support for SDK < 23.");
+        throw new IllegalStateException("No constant state support for SDK < 24.");
     }
 }

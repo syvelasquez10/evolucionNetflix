@@ -4,12 +4,16 @@
 
 package com.netflix.mediaclient.javabridge.transport;
 
+import org.json.JSONObject;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import com.netflix.mediaclient.service.logging.StorageLogblobInfo;
 import com.netflix.mediaclient.util.MediaUtils;
 import com.netflix.mediaclient.util.SubtitleUtils;
 import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
+import com.netflix.mediaclient.service.logging.LoggingAgent;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.javabridge.error.CrashReport;
@@ -37,10 +41,13 @@ public class NativeTransport implements Transport
     private static boolean mpCapable;
     private Bridge bridge;
     private boolean destroyed;
+    private String mChannelId;
+    private String mCritSessionId;
     private int mDalvikVMHeapSize;
     private String mDeviceId;
     private boolean mDeviceLowMem;
     private String mDeviceModel;
+    private String mDeviceStorageInfo;
     private boolean mEnableLowBitrateStreams;
     private String mEsn;
     private final NativeTransport$TransportEventHandler mEventHandler;
@@ -53,6 +60,7 @@ public class NativeTransport implements Transport
     private String mRootFileSystem;
     private int mScreenHeight;
     private int mScreenWidth;
+    private String mStartupCarrierInfo;
     private boolean mSupportVideoSeamlessSwitch;
     private Surface mSurface;
     private int mVideoBufferSize;
@@ -73,6 +81,7 @@ public class NativeTransport implements Transport
         this.mGoogleApiClientVersion = 0;
         this.mGmsPkgVersion = 0;
         this.mIpConnectivityPolicy = IpConnectivityPolicy.IP_V6_V4.getValue();
+        this.mStartupCarrierInfo = "";
         Log.d("nf-NativeTransport", "NativeTransport constructor start");
         this.bridge = bridge;
         this.proxy = proxy;
@@ -244,6 +253,7 @@ public class NativeTransport implements Transport
         final String fileSystemRoot = this.bridge.getFileSystemRoot();
         final EsnProvider esnProvider = this.bridge.getEsnProvider();
         final IpConnectivityPolicy ipConnectivityPolicy = this.bridge.getIpConnectivityPolicy();
+        final String channelId = this.bridge.getChannelId();
         this.mRootFileSystem = StringUtils.notNull("rootFileSystemn", fileSystemRoot);
         this.mEsn = StringUtils.notNull("esn", esnProvider.getEsn());
         String fesn;
@@ -255,6 +265,14 @@ public class NativeTransport implements Transport
         }
         this.mFesn = fesn;
         this.mFesn2 = StringUtils.notNull("fesn2", esnProvider.getFesn2());
+        String notNull;
+        if (StringUtils.isNotEmpty(channelId)) {
+            notNull = StringUtils.notNull("channelId", channelId);
+        }
+        else {
+            notNull = "";
+        }
+        this.mChannelId = notNull;
         this.mDeviceId = StringUtils.notNull("deviceId", esnProvider.getDeviceId());
         this.mDeviceModel = StringUtils.notNull("modelId", esnProvider.getDeviceModel());
         this.mDeviceLowMem = this.bridge.isDeviceLowMem();
@@ -263,6 +281,7 @@ public class NativeTransport implements Transport
         this.mDalvikVMHeapSize = (int)(Runtime.getRuntime().maxMemory() / 1048576L);
         this.mGoogleApiClientVersion = DeviceUtils.getGooglePlayClientSDKVersion(this.bridge.getContext());
         this.mGmsPkgVersion = DeviceUtils.getGMSPkgVersion(this.bridge.getContext());
+        this.mCritSessionId = LoggingAgent.gCritSessionId + "";
         if (AndroidUtils.getAndroidVersion() >= 19) {
             this.mSupportVideoSeamlessSwitch = AdaptiveMediaDecoderHelper.isAvcDecoderSupportsAdaptivePlayback();
         }
@@ -276,6 +295,11 @@ public class NativeTransport implements Transport
             this.mIpConnectivityPolicy = ipConnectivityPolicy.getValue();
         }
         this.mVideoDecoderCapLogging = MediaUtils.getDecoderCapbilityForFormatIfUpdated();
+        this.mDeviceStorageInfo = StorageLogblobInfo.buildDeviceExternalStorageLogblobInfo(this.bridge.getContext());
+        final JSONObject carrierInfo = ConnectivityUtils.getCarrierInfo(this.bridge.getContext());
+        if (carrierInfo != null) {
+            this.mStartupCarrierInfo = carrierInfo.toString();
+        }
         if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", "rootFileSystem: " + this.mRootFileSystem);
             Log.d("nf-NativeTransport", "esn: " + this.mEsn);
@@ -290,9 +314,12 @@ public class NativeTransport implements Transport
             Log.d("nf-NativeTransport", "Embedded screen height in px: " + this.mScreenHeight);
             Log.d("nf-NativeTransport", "Google API client version:" + this.mGoogleApiClientVersion);
             Log.d("nf-NativeTransport", "GMS pkg version:" + this.mGmsPkgVersion);
+            Log.d("nf-NativeTransport", "CRIT Session Id:" + this.mCritSessionId);
             Log.d("nf-NativeTransport", "MdxJS version:" + this.mMdxJsVersion);
             Log.d("nf-NativeTransport", "MDX Version:2013.3");
             Log.d("nf-NativeTransport", "Video decoders: " + this.mVideoDecoderCapLogging);
+            Log.d("nf-NativeTransport", "DeviceStorageInfo: " + this.mDeviceStorageInfo);
+            Log.d("nf-NativeTransport", "CellularInfo:" + this.mStartupCarrierInfo);
         }
         this.playerType = this.bridge.getCurrentPlayerType();
         if (this.playerType == null) {
@@ -351,9 +378,9 @@ public class NativeTransport implements Transport
         if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", " invokeMethod subobject = " + string + " method = " + s + " jsonString = " + s2);
         }
-        Label_0081: {
+        Label_0080: {
             if (string != null) {
-                break Label_0081;
+                break Label_0080;
             }
             string = "nrdp";
             while (true) {
@@ -364,10 +391,10 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    // iftrue(Label_0103:, !string.startsWith("nrdp"))
+                    // iftrue(Label_0102:, !string.startsWith("nrdp"))
                     Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
-                    Label_0103: {
+                    Label_0102: {
                         string = "nrdp." + string;
                     }
                     continue;
@@ -392,19 +419,18 @@ public class NativeTransport implements Transport
             string = "nrdp";
             try {
                 // iftrue(Label_0090:, !string.startsWith("nrdp"))
-            Block_4_Outer:
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
-                    while (true) {
-                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_4_Outer;
+                    Block_4: {
+                        break Block_4;
+                        Label_0090: {
+                            string = "nrdp." + string;
+                        }
                         continue;
                     }
-                    Label_0090: {
-                        string = "nrdp." + string;
-                    }
-                    continue Block_4_Outer;
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
                 }
             }
             catch (Throwable t) {

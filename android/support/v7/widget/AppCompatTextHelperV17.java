@@ -10,7 +10,9 @@ import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
 import android.graphics.drawable.Drawable;
 import android.widget.TextView;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 class AppCompatTextHelperV17 extends AppCompatTextHelper
 {
     private TintInfo mDrawableEndTint;

@@ -208,227 +208,182 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
         return this.realmGet$isSupplementalVideo();
     }
     
-    @Override
     public String realmGet$advisoriesString() {
         return this.advisoriesString;
     }
     
-    @Override
     public int realmGet$bookmark() {
         return this.bookmark;
     }
     
-    @Override
     public int realmGet$duration() {
         return this.duration;
     }
     
-    @Override
     public int realmGet$endtime() {
         return this.endtime;
     }
     
-    @Override
     public int realmGet$episodeNumber() {
         return this.episodeNumber;
     }
     
-    @Override
     public long realmGet$expTime() {
         return this.expTime;
     }
     
-    @Override
     public boolean realmGet$isAdvisoryDisabled() {
         return this.isAdvisoryDisabled;
     }
     
-    @Override
     public boolean realmGet$isAgeProtected() {
         return this.isAgeProtected;
     }
     
-    @Override
     public boolean realmGet$isAutoPlay() {
         return this.isAutoPlay;
     }
     
-    @Override
     public boolean realmGet$isAvailableToStream() {
         return this.isAvailableToStream;
     }
     
-    @Override
     public boolean realmGet$isEpisode() {
         return this.isEpisode;
     }
     
-    @Override
     public boolean realmGet$isExemptFromLimit() {
         return this.isExemptFromLimit;
     }
     
-    @Override
     public boolean realmGet$isNSRE() {
         return this.isNSRE;
     }
     
-    @Override
     public boolean realmGet$isNextPlayableEpisode() {
         return this.isNextPlayableEpisode;
     }
     
-    @Override
     public boolean realmGet$isPinProtected() {
         return this.isPinProtected;
     }
     
-    @Override
     public boolean realmGet$isSupplementalVideo() {
         return this.isSupplementalVideo;
     }
     
-    @Override
     public int realmGet$logicalStart() {
         return this.logicalStart;
     }
     
-    @Override
     public int realmGet$maxAutoplay() {
         return this.maxAutoplay;
     }
     
-    @Override
     public String realmGet$parentId() {
         return this.parentId;
     }
     
-    @Override
     public String realmGet$parentTitle() {
         return this.parentTitle;
     }
     
-    @Override
     public String realmGet$playableId() {
         return this.playableId;
     }
     
-    @Override
     public String realmGet$seasonLabel() {
         return this.seasonLabel;
     }
     
-    @Override
     public int realmGet$seasonNumber() {
         return this.seasonNumber;
     }
     
-    @Override
     public String realmGet$title() {
         return this.title;
     }
     
-    @Override
     public long realmGet$watchedTime() {
         return this.watchedTime;
     }
     
-    @Override
     public void realmSet$advisoriesString(final String advisoriesString) {
         this.advisoriesString = advisoriesString;
     }
     
-    @Override
     public void realmSet$bookmark(final int bookmark) {
         this.bookmark = bookmark;
     }
     
-    @Override
     public void realmSet$duration(final int duration) {
         this.duration = duration;
     }
     
-    @Override
     public void realmSet$endtime(final int endtime) {
         this.endtime = endtime;
     }
     
-    @Override
     public void realmSet$episodeNumber(final int episodeNumber) {
         this.episodeNumber = episodeNumber;
     }
     
-    @Override
     public void realmSet$expTime(final long expTime) {
         this.expTime = expTime;
     }
     
-    @Override
     public void realmSet$isAdvisoryDisabled(final boolean isAdvisoryDisabled) {
         this.isAdvisoryDisabled = isAdvisoryDisabled;
     }
     
-    @Override
     public void realmSet$isAgeProtected(final boolean isAgeProtected) {
         this.isAgeProtected = isAgeProtected;
     }
     
-    @Override
     public void realmSet$isAutoPlay(final boolean isAutoPlay) {
         this.isAutoPlay = isAutoPlay;
     }
     
-    @Override
     public void realmSet$isAvailableToStream(final boolean isAvailableToStream) {
         this.isAvailableToStream = isAvailableToStream;
     }
     
-    @Override
     public void realmSet$isEpisode(final boolean isEpisode) {
         this.isEpisode = isEpisode;
     }
     
-    @Override
     public void realmSet$isExemptFromLimit(final boolean isExemptFromLimit) {
         this.isExemptFromLimit = isExemptFromLimit;
     }
     
-    @Override
     public void realmSet$isNSRE(final boolean isNSRE) {
         this.isNSRE = isNSRE;
     }
     
-    @Override
     public void realmSet$isNextPlayableEpisode(final boolean isNextPlayableEpisode) {
         this.isNextPlayableEpisode = isNextPlayableEpisode;
     }
     
-    @Override
     public void realmSet$isPinProtected(final boolean isPinProtected) {
         this.isPinProtected = isPinProtected;
     }
     
-    @Override
     public void realmSet$isSupplementalVideo(final boolean isSupplementalVideo) {
         this.isSupplementalVideo = isSupplementalVideo;
     }
     
-    @Override
     public void realmSet$logicalStart(final int logicalStart) {
         this.logicalStart = logicalStart;
     }
     
-    @Override
     public void realmSet$maxAutoplay(final int maxAutoplay) {
         this.maxAutoplay = maxAutoplay;
     }
     
-    @Override
     public void realmSet$parentId(final String parentId) {
         this.parentId = parentId;
     }
     
-    @Override
     public void realmSet$parentTitle(final String parentTitle) {
         this.parentTitle = parentTitle;
     }
@@ -437,22 +392,18 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
         this.playableId = playableId;
     }
     
-    @Override
     public void realmSet$seasonLabel(final String seasonLabel) {
         this.seasonLabel = seasonLabel;
     }
     
-    @Override
     public void realmSet$seasonNumber(final int seasonNumber) {
         this.seasonNumber = seasonNumber;
     }
     
-    @Override
     public void realmSet$title(final String title) {
         this.title = title;
     }
     
-    @Override
     public void realmSet$watchedTime(final long watchedTime) {
         this.watchedTime = watchedTime;
     }

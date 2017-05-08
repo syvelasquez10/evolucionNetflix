@@ -50,7 +50,7 @@ public class MDXControllerActivity extends NetflixActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlayViewGroup = this.findViewById(2131690149);
+        this.postPlayViewGroup = this.findViewById(2131755717);
         this.postPlayController = PostPlayFactory.createForMdx(this);
     }
     
@@ -138,7 +138,7 @@ public class MDXControllerActivity extends NetflixActivity
     @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        this.setContentView(2130903184);
+        this.setContentView(2130903187);
         this.setupPostplayViews();
         this.showEpisodesData();
         if (this.getSupportActionBar() != null) {
@@ -149,7 +149,7 @@ public class MDXControllerActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903184);
+        this.setContentView(2130903187);
         if (this.getSupportActionBar() != null) {
             this.getSupportActionBar().hide();
         }

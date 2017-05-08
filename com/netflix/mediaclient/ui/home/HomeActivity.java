@@ -31,7 +31,6 @@ import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.ui.kubrick.lolomo.BarkerHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.annotation.SuppressLint;
@@ -78,6 +77,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     public static final String REFRESH_HOME_LOLOMO = "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO";
     static final int REQUEST_RESOLVE_ERROR = 1001;
     private static final String TAG = "HomeActivity";
+    private static int currentUnreadCount;
     private InteractiveTracker$TTRTracker TTRTracker;
     private boolean bWasHamburgerClicked;
     private final LinkedList<Intent> backStackIntents;
@@ -193,7 +193,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131231215, 1).show();
+        Toast.makeText((Context)this, 2131296771, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -218,14 +218,14 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131689866)).setDrawerListener(new HomeActivity$4(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131755415)).setDrawerListener(new HomeActivity$4(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
         this.drawerLayout.setFocusable(false);
-        this.drawerLayout.setScrimColor(this.getResources().getColor(2131624038));
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131689577));
         this.updateActionBar();
         this.updateSlidingDrawer();
     }
@@ -248,7 +248,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131689755, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131755307, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -308,14 +308,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     @Override
-    protected NetflixActionBar createActionBar() {
-        if (BrowseExperience.isKubrick() || BrowseExperience.isDisplayPageRefresh()) {
-            return new BarkerHomeActionBar(this, this.hasUpAction());
-        }
-        return super.createActionBar();
-    }
-    
-    @Override
     protected ManagerStatusListener createManagerStatusListener() {
         return this.managerStatusListener;
     }
@@ -336,12 +328,16 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public int getActionBarParentViewId() {
-        return 2131689857;
+        return 2131755406;
     }
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903141;
+        return 2130903146;
+    }
+    
+    public int getCurrentUnreadCount() {
+        return HomeActivity.currentUnreadCount;
     }
     
     public IClientLogging$ModalView getCurrentViewType() {
@@ -522,6 +518,10 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     @Override
     protected boolean requiresDownloadButtonListener() {
         return true;
+    }
+    
+    public void setCurrentUnreadCount(final int currentUnreadCount) {
+        HomeActivity.currentUnreadCount = currentUnreadCount;
     }
     
     @Override

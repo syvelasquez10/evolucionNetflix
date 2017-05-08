@@ -5,7 +5,9 @@
 package android.support.v4.app;
 
 import android.os.Bundle;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class ActivityOptionsCompat$ActivityOptionsImplJB extends ActivityOptionsCompat
 {
     private final ActivityOptionsCompatJB mImpl;

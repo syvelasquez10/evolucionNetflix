@@ -4,11 +4,9 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import android.content.Intent;
-import android.content.Context;
-import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.Log;
 
-class PlayerFragment$17 extends BroadcastReceiver
+class PlayerFragment$17 implements Runnable
 {
     final /* synthetic */ PlayerFragment this$0;
     
@@ -16,7 +14,9 @@ class PlayerFragment$17 extends BroadcastReceiver
         this.this$0 = this$0;
     }
     
-    public void onReceive(final Context context, final Intent intent) {
-        this.this$0.handleConnectivityCheck();
+    @Override
+    public void run() {
+        Log.d("PlayerFragment", "Playback canceled when not longer on WiFi");
+        this.this$0.cleanupAndExit();
     }
 }

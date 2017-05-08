@@ -349,9 +349,9 @@ class MediaBrowserCompat$MediaBrowserImplBase implements MediaBrowserCompat$Medi
                     break Label_0066;
                 }
                 List<MediaBrowserCompat$SubscriptionCallback> callbacks;
-                int n;
                 List<Bundle> optionsList;
-                Block_7_Outer:Label_0090_Outer:
+                int n;
+                Label_0148_Outer:Label_0130_Outer:
                 while (true) {
                     try {
                         if (this.mState == 2) {
@@ -362,29 +362,34 @@ class MediaBrowserCompat$MediaBrowserImplBase implements MediaBrowserCompat$Medi
                             return;
                         }
                         return;
-                        // iftrue(Label_0044:, n < 0)
+                        callbacks = mediaBrowserCompat$Subscription.getCallbacks();
+                        optionsList = mediaBrowserCompat$Subscription.getOptionsList();
+                        n = callbacks.size() - 1;
                         // iftrue(Label_0148:, callbacks.get(n) != mediaBrowserCompat$SubscriptionCallback)
-                        // iftrue(Label_0130:, this.mState != 2)
+                        // iftrue(Label_0044:, n < 0)
                         while (true) {
-                            Label_0148: {
+                            Block_6: {
                                 while (true) {
+                                Block_5_Outer:
                                     while (true) {
-                                        callbacks.remove(n);
-                                        optionsList.remove(n);
-                                        break Label_0148;
-                                        this.mServiceBinderWrapper.removeSubscription(s, mediaBrowserCompat$SubscriptionCallback.mToken, this.mCallbacksMessenger);
-                                        continue Block_7_Outer;
+                                        break Label_0090;
+                                        while (true) {
+                                            break Block_6;
+                                            continue Label_0148_Outer;
+                                        }
+                                        --n;
+                                        continue Block_5_Outer;
                                     }
-                                    callbacks = mediaBrowserCompat$Subscription.getCallbacks();
-                                    optionsList = mediaBrowserCompat$Subscription.getOptionsList();
-                                    n = callbacks.size() - 1;
-                                    continue Label_0090_Outer;
+                                    callbacks.remove(n);
+                                    optionsList.remove(n);
+                                    continue Label_0130_Outer;
                                 }
                             }
-                            --n;
+                            this.mServiceBinderWrapper.removeSubscription(s, mediaBrowserCompat$SubscriptionCallback.mToken, this.mCallbacksMessenger);
                             continue;
                         }
                     }
+                    // iftrue(Label_0130:, this.mState != 2)
                     catch (RemoteException ex) {
                         Log.d("MediaBrowserCompat", "removeSubscription failed with RemoteException parentId=" + s);
                         continue;

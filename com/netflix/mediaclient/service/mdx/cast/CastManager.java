@@ -65,7 +65,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         this.mWorkerHandler = mWorkerHandler;
         this.mMyUuid = mMyUuid;
         this.mMdxNrdpLogger = mMdxNrdpLogger;
-        this.mMediaRouter = MediaRouter.getInstance(this.mContext);
+        mMainHandler.post((Runnable)new CastManager$1(this));
         this.nativeInit();
     }
     
@@ -191,13 +191,13 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     private synchronized native void nativeDeviceFound(final String p0, final String p1, final String p2);
     
     private void nativeDeviceFoundWrapper(final String s, final String s2, final String s3) {
-        this.mWorkerHandler.post((Runnable)new CastManager$6(this, s, s2, s3));
+        this.mWorkerHandler.post((Runnable)new CastManager$7(this, s, s2, s3));
     }
     
     private synchronized native void nativeDeviceLost(final String p0);
     
     private void nativeDeviceLostWrapper(final String s) {
-        this.mWorkerHandler.post((Runnable)new CastManager$7(this, s));
+        this.mWorkerHandler.post((Runnable)new CastManager$8(this, s));
     }
     
     private synchronized native void nativeInit();
@@ -205,13 +205,13 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     private synchronized native void nativeLaunchResult(final boolean p0, final String p1);
     
     private void nativeLaunchResultWrapper(final boolean b, final String s) {
-        this.mWorkerHandler.post((Runnable)new CastManager$8(this, b, s));
+        this.mWorkerHandler.post((Runnable)new CastManager$9(this, b, s));
     }
     
     private synchronized native void nativeMessageReceived(final String p0, final String p1, final String p2);
     
     private void nativeMessageReceivedWrapper(final String s, final String s2, final String s3) {
-        this.mWorkerHandler.post((Runnable)new CastManager$10(this, s, s2, s3));
+        this.mWorkerHandler.post((Runnable)new CastManager$11(this, s, s2, s3));
     }
     
     private synchronized native void nativeRelease();
@@ -219,7 +219,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     private synchronized native void nativeSendMessageResult(final boolean p0, final String p1);
     
     private void nativeSendMessageResultWrapper(final boolean b, final String s) {
-        this.mWorkerHandler.post((Runnable)new CastManager$9(this, b, s));
+        this.mWorkerHandler.post((Runnable)new CastManager$10(this, b, s));
     }
     
     private void notifySessionend() {
@@ -244,7 +244,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     }
     
     private void sendMessageToBackgroundReceiver(final CastDevice castDevice, final String s) {
-        this.mWorkerHandler.post((Runnable)new CastManager$11(this, castDevice, s));
+        this.mWorkerHandler.post((Runnable)new CastManager$12(this, castDevice, s));
     }
     
     private void startDiscovery() {
@@ -278,14 +278,14 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     }
     
     public void disconnect() {
-        this.mWorkerHandler.post((Runnable)new CastManager$4(this));
+        this.mWorkerHandler.post((Runnable)new CastManager$5(this));
     }
     
     public void launchNetflix(final String s) {
         if (Log.isLoggable()) {
             Log.d(CastManager.TAG, "launchNetflix " + s);
         }
-        this.mMainHandler.post((Runnable)new CastManager$5(this, s));
+        this.mMainHandler.post((Runnable)new CastManager$6(this, s));
     }
     
     @Override
@@ -294,7 +294,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
             this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": netflix stopped, " + uuid);
             uuid = this.getUuid(this.mSelectedRoute.getId());
             this.notifySessionend();
-            this.mWorkerHandler.postDelayed((Runnable)new CastManager$12(this, uuid), 50L);
+            this.mWorkerHandler.postDelayed((Runnable)new CastManager$13(this, uuid), 50L);
         }
     }
     
@@ -540,7 +540,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         SettingsConfiguration.setCastApplicationId(this.mContext, this.mApplicationId);
         try {
             this.mMediaRouteSelector = new MediaRouteSelector$Builder().addControlCategory(CastMediaControlIntent.categoryForCast(this.mApplicationId)).build();
-            this.mMainHandler.post((Runnable)new CastManager$1(this));
+            this.mMainHandler.post((Runnable)new CastManager$2(this));
         }
         catch (IllegalArgumentException ex) {
             Log.e(CastManager.TAG, "MediaRouteSelector: " + ex);
@@ -551,7 +551,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     }
     
     public void stop() {
-        this.mWorkerHandler.post((Runnable)new CastManager$2(this));
-        this.mMainHandler.post((Runnable)new CastManager$3(this));
+        this.mWorkerHandler.post((Runnable)new CastManager$3(this));
+        this.mMainHandler.post((Runnable)new CastManager$4(this));
     }
 }

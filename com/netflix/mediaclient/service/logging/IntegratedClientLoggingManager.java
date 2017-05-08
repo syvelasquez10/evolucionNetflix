@@ -73,6 +73,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
     private DataRepository mDataRepository;
     private final Map<String, Random> mEventPerSessionRndGeneratorMap;
     private final IntegratedClientLoggingManager$ClientLoggingEventQueue mEventQueue;
+    private ExceptionLoggingClImpl mExceptionLoggingCl;
     private ScheduledExecutorService mExecutor;
     private IkoLoggingImpl mIkoLogging;
     private UserInputManager mInputManager;
@@ -523,6 +524,10 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
             Log.d("nf_log", "Handled by Offline logger");
             return;
         }
+        if (this.mExceptionLoggingCl.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by ExceptionLoggingCl logger");
+            return;
+        }
         Log.w("nf_log", "Action not handled!");
     }
     
@@ -545,6 +550,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mSignInLogging = new SignInLoggingImpl(this);
         this.mIkoLogging = new IkoLoggingImpl(this);
         this.mOfflineLogging = new OfflineLoggingImpl(this);
+        this.mExceptionLoggingCl = new ExceptionLoggingClImpl(this);
         this.initDataRepository();
         this.registerReceivers();
         this.createSession(andClearCachedIntent);
@@ -733,5 +739,6 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mActionLogging.setDataContext(dataContext);
         this.mIkoLogging.setDataContext(dataContext);
         this.mOfflineLogging.setDataContext(dataContext);
+        this.mExceptionLoggingCl.setDataContext(dataContext);
     }
 }

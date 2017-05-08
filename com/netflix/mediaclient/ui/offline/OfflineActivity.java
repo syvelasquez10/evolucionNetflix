@@ -87,7 +87,7 @@ public class OfflineActivity extends FragmentHostActivity implements PlayContext
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903226;
+        return 2130903239;
     }
     
     @Override
@@ -115,17 +115,17 @@ public class OfflineActivity extends FragmentHostActivity implements PlayContext
         super.onCreateOptionsMenu(menu, menu2);
         if (this.isInSelectionMode()) {
             if (((OfflineFragment)this.getPrimaryFrag()).getSelectedItemsCount() > 0) {
-                final MenuItem add = menu.add(2131230949);
-                add.setIcon(2130837776);
+                final MenuItem add = menu.add(2131296504);
+                add.setIcon(2130837903);
                 add.setShowAsAction(2);
                 add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new OfflineActivity$2(this));
             }
         }
         else if (this.getPrimaryFrag() instanceof OfflineFragment && ((OfflineFragment)this.getPrimaryFrag()).areDownloadsPreset()) {
-            final MenuItem add2 = menu.add(2131231166);
-            Drawable icon = ContextCompat.getDrawable((Context)this, 2130837740);
+            final MenuItem add2 = menu.add(2131296722);
+            Drawable icon = ContextCompat.getDrawable((Context)this, 2130837742);
             if (BrowseExperience.showKidsExperience()) {
-                icon = ViewUtils.tintAndGet(icon, ContextCompat.getColor((Context)this, 2131624056));
+                icon = ViewUtils.tintAndGet(icon, ContextCompat.getColor((Context)this, 2131689593));
             }
             add2.setIcon(icon);
             add2.setShowAsAction(2);
@@ -136,6 +136,7 @@ public class OfflineActivity extends FragmentHostActivity implements PlayContext
     @Override
     protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
+        this.closeAllPopupMenus();
         if (this.getPrimaryFrag() instanceof OfflineFragment) {
             ((OfflineFragment)this.getPrimaryFrag()).refreshAdapter();
         }

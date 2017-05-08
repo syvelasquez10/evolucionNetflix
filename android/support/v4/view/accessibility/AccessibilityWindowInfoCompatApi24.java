@@ -5,7 +5,9 @@
 package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityWindowInfo;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 class AccessibilityWindowInfoCompatApi24
 {
     public static Object getAnchor(final Object o) {

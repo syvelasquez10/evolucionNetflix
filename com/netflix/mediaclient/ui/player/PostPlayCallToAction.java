@@ -151,23 +151,23 @@ public class PostPlayCallToAction
             }
             case 1: {
                 if (this.action.getName().equals("playTrailer")) {
-                    return this.getString(2131231181);
+                    return this.getString(2131296737);
                 }
-                return this.getString(2131230914);
+                return this.getString(2131296465);
             }
             case 2: {
                 if (this.action.getVideoType() != null && this.action.getVideoType().equals(VideoType.EPISODE)) {
-                    return this.getString(2131230912);
+                    return this.getString(2131296463);
                 }
-                return this.getString(2131231133);
+                return this.getString(2131296689);
             }
             case 3: {
                 int n;
                 if (this.action.isInMyList()) {
-                    n = 2131230977;
+                    n = 2131296533;
                 }
                 else {
-                    n = 2131231217;
+                    n = 2131296773;
                 }
                 return this.getString(n);
             }

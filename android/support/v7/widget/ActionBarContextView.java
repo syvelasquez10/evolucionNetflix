@@ -21,6 +21,7 @@ import android.support.v7.appcompat.R$id;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.support.v7.appcompat.R$layout;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.appcompat.R$styleable;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
@@ -54,7 +55,7 @@ public class ActionBarContextView extends AbsActionBarView
     public ActionBarContextView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
         final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.ActionMode, n, 0);
-        this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R$styleable.ActionMode_background));
+        ViewCompat.setBackground((View)this, obtainStyledAttributes.getDrawable(R$styleable.ActionMode_background));
         this.mTitleStyleRes = obtainStyledAttributes.getResourceId(R$styleable.ActionMode_titleTextStyle, 0);
         this.mSubtitleStyleRes = obtainStyledAttributes.getResourceId(R$styleable.ActionMode_subtitleTextStyle, 0);
         this.mContentHeight = obtainStyledAttributes.getLayoutDimension(R$styleable.ActionMode_height, 0);
@@ -152,7 +153,7 @@ public class ActionBarContextView extends AbsActionBarView
         (this.mActionMenuPresenter = new ActionMenuPresenter(this.getContext())).setReserveOverflow(true);
         final ViewGroup$LayoutParams viewGroup$LayoutParams = new ViewGroup$LayoutParams(-2, -1);
         menuBuilder.addMenuPresenter(this.mActionMenuPresenter, this.mPopupContext);
-        (this.mMenuView = (ActionMenuView)this.mActionMenuPresenter.getMenuView(this)).setBackgroundDrawable((Drawable)null);
+        ViewCompat.setBackground((View)(this.mMenuView = (ActionMenuView)this.mActionMenuPresenter.getMenuView(this)), null);
         this.addView((View)this.mMenuView, viewGroup$LayoutParams);
     }
     

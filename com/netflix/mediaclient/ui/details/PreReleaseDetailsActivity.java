@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.details;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Build$VERSION;
 import android.graphics.Typeface;
 import android.support.design.widget.Snackbar$SnackbarLayout;
 import android.widget.TextView;
@@ -21,11 +22,15 @@ public class PreReleaseDetailsActivity extends MovieDetailsActivity
     }
     
     private void showSnackBar() {
-        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131231421, 0);
-        make.getView().getLayoutParams().width = -1;
-        final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131689767);
+        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131296982, 0);
+        final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131755319);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
-        textView.setGravity(1);
+        if (Build$VERSION.SDK_INT >= 17) {
+            textView.setTextAlignment(4);
+        }
+        else {
+            textView.setGravity(1);
+        }
         make.show();
     }
     

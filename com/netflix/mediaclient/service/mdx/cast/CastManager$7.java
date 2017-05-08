@@ -29,15 +29,19 @@ import android.support.v7.media.MediaRouter$Callback;
 class CastManager$7 implements Runnable
 {
     final /* synthetic */ CastManager this$0;
+    final /* synthetic */ String val$friendlyName;
+    final /* synthetic */ String val$location;
     final /* synthetic */ String val$uuid;
     
-    CastManager$7(final CastManager this$0, final String val$uuid) {
+    CastManager$7(final CastManager this$0, final String val$uuid, final String val$location, final String val$friendlyName) {
         this.this$0 = this$0;
         this.val$uuid = val$uuid;
+        this.val$location = val$location;
+        this.val$friendlyName = val$friendlyName;
     }
     
     @Override
     public void run() {
-        this.this$0.nativeDeviceLost(this.val$uuid);
+        this.this$0.nativeDeviceFound(this.val$uuid, this.val$location, this.val$friendlyName);
     }
 }

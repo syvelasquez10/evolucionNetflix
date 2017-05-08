@@ -5,7 +5,9 @@
 package android.support.v4.os;
 
 import android.os.CancellationSignal;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class CancellationSignalCompatJellybean
 {
     public static void cancel(final Object o) {

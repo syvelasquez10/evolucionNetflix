@@ -5,7 +5,9 @@
 package android.support.v4.widget;
 
 import android.widget.EdgeEffect;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class EdgeEffectCompatLollipop
 {
     public static boolean onPull(final Object o, final float n, final float n2) {

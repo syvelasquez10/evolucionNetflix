@@ -6,7 +6,9 @@ package android.support.v4.view.accessibility;
 
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.annotation.TargetApi;
 
+@TargetApi(22)
 class AccessibilityNodeInfoCompatApi22
 {
     public static Object getTraversalAfter(final Object o) {

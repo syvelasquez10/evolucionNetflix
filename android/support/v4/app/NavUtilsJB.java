@@ -7,7 +7,9 @@ package android.support.v4.app;
 import android.content.pm.ActivityInfo;
 import android.content.Intent;
 import android.app.Activity;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class NavUtilsJB
 {
     public static Intent getParentActivityIntent(final Activity activity) {

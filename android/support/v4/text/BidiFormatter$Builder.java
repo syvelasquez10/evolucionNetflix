@@ -4,6 +4,7 @@
 
 package android.support.v4.text;
 
+import android.text.SpannableStringBuilder;
 import java.util.Locale;
 
 public final class BidiFormatter$Builder

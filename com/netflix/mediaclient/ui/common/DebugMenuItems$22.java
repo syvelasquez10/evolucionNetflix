@@ -4,20 +4,21 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.util.net.CronetHttpURLConnectionFactory;
-import com.netflix.mediaclient.util.PreferenceUtils;
+import android.view.SubMenu;
+import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.os.Handler;
 import android.os.Debug;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.home.HomeActivity;
-import android.content.Context;
 import com.netflix.mediaclient.android.debug.DebugOverlay;
+import com.netflix.mediaclient.ui.home.HomeActivity;
+import com.netflix.mediaclient.util.net.CronetHttpURLConnectionFactory;
+import android.content.Context;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Activity;
-import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
+import com.netflix.mediaclient.ui.player.PlayerWorkflowState;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -30,7 +31,17 @@ class DebugMenuItems$22 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        PerformanceProfiler.getInstance().dumpToDisk(this.this$0.activity);
+        PlayerWorkflowState.toggleIgnorePlayerUserIntercation();
+        final boolean ignorePlayerUserInteraction = PlayerWorkflowState.ignorePlayerUserInteraction();
+        final NetflixActivity access$000 = this.this$0.activity;
+        String s;
+        if (ignorePlayerUserInteraction) {
+            s = "Ignore Player Interaction is on.";
+        }
+        else {
+            s = "Ignore Player Interaction is off";
+        }
+        access$000.showDebugToast(s);
         return true;
     }
 }

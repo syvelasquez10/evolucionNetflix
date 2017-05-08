@@ -13,16 +13,14 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.content.res.Resources$Theme;
 import android.content.res.Resources;
-import android.annotation.TargetApi;
 import android.support.v4.graphics.drawable.TintAwareDrawable;
 import android.graphics.drawable.Drawable;
 
-@TargetApi(21)
 abstract class VectorDrawableCommon extends Drawable implements TintAwareDrawable
 {
     Drawable mDelegateDrawable;
     
-    static TypedArray obtainAttributes(final Resources resources, final Resources$Theme resources$Theme, final AttributeSet set, final int[] array) {
+    protected static TypedArray obtainAttributes(final Resources resources, final Resources$Theme resources$Theme, final AttributeSet set, final int[] array) {
         if (resources$Theme == null) {
             return resources.obtainAttributes(set, array);
         }
@@ -55,13 +53,6 @@ abstract class VectorDrawableCommon extends Drawable implements TintAwareDrawabl
             return this.mDelegateDrawable.getCurrent();
         }
         return super.getCurrent();
-    }
-    
-    public int getLayoutDirection() {
-        if (this.mDelegateDrawable != null) {
-            DrawableCompat.getLayoutDirection(this.mDelegateDrawable);
-        }
-        return 0;
     }
     
     public int getMinimumHeight() {
@@ -99,13 +90,6 @@ abstract class VectorDrawableCommon extends Drawable implements TintAwareDrawabl
         return super.getTransparentRegion();
     }
     
-    public boolean isAutoMirrored() {
-        if (this.mDelegateDrawable != null) {
-            DrawableCompat.isAutoMirrored(this.mDelegateDrawable);
-        }
-        return false;
-    }
-    
     public void jumpToCurrentState() {
         if (this.mDelegateDrawable != null) {
             DrawableCompat.jumpToCurrentState(this.mDelegateDrawable);
@@ -125,12 +109,6 @@ abstract class VectorDrawableCommon extends Drawable implements TintAwareDrawabl
             return this.mDelegateDrawable.setLevel(level);
         }
         return super.onLevelChange(level);
-    }
-    
-    public void setAutoMirrored(final boolean b) {
-        if (this.mDelegateDrawable != null) {
-            DrawableCompat.setAutoMirrored(this.mDelegateDrawable, b);
-        }
     }
     
     public void setChangingConfigurations(final int n) {

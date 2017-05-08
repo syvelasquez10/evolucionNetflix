@@ -10,7 +10,9 @@ import android.graphics.Paint;
 import android.os.Build$VERSION;
 import android.view.View;
 import android.support.v4.view.ViewCompat;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class FloatingActionButtonIcs extends FloatingActionButtonGingerbread
 {
     private float mRotation;
@@ -52,7 +54,15 @@ class FloatingActionButtonIcs extends FloatingActionButtonGingerbread
                 this.mView.animate().scaleX(0.0f).scaleY(0.0f).alpha(0.0f).setDuration(200L).setInterpolator((TimeInterpolator)AnimationUtils.FAST_OUT_LINEAR_IN_INTERPOLATOR).setListener((Animator$AnimatorListener)new FloatingActionButtonIcs$1(this, b, floatingActionButtonImpl$InternalVisibilityChangedListener));
                 return;
             }
-            this.mView.internalSetVisibility(8, b);
+            final VisibilityAwareImageButton mView = this.mView;
+            int n;
+            if (b) {
+                n = 8;
+            }
+            else {
+                n = 4;
+            }
+            mView.internalSetVisibility(n, b);
             if (floatingActionButtonImpl$InternalVisibilityChangedListener != null) {
                 floatingActionButtonImpl$InternalVisibilityChangedListener.onHidden();
             }

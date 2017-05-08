@@ -6,9 +6,8 @@ package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.Gson;
-import android.os.Parcelable;
 
-public abstract class UmaCta implements Parcelable
+public abstract class UmaCta
 {
     public static final String ACTION_NOT_NOW = "NOT_NOW";
     public static final String ACTION_TYPE_LINK = "LINK";
@@ -16,7 +15,7 @@ public abstract class UmaCta implements Parcelable
     public static final String CALLBACK_ACKNOWLEDGED = "ACKNOWLEDGED";
     
     public static TypeAdapter<UmaCta> typeAdapter(final Gson gson) {
-        return new $AutoValue_UmaCta$GsonTypeAdapter(gson);
+        return new AutoValue_UmaCta$GsonTypeAdapter(gson);
     }
     
     public abstract String action();
@@ -30,4 +29,6 @@ public abstract class UmaCta implements Parcelable
     public abstract boolean selected();
     
     public abstract String text();
+    
+    public abstract String trackingInfo();
 }

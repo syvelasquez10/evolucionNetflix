@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.mdx;
 
 import java.util.Iterator;
 import android.view.ViewGroup$LayoutParams;
-import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.widget.ImageView;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
@@ -64,8 +64,8 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     
     private void updateImage(final int n) {
         final FalkorPerson falkorPerson = this.this$0.actors.get(n);
-        final FocalPointImageView focalPointImageView = (FocalPointImageView)this.findViewById(2131689973);
-        final View viewById = this.findViewById(2131689974);
+        final FocalPointImageView focalPointImageView = (FocalPointImageView)this.findViewById(2131755516);
+        final View viewById = this.findViewById(2131755517);
         if (focalPointImageView != null) {
             final FalkorActorStill still = this.this$0.getStill(this.this$0.videoId, falkorPerson.detail.getId());
             focalPointImageView.setImageDrawable(null);
@@ -99,7 +99,7 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903194;
+        return 2130903197;
     }
     
     void updateDetails(final int n) {
@@ -109,7 +109,7 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     
     void updateTitle(final int n) {
         final FalkorPerson falkorPerson = this.this$0.actors.get(n);
-        final TextView textView = (TextView)this.findViewById(2131689977);
+        final TextView textView = (TextView)this.findViewById(2131755520);
         if (textView != null) {
             textView.setText((CharSequence)falkorPerson.detail.name);
         }

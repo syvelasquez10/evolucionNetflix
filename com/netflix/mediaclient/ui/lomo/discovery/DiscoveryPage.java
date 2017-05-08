@@ -52,13 +52,13 @@ public class DiscoveryPage extends LinearLayout
     
     private void init(final Context context) {
         this.setOrientation(1);
-        ((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903116, (ViewGroup)this);
-        this.topPlayableLayout = (ViewGroup)this.findViewById(2131689788);
-        this.pivot1Boxart = (AdvancedImageView)this.findViewById(2131689789);
-        this.pivot2Boxart = (AdvancedImageView)this.findViewById(2131689791);
-        this.pivot1Title = (TextView)this.findViewById(2131689790);
-        this.pivot2Title = (TextView)this.findViewById(2131689792);
-        this.allCWView = this.findViewById(2131689793);
+        ((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903120, (ViewGroup)this);
+        this.topPlayableLayout = (ViewGroup)this.findViewById(2131755340);
+        this.pivot1Boxart = (AdvancedImageView)this.findViewById(2131755341);
+        this.pivot2Boxart = (AdvancedImageView)this.findViewById(2131755343);
+        this.pivot1Title = (TextView)this.findViewById(2131755342);
+        this.pivot2Title = (TextView)this.findViewById(2131755344);
+        this.allCWView = this.findViewById(2131755345);
         this.playableView = new CwDiscoveryView(context);
         this.topPlayableLayout.addView((View)this.playableView);
         this.setOnClickListener((View$OnClickListener)new DiscoveryPage$1(this));

@@ -23,6 +23,7 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.BitmapFactory$Options;
 import android.content.Context;
+import android.annotation.TargetApi;
 import android.print.PrintDocumentAdapter$WriteResultCallback;
 import android.os.ParcelFileDescriptor;
 import android.print.PageRange;

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.resfetcher.volley;
 
+import android.text.TextUtils;
 import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;

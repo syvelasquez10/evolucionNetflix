@@ -4,13 +4,6 @@
 
 package android.support.v7.media;
 
-import android.os.IBinder;
-import java.util.List;
-import android.content.Intent;
-import android.content.Context;
-import java.util.ArrayList;
-import android.content.ComponentName;
-import android.content.ServiceConnection;
 import android.os.DeadObjectException;
 import android.os.RemoteException;
 import android.util.Log;
@@ -43,13 +36,6 @@ final class RegisteredMediaRouteProvider$Connection implements IBinder$DeathReci
         this.mReceiveMessenger = new Messenger((Handler)this.mReceiveHandler);
     }
     
-    private void failPendingCallbacks() {
-        for (int i = 0; i < this.mPendingCallbacks.size(); ++i) {
-            ((MediaRouter$ControlRequestCallback)this.mPendingCallbacks.valueAt(i)).onError(null, null);
-        }
-        this.mPendingCallbacks.clear();
-    }
-    
     private boolean sendRequest(final int what, final int arg1, final int arg2, final Object obj, final Bundle data) {
         final Message obtain = Message.obtain();
         obtain.what = what;
@@ -77,10 +63,11 @@ final class RegisteredMediaRouteProvider$Connection implements IBinder$DeathReci
         this.this$0.mPrivateHandler.post((Runnable)new RegisteredMediaRouteProvider$Connection$2(this));
     }
     
-    public int createRouteController(final String s) {
+    public int createRouteController(final String s, final String s2) {
         final int n = this.mNextControllerId++;
         final Bundle bundle = new Bundle();
         bundle.putString("routeId", s);
+        bundle.putString("routeGroupId", s2);
         this.sendRequest(3, this.mNextRequestId++, n, null, bundle);
         return n;
     }
@@ -90,6 +77,13 @@ final class RegisteredMediaRouteProvider$Connection implements IBinder$DeathReci
         this.mReceiveHandler.dispose();
         this.mServiceMessenger.getBinder().unlinkToDeath((IBinder$DeathRecipient)this, 0);
         this.this$0.mPrivateHandler.post((Runnable)new RegisteredMediaRouteProvider$Connection$1(this));
+    }
+    
+    void failPendingCallbacks() {
+        for (int i = 0; i < this.mPendingCallbacks.size(); ++i) {
+            ((MediaRouter$ControlRequestCallback)this.mPendingCallbacks.valueAt(i)).onError(null, null);
+        }
+        this.mPendingCallbacks.clear();
     }
     
     public boolean onControlRequestFailed(final int n, final String s, final Bundle bundle) {
@@ -123,7 +117,7 @@ final class RegisteredMediaRouteProvider$Connection implements IBinder$DeathReci
     public boolean onGenericFailure(final int n) {
         if (n == this.mPendingRegisterRequestId) {
             this.mPendingRegisterRequestId = 0;
-            this.this$0.onConnectionError(this, "Registation failed");
+            this.this$0.onConnectionError(this, "Registration failed");
         }
         final MediaRouter$ControlRequestCallback mediaRouter$ControlRequestCallback = (MediaRouter$ControlRequestCallback)this.mPendingCallbacks.get(n);
         if (mediaRouter$ControlRequestCallback != null) {
@@ -150,7 +144,7 @@ final class RegisteredMediaRouteProvider$Connection implements IBinder$DeathReci
     
     public boolean register() {
         this.mPendingRegisterRequestId = this.mNextRequestId++;
-        if (!this.sendRequest(1, this.mPendingRegisterRequestId, 1, null, null)) {
+        if (!this.sendRequest(1, this.mPendingRegisterRequestId, 2, null, null)) {
             return false;
         }
         try {

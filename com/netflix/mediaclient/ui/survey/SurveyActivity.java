@@ -73,7 +73,7 @@ public class SurveyActivity extends NetflixActivity implements SurveyListener
             final ThanksFragment thanksFragment = new ThanksFragment();
             final FragmentTransaction beginTransaction = this.getSupportFragmentManager().beginTransaction();
             beginTransaction.setCustomAnimations(17432576, 17432577);
-            beginTransaction.replace(2131689616, thanksFragment);
+            beginTransaction.replace(2131755158, thanksFragment);
             beginTransaction.commit();
             if (Log.isLoggable()) {
                 Log.i("SurveyActivity", "Survey completed! " + this.firstQuestion);
@@ -84,7 +84,7 @@ public class SurveyActivity extends NetflixActivity implements SurveyListener
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903070);
+        this.setContentView(2130903071);
         ApmLogUtils.reportUiModalViewChanged((Context)this, this.getUiScreen());
         final Survey survey = (Survey)this.getIntent().getParcelableExtra("extra_survey");
         if (survey == null || survey.getQuestionTotal() == 0) {
@@ -98,7 +98,7 @@ public class SurveyActivity extends NetflixActivity implements SurveyListener
         UserActionLogUtils.reportSurveyQuestionStarted((Context)this, null, this.getUiScreen());
         final SurveyFragment instance = SurveyFragment.getInstance(survey);
         final FragmentTransaction beginTransaction = this.getSupportFragmentManager().beginTransaction();
-        beginTransaction.replace(2131689616, instance);
+        beginTransaction.replace(2131755158, instance);
         beginTransaction.commit();
     }
     

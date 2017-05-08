@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.offline.agent;
 
+import java.util.List;
 import com.netflix.mediaclient.util.UserVisibleErrorCodeGenerator;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.android.app.Status;

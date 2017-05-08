@@ -15,11 +15,11 @@ import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerMovieDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerMovieDetailsFrag;
 
 public class BarkerPreReleaseDetailsFrag extends BarkerMovieDetailsFrag
 {
-    private static final String TAG = "PreReleaseDetailsFrag";
+    private static final String TAG = "BarkerPreReleaseDetailsFrag";
     private boolean isMovie;
     
     public BarkerPreReleaseDetailsFrag() {
@@ -47,7 +47,7 @@ public class BarkerPreReleaseDetailsFrag extends BarkerMovieDetailsFrag
     protected void fetchShowData() {
         final ServiceManager serviceManager = this.getServiceManager();
         if (serviceManager == null || !serviceManager.isReady()) {
-            Log.w("PreReleaseDetailsFrag", "Manager is null/notReady - can't reload data");
+            Log.w("BarkerPreReleaseDetailsFrag", "Manager is null/notReady - can't reload data");
             return;
         }
         this.isLoading = true;

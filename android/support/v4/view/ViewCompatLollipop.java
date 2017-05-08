@@ -13,7 +13,9 @@ import android.content.res.ColorStateList;
 import android.view.WindowInsets;
 import android.view.View;
 import android.graphics.Rect;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class ViewCompatLollipop
 {
     private static ThreadLocal<Rect> sThreadLocalRect;

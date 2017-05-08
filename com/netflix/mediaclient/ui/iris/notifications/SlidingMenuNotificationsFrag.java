@@ -11,11 +11,11 @@ import android.app.Activity;
 public class SlidingMenuNotificationsFrag extends NotificationsFrag
 {
     public static int MAX_NUM_NOTIFICATIONS = 0;
-    private static final int MAX_NUM_NOTIFICATIONS_DEFAULT = 3;
-    private static final int MAX_NUM_NOTIFICATIONS_X_LARGE = 5;
+    private static final int MAX_NUM_NOTIFICATIONS_DEFAULT = 2;
+    private static final int MAX_NUM_NOTIFICATIONS_X_LARGE = 2;
     
     static {
-        SlidingMenuNotificationsFrag.MAX_NUM_NOTIFICATIONS = 3;
+        SlidingMenuNotificationsFrag.MAX_NUM_NOTIFICATIONS = 2;
     }
     
     public static int getCurrentMaxNotificationsNum() {
@@ -28,13 +28,18 @@ public class SlidingMenuNotificationsFrag extends NotificationsFrag
     }
     
     @Override
+    protected int computeRowCount() {
+        return this.getUnreadVisibleNotificationsNumber();
+    }
+    
+    @Override
     protected int getNumNotificationsPerPage() {
         return SlidingMenuNotificationsFrag.MAX_NUM_NOTIFICATIONS;
     }
     
     @Override
     protected int getRowLayoutResourceId() {
-        return 2130903169;
+        return 2130903173;
     }
     
     @Override
@@ -46,7 +51,7 @@ public class SlidingMenuNotificationsFrag extends NotificationsFrag
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
         if (DeviceUtils.getScreenSizeCategory((Context)activity) >= 4) {
-            SlidingMenuNotificationsFrag.MAX_NUM_NOTIFICATIONS = 5;
+            SlidingMenuNotificationsFrag.MAX_NUM_NOTIFICATIONS = 2;
         }
     }
     

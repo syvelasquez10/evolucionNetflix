@@ -40,6 +40,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.view.ViewPropertyAnimator;
 import android.widget.LinearLayout;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -60,9 +64,13 @@ class UserMessageAreaView$8 implements View$OnClickListener
     public void onClick(final View view) {
         final NetflixActivity netflixActivity = AndroidUtils.getContextAs(view.getContext(), NetflixActivity.class);
         if (netflixActivity != null && !AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
+            final DataContext dataContext = new DataContext();
+            dataContext.setTrackingInfo(this.val$umaCta.trackingInfo());
+            UIViewLogUtils.reportUIViewCommandStarted((Context)netflixActivity, UIViewLogging$UIViewCommandName.notifyUms, IClientLogging$ModalView.umsAlert, dataContext, null);
             netflixActivity.getServiceManager().recordUserMessageImpression(this.this$0.mUmaAlert.messageName(), this.val$umaCta.callback());
             netflixActivity.getServiceManager().consumeUmaAlert();
             this.this$0.dismiss(true);
+            UIViewLogUtils.reportUIViewCommandEnded((Context)netflixActivity);
         }
         else if (view.getContext() != null) {
             throw new IllegalArgumentException("Expected to UMA view to run in a NetflixActivity, found " + this.this$0.getContext());

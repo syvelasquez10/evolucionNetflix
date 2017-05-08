@@ -14,6 +14,7 @@ import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
 import android.app.Activity;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.TimeUtils;
 import android.content.Context;
 import android.widget.ProgressBar;
@@ -54,7 +55,11 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     public static String createEpisodeNumber(final EpisodeDetails episodeDetails, final Context context) {
-        return Integer.toString(episodeDetails.getEpisodeNumber());
+        String s = Integer.toString(episodeDetails.getEpisodeNumber());
+        if (BarkerHelper.isInTest(context)) {
+            s = context.getResources().getString(2131296459, new Object[] { s });
+        }
+        return s;
     }
     
     public static String createTitleText(final EpisodeDetails episodeDetails, final Context context) {
@@ -62,7 +67,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             return episodeDetails.getTitle();
         }
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            return context.getString(2131231150);
+            return context.getString(2131296706);
         }
         return episodeDetails.getAvailabilityDateMessage();
     }
@@ -82,14 +87,14 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     protected void findViews() {
-        this.episodeBadge = (TextView)this.findViewById(2131689639);
-        this.title = (TextView)this.findViewById(2131689640);
-        this.episodeNumber = (TextView)this.findViewById(2131689847);
-        this.synopsis = (TextView)this.findViewById(2131689641);
-        this.playButton = (ImageView)this.findViewById(2131689634);
-        this.episodeDownloadButton = (DownloadButton)this.findViewById(2131689849);
-        this.progressBar = (ProgressBar)this.findViewById(2131689636);
-        this.episodeTime = (TextView)this.findViewById(2131689848);
+        this.episodeBadge = (TextView)this.findViewById(2131755180);
+        this.title = (TextView)this.findViewById(2131755182);
+        this.episodeNumber = (TextView)this.findViewById(2131755181);
+        this.synopsis = (TextView)this.findViewById(2131755183);
+        this.playButton = (ImageView)this.findViewById(2131755175);
+        this.episodeDownloadButton = (DownloadButton)this.findViewById(2131755178);
+        this.progressBar = (ProgressBar)this.findViewById(2131755177);
+        this.episodeTime = (TextView)this.findViewById(2131755184);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -165,7 +170,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         }
         this.isNSRE = episodeDetails.episodeIsNSRE();
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131230892), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131296442), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         if (episodeDetails.isAvailableToStream() && !this.isNSRE && this.episodeNumber != null) {
             this.episodeNumber.setText((CharSequence)createEpisodeNumber(episodeDetails, this.getContext()));
         }
@@ -175,10 +180,10 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             final Resources resources = this.getResources();
             int n;
             if (episodeDetails.isAvailableToStream()) {
-                n = 2131624117;
+                n = 2131689656;
             }
             else {
-                n = 2131624133;
+                n = 2131689672;
             }
             title.setTextColor(resources.getColor(n));
             this.title.setClickable(false);

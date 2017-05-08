@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.app.Activity;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.util.IrisUtils;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -251,7 +254,42 @@ public class NotificationsFrag extends NetflixFrag
     }
     
     protected int getRowLayoutResourceId() {
-        return 2130903294;
+        return 2130903308;
+    }
+    
+    protected int getUnreadVisibleNotificationsNumber() {
+        int n;
+        if (this.mNotifications == null || this.mNotifications.getSocialNotifications() == null) {
+            n = 0;
+        }
+        else {
+            final Iterator<IrisNotificationSummary> iterator = this.mNotifications.getSocialNotifications().iterator();
+            int n2 = 0;
+            int currentUnreadCount;
+            while (true) {
+                currentUnreadCount = n2;
+                if (!iterator.hasNext()) {
+                    break;
+                }
+                if (iterator.next().getWasRead()) {
+                    continue;
+                }
+                currentUnreadCount = n2 + 1;
+                if ((n2 = currentUnreadCount) >= this.getNumNotificationsPerPage()) {
+                    break;
+                }
+            }
+            final HomeActivity homeActivity = AndroidUtils.getContextAs((Context)this.getActivity(), HomeActivity.class);
+            n = currentUnreadCount;
+            if (homeActivity != null) {
+                if (currentUnreadCount > 0) {
+                    homeActivity.setCurrentUnreadCount(currentUnreadCount);
+                    return currentUnreadCount;
+                }
+                return homeActivity.getCurrentUnreadCount();
+            }
+        }
+        return n;
     }
     
     protected boolean isListViewStatic() {
@@ -299,8 +337,8 @@ public class NotificationsFrag extends NetflixFrag
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(NotificationsFrag.TAG, "Creating new frag view...");
         this.mAreViewsCreated = true;
-        final View inflate = layoutInflater.inflate(2130903293, viewGroup, false);
-        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131690319)).setItemsCanFocus(true);
+        final View inflate = layoutInflater.inflate(2130903306, viewGroup, false);
+        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131755887)).setItemsCanFocus(true);
         this.mNotificationsList.setAsStatic(this.isListViewStatic());
         this.mIsLoadingData = true;
         this.completeInitIfPossible();

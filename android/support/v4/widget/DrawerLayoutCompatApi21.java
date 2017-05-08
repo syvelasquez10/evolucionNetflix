@@ -11,7 +11,9 @@ import android.view.View$OnApplyWindowInsetsListener;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.ViewGroup$MarginLayoutParams;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class DrawerLayoutCompatApi21
 {
     private static final int[] THEME_ATTRS;

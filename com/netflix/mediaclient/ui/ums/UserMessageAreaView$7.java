@@ -39,9 +39,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.view.ViewPropertyAnimator;
 import android.widget.LinearLayout;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.Intent;
 import android.net.Uri;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -62,19 +66,25 @@ class UserMessageAreaView$7 implements View$OnClickListener
     public void onClick(final View view) {
         final NetflixActivity netflixActivity = AndroidUtils.getContextAs(view.getContext(), NetflixActivity.class);
         if (netflixActivity != null && !AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
-            if (this.val$umaCta.action() == null) {
+            final DataContext dataContext = new DataContext();
+            dataContext.setTrackingInfo(this.val$umaCta.trackingInfo());
+            UIViewLogUtils.reportUIViewCommandStarted((Context)netflixActivity, UIViewLogging$UIViewCommandName.deepLink, IClientLogging$ModalView.umsAlert, dataContext, null);
+            if (this.val$umaCta.action() != null) {
+                if (this.val$umaCta.autoLogin()) {
+                    this.this$0.openLinkWithAutoLoginToken(netflixActivity, this.val$umaCta);
+                    netflixActivity.getServiceManager().consumeUmaAlert();
+                    this.this$0.dismiss(true);
+                }
+                else {
+                    view.getContext().startActivity(new Intent("android.intent.action.VIEW", Uri.parse(this.val$umaCta.action())));
+                    netflixActivity.getServiceManager().consumeUmaAlert();
+                    this.this$0.dismiss(true);
+                }
+            }
+            else {
                 ErrorLoggingManager.logHandledException("Invalid UMA, no link provided on cta. [uma:" + this.this$0.mUmaAlert.messageId() + "/" + this.this$0.mUmaAlert.messageName() + "/" + this.val$umaCta.actionType() + "]");
-                return;
             }
-            if (!this.val$umaCta.autoLogin()) {
-                view.getContext().startActivity(new Intent("android.intent.action.VIEW", Uri.parse(this.val$umaCta.action())));
-                netflixActivity.getServiceManager().consumeUmaAlert();
-                this.this$0.dismiss(true);
-                return;
-            }
-            this.this$0.openLinkWithAutoLoginToken(netflixActivity, this.val$umaCta);
-            netflixActivity.getServiceManager().consumeUmaAlert();
-            this.this$0.dismiss(true);
+            UIViewLogUtils.reportUIViewCommandEnded((Context)netflixActivity);
         }
     }
 }

@@ -173,10 +173,10 @@ public class Payload
                                                                 Log.e("nf_push", "Invalid action: " + o);
                                                             }
                                                             break;
-                                                            int1 = 0;
-                                                            break Label_0217;
                                                             long1 = 0L;
                                                             break Label_0367;
+                                                            int1 = 0;
+                                                            break Label_0217;
                                                         }
                                                         catch (JSONException ex) {
                                                             Log.e("nf_push", String.format("invalid renoPayload %s", o), (Throwable)ex);

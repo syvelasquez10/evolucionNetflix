@@ -17,7 +17,9 @@ import android.media.RemoteControlClient$OnGetPlaybackPositionListener;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.AudioManager$OnAudioFocusChangeListener;
+import android.annotation.TargetApi;
 
+@TargetApi(18)
 class TransportMediatorJellybeanMR2
 {
     AudioManager$OnAudioFocusChangeListener mAudioFocusChangeListener;

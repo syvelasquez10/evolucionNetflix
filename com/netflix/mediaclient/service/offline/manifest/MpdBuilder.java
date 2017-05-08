@@ -98,9 +98,7 @@ class MpdBuilder
     }
     
     private Representation buildRepresentation(final Format format, final String s, final DownloadableType downloadableType) {
-        final SegmentBase segmentBase = this.getSegmentBase(s, downloadableType);
-        if (segmentBase == null) {}
-        return Representation.newInstance(String.valueOf(this.mNfManifest.getMovieId()), -1L, format, segmentBase);
+        return Representation.newInstance(String.valueOf(this.mNfManifest.getMovieId()), -1L, format, this.getSegmentBase(s, downloadableType));
     }
     
     private SegmentBase getSegmentBase(String filePathForDownloadable, final DownloadableType downloadableType) {
@@ -144,6 +142,7 @@ class MpdBuilder
             return new MediaPresentationDescription(0L, this.mNfManifest.getDuration(), -1L, false, -1L, -1L, null, null, this.buildPeriods());
         }
         catch (RuntimeException ex) {
+            Log.e("nf_offline_mpd_builder", "Unable to buildMpd: " + ex.getMessage());
             return null;
         }
     }

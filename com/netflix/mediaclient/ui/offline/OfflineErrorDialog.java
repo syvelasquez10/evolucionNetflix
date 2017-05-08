@@ -90,14 +90,14 @@ public class OfflineErrorDialog extends NetflixDialogFrag
     
     private Dialog createDefaultDialogFromOfflineStates(final String s, final boolean b, final boolean b2) {
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setTitle(2131231330).setMessage(this.getNetflixActivity().getString(2131231329, new Object[] { s }));
+        alertDialog$Builder.setTitle(2131296886).setMessage(this.getNetflixActivity().getString(2131296885, new Object[] { s }));
         if (b) {
             alertDialog$Builder.setNegativeButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
         }
         if (b2) {
-            alertDialog$Builder.setPositiveButton(2131231221, this.mDownloadResumeAction);
+            alertDialog$Builder.setPositiveButton(2131296777, this.mDownloadResumeAction);
         }
-        alertDialog$Builder.setNeutralButton(2131231168, this.mNoAction);
+        alertDialog$Builder.setNeutralButton(2131296724, this.mNoAction);
         return alertDialog$Builder.create();
     }
     
@@ -114,27 +114,27 @@ public class OfflineErrorDialog extends NetflixDialogFrag
             s = this.mErrorStatusDisplayMessage;
         }
         else {
-            s = this.getNetflixActivity().getString(2131231329, new Object[] { UserVisibleErrorCodeGenerator.addParenthesisWithPrefixSpace(UserVisibleErrorCodeGenerator.getOfflineErrorCodeFromStatusIntValue(this.mErrorStatusCodeIntValue)) });
+            s = this.getNetflixActivity().getString(2131296885, new Object[] { UserVisibleErrorCodeGenerator.addParenthesisWithPrefixSpace(UserVisibleErrorCodeGenerator.getOfflineErrorCodeFromStatusIntValue(this.mErrorStatusCodeIntValue)) });
         }
         alertDialog$Builder.setMessage(s);
         if (this.mErrorStatusCodeIntValue == StatusCode.DL_LIMIT_CANT_DOWNLOAD_TILL_DATE.getValue()) {
-            alertDialog$Builder.setTitle(2131231332).setPositiveButton(2131231168, this.mDeleteAction);
+            alertDialog$Builder.setTitle(2131296888).setPositiveButton(2131296724, this.mDeleteAction);
         }
         else if (this.mErrorStatusCodeIntValue == StatusCode.DL_LIMIT_TOO_MANY_DOWNLOADED_DELETE_SOME.getValue()) {
-            alertDialog$Builder.setTitle(2131231332).setPositiveButton(2131231168, this.mNoAction);
+            alertDialog$Builder.setTitle(2131296888).setPositiveButton(2131296724, this.mNoAction);
             if (this.notInMyDownloadScreen()) {
-                alertDialog$Builder.setNegativeButton(2131231311, this.mMyDownloadAction);
+                alertDialog$Builder.setNegativeButton(2131296867, this.mMyDownloadAction);
             }
         }
         else if (this.mErrorStatusCodeIntValue == StatusCode.DL_LIMIT_TOO_MANY_DEVICES_PLAN_OPTION.getValue()) {
-            alertDialog$Builder.setTitle(2131231332).setNegativeButton(2131231318, this.mSeePlanOptionsAction).setPositiveButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
+            alertDialog$Builder.setTitle(2131296888).setNegativeButton(2131296874, this.mSeePlanOptionsAction).setPositiveButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
         }
         else if (this.mErrorStatusCodeIntValue == StatusCode.DL_WARNING_DL_N_TIMES_BEFORE_DATE.getValue()) {
-            alertDialog$Builder.setNegativeButton(2131231008, this.mDeleteAction).setPositiveButton(2131230926, this.mDownloadResumeAction);
+            alertDialog$Builder.setNegativeButton(2131296564, this.mDeleteAction).setPositiveButton(2131296478, this.mDownloadResumeAction);
         }
         else {
-            alertDialog$Builder.setTitle(2131231330).setMessage(s);
-            alertDialog$Builder.setNegativeButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction).setPositiveButton(2131231221, this.mDeleteAndCreateAction);
+            alertDialog$Builder.setTitle(2131296886).setMessage(s);
+            alertDialog$Builder.setNegativeButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction).setPositiveButton(2131296777, this.mDeleteAndCreateAction);
         }
         return alertDialog$Builder.create();
     }
@@ -167,22 +167,22 @@ public class OfflineErrorDialog extends NetflixDialogFrag
     private AlertDialog createGeoNotPlayableDialog() {
         Log.i("offlineErrorDialog", "createGeoNotPlayableDialog");
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setTitle(2131231338).setMessage(2131231337).setNegativeButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction).setPositiveButton(2131231168, this.mNoAction);
+        alertDialog$Builder.setTitle(2131296897).setMessage(2131296896).setNegativeButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction).setPositiveButton(2131296724, this.mNoAction);
         return alertDialog$Builder.create();
     }
     
     private Dialog createLicenseExpiredDialog() {
         Log.i("offlineErrorDialog", "createLicenseExpiredDialog");
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setTitle(2131231333);
+        alertDialog$Builder.setTitle(2131296891);
         alertDialog$Builder.setNegativeButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
         if (ConnectivityUtils.isConnected((Context)this.getNetflixActivity())) {
-            alertDialog$Builder.setMessage(2131231336);
-            alertDialog$Builder.setPositiveButton(2131231315, (DialogInterface$OnClickListener)new OfflineErrorDialog$7(this));
+            alertDialog$Builder.setMessage(2131296894);
+            alertDialog$Builder.setPositiveButton(2131296871, (DialogInterface$OnClickListener)new OfflineErrorDialog$7(this));
         }
         else {
-            alertDialog$Builder.setMessage(2131231335);
-            alertDialog$Builder.setPositiveButton(2131231316, this.mNoAction);
+            alertDialog$Builder.setMessage(2131296893);
+            alertDialog$Builder.setPositiveButton(2131296872, this.mNoAction);
         }
         return alertDialog$Builder.create();
     }
@@ -190,31 +190,31 @@ public class OfflineErrorDialog extends NetflixDialogFrag
     private AlertDialog createNotEnoughSpaceDialog(final boolean b) {
         Log.i("offlineErrorDialog", "createNotEnoughSpaceDialog");
         boolean b2 = false;
-        final AlertDialog$Builder setTitle = new AlertDialog$Builder((Context)this.getNetflixActivity()).setTitle(2131231344);
+        final AlertDialog$Builder setTitle = new AlertDialog$Builder((Context)this.getNetflixActivity()).setTitle(2131296903);
         if (b) {
-            setTitle.setMessage(2131231342);
+            setTitle.setMessage(2131296901);
             if (this.notInMyDownloadScreen()) {
                 b2 = true;
-                setTitle.setNegativeButton(2131231311, this.mMyDownloadAction);
+                setTitle.setNegativeButton(2131296867, this.mMyDownloadAction);
             }
         }
         else {
-            setTitle.setMessage(2131231343);
+            setTitle.setMessage(2131296902);
         }
-        setTitle.setPositiveButton(2131231168, this.mNoAction);
+        setTitle.setPositiveButton(2131296724, this.mNoAction);
         if (this.mDownloadState == DownloadState.CreateFailed) {
             if (b2) {
-                setTitle.setNeutralButton(2131231221, this.mDeleteAndCreateAction);
+                setTitle.setNeutralButton(2131296777, this.mDeleteAndCreateAction);
             }
             else {
-                setTitle.setNegativeButton(2131231221, this.mDeleteAndCreateAction);
+                setTitle.setNegativeButton(2131296777, this.mDeleteAndCreateAction);
             }
         }
         else if (b2) {
-            setTitle.setNeutralButton(2131231221, this.mDownloadResumeAction);
+            setTitle.setNeutralButton(2131296777, this.mDownloadResumeAction);
         }
         else {
-            setTitle.setNegativeButton(2131231221, this.mDownloadResumeAction);
+            setTitle.setNegativeButton(2131296777, this.mDownloadResumeAction);
         }
         return setTitle.create();
     }
@@ -226,15 +226,15 @@ public class OfflineErrorDialog extends NetflixDialogFrag
     private AlertDialog createPlayWindowExpiredButRenewableDialog() {
         Log.i("offlineErrorDialog", "createPlayWindowExpiredButRenewableDialog");
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setTitle(2131231333);
+        alertDialog$Builder.setTitle(2131296891);
         alertDialog$Builder.setNegativeButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
         if (ConnectivityUtils.isConnected((Context)this.getNetflixActivity())) {
-            alertDialog$Builder.setMessage(2131231336);
-            alertDialog$Builder.setPositiveButton(2131231315, (DialogInterface$OnClickListener)new OfflineErrorDialog$8(this));
+            alertDialog$Builder.setMessage(2131296894);
+            alertDialog$Builder.setPositiveButton(2131296871, (DialogInterface$OnClickListener)new OfflineErrorDialog$8(this));
         }
         else {
-            alertDialog$Builder.setMessage(2131231335);
-            alertDialog$Builder.setPositiveButton(2131231316, this.mNoAction);
+            alertDialog$Builder.setMessage(2131296893);
+            alertDialog$Builder.setPositiveButton(2131296872, this.mNoAction);
         }
         return alertDialog$Builder.create();
     }
@@ -243,7 +243,7 @@ public class OfflineErrorDialog extends NetflixDialogFrag
         Log.i("offlineErrorDialog", "createPlayWindowFinalExpiredDialog");
         OfflineDialogLogblob.sendLogblob(this.getNetflixActivity(), this.getPlayableId(), this.mOxId, this.mDxId, WatchState.PLAY_WINDOW_EXPIRED_FINAL);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setTitle(2131231333).setMessage(2131231334).setPositiveButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
+        alertDialog$Builder.setTitle(2131296891).setMessage(2131296892).setPositiveButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
         return alertDialog$Builder.create();
     }
     
@@ -251,12 +251,12 @@ public class OfflineErrorDialog extends NetflixDialogFrag
         Log.i("offlineErrorDialog", "createViewWindowExpiredDialog");
         OfflineDialogLogblob.sendLogblob(this.getNetflixActivity(), this.getPlayableId(), this.mOxId, this.mDxId, WatchState.VIEW_WINDOW_EXPIRED);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setMessage(2131231339).setPositiveButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
+        alertDialog$Builder.setMessage(2131296898).setPositiveButton(this.getStringResourceIdForCancelOrDelete(), this.mDeleteAction);
         return alertDialog$Builder.create();
     }
     
     private Dialog genericErrorDialogNoAction() {
-        return new AlertDialog$Builder((Context)this.getNetflixActivity()).setTitle(2131231330).setMessage(this.getNetflixActivity().getResources().getString(2131231329, new Object[] { "" })).setNegativeButton(2131231168, this.mNoAction).create();
+        return new AlertDialog$Builder((Context)this.getNetflixActivity()).setTitle(2131296886).setMessage(this.getNetflixActivity().getResources().getString(2131296885, new Object[] { "" })).setNegativeButton(2131296724, this.mNoAction).create();
     }
     
     private static Bundle getBundleForLastPersistentStatus(final Status status) {
@@ -300,9 +300,9 @@ public class OfflineErrorDialog extends NetflixDialogFrag
     
     private int getStringResourceIdForCancelOrDelete() {
         if (this.mDownloadState == DownloadState.Complete) {
-            return 2131231306;
+            return 2131296862;
         }
-        return 2131231304;
+        return 2131296860;
     }
     
     private VideoType getVideoType() {
@@ -489,6 +489,12 @@ public class OfflineErrorDialog extends NetflixDialogFrag
                             break Label_0317;
                         }
                         case 3: {
+                            if (this.mStatusIsErrorOrWarning && this.mErrorStatusCodeIntValue == StatusCode.DL_LIMIT_CANT_DOWNLOAD_TILL_DATE.getValue()) {
+                                Log.i("offlineErrorDialog", "mErrorStatusCodeIntValue=%d", this.mErrorStatusCodeIntValue);
+                                n = 0;
+                                b2 = false;
+                                break Label_0317;
+                            }
                             return this.createLicenseExpiredDialog();
                         }
                         case 4: {

@@ -25,6 +25,7 @@ import android.view.Surface;
 import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.support.v4.media.session.MediaSessionCompat$Callback;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
@@ -44,6 +45,7 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -55,11 +57,12 @@ import android.os.Debug;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
+import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -111,7 +114,6 @@ import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDesc
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
 import com.netflix.mediaclient.ui.player.error.PlayerErrorDialogDescriptorFactory;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
@@ -146,7 +148,7 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import android.os.SystemClock;
+import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnClickListener;
 
@@ -159,14 +161,23 @@ class PlayerFragment$4 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.mState.setLastActionTime(SystemClock.elapsedRealtime());
-        this.this$0.mState.userInteraction();
-        if (this.this$0.mIsZoomedOut) {
-            this.this$0.doZoomIn();
+        if (!this.this$0.isActivityValid()) {
+            return;
         }
-        else {
-            this.this$0.doZoomOut();
+        if (this.this$0.mAsset == null) {
+            Log.e("PlayerFragment", "mPlayable is null!");
+            return;
         }
-        this.this$0.mIsZoomedOut = !this.this$0.mIsZoomedOut;
+        if (!this.this$0.mAsset.isEpisode()) {
+            Log.e("PlayerFragment", "mPlayable is not episode detail!");
+            return;
+        }
+        if (this.this$0.mEpisodesFrag != null && this.this$0.mEpisodesFrag.isVisible()) {
+            Log.e("PlayerFragment", "Episode dialog already showing");
+            return;
+        }
+        Log.d("PlayerFragment", "Start episodes dialog");
+        this.this$0.stopScreenUpdateTask();
+        this.this$0.showEpisodesFrag();
     }
 }

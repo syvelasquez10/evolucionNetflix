@@ -21,9 +21,11 @@ import com.netflix.mediaclient.servicemgr.IPlayer$PlaybackError;
 import android.view.MenuItem;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
+import android.view.Surface;
 import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.support.v4.media.session.MediaSessionCompat$Callback;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
@@ -43,6 +45,7 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -54,12 +57,11 @@ import android.os.Debug;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
-import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.ui.barker.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -120,6 +122,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
+import android.view.SurfaceHolder$Callback;
 import java.util.ArrayList;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
 import com.netflix.mediaclient.service.player.subtitles.SafeSubtitleManager;
@@ -146,12 +149,10 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import android.view.Surface;
+import android.os.SystemClock;
 import com.netflix.mediaclient.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceHolder$Callback;
 
-class PlayerFragment$9 implements SurfaceHolder$Callback
+class PlayerFragment$9 implements Runnable
 {
     final /* synthetic */ PlayerFragment this$0;
     
@@ -159,73 +160,26 @@ class PlayerFragment$9 implements SurfaceHolder$Callback
         this.this$0 = this$0;
     }
     
-    public void surfaceChanged(final SurfaceHolder surfaceHolder, final int n, final int n2, final int n3) {
-        if (Log.isLoggable()) {
-            Log.d("PlayerFragment", "Surface changed, format: " + n + ", width: " + n2 + ", height: " + n3);
-            if (surfaceHolder != null && surfaceHolder.getSurface() != null) {
-                Log.d("PlayerFragment", "Holder: " + surfaceHolder);
-                Log.d("PlayerFragment", "Native surface: " + surfaceHolder.getSurface());
-            }
-        }
-    }
-    
-    public void surfaceCreated(final SurfaceHolder surfaceHolder) {
-        while (true) {
-            synchronized (this) {
-                Log.d("PlayerFragment", "Surface created");
-                if (surfaceHolder != null && surfaceHolder.getSurface() != null && this.this$0.mScreen != null) {
-                    this.this$0.mIsSurfaceReady = true;
-                    this.this$0.mScreen.getSurfaceView().setVisibility(0);
-                    if (Log.isLoggable()) {
-                        Log.d("PlayerFragment", "Native surface: " + surfaceHolder.getSurface());
-                    }
-                    this.this$0.completeInitIfReady();
-                    if (this.this$0.mPlayer != null) {
-                        this.this$0.mPlayer.setSurface(surfaceHolder.getSurface());
-                    }
-                    if (this.this$0.mPlayerBackgrounded) {
-                        this.this$0.removeDialogFragmentIfShown();
-                        if (this.this$0.isInteractivePostPlay()) {
-                            Log.d("PlayerFragment", "Do not un-pause player until user exits out of interactive post play.");
-                        }
-                        else {
-                            this.this$0.doUnpause();
-                        }
-                    }
-                    return;
-                }
-            }
-            this.this$0.mIsSurfaceReady = false;
-            if (this.this$0.mAsset == null) {
-                Log.e("PlayerFragment", "surfaceCreated again, playout already set to null");
-            }
-            Log.d("PlayerFragment", "SurfaceCreated again, no playback");
-        }
-    }
-    
-    public void surfaceDestroyed(final SurfaceHolder surfaceHolder) {
-        this.this$0.mIsSurfaceReady = false;
-        if (this.this$0.isCoppolaWithOldPlayer()) {
-            this.this$0.mPlayerBackgrounded = true;
+    @Override
+    public void run() {
+        if (!this.this$0.isActivityValid() || this.this$0.mState.draggingInProgress || this.this$0.mState.draggingAudioInProgress) {
+            Log.d("PlayerFragment", "METADATA exit");
             return;
         }
-        if (this.this$0.mPlayer != null && this.this$0.canPlayerBeBackgrounded()) {
-            Log.d("PlayerFragment", "Surface destroyed,, background player");
-            this.this$0.mPlayer.setSurface(null);
-            this.this$0.mPlayerBackgrounded = true;
-            if (this.this$0.isOfflinePlayback()) {
-                this.this$0.mPlayerSuspendNotification.showNotificationOffline(this.this$0.mAsset);
-                return;
+        synchronized (this.this$0) {
+            final PlayScreen access$900 = this.this$0.mScreen;
+            if (Log.isLoggable() && access$900 != null) {
+                Log.d("PlayerFragment", "Player UI state - " + this.this$0.mScreen.getState());
             }
-            this.this$0.mPlayerSuspendNotification.showNotification(this.this$0.mAsset);
-        }
-        else {
-            if (!this.this$0.mScreen.canExitPlaybackEndOfPlay()) {
-                Log.d("PlayerFragment", "In posplay when surface is destroyed, do not exit");
-                return;
+            if (access$900 != null && !this.this$0.mState.draggingInProgress && !this.this$0.mState.draggingAudioInProgress) {
+                if (this.this$0.mState.getLastActionTime() > 0L && SystemClock.elapsedRealtime() - this.this$0.mState.getLastActionTime() > 5000L && this.this$0.mScreen.getState() != PlayerUiState.PostPlay) {
+                    Log.d("PlayerFragment", "Time to remove panel");
+                    this.this$0.clearPanel();
+                }
+                this.this$0.setProgress();
+                this.this$0.updateMetadataIfNeeded();
             }
-            Log.d("PlayerFragment", "Surface destroyed, exit if we are not already in it");
-            this.this$0.cleanupAndExit();
+            this.this$0.repostOnEverySecondRunnable(1000);
         }
     }
 }

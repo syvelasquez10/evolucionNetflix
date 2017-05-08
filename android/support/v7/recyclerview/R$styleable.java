@@ -15,6 +15,6 @@ public final class R$styleable
     public static final int RecyclerView_stackFromEnd = 5;
     
     static {
-        RecyclerView = new int[] { 16842948, 16842993, 2130772280, 2130772281, 2130772282, 2130772283 };
+        RecyclerView = new int[] { 16842948, 16842993, 2130772287, 2130772288, 2130772289, 2130772290 };
     }
 }

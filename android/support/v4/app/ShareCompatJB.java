@@ -5,7 +5,9 @@
 package android.support.v4.app;
 
 import android.text.Html;
+import android.annotation.TargetApi;
 
+@TargetApi(16)
 class ShareCompatJB
 {
     public static String escapeHtml(final CharSequence charSequence) {

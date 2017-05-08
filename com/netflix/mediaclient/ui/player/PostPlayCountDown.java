@@ -53,7 +53,7 @@ public class PostPlayCountDown extends LinearLayout
     
     protected void onFinishInflate() {
         super.onFinishInflate();
-        this.action = (TextView)this.findViewById(2131690162);
+        this.action = (TextView)this.findViewById(2131755730);
     }
     
     public void refreshTimerText() {
@@ -64,17 +64,17 @@ public class PostPlayCountDown extends LinearLayout
         int n;
         if (this.postPlayItem.isNextEpisodeAutoPlay()) {
             if (time > 1) {
-                n = 2131231192;
+                n = 2131296748;
             }
             else {
-                n = 2131231190;
+                n = 2131296746;
             }
         }
         else if (time > 1) {
-            n = 2131231199;
+            n = 2131296755;
         }
         else {
-            n = 2131231198;
+            n = 2131296754;
         }
         if (this.action != null) {
             this.action.setText((CharSequence)Html.fromHtml(this.getString(n, String.valueOf(time))));
@@ -100,10 +100,10 @@ public class PostPlayCountDown extends LinearLayout
         this.countdownTimer.setTime(postPlayItem.getAutoPlaySeconds());
         String text;
         if (postPlayItem.isNextEpisodeAutoPlay()) {
-            text = this.getString(2131231190);
+            text = this.getString(2131296746);
         }
         else {
-            text = this.getString(2131231198);
+            text = this.getString(2131296754);
         }
         this.action.setText((CharSequence)text);
         this.refreshTimerText();

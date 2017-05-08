@@ -5,7 +5,9 @@
 package android.support.v4.graphics.drawable;
 
 import android.graphics.drawable.Drawable;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class DrawableCompatApi23
 {
     public static int getLayoutDirection(final Drawable drawable) {

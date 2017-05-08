@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.content.Context;
@@ -18,6 +19,7 @@ public final class PrefetchLolomoABTestUtils
     public static final int PREFETCH_LOLOMO_JOB_START_DELAY_MS = 3600000;
     public static final int PREFETCH_LOLOMO_JOB_TIMEOUT_MS = 300000;
     public static final long PREFETCH_LOLOMO_METADATA_JOB_INTERVAL_MS = 36000000L;
+    private static final String TAG = "PrefetchLolomoABTestUtils";
     
     public static boolean doesJobRequireCharging(final Context context) {
         switch (PrefetchLolomoABTestUtils$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[PersistentConfig.getPrefetchLolomoConfig(context).ordinal()]) {
@@ -69,14 +71,26 @@ public final class PrefetchLolomoABTestUtils
     }
     
     public static boolean isConfigRequestAsync(final Context context) {
-        if (isInTest(context)) {
+        if (!isInTest(context)) {
+            if (Log.isLoggable()) {
+                Log.v("PrefetchLolomoABTestUtils", "User not in test - config request is SYNCHRONOUS");
+            }
+        }
+        else {
             switch (PrefetchLolomoABTestUtils$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[PersistentConfig.getPrefetchLolomoConfig(context).ordinal()]) {
+                default: {
+                    if (Log.isLoggable()) {
+                        Log.v("PrefetchLolomoABTestUtils", "User not test cell with async config - config request is ASYNCHRONOUS");
+                    }
+                    return true;
+                }
                 case 1:
                 case 2: {
+                    if (Log.isLoggable()) {
+                        Log.v("PrefetchLolomoABTestUtils", "User in test cell 1 or 3 - config request is SYNCHRONOUS");
+                        return false;
+                    }
                     break;
-                }
-                default: {
-                    return true;
                 }
             }
         }

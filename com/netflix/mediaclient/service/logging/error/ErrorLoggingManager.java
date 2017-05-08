@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import com.netflix.mediaclient.util.log.ExceptionLogClUtils;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.util.StringUtils;
 import android.os.Build;
 import android.os.Build$VERSION;
@@ -25,7 +27,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "4.12.2";
+    private static final String CRITTER_VERSION_NAME = "4.13.0";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -80,16 +82,17 @@ public final class ErrorLoggingManager
         return isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig && Crittercism.didCrashOnLastLoad();
     }
     
-    private static void initCrittercism(final Context context, final String s) {
+    private static void initCrittercism(final Context context, final long n) {
         while (true) {
-            Label_0044: {
+            Label_0058: {
                 synchronized (ErrorLoggingManager.class) {
                     if (!isCrittercismEnabled()) {
                         Log.w("nf_log_crit", "Crittercism is NOT enabled in build!");
+                        Thread.setDefaultUncaughtExceptionHandler((Thread.UncaughtExceptionHandler)new ErrorLoggingManager$1(context, Thread.getDefaultUncaughtExceptionHandler()));
                     }
                     else {
                         if (!ErrorLoggingManager.sCrittercismReady) {
-                            break Label_0044;
+                            break Label_0058;
                         }
                         Log.w("nf_log_crit", "Crittercism is already initialized");
                     }
@@ -103,16 +106,16 @@ public final class ErrorLoggingManager
                 crittercismConfig.setNdkCrashReportingEnabled(false);
                 crittercismConfig.setServiceMonitoringEnabled(false);
                 crittercismConfig.setLogcatReportingEnabled(false);
-                crittercismConfig.setCustomVersionName("4.12.2");
+                crittercismConfig.setCustomVersionName("4.13.0");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
-                    Thread.setDefaultUncaughtExceptionHandler((Thread.UncaughtExceptionHandler)new ErrorLoggingManager$1(context2.getApplicationContext(), Thread.getDefaultUncaughtExceptionHandler()));
+                    Thread.setDefaultUncaughtExceptionHandler((Thread.UncaughtExceptionHandler)new ErrorLoggingManager$2(context2, context2.getApplicationContext(), Thread.getDefaultUncaughtExceptionHandler()));
                     final JSONObject metadata = new JSONObject();
                     metadata.put("android", Build$VERSION.SDK_INT);
                     putValueOrNotAvailable(metadata, "oem", Build.MANUFACTURER);
                     putValueOrNotAvailable(metadata, "model", Build.MODEL);
-                    putValueOrNotAvailable(metadata, "appsessionid", s);
+                    putValueOrNotAvailable(metadata, "critSessionId", n + "");
                     Crittercism.setMetadata(metadata);
                     ErrorLoggingManager.sCrittercismReady = true;
                     Log.d("nf_log_crit", "Init Crittercism done.");
@@ -148,6 +151,7 @@ public final class ErrorLoggingManager
     
     public static void logHandledException(final String s) {
         if (!StringUtils.isEmpty(s)) {
+            ExceptionLogClUtils.reportExceptionToCL(NetflixApplication.getContext(), new Exception(s));
             if (isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig) {
                 logHandledException(new Exception(s));
                 return;
@@ -160,6 +164,7 @@ public final class ErrorLoggingManager
     
     public static void logHandledException(final Throwable t) {
         if (t != null) {
+            ExceptionLogClUtils.reportExceptionToCL(NetflixApplication.getContext(), t);
             if (isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig) {
                 Crittercism.logHandledException(t);
                 return;
@@ -170,11 +175,11 @@ public final class ErrorLoggingManager
         }
     }
     
-    public static void onConfigurationChanged(final Context context, final String s, final ErrorLoggingSpecification errorLoggingSpecification, final BreadcrumbLoggingSpecification breadcrumbLoggingSpecification) {
+    public static void onConfigurationChanged(final Context context, final long n, final ErrorLoggingSpecification errorLoggingSpecification, final BreadcrumbLoggingSpecification breadcrumbLoggingSpecification) {
         synchronized (ErrorLoggingManager.class) {
             configureErrorLogging(context, errorLoggingSpecification);
             configureBreadcrumbLogging(context, breadcrumbLoggingSpecification);
-            initCrittercism(context, s);
+            initCrittercism(context, n);
         }
     }
     

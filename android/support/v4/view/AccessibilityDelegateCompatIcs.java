@@ -9,7 +9,9 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.View$AccessibilityDelegate;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class AccessibilityDelegateCompatIcs
 {
     public static boolean dispatchPopulateAccessibilityEvent(final Object o, final View view, final AccessibilityEvent accessibilityEvent) {

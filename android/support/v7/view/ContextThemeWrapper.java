@@ -5,6 +5,7 @@
 package android.support.v7.view;
 
 import android.support.v7.appcompat.R$style;
+import android.content.res.AssetManager;
 import android.content.Context;
 import android.content.res.Resources$Theme;
 import android.view.LayoutInflater;
@@ -36,6 +37,10 @@ public class ContextThemeWrapper extends ContextWrapper
             }
         }
         this.onApplyThemeResource(this.mTheme, this.mThemeResource, b);
+    }
+    
+    public AssetManager getAssets() {
+        return this.getResources().getAssets();
     }
     
     public Object getSystemService(final String s) {

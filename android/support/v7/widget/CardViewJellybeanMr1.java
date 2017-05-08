@@ -4,6 +4,9 @@
 
 package android.support.v7.widget;
 
+import android.annotation.TargetApi;
+
+@TargetApi(17)
 class CardViewJellybeanMr1 extends CardViewGingerbread
 {
     @Override

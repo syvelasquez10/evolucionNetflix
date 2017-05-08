@@ -6,7 +6,9 @@ package android.support.v7.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 interface CardViewImpl
 {
     ColorStateList getBackgroundColor(final CardViewDelegate p0);

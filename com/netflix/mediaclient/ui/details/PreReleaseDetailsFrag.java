@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -58,6 +59,9 @@ public class PreReleaseDetailsFrag extends MovieDetailsFrag
     protected void initDetailsViewGroup(final View view) {
         (this.detailsViewGroup = new PreReleaseDetailsFrag$PreReleaseVideoDetailsViewGroup(this, (Context)this.getActivity())).removeActionBarDummyView();
         this.detailsViewGroup.showRelatedTitle();
+        if (DeviceUtils.isLandscape((Context)this.getActivity()) && DeviceUtils.isTabletByContext((Context)this.getActivity())) {
+            this.detailsViewGroup.setPadding(0, this.getNetflixActivity().getActionBarHeight(), 0, 0);
+        }
     }
     
     boolean isSupplementalMessageAvailable() {

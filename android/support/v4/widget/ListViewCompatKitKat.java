@@ -5,7 +5,9 @@
 package android.support.v4.widget;
 
 import android.widget.ListView;
+import android.annotation.TargetApi;
 
+@TargetApi(19)
 class ListViewCompatKitKat
 {
     static void scrollListBy(final ListView listView, final int n) {

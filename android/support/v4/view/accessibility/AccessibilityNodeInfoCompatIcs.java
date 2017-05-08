@@ -8,7 +8,9 @@ import android.graphics.Rect;
 import java.util.List;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.annotation.TargetApi;
 
+@TargetApi(14)
 class AccessibilityNodeInfoCompatIcs
 {
     public static void addAction(final Object o, final int n) {

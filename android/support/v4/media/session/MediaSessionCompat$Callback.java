@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.os.ResultReceiver;
 import android.os.Bundle;
 import android.os.Build$VERSION;
+import java.lang.ref.WeakReference;
 
 public abstract class MediaSessionCompat$Callback
 {
     final Object mCallbackObj;
+    WeakReference<MediaSessionCompat$MediaSessionImpl> mSessionImpl;
     
     public MediaSessionCompat$Callback() {
         if (Build$VERSION.SDK_INT >= 24) {

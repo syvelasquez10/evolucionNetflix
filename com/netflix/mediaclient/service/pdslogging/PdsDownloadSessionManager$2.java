@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.pdslogging;
 
+import java.util.Iterator;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.IntentUtils;

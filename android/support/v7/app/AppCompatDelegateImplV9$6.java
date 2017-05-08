@@ -57,7 +57,7 @@ class AppCompatDelegateImplV9$6 extends ViewPropertyAnimatorListenerAdapter
     public void onAnimationStart(final View view) {
         this.this$0.mActionModeView.setVisibility(0);
         this.this$0.mActionModeView.sendAccessibilityEvent(32);
-        if (this.this$0.mActionModeView.getParent() != null) {
+        if (this.this$0.mActionModeView.getParent() instanceof View) {
             ViewCompat.requestApplyInsets((View)this.this$0.mActionModeView.getParent());
         }
     }

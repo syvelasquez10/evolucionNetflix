@@ -5,7 +5,9 @@
 package android.support.v4.app;
 
 import android.app.NotificationManager;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 class NotificationManagerCompatApi24
 {
     public static boolean areNotificationsEnabled(final NotificationManager notificationManager) {

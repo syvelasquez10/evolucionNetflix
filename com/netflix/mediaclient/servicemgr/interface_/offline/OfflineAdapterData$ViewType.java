@@ -7,6 +7,5 @@ package com.netflix.mediaclient.servicemgr.interface_.offline;
 public enum OfflineAdapterData$ViewType
 {
     MOVIE, 
-    PROFILE, 
     SHOW;
 }

@@ -7,7 +7,9 @@ package android.support.v4.content;
 import android.graphics.drawable.Drawable;
 import java.io.File;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class ContextCompatApi21
 {
     public static File getCodeCacheDir(final Context context) {

@@ -6,9 +6,9 @@ package com.netflix.android.tooltips;
 
 public final class R$bool
 {
-    public static final int abc_action_bar_embed_tabs = 2131558400;
-    public static final int abc_allow_stacked_button_bar = 2131558401;
-    public static final int abc_config_actionMenuItemAllCaps = 2131558405;
-    public static final int abc_config_closeDialogWhenTouchOutside = 2131558406;
-    public static final int abc_config_showMenuShortcutsWhenKeyboardPresent = 2131558407;
+    public static final int abc_action_bar_embed_tabs = 2131623936;
+    public static final int abc_allow_stacked_button_bar = 2131623937;
+    public static final int abc_config_actionMenuItemAllCaps = 2131623941;
+    public static final int abc_config_closeDialogWhenTouchOutside = 2131623942;
+    public static final int abc_config_showMenuShortcutsWhenKeyboardPresent = 2131623943;
 }

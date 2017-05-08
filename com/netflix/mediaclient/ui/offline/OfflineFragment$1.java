@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.offline;
 
+import android.widget.Toast;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import android.os.Bundle;

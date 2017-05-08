@@ -416,16 +416,16 @@ public class KongInteractiveMomentsManager implements InteractiveMomentsManager
         }
         this.mFragment = mFragment;
         final View view = mFragment.getView();
-        this.imageContainer = (ViewGroup)view.findViewById(2131689878);
+        this.imageContainer = (ViewGroup)view.findViewById(2131755427);
         if (this.imageContainer == null) {
             Log.d("KongInteractiveMomentsManager", "No interactive moments view container. Exiting the decorator.");
             return;
         }
         this.hasInteractiveMoments = false;
-        this.imageBackground = (ImageView)view.findViewById(2131689880);
-        this.image = (ImageView)view.findViewById(2131689570);
-        this.title = (TextView)view.findViewById(2131689574);
-        this.mBottomPanelHeight = this.mFragment.getResources().getDimensionPixelSize(2131361931);
+        this.imageBackground = (ImageView)view.findViewById(2131755429);
+        this.image = (ImageView)view.findViewById(2131755110);
+        this.title = (TextView)view.findViewById(2131755114);
+        this.mBottomPanelHeight = this.mFragment.getResources().getDimensionPixelSize(2131427471);
         if (ViewUtils.isNavigationBarBelowContent(this.mFragment.getActivity())) {
             this.mBottomPanelHeight += ViewUtils.getNavigationBarHeight((Context)this.mFragment.getActivity(), false);
         }

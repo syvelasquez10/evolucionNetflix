@@ -5,7 +5,6 @@
 package android.support.v7.widget;
 
 import android.support.v7.content.res.AppCompatResources;
-import android.content.res.TypedArray;
 import android.support.v7.text.AllCapsTransformationMethod;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
@@ -902,7 +901,7 @@ public class SwitchCompat extends CompoundButton
     }
     
     public void setSwitchTextAppearance(final Context context, int dimensionPixelSize) {
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(dimensionPixelSize, R$styleable.TextAppearance);
+        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, dimensionPixelSize, R$styleable.TextAppearance);
         final ColorStateList colorStateList = obtainStyledAttributes.getColorStateList(R$styleable.TextAppearance_android_textColor);
         if (colorStateList != null) {
             this.mTextColors = colorStateList;

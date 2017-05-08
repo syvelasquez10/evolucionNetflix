@@ -5,7 +5,9 @@
 package android.support.v4.view;
 
 import android.view.KeyEvent;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class KeyEventCompatHoneycomb
 {
     public static boolean isCtrlPressed(final KeyEvent keyEvent) {

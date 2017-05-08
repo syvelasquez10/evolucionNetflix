@@ -6,7 +6,9 @@ package android.support.v4.content;
 
 import java.io.File;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 class ContextCompatApi24
 {
     public static Context createDeviceProtectedStorageContext(final Context context) {

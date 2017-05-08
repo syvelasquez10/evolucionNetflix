@@ -49,9 +49,9 @@ public class PaginatedDiscoveryAdapter extends BasePaginatedAdapter<Discovery>
     public int getRowHeightInPx() {
         final Resources resources = this.getActivity().getResources();
         int n2;
-        final int n = n2 = (int)resources.getDimension(2131361792);
+        final int n = n2 = (int)resources.getDimension(2131427328);
         if (Coppola2Utils.shouldHideContinueWatchingLink((Context)this.activity)) {
-            n2 = (int)(n - (resources.getDimension(2131362082) + (resources.getDimension(2131361882) + resources.getDimension(2131362150))));
+            n2 = (int)(n - (resources.getDimension(2131427629) + (resources.getDimension(2131427422) + resources.getDimension(2131427700))));
         }
         Log.v("PaginatedDiscoveryAdapter", "Computed view height: " + n2);
         return n2;

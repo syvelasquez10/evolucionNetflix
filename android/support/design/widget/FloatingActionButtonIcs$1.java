@@ -27,7 +27,15 @@ class FloatingActionButtonIcs$1 extends AnimatorListenerAdapter
     public void onAnimationEnd(final Animator animator) {
         this.this$0.mAnimState = 0;
         if (!this.mCancelled) {
-            this.this$0.mView.internalSetVisibility(8, this.val$fromUser);
+            final VisibilityAwareImageButton mView = this.this$0.mView;
+            int n;
+            if (this.val$fromUser) {
+                n = 8;
+            }
+            else {
+                n = 4;
+            }
+            mView.internalSetVisibility(n, this.val$fromUser);
             if (this.val$listener != null) {
                 this.val$listener.onHidden();
             }

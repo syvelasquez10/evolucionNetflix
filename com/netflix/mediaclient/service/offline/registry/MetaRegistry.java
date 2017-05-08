@@ -12,8 +12,7 @@ class MetaRegistry
 {
     @SerializedName("checksumMap")
     private final Map<Integer, String> mCheckSumMap;
-    @SerializedName("activeRegId")
-    public int mCurrentActiveRegId;
+    transient RegistryData mCurrentRegistryData;
     @SerializedName("isPaused")
     public boolean mDownloadsPausedByUser;
     @SerializedName("geoCountryCode")
@@ -22,6 +21,8 @@ class MetaRegistry
     public int mMetaRegistryWriteCounter;
     @SerializedName("primaryProfileGuid")
     public String mPrimaryProfileGuid;
+    @SerializedName("activeRegId")
+    public int mUserSelectedRegId;
     @SerializedName("version")
     private final int mVersion;
     
@@ -35,7 +36,11 @@ class MetaRegistry
         return this.mCheckSumMap.get(n);
     }
     
-    public void updateCheckSum(final int n, final String s) {
+    boolean isCurrentlySelected(final RegistryData registryData) {
+        return this.mCurrentRegistryData != null && registryData.mRegId == this.mCurrentRegistryData.mRegId;
+    }
+    
+    void updateCheckSum(final int n, final String s) {
         this.mCheckSumMap.put(n, s);
     }
 }

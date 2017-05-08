@@ -5,12 +5,13 @@
 package android.support.v7.widget;
 
 import java.util.Collections;
+import java.lang.ref.WeakReference;
 import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.view.View$MeasureSpec;
+import android.view.Display;
 import android.view.FocusFinder;
-import android.view.ViewParent;
 import android.graphics.Canvas;
 import android.os.Parcelable;
 import android.util.SparseArray;
@@ -23,6 +24,7 @@ import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.view.accessibility.AccessibilityEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import android.view.ViewParent;
 import android.content.res.TypedArray;
 import android.support.v7.recyclerview.R$styleable;
 import android.support.v4.view.ViewCompat;
@@ -110,7 +112,7 @@ class RecyclerView$5 implements ChildHelper$Callback
     public void onEnteredHiddenState(final View view) {
         final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
         if (childViewHolderInt != null) {
-            childViewHolderInt.onEnteredHiddenState();
+            childViewHolderInt.onEnteredHiddenState(this.this$0);
         }
     }
     
@@ -118,7 +120,7 @@ class RecyclerView$5 implements ChildHelper$Callback
     public void onLeftHiddenState(final View view) {
         final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
         if (childViewHolderInt != null) {
-            childViewHolderInt.onLeftHiddenState();
+            childViewHolderInt.onLeftHiddenState(this.this$0);
         }
     }
     

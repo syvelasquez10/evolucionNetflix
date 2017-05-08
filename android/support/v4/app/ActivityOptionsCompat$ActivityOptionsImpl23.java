@@ -6,7 +6,9 @@ package android.support.v4.app;
 
 import android.os.Bundle;
 import android.app.PendingIntent;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class ActivityOptionsCompat$ActivityOptionsImpl23 extends ActivityOptionsCompat
 {
     private final ActivityOptionsCompat23 mImpl;

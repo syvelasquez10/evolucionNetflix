@@ -46,6 +46,11 @@ class NrdController$NrdBridge implements Bridge
     }
     
     @Override
+    public String getChannelId() {
+        return this.this$0.getConfigurationAgent().getChannelId();
+    }
+    
+    @Override
     public int getConfigVideoBufferSize() {
         return this.this$0.getConfigurationAgent().getVideoBufferSize();
     }

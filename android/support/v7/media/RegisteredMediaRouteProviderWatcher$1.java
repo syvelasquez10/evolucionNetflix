@@ -4,16 +4,6 @@
 
 package android.support.v7.media;
 
-import android.content.IntentFilter;
-import android.content.pm.ServiceInfo;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Collections;
-import android.content.ComponentName;
-import android.content.pm.ResolveInfo;
-import java.util.ArrayList;
-import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;

@@ -10,7 +10,9 @@ import android.view.accessibility.AccessibilityNodeInfo$CollectionInfo;
 import java.util.List;
 import android.view.accessibility.AccessibilityNodeInfo$AccessibilityAction;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.annotation.TargetApi;
 
+@TargetApi(21)
 class AccessibilityNodeInfoCompatApi21
 {
     static void addAction(final Object o, final Object o2) {

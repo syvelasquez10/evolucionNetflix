@@ -6,7 +6,9 @@ package android.support.v4.content;
 
 import android.content.res.ColorStateList;
 import android.content.Context;
+import android.annotation.TargetApi;
 
+@TargetApi(23)
 class ContextCompatApi23
 {
     public static int getColor(final Context context, final int n) {

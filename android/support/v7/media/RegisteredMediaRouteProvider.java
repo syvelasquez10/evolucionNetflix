@@ -16,13 +16,13 @@ import android.content.ServiceConnection;
 
 final class RegisteredMediaRouteProvider extends MediaRouteProvider implements ServiceConnection
 {
-    private static final boolean DEBUG;
+    static final boolean DEBUG;
     private RegisteredMediaRouteProvider$Connection mActiveConnection;
     private boolean mBound;
     private final ComponentName mComponentName;
     private boolean mConnectionReady;
     private final ArrayList<RegisteredMediaRouteProvider$Controller> mControllers;
-    private final RegisteredMediaRouteProvider$PrivateHandler mPrivateHandler;
+    final RegisteredMediaRouteProvider$PrivateHandler mPrivateHandler;
     private boolean mStarted;
     
     static {
@@ -33,7 +33,7 @@ final class RegisteredMediaRouteProvider extends MediaRouteProvider implements S
         super(context, new MediaRouteProvider$ProviderMetadata(mComponentName));
         this.mControllers = new ArrayList<RegisteredMediaRouteProvider$Controller>();
         this.mComponentName = mComponentName;
-        this.mPrivateHandler = new RegisteredMediaRouteProvider$PrivateHandler(this, null);
+        this.mPrivateHandler = new RegisteredMediaRouteProvider$PrivateHandler(this);
     }
     
     private void attachControllersToConnection() {
@@ -64,6 +64,25 @@ final class RegisteredMediaRouteProvider extends MediaRouteProvider implements S
         }
     }
     
+    private MediaRouteProvider$RouteController createRouteController(final String s, final String s2) {
+        final MediaRouteProviderDescriptor descriptor = this.getDescriptor();
+        if (descriptor != null) {
+            final List<MediaRouteDescriptor> routes = descriptor.getRoutes();
+            for (int size = routes.size(), i = 0; i < size; ++i) {
+                if (routes.get(i).getId().equals(s)) {
+                    final RegisteredMediaRouteProvider$Controller registeredMediaRouteProvider$Controller = new RegisteredMediaRouteProvider$Controller(this, s, s2);
+                    this.mControllers.add(registeredMediaRouteProvider$Controller);
+                    if (this.mConnectionReady) {
+                        registeredMediaRouteProvider$Controller.attachConnection(this.mActiveConnection);
+                    }
+                    this.updateBinding();
+                    return registeredMediaRouteProvider$Controller;
+                }
+            }
+        }
+        return null;
+    }
+    
     private void detachControllersFromConnection() {
         for (int size = this.mControllers.size(), i = 0; i < size; ++i) {
             this.mControllers.get(i).detachConnection();
@@ -78,50 +97,6 @@ final class RegisteredMediaRouteProvider extends MediaRouteProvider implements S
             this.mActiveConnection.dispose();
             this.mActiveConnection = null;
         }
-    }
-    
-    private void onConnectionDescriptorChanged(final RegisteredMediaRouteProvider$Connection registeredMediaRouteProvider$Connection, final MediaRouteProviderDescriptor descriptor) {
-        if (this.mActiveConnection == registeredMediaRouteProvider$Connection) {
-            if (RegisteredMediaRouteProvider.DEBUG) {
-                Log.d("MediaRouteProviderProxy", this + ": Descriptor changed, descriptor=" + descriptor);
-            }
-            this.setDescriptor(descriptor);
-        }
-    }
-    
-    private void onConnectionDied(final RegisteredMediaRouteProvider$Connection registeredMediaRouteProvider$Connection) {
-        if (this.mActiveConnection == registeredMediaRouteProvider$Connection) {
-            if (RegisteredMediaRouteProvider.DEBUG) {
-                Log.d("MediaRouteProviderProxy", this + ": Service connection died");
-            }
-            this.disconnect();
-        }
-    }
-    
-    private void onConnectionError(final RegisteredMediaRouteProvider$Connection registeredMediaRouteProvider$Connection, final String s) {
-        if (this.mActiveConnection == registeredMediaRouteProvider$Connection) {
-            if (RegisteredMediaRouteProvider.DEBUG) {
-                Log.d("MediaRouteProviderProxy", this + ": Service connection error - " + s);
-            }
-            this.unbind();
-        }
-    }
-    
-    private void onConnectionReady(final RegisteredMediaRouteProvider$Connection registeredMediaRouteProvider$Connection) {
-        if (this.mActiveConnection == registeredMediaRouteProvider$Connection) {
-            this.mConnectionReady = true;
-            this.attachControllersToConnection();
-            final MediaRouteDiscoveryRequest discoveryRequest = this.getDiscoveryRequest();
-            if (discoveryRequest != null) {
-                this.mActiveConnection.setDiscoveryRequest(discoveryRequest);
-            }
-        }
-    }
-    
-    private void onControllerReleased(final RegisteredMediaRouteProvider$Controller registeredMediaRouteProvider$Controller) {
-        this.mControllers.remove(registeredMediaRouteProvider$Controller);
-        registeredMediaRouteProvider$Controller.detachConnection();
-        this.updateBinding();
     }
     
     private boolean shouldBind() {
@@ -151,24 +126,67 @@ final class RegisteredMediaRouteProvider extends MediaRouteProvider implements S
         return this.mComponentName.getPackageName().equals(s) && this.mComponentName.getClassName().equals(s2);
     }
     
-    @Override
-    public MediaRouteProvider$RouteController onCreateRouteController(final String s) {
-        final MediaRouteProviderDescriptor descriptor = this.getDescriptor();
-        if (descriptor != null) {
-            final List<MediaRouteDescriptor> routes = descriptor.getRoutes();
-            for (int size = routes.size(), i = 0; i < size; ++i) {
-                if (routes.get(i).getId().equals(s)) {
-                    final RegisteredMediaRouteProvider$Controller registeredMediaRouteProvider$Controller = new RegisteredMediaRouteProvider$Controller(this, s);
-                    this.mControllers.add(registeredMediaRouteProvider$Controller);
-                    if (this.mConnectionReady) {
-                        registeredMediaRouteProvider$Controller.attachConnection(this.mActiveConnection);
-                    }
-                    this.updateBinding();
-                    return registeredMediaRouteProvider$Controller;
-                }
+    void onConnectionDescriptorChanged(final RegisteredMediaRouteProvider$Connection registeredMediaRouteProvider$Connection, final MediaRouteProviderDescriptor descriptor) {
+        if (this.mActiveConnection == registeredMediaRouteProvider$Connection) {
+            if (RegisteredMediaRouteProvider.DEBUG) {
+                Log.d("MediaRouteProviderProxy", this + ": Descriptor changed, descriptor=" + descriptor);
+            }
+            this.setDescriptor(descriptor);
+        }
+    }
+    
+    void onConnectionDied(final RegisteredMediaRouteProvider$Connection registeredMediaRouteProvider$Connection) {
+        if (this.mActiveConnection == registeredMediaRouteProvider$Connection) {
+            if (RegisteredMediaRouteProvider.DEBUG) {
+                Log.d("MediaRouteProviderProxy", this + ": Service connection died");
+            }
+            this.disconnect();
+        }
+    }
+    
+    void onConnectionError(final RegisteredMediaRouteProvider$Connection registeredMediaRouteProvider$Connection, final String s) {
+        if (this.mActiveConnection == registeredMediaRouteProvider$Connection) {
+            if (RegisteredMediaRouteProvider.DEBUG) {
+                Log.d("MediaRouteProviderProxy", this + ": Service connection error - " + s);
+            }
+            this.unbind();
+        }
+    }
+    
+    void onConnectionReady(final RegisteredMediaRouteProvider$Connection registeredMediaRouteProvider$Connection) {
+        if (this.mActiveConnection == registeredMediaRouteProvider$Connection) {
+            this.mConnectionReady = true;
+            this.attachControllersToConnection();
+            final MediaRouteDiscoveryRequest discoveryRequest = this.getDiscoveryRequest();
+            if (discoveryRequest != null) {
+                this.mActiveConnection.setDiscoveryRequest(discoveryRequest);
             }
         }
-        return null;
+    }
+    
+    void onControllerReleased(final RegisteredMediaRouteProvider$Controller registeredMediaRouteProvider$Controller) {
+        this.mControllers.remove(registeredMediaRouteProvider$Controller);
+        registeredMediaRouteProvider$Controller.detachConnection();
+        this.updateBinding();
+    }
+    
+    @Override
+    public MediaRouteProvider$RouteController onCreateRouteController(final String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("routeId cannot be null");
+        }
+        return this.createRouteController(s, null);
+    }
+    
+    @Override
+    public MediaRouteProvider$RouteController onCreateRouteController(final String s, final String s2) {
+        if (s == null) {
+            throw new IllegalArgumentException("routeId cannot be null");
+        }
+        if (s2 == null) {
+            throw new IllegalArgumentException("routeGroupId cannot be null");
+        }
+        return this.createRouteController(s, s2);
     }
     
     @Override

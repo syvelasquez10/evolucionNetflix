@@ -414,7 +414,7 @@ public class JSONArray
             int length = 0;
             int n4;
             int n5;
-            Label_0117_Outer:Label_0044_Outer:
+            Label_0062_Outer:Block_6_Outer:Label_0044_Outer:
             while (true) {
             Label_0044:
                 while (true) {
@@ -428,50 +428,49 @@ public class JSONArray
                                 return writer;
                             }
                             break Label_0135;
-                        Block_5_Outer:
+                            // iftrue(Label_0072:, n <= 0)
                             while (true) {
-                                JSONObject.indent(writer, n2);
-                                continue Label_0117_Outer;
-                            Label_0062_Outer:
+                            Block_7:
                                 while (true) {
-                                    while (true) {
-                                        Block_6: {
-                                            break Block_6;
-                                            Block_7: {
-                                                break Block_7;
-                                                Label_0107: {
-                                                    break Label_0062_Outer;
-                                                }
-                                            }
-                                            writer.write(10);
-                                            Label_0072: {
-                                                JSONObject.indent(writer, n5);
-                                            }
-                                            JSONObject.writeValue(writer, this.myArrayList.get(n3), n, n5);
-                                            ++n3;
-                                            n4 = 1;
-                                            break Label_0044;
-                                        }
-                                        writer.write(44);
-                                        continue Label_0044_Outer;
-                                    }
-                                    continue Label_0062_Outer;
+                                    break Block_7;
+                                    writer.write(44);
+                                    continue Block_6_Outer;
                                 }
                                 writer.write(10);
-                                continue Block_5_Outer;
+                                Block_5: {
+                                    Label_0072: {
+                                        break Label_0072;
+                                    Label_0107:
+                                        while (true) {
+                                            Block_8: {
+                                                break Block_8;
+                                                break Block_5;
+                                                JSONObject.indent(writer, n2);
+                                                continue Label_0062_Outer;
+                                            }
+                                            writer.write(10);
+                                            continue;
+                                        }
+                                    }
+                                    JSONObject.indent(writer, n4);
+                                    JSONObject.writeValue(writer, this.myArrayList.get(n3), n, n4);
+                                    ++n3;
+                                    n5 = 1;
+                                    continue Label_0044;
+                                }
+                                continue Label_0044_Outer;
                             }
                         }
-                        // iftrue(Label_0062:, n4 == 0)
-                        // iftrue(Label_0072:, n <= 0)
                         // iftrue(Label_0117:, n <= 0)
                         // iftrue(Label_0107:, n3 >= length)
+                        // iftrue(Label_0062:, n5 == 0)
                         catch (IOException ex) {
                             throw new JSONException(ex);
                         }
                     }
                     if (length != 0) {
-                        n5 = n2 + n;
-                        n4 = 0;
+                        n4 = n2 + n;
+                        n5 = 0;
                         continue Label_0044;
                     }
                     break;

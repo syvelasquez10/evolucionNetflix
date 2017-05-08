@@ -4,6 +4,7 @@
 
 package android.support.v4.view;
 
+import android.support.v4.content.ContextCompat;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.graphics.Canvas;
@@ -181,7 +182,7 @@ public class PagerTabStrip extends PagerTitleStrip
     }
     
     public void setTabIndicatorColorResource(final int n) {
-        this.setTabIndicatorColor(this.getContext().getResources().getColor(n));
+        this.setTabIndicatorColor(ContextCompat.getColor(this.getContext(), n));
     }
     
     @Override

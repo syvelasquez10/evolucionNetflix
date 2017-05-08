@@ -10,9 +10,11 @@ import android.content.Intent;
 import android.content.ComponentName;
 import android.view.MenuItem;
 import android.content.Context;
+import android.annotation.TargetApi;
 import android.view.Menu;
 import android.support.v4.internal.view.SupportMenu;
 
+@TargetApi(14)
 class MenuWrapperICS extends BaseMenuWrapper<SupportMenu> implements Menu
 {
     MenuWrapperICS(final Context context, final SupportMenu supportMenu) {

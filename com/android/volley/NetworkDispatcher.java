@@ -37,6 +37,7 @@ public class NetworkDispatcher extends Thread
     }
     
     private void notifyOnFinished(final Request request) {
+        request.markInFlight(false);
         for (final NetworkDispatcher$NetworkDispatcherListener networkDispatcher$NetworkDispatcherListener : NetworkDispatcher.sListener.keySet()) {
             if (networkDispatcher$NetworkDispatcherListener != null) {
                 networkDispatcher$NetworkDispatcherListener.onCompleted(request);
@@ -45,6 +46,7 @@ public class NetworkDispatcher extends Thread
     }
     
     private void notifyOnStarted(final Request request) {
+        request.markInFlight(true);
         for (final NetworkDispatcher$NetworkDispatcherListener networkDispatcher$NetworkDispatcherListener : NetworkDispatcher.sListener.keySet()) {
             if (networkDispatcher$NetworkDispatcherListener != null) {
                 networkDispatcher$NetworkDispatcherListener.onStarted(request);
@@ -55,6 +57,10 @@ public class NetworkDispatcher extends Thread
     private void parseAndDeliverNetworkError(final Request<?> request, VolleyError networkError) {
         networkError = request.parseNetworkError(networkError);
         this.mDelivery.postError(request, networkError);
+    }
+    
+    public static void removeNetworkDispatcherListener(final NetworkDispatcher$NetworkDispatcherListener networkDispatcher$NetworkDispatcherListener) {
+        NetworkDispatcher.sListener.remove(networkDispatcher$NetworkDispatcherListener);
     }
     
     public void quit() {

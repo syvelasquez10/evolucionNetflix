@@ -34,7 +34,7 @@ public final class TextViewCompat
     }
     
     public static Drawable[] getCompoundDrawablesRelative(final TextView textView) {
-        return textView.getCompoundDrawables();
+        return TextViewCompat.IMPL.getCompoundDrawablesRelative(textView);
     }
     
     public static int getMaxLines(final TextView textView) {

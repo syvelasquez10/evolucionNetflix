@@ -59,7 +59,7 @@ public class CdnUrlDownloader implements HttpUrlDownloader$HttpUrlDownloadListen
         this.mCdnUrlDownloadListener = mCdnUrlDownloadListener;
         this.mDownloadableProgressInfo.mBytesOnTheDisk = this.mDownloadableFile.length();
         CdnUrl.sortByRank(this.mRankedCdnUrlList = downloadableInfo.getCdnUrls());
-        this.mCdnUrlDownloadEventReceiver = new CdnUrlDownloadEventReceiver(commonCdnLogBlobData, clientLogging);
+        this.mCdnUrlDownloadEventReceiver = new CdnUrlDownloadEventReceiver(this.mContext, commonCdnLogBlobData, clientLogging);
     }
     
     private void doStartDownload(final String s) {
@@ -139,9 +139,9 @@ public class CdnUrlDownloader implements HttpUrlDownloader$HttpUrlDownloadListen
     @Override
     public void onNetworkError(final VolleyError volleyError) {
         while (true) {
-            Label_0277: {
+            Label_0280: {
                 int statusCode = 0;
-                Label_0194: {
+                Label_0197: {
                     synchronized (this) {
                         if (Log.isLoggable()) {
                             Log.e("nf_cdnUrlDownloader", "onNetworkError error=" + volleyError);
@@ -154,7 +154,7 @@ public class CdnUrlDownloader implements HttpUrlDownloader$HttpUrlDownloadListen
                                 statusCode = n;
                             }
                         }
-                        final NetflixStatus status = VolleyUtils.getStatus(volleyError, null);
+                        final NetflixStatus status = VolleyUtils.getStatus(volleyError, null, StatusCode.INT_ERR_FETCH_NETWORK_ERROR);
                         this.doStopDownload();
                         if (ConnectivityUtils.isConnected(this.mContext)) {
                             if (OfflineUtils.cdnUrlExpiredOrMoved(statusCode)) {
@@ -163,14 +163,14 @@ public class CdnUrlDownloader implements HttpUrlDownloader$HttpUrlDownloadListen
                             }
                             else {
                                 if (!OfflineUtils.isCdnUrlGeoCheckError(statusCode)) {
-                                    break Label_0194;
+                                    break Label_0197;
                                 }
                                 Log.e("nf_cdnUrlDownloader", "isCdnUrlGeoCheckError httpStatusCode=%d", statusCode);
                                 this.mCdnUrlDownloadListener.onCdnUrlGeoCheckFailure(this, status);
                             }
                             return;
                         }
-                        break Label_0277;
+                        break Label_0280;
                     }
                 }
                 if (statusCode == 416) {

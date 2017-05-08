@@ -49,7 +49,7 @@ class OfflineErrorDialog$6 implements DialogInterface$OnClickListener
         final NetflixActivity access$700 = this.this$0.getNetflixActivity();
         if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)access$700)) {
             if (!ConnectivityUtils.isConnected((Context)access$700)) {
-                Toast.makeText((Context)access$700, 2131231341, 0).show();
+                Toast.makeText((Context)access$700, 2131296900, 0).show();
             }
             else {
                 final OfflineErrorDialog$6$1 offlineErrorDialog$6$1 = new OfflineErrorDialog$6$1(this, access$700);

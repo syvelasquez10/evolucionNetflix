@@ -11,7 +11,9 @@ import android.util.AttributeSet;
 import org.xmlpull.v1.XmlPullParser;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.annotation.TargetApi;
 
+@TargetApi(9)
 class DrawableCompatBase
 {
     public static void inflate(final Drawable drawable, final Resources resources, final XmlPullParser xmlPullParser, final AttributeSet set, final Resources$Theme resources$Theme) {

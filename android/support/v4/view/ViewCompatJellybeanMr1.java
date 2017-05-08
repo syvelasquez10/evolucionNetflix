@@ -5,10 +5,17 @@
 package android.support.v4.view;
 
 import android.graphics.Paint;
+import android.view.Display;
 import android.view.View;
+import android.annotation.TargetApi;
 
+@TargetApi(17)
 class ViewCompatJellybeanMr1
 {
+    public static Display getDisplay(final View view) {
+        return view.getDisplay();
+    }
+    
     public static int getLabelFor(final View view) {
         return view.getLabelFor();
     }

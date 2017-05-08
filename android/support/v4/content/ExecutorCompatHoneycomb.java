@@ -6,7 +6,9 @@ package android.support.v4.content;
 
 import android.os.AsyncTask;
 import java.util.concurrent.Executor;
+import android.annotation.TargetApi;
 
+@TargetApi(11)
 class ExecutorCompatHoneycomb
 {
     public static Executor getParallelExecutor() {

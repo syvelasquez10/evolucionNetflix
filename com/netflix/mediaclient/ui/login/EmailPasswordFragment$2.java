@@ -68,7 +68,7 @@ class EmailPasswordFragment$2 implements TextView$OnEditorActionListener
     }
     
     private boolean isLoginId(final int n) {
-        return n == 2131492881 || n == 0 || n == 6;
+        return n == 2131558418 || n == 0 || n == 6;
     }
     
     public boolean onEditorAction(final TextView textView, final int n, final KeyEvent keyEvent) {

@@ -10,7 +10,9 @@ import android.content.Context;
 import android.util.Log;
 import android.service.media.MediaBrowserService$Result;
 import java.lang.reflect.Field;
+import android.annotation.TargetApi;
 
+@TargetApi(24)
 class MediaBrowserServiceCompatApi24
 {
     private static final String TAG = "MBSCompatApi24";

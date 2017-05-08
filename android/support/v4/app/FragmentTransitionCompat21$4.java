@@ -5,69 +5,42 @@
 package android.support.v4.app;
 
 import android.transition.Transition$EpicenterCallback;
+import android.transition.Transition$TransitionListener;
 import java.util.Collection;
+import android.graphics.Rect;
+import java.util.Iterator;
 import java.util.List;
 import android.transition.TransitionManager;
 import android.view.ViewGroup;
 import android.transition.TransitionSet;
-import android.graphics.Rect;
-import java.util.Iterator;
-import java.util.Map;
-import android.view.View;
-import java.util.ArrayList;
 import android.transition.Transition;
+import android.annotation.TargetApi;
+import java.util.ArrayList;
+import android.view.View;
+import java.util.Map;
 import android.view.ViewTreeObserver$OnPreDrawListener;
 
 final class FragmentTransitionCompat21$4 implements ViewTreeObserver$OnPreDrawListener
 {
-    final /* synthetic */ Transition val$enterTransition;
-    final /* synthetic */ ArrayList val$enteringViews;
-    final /* synthetic */ Transition val$exitTransition;
-    final /* synthetic */ ArrayList val$exitingViews;
-    final /* synthetic */ ArrayList val$hiddenViews;
-    final /* synthetic */ View val$nonExistentView;
-    final /* synthetic */ Transition val$overallTransition;
-    final /* synthetic */ Map val$renamedViews;
+    final /* synthetic */ Map val$nameOverrides;
     final /* synthetic */ View val$sceneRoot;
-    final /* synthetic */ ArrayList val$sharedElementTargets;
-    final /* synthetic */ Transition val$sharedElementTransition;
+    final /* synthetic */ ArrayList val$sharedElementsIn;
     
-    FragmentTransitionCompat21$4(final View val$sceneRoot, final Transition val$enterTransition, final ArrayList val$enteringViews, final Transition val$exitTransition, final ArrayList val$exitingViews, final Transition val$sharedElementTransition, final ArrayList val$sharedElementTargets, final Map val$renamedViews, final ArrayList val$hiddenViews, final Transition val$overallTransition, final View val$nonExistentView) {
+    FragmentTransitionCompat21$4(final View val$sceneRoot, final ArrayList val$sharedElementsIn, final Map val$nameOverrides) {
         this.val$sceneRoot = val$sceneRoot;
-        this.val$enterTransition = val$enterTransition;
-        this.val$enteringViews = val$enteringViews;
-        this.val$exitTransition = val$exitTransition;
-        this.val$exitingViews = val$exitingViews;
-        this.val$sharedElementTransition = val$sharedElementTransition;
-        this.val$sharedElementTargets = val$sharedElementTargets;
-        this.val$renamedViews = val$renamedViews;
-        this.val$hiddenViews = val$hiddenViews;
-        this.val$overallTransition = val$overallTransition;
-        this.val$nonExistentView = val$nonExistentView;
+        this.val$sharedElementsIn = val$sharedElementsIn;
+        this.val$nameOverrides = val$nameOverrides;
     }
     
     public boolean onPreDraw() {
         this.val$sceneRoot.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);
-        if (this.val$enterTransition != null) {
-            FragmentTransitionCompat21.removeTargets(this.val$enterTransition, this.val$enteringViews);
-            excludeViews(this.val$enterTransition, this.val$exitTransition, this.val$exitingViews, false);
-            excludeViews(this.val$enterTransition, this.val$sharedElementTransition, this.val$sharedElementTargets, false);
+        for (int size = this.val$sharedElementsIn.size(), i = 0; i < size; ++i) {
+            final View view = this.val$sharedElementsIn.get(i);
+            final String transitionName = view.getTransitionName();
+            if (transitionName != null) {
+                view.setTransitionName(findKeyForValue(this.val$nameOverrides, transitionName));
+            }
         }
-        if (this.val$exitTransition != null) {
-            FragmentTransitionCompat21.removeTargets(this.val$exitTransition, this.val$exitingViews);
-            excludeViews(this.val$exitTransition, this.val$enterTransition, this.val$enteringViews, false);
-            excludeViews(this.val$exitTransition, this.val$sharedElementTransition, this.val$sharedElementTargets, false);
-        }
-        if (this.val$sharedElementTransition != null) {
-            FragmentTransitionCompat21.removeTargets(this.val$sharedElementTransition, this.val$sharedElementTargets);
-        }
-        for (final Map.Entry<K, View> entry : this.val$renamedViews.entrySet()) {
-            entry.getValue().setTransitionName((String)entry.getKey());
-        }
-        for (int size = this.val$hiddenViews.size(), i = 0; i < size; ++i) {
-            this.val$overallTransition.excludeTarget((View)this.val$hiddenViews.get(i), false);
-        }
-        this.val$overallTransition.excludeTarget(this.val$nonExistentView, false);
         return true;
     }
 }

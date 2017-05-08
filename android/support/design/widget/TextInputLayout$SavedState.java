@@ -21,7 +21,7 @@ class TextInputLayout$SavedState extends AbsSavedState
         CREATOR = ParcelableCompat.newCreator((ParcelableCompatCreatorCallbacks<TextInputLayout$SavedState>)new TextInputLayout$SavedState$1());
     }
     
-    public TextInputLayout$SavedState(final Parcel parcel, final ClassLoader classLoader) {
+    TextInputLayout$SavedState(final Parcel parcel, final ClassLoader classLoader) {
         super(parcel, classLoader);
         this.error = (CharSequence)TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel);
     }

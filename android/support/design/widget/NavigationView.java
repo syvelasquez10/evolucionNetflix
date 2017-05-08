@@ -64,7 +64,7 @@ public class NavigationView extends ScrimInsetsFrameLayout
         ThemeUtils.checkAppCompatTheme(context);
         this.mMenu = new NavigationMenu(context);
         final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.NavigationView, resourceId, R$style.Widget_Design_NavigationView);
-        this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R$styleable.NavigationView_android_background));
+        ViewCompat.setBackground((View)this, obtainStyledAttributes.getDrawable(R$styleable.NavigationView_android_background));
         if (obtainStyledAttributes.hasValue(R$styleable.NavigationView_elevation)) {
             ViewCompat.setElevation((View)this, obtainStyledAttributes.getDimensionPixelSize(R$styleable.NavigationView_elevation, 0));
         }
