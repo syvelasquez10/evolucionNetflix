@@ -7,6 +7,8 @@ package com.netflix.mediaclient.ui.search;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import android.app.Activity;
 import android.util.Pair;
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
@@ -87,5 +89,6 @@ class SearchResultsFrag$OnSimsFetchedCallback extends LoggingManagerCallback
             this.this$0.progressBar.setVisibility(8);
         }
         this.this$0.fireImpressionEvents();
+        this.this$0.handlePrefetchDPData(videosList);
     }
 }

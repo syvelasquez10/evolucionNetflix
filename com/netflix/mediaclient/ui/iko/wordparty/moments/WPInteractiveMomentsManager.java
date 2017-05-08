@@ -221,12 +221,12 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             return;
         }
         this.bottomPanel = view.findViewById(2131690089);
-        this.loadingProgressBar = (ProgressBar)view.findViewById(2131690345);
-        this.pugContainer = (FrameLayout)view.findViewById(2131690326);
-        this.wpContainer = (RelativeLayout)view.findViewById(2131690325);
-        this.pugImageView = (ImageView)view.findViewById(2131690329);
-        this.pugRevealView = view.findViewById(2131690327);
-        this.progressBar = (ProgressBar)view.findViewById(2131690328);
+        this.loadingProgressBar = (ProgressBar)view.findViewById(2131690346);
+        this.pugContainer = (FrameLayout)view.findViewById(2131690327);
+        this.wpContainer = (RelativeLayout)view.findViewById(2131690326);
+        this.pugImageView = (ImageView)view.findViewById(2131690330);
+        this.pugRevealView = view.findViewById(2131690328);
+        this.progressBar = (ProgressBar)view.findViewById(2131690329);
         (this.closeButton = (IconFontTextView)view.findViewById(2131690054)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
         this.progressBar.setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$11(this));
         this.wpContainer.setOnTouchListener((View$OnTouchListener)null);
@@ -871,7 +871,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             this.ikoContainer.removeAllViews();
         }
         this.hasInteractiveMoments = false;
-        LayoutInflater.from((Context)fragment.getNetflixActivity()).inflate(2130903301, (ViewGroup)this.ikoContainer, true);
+        LayoutInflater.from((Context)fragment.getNetflixActivity()).inflate(2130903302, (ViewGroup)this.ikoContainer, true);
         this.findAndConfigureViews(view);
         if (ViewUtils.isNavigationBarBelowContent(fragment.getActivity())) {
             this.bottomPanelHeight += ViewUtils.getNavigationBarHeight((Context)fragment.getActivity(), false);

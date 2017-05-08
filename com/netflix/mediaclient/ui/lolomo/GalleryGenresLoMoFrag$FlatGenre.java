@@ -9,11 +9,11 @@ import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 
-class KidsGenresLoMoFrag$FlatGenre implements Genre
+class GalleryGenresLoMoFrag$FlatGenre implements Genre
 {
-    final /* synthetic */ KidsGenresLoMoFrag this$0;
+    final /* synthetic */ GalleryGenresLoMoFrag this$0;
     
-    private KidsGenresLoMoFrag$FlatGenre(final KidsGenresLoMoFrag this$0) {
+    private GalleryGenresLoMoFrag$FlatGenre(final GalleryGenresLoMoFrag this$0) {
         this.this$0 = this$0;
     }
     

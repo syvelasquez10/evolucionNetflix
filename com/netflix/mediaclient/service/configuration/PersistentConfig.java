@@ -9,6 +9,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import java.util.Iterator;
 import android.content.Context;
+import com.netflix.mediaclient.service.configuration.persistent.DPPrefetchABTestConfig;
 import com.netflix.mediaclient.service.configuration.persistent.PrefetchLolomoConfig;
 import com.netflix.mediaclient.service.configuration.persistent.BrandLoveSurvey;
 import com.netflix.mediaclient.service.configuration.persistent.OnRamp;
@@ -40,6 +41,7 @@ public final class PersistentConfig
         PersistentConfig.mConfigs.put(OnRamp.class, new OnRamp());
         PersistentConfig.mConfigs.put(BrandLoveSurvey.class, new BrandLoveSurvey());
         PersistentConfig.mConfigs.put(PrefetchLolomoConfig.class, new PrefetchLolomoConfig());
+        PersistentConfig.mConfigs.put(DPPrefetchABTestConfig.class, new DPPrefetchABTestConfig());
     }
     
     public static void delete(final Context context) {
@@ -63,6 +65,10 @@ public final class PersistentConfig
     
     public static ABTestConfig$Cell getCoppola2ABTestCell(final Context context) {
         return PersistentConfig.mConfigs.get(CoppolaTwo.class).getCell(context);
+    }
+    
+    public static ABTestConfig$Cell getDPPrefetchABTestConfig(final Context context) {
+        return PersistentConfig.mConfigs.get(DPPrefetchABTestConfig.class).getCell(context);
     }
     
     public static ABTestConfig$Cell getDisplayPageRefreshTestCell(final Context context) {

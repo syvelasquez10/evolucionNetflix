@@ -140,6 +140,7 @@ public class SignupActivity extends WebViewAccountActivity implements GoogleApiC
             if (googleApiClient != null) {
                 break Label_0017;
             }
+        Block_3_Outer:
             while (true) {
                 try {
                     Log.d("SignupActivity", "GPS client is null, unable to try to save credentials");
@@ -147,17 +148,18 @@ public class SignupActivity extends WebViewAccountActivity implements GoogleApiC
                         return;
                     }
                     // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
-                    // iftrue(Label_0014:, !this.saveCredentials)
-                Label_0057:
                     while (true) {
-                        Log.d("SignupActivity", "Trying to save credentials to GPS");
-                        this.saveCredentials = false;
-                        break Label_0057;
+                        while (true) {
+                            Log.w("SignupActivity", "Credential is empty, do not save it.");
+                            return;
+                            Log.d("SignupActivity", "Trying to save credentials to GPS");
+                            this.saveCredentials = false;
+                            continue Block_3_Outer;
+                        }
                         continue;
                     }
-                    Log.w("SignupActivity", "Credential is empty, do not save it.");
-                    return;
                 }
+                // iftrue(Label_0014:, !this.saveCredentials)
                 finally {
                 }
                 // monitorexit(this)
@@ -184,13 +186,13 @@ public class SignupActivity extends WebViewAccountActivity implements GoogleApiC
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131231183);
+            this.showToast(2131231185);
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.tokenActivate, IClientLogging$CompletionReason.success, null);
             this.clearCookies();
         }
         else {
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.tokenActivate, IClientLogging$CompletionReason.failed, status.getError());
-            this.provideDialog(this.getString(2131231288) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131231290) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -332,7 +334,7 @@ public class SignupActivity extends WebViewAccountActivity implements GoogleApiC
             this.getWebView().goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131231287), new SignupActivity$1(this));
+            this.provideTwoButtonDialog(this.getString(2131231289), new SignupActivity$1(this));
         }
         return true;
     }
@@ -502,12 +504,12 @@ public class SignupActivity extends WebViewAccountActivity implements GoogleApiC
     public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131231182));
+            menuItem = menu.add((CharSequence)this.getString(2131231184));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$4(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131231184));
+            menuItem = menu.add((CharSequence)this.getString(2131231186));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$5(this));
         }

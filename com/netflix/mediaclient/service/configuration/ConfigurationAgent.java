@@ -699,6 +699,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public ABTestConfig$Cell getPrefetchDPConfig() {
+        return this.mABTestConfigOverride.getAimLowPrefetchDPConfig();
+    }
+    
+    @Override
     public ABTestConfig$Cell getPrefetchLolomoConfig() {
         return this.mABTestConfigOverride.getAimLowPrefetchLolomoConfig();
     }

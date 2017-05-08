@@ -104,7 +104,7 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
         final String format = String.format(this.getResources().getString(2131230893), cwVideo.getTitle());
         this.title.setText((CharSequence)cwVideo.getTitle());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.seasonInfo.setText((CharSequence)this.getContext().getString(2131231178, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            this.seasonInfo.setText((CharSequence)this.getContext().getString(2131231180, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
         }
         else {
             this.seasonInfo.setText((CharSequence)"");

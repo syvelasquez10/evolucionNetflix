@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.search;
 
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.SearchTrackable;
 
 public interface ISearchResults
@@ -25,6 +26,8 @@ public interface ISearchResults
     SearchSuggestion getResultsSuggestions(final int p0);
     
     SearchVideo getResultsVideos(final int p0);
+    
+    List<SearchVideo> getResultsVideos();
     
     SearchTrackable getSuggestionsListTrackable();
     

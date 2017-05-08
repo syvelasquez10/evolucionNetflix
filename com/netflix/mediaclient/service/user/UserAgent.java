@@ -289,6 +289,9 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     private void persistListOfUserProfiles(final List<UserProfile> list) {
+        if (list == null) {
+            return;
+        }
         final JSONArray jsonArray = new JSONArray();
         final Iterator<UserProfile> iterator = list.iterator();
         while (iterator.hasNext()) {

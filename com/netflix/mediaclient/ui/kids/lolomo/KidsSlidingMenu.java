@@ -26,8 +26,8 @@ public class KidsSlidingMenu extends StandardSlidingMenu
         this.notificationsDivider.setVisibility(0);
         final int[] array2;
         final int[] array = array2 = new int[2];
-        array2[0] = 2131690288;
-        array2[1] = 2131690294;
+        array2[0] = 2131690289;
+        array2[1] = 2131690295;
         while (i < array.length) {
             drawerLayout.findViewById((int)Integer.valueOf(array[i])).setVisibility(8);
             ++i;
@@ -40,7 +40,7 @@ public class KidsSlidingMenu extends StandardSlidingMenu
         ((FrameLayout$LayoutParams)this.genresList.getLayoutParams()).bottomMargin = (int)netflixActivity.getResources().getDimension(2131362125);
         ViewUtils.removeShadow(this.homeText);
         this.homeText.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131362162)));
-        drawerLayout.findViewById(2131690283).setBackgroundResource(2131624046);
+        drawerLayout.findViewById(2131690284).setBackgroundResource(2131624046);
     }
     
     @Override

@@ -23,7 +23,6 @@ import android.graphics.PorterDuff$Mode;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import android.view.ViewGroup;
-import android.content.Context;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -33,11 +32,15 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.List;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.details.EpisodesAdapter;
 import com.netflix.mediaclient.ui.details.EpisodesAdapter$FetchEpisodesCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import android.content.Context;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.details.ServiceManagerProvider;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
@@ -57,9 +60,12 @@ class BarkerKidsShowDetailsFrag$KubrickKidsAdapter extends BarkerShowDetailsFrag
     
     @Override
     protected void fetchMoreData() {
-        ServiceManager serviceManager = null;
+        ServiceManager serviceManager;
         if (this.episodeListFrag instanceof ServiceManagerProvider) {
             serviceManager = this.episodeListFrag.getServiceManager();
+        }
+        else {
+            serviceManager = null;
         }
         if (serviceManager == null || !serviceManager.isReady()) {
             Log.d("BarkerEpisodesAdapter", "Manager is not ready");
@@ -78,7 +84,28 @@ class BarkerKidsShowDetailsFrag$KubrickKidsAdapter extends BarkerShowDetailsFrag
         if (Log.isLoggable()) {
             Log.v("BarkerEpisodesAdapter", "Fetching data for show: " + id + ", start: " + this.episodeStartIndex + ", end: " + n);
         }
-        serviceManager.getBrowse().fetchEpisodes(id, VideoType.SHOW, this.episodeStartIndex, n, new EpisodesAdapter$FetchEpisodesCallback(this, this.requestId, this.episodeStartIndex, n));
+        final String id2 = this.currSeasonDetails.getId();
+        if (StringUtils.isEmpty(id2)) {
+            this.logEmptySeasonId(this.currSeasonDetails);
+            return;
+        }
+        final boolean inTest = DPPrefetchABTestUtils.isInTest((Context)this.this$0.getNetflixActivity());
+        final IBrowseManager browse = serviceManager.getBrowse();
+        String s;
+        if (inTest) {
+            s = id2;
+        }
+        else {
+            s = id;
+        }
+        VideoType videoType;
+        if (inTest) {
+            videoType = VideoType.SEASON;
+        }
+        else {
+            videoType = VideoType.SHOW;
+        }
+        browse.fetchEpisodes(s, videoType, this.episodeStartIndex, n, new EpisodesAdapter$FetchEpisodesCallback(this, this.requestId, this.episodeStartIndex, n));
     }
     
     @Override
@@ -101,10 +128,16 @@ class BarkerKidsShowDetailsFrag$KubrickKidsAdapter extends BarkerShowDetailsFrag
         this.isLoading = true;
         this.hasMoreData = true;
         this.requestId = -1L;
+        if (DPPrefetchABTestUtils.isInTest((Context)this.this$0.getNetflixActivity())) {
+            this.episodeStartIndex = 0;
+        }
         this.fetchMoreData();
     }
     
     public void updateEpisodeStartIndex(final int episodeStartIndex) {
+        if (DPPrefetchABTestUtils.isInTest((Context)this.this$0.getNetflixActivity())) {
+            return;
+        }
         this.episodeStartIndex = episodeStartIndex;
     }
     

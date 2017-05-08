@@ -54,13 +54,13 @@ class PreReleaseDetailsFrag$PreReleaseVideoDetailsViewGroup extends VideoDetails
     @Override
     protected void findViews() {
         super.findViews();
-        this.playButton = (Button)this.findViewById(2131690322);
-        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131690319)));
+        this.playButton = (Button)this.findViewById(2131690323);
+        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131690320)));
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903299;
+        return 2130903300;
     }
     
     @Override

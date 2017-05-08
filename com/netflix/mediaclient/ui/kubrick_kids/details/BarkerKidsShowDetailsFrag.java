@@ -16,7 +16,6 @@ import com.netflix.mediaclient.ui.kubrick.details.BarkerVideoDetailsViewGroup;
 import android.view.View;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.Log;
 import android.graphics.drawable.Drawable;
@@ -31,6 +30,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag$HeroSlideshow;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 

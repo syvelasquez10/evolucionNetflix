@@ -10,6 +10,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList$GenreType;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -30,7 +31,7 @@ class NetflixComBrowseHandler$1FetchLoLoMoSummaryCallback extends SimpleManagerC
     @Override
     public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final Status status) {
         if (status.isSucces()) {
-            HomeActivity.showGenreList(this.val$activity, new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.val$genreId, false, loLoMo.getType().toString()));
+            HomeActivity.showGenreList(this.val$activity, new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.val$genreId, GenreList$GenreType.LOLOMO.name(), false, loLoMo.getType().toString()));
         }
         else {
             NetflixComUtils.startHomeActivity(this.val$activity);

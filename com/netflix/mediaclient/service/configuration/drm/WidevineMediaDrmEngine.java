@@ -41,7 +41,10 @@ public class WidevineMediaDrmEngine
     }
     
     private void cleanup() {
-        if (this.mDrm != null) {
+        if (this.mDrm == null) {
+            return;
+        }
+        try {
             if (this.mCrypto != null) {
                 this.mCrypto.release();
                 this.mCrypto = null;
@@ -52,6 +55,11 @@ public class WidevineMediaDrmEngine
             }
             this.mDrm.release();
             this.mDrm = null;
+        }
+        catch (Throwable t) {
+            if (Log.isLoggable()) {
+                Log.d("WidevineMediaDrmEngine", "clean up has exception " + t);
+            }
         }
     }
     

@@ -35,6 +35,7 @@ import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag$HeroSlideshow;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
 import android.annotation.SuppressLint;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -71,5 +72,6 @@ class BarkerKidsCharacterDetailsFrag$FetchCharacterDetailsCallback$FetchMovieDat
             return;
         }
         this.this$1.this$0.renderAsMDP(movieDetails);
+        this.this$1.this$0.onLoaded(CommonStatus.OK);
     }
 }

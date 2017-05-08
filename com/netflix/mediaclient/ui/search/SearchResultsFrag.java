@@ -7,6 +7,9 @@ package com.netflix.mediaclient.ui.search;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import android.app.Activity;
 import android.util.Pair;
@@ -171,17 +174,17 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     private void findViews(final View view) {
-        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131690264);
-        this.layoutSuggestions = (FlowLayout)view.findViewById(2131690265);
-        this.gridViewVideos = (StaticGridView)view.findViewById(2131690260);
-        this.gridViewPeople = (StaticGridView)view.findViewById(2131690262);
-        this.labelSuggestions = (TextView)view.findViewById(2131690263);
-        this.scrollView2 = (LoggingScrollView)view.findViewById(2131690267);
-        this.layoutPeople = (FlowLayout)view.findViewById(2131690266);
-        this.scrollView = (LoggingScrollView)view.findViewById(2131690258);
+        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131690265);
+        this.layoutSuggestions = (FlowLayout)view.findViewById(2131690266);
+        this.gridViewVideos = (StaticGridView)view.findViewById(2131690261);
+        this.gridViewPeople = (StaticGridView)view.findViewById(2131690263);
+        this.labelSuggestions = (TextView)view.findViewById(2131690264);
+        this.scrollView2 = (LoggingScrollView)view.findViewById(2131690268);
+        this.layoutPeople = (FlowLayout)view.findViewById(2131690267);
+        this.scrollView = (LoggingScrollView)view.findViewById(2131690259);
         this.relatedlabel = (TextView)view.findViewById(2131689654);
-        this.labelVideos = (TextView)view.findViewById(2131690259);
-        this.labelPeople = (TextView)view.findViewById(2131690261);
+        this.labelVideos = (TextView)view.findViewById(2131690260);
+        this.labelPeople = (TextView)view.findViewById(2131690262);
         this.progressBar = (ProgressBar)view.findViewById(2131689725);
     }
     
@@ -378,10 +381,10 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelSuggestions = this.labelSuggestions;
             String text;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text = this.getString(2131231212).toUpperCase(default1);
+                text = this.getString(2131231214).toUpperCase(default1);
             }
             else {
-                text = this.getString(2131231212);
+                text = this.getString(2131231214);
             }
             labelSuggestions.setText((CharSequence)text);
         }
@@ -578,6 +581,10 @@ public class SearchResultsFrag extends NetflixFrag
         throw new IllegalStateException("Unknown search result type");
     }
     
+    protected void handlePrefetchDPData(final List<SearchVideo> list) {
+        DPPrefetchABTestUtils.prefetchDPForSearch(this.getServiceManager(), list);
+    }
+    
     public boolean isLoadingData() {
         return false;
     }
@@ -672,32 +679,34 @@ public class SearchResultsFrag extends NetflixFrag
     public void update(final ISearchResults results, final String query) {
         Log.v("SearchResultsFrag", "Updating...");
         this.results = results;
-        if (this.getActivity() != null) {
-            if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.TABLET && DeviceUtils.isLandscape((Context)this.getActivity())) {
-                ViewUtils.setVisibleOrGone((View)this.scrollView, this.results.getNumResultsPeople() > 0 || this.results.getNumResultsSuggestions() > 0);
-            }
-            this.secondarySearch = SearchResultsFrag$SearchCategory.VIDEOS;
-            if (this.progressBar != null) {
-                this.progressBar.setVisibility(8);
-            }
-            if (this.query.compareToIgnoreCase(query) != 0) {
-                this.query = query;
-                this.clearSelectedStack();
-            }
-            if (this.relatedlabel != null) {
-                this.relatedlabel.setVisibility(8);
-            }
-            this.setupImageDimensions();
-            this.updateMaxResults();
-            this.updateLabelVisibilty();
-            this.resetGridViews();
-            this.resetPeopleLayout(query);
-            this.resetSuggestionsLayout(query);
-            this.notifyAdapters();
-            this.resetScrollPosition();
-            if (this.progressBar != null) {
-                this.progressBar.setVisibility(8);
-            }
+        if (this.getActivity() == null) {
+            return;
         }
+        if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.TABLET && DeviceUtils.isLandscape((Context)this.getActivity())) {
+            ViewUtils.setVisibleOrGone((View)this.scrollView, this.results.getNumResultsPeople() > 0 || this.results.getNumResultsSuggestions() > 0);
+        }
+        this.secondarySearch = SearchResultsFrag$SearchCategory.VIDEOS;
+        if (this.progressBar != null) {
+            this.progressBar.setVisibility(8);
+        }
+        if (this.query.compareToIgnoreCase(query) != 0) {
+            this.query = query;
+            this.clearSelectedStack();
+        }
+        if (this.relatedlabel != null) {
+            this.relatedlabel.setVisibility(8);
+        }
+        this.setupImageDimensions();
+        this.updateMaxResults();
+        this.updateLabelVisibilty();
+        this.resetGridViews();
+        this.resetPeopleLayout(query);
+        this.resetSuggestionsLayout(query);
+        this.notifyAdapters();
+        this.resetScrollPosition();
+        if (this.progressBar != null) {
+            this.progressBar.setVisibility(8);
+        }
+        this.handlePrefetchDPData(this.results.getResultsVideos());
     }
 }

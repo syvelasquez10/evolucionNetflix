@@ -179,7 +179,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private void hideDetailsGapView() {
-        final View viewById = this.findViewById(2131690320);
+        final View viewById = this.findViewById(2131690321);
         if (viewById != null) {
             viewById.setVisibility(8);
         }
@@ -275,7 +275,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         this.relatedTitle = (TextView)this.findViewById(2131689654);
         this.basicInfoBadges = (TextView)this.findViewById(2131689749);
         this.footerViewGroup = (ViewGroup)this.findViewById(2131689653);
-        this.copyright = (ViewGroup)this.findViewById(2131690313);
+        this.copyright = (ViewGroup)this.findViewById(2131690314);
         this.play = this.findViewById(2131689652);
         LocalizationUtils.setLayoutDirection((View)this.ratingBar);
         LocalizationUtils.setLayoutDirection((View)this.addToMyList);
@@ -315,7 +315,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         if (Coppola1Utils.isCoppolaContext(this.getContext())) {
             return 2130903092;
         }
-        return 2130903297;
+        return 2130903298;
     }
     
     public void hideRelatedTitle() {
@@ -495,7 +495,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231187, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231189, new Object[] { videoDetails.getTitle() }));
         }
     }
     

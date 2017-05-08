@@ -12,12 +12,12 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.View;
 import android.widget.AdapterView;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
@@ -45,10 +45,6 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
         this.activity = activity;
         this.episodeListFrag = episodeListFrag;
         this.initToLoadingState();
-    }
-    
-    private void logEmptySeasonId(final SeasonDetails seasonDetails) {
-        LogUtils.logEmptySeasonId(this.activity.getServiceManager().getClientLogging(), this.episodeListFrag.getShowId(), seasonDetails);
     }
     
     private void onFetchError() {
@@ -101,6 +97,10 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
     
     public boolean isLoadingData() {
         return this.isLoading;
+    }
+    
+    protected void logEmptySeasonId(final SeasonDetails seasonDetails) {
+        LogUtils.logEmptySeasonId(this.activity.getServiceManager().getClientLogging(), this.episodeListFrag.getShowId(), seasonDetails);
     }
     
     public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {

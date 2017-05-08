@@ -66,13 +66,13 @@ public class UserMessageAreaView extends LinearLayout
     public UserMessageAreaView(final Context context) {
         super(context);
         this.mReceiver = new UserMessageAreaView$1(this);
-        inflate(context, 2130903285, (ViewGroup)this);
+        inflate(context, 2130903286, (ViewGroup)this);
         (this.mTitle = (TextView)this.findViewById(2131689566)).setMovementMethod(LinkMovementMethod.getInstance());
-        (this.mBody = (TextView)this.findViewById(2131690311)).setMovementMethod(LinkMovementMethod.getInstance());
-        this.mCtaContainer = (ViewGroup)this.findViewById(2131690312);
+        (this.mBody = (TextView)this.findViewById(2131690312)).setMovementMethod(LinkMovementMethod.getInstance());
+        this.mCtaContainer = (ViewGroup)this.findViewById(2131690313);
         this.mIcon = (IconFontTextView)this.findViewById(2131689565);
-        this.mAlertView = this.findViewById(2131690309);
-        this.mDimSpace = (Space)this.findViewById(2131690310);
+        this.mAlertView = this.findViewById(2131690310);
+        this.mDimSpace = (Space)this.findViewById(2131690311);
         this.setOnTouchListener((View$OnTouchListener)new UserMessageAreaView$2(this));
         LocalizationUtils.setLayoutDirection((View)this.mCtaContainer);
         (this.mAlphaAnimation = this.animate()).setDuration((long)this.getResources().getInteger(17694721));
@@ -139,19 +139,19 @@ public class UserMessageAreaView extends LinearLayout
         }
         if ("INFO".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231328);
+            this.mIcon.setText(2131231330);
             this.mIcon.setTextColor(this.getResources().getColor(2131624042));
             return;
         }
         if ("WARN".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231340);
+            this.mIcon.setText(2131231342);
             this.mIcon.setTextColor(this.getResources().getColor(2131624043));
             return;
         }
         if ("ERROR".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231325);
+            this.mIcon.setText(2131231327);
             this.mIcon.setTextColor(this.getResources().getColor(2131624044));
             return;
         }

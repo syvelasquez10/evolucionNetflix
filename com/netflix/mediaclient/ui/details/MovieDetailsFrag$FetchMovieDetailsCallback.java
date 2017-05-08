@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.StringUtils;
@@ -23,6 +22,8 @@ import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.ui.mdx.MementoMovieDetailsActivity;
 import android.support.v7.widget.RecyclerView$LayoutManager;
@@ -75,5 +76,6 @@ class MovieDetailsFrag$FetchMovieDetailsCallback extends LoggingManagerCallback
             Log.v("MovieDetailsFrag", "evidence glyph: " + movieDetails.getEvidenceGlyph() + ", evidence text: " + movieDetails.getEvidenceText());
         }
         this.this$0.showDetailsView(movieDetails);
+        DPPrefetchABTestUtils.reportDPMetadataFetchedEvent(status);
     }
 }

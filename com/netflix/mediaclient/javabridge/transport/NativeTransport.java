@@ -344,7 +344,6 @@ public class NativeTransport implements Transport
                 break Label_0081;
             }
             string = "nrdp";
-        Block_5_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
@@ -356,14 +355,11 @@ public class NativeTransport implements Transport
                     Label_0103: {
                         string = "nrdp." + string;
                     }
-                    continue Block_5_Outer;
-                    while (true) {
-                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_5_Outer;
-                        continue;
-                    }
+                    continue;
+                    // iftrue(Label_0103:, !string.startsWith("nrdp"))
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
                 }
-                // iftrue(Label_0103:, !string.startsWith("nrdp"))
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
                 }
@@ -387,10 +383,13 @@ public class NativeTransport implements Transport
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
-                    Label_0090: {
-                        string = "nrdp." + string;
+                    Block_4: {
+                        break Block_4;
+                        Label_0090: {
+                            string = "nrdp." + string;
+                        }
+                        continue;
                     }
-                    continue;
                     Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }

@@ -29,11 +29,11 @@ import com.netflix.mediaclient.android.widget.VideoView;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 
-class KidsGenresLoMoFrag$2 implements RecyclerViewHeaderAdapter$IViewCreator
+class GalleryGenresLoMoFrag$2 implements RecyclerViewHeaderAdapter$IViewCreator
 {
-    final /* synthetic */ KidsGenresLoMoFrag this$0;
+    final /* synthetic */ GalleryGenresLoMoFrag this$0;
     
-    KidsGenresLoMoFrag$2(final KidsGenresLoMoFrag this$0) {
+    GalleryGenresLoMoFrag$2(final GalleryGenresLoMoFrag this$0) {
         this.this$0 = this$0;
     }
     

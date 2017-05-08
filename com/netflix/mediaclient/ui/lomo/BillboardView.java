@@ -470,10 +470,10 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             final Resources resources = this.getResources();
             int n;
             if (this.mediaPlayerWrapper.isMuted()) {
-                n = 2131231330;
+                n = 2131231332;
             }
             else {
-                n = 2131231332;
+                n = 2131231334;
             }
             muteButton.setText((CharSequence)resources.getString(n));
             this.muteButton.setOnClickListener((View$OnClickListener)new BillboardView$5(this));

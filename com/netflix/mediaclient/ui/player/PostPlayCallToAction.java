@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.model.leafs.PostPlayAction$CallToActionType;
 import com.netflix.mediaclient.ui.details.DetailsActivity$Action;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
+import com.netflix.model.leafs.PostPlayAction$CallToActionType;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
@@ -190,7 +190,7 @@ public class PostPlayCallToAction
                     n = 2131230962;
                 }
                 else {
-                    n = 2131231170;
+                    n = 2131231172;
                 }
                 return this.getString(n);
             }
@@ -213,9 +213,20 @@ public class PostPlayCallToAction
     public void playAction(final boolean b) {
         if (this.context.equals(PostPlayRequestContext.MDX)) {
             this.mdxPlayAction(b);
-            return;
         }
-        this.playerPlayAction(b);
+        else if (this.action.getType().equals(PostPlayAction$CallToActionType.play) && this.playerFragment != null) {
+            if (this.playerFragment.isPostPlayed()) {
+                Log.d(this.TAG, "Play action already consumed, ignoring");
+                return;
+            }
+            this.playerFragment.setPostPlayed(true);
+            this.reportNextPlay();
+            if (this.action.getSeamlessStart() > 0) {
+                this.playerFragment.playNextVideo(this.action.getPlayBackVideo().getPlayable(), this.getPlayContext(), b, this.action.getSeamlessStart(), true);
+                return;
+            }
+            this.playerFragment.playNextVideo(this.action.getPlayBackVideo().getPlayable(), this.getPlayContext(), b);
+        }
     }
     
     protected void playerDisplayPageAction() {

@@ -71,10 +71,10 @@ public class PostPlayCountDown extends LinearLayout
             }
         }
         else if (time > 1) {
-            n = 2131231155;
+            n = 2131231157;
         }
         else {
-            n = 2131231154;
+            n = 2131231156;
         }
         if (this.action != null) {
             this.action.setText((CharSequence)Html.fromHtml(this.getString(n, String.valueOf(time))));
@@ -103,7 +103,7 @@ public class PostPlayCountDown extends LinearLayout
             text = this.getString(2131231149);
         }
         else {
-            text = this.getString(2131231154);
+            text = this.getString(2131231156);
         }
         this.action.setText((CharSequence)text);
         this.refreshTimerText();

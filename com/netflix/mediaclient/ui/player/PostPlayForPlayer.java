@@ -9,6 +9,7 @@ import android.view.View$OnClickListener;
 import android.view.View;
 import android.view.ViewGroup;
 import com.netflix.model.leafs.PostPlayItem;
+import android.text.TextUtils;
 import com.netflix.model.leafs.PostPlayAction;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -100,7 +101,7 @@ public final class PostPlayForPlayer extends PostPlay
             this.autoplayTimer.startTimer();
             final Iterator<PostPlayItemView> iterator = this.postPlayItems.iterator();
             while (iterator.hasNext()) {
-                iterator.next().startTimer();
+                iterator.next().startTimer(this.autoplayTimer.getTime());
             }
             final Iterator<PostPlayBackground> iterator2 = this.postPlayBackgrounds.iterator();
             while (iterator2.hasNext()) {
@@ -172,6 +173,14 @@ public final class PostPlayForPlayer extends PostPlay
     }
     
     @Override
+    protected void onTick(final int n) {
+        final Iterator<PostPlayItemView> iterator = this.postPlayItems.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().onTick(n);
+        }
+    }
+    
+    @Override
     public void postPlayDismissed() {
         super.postPlayDismissed();
         this.executeTransitionOut();
@@ -196,6 +205,10 @@ public final class PostPlayForPlayer extends PostPlay
         else {
             if (this.mNetflixActivity.isFinishing()) {
                 Log.e("nf_postplay", "Activity for playback is already not valid! Do nothing!");
+                return;
+            }
+            if (this.mPlayerFragment == null) {
+                Log.e("nf_postplay", "Player fragment is null, do nothing!");
                 return;
             }
             final LayoutInflater layoutInflater = this.mNetflixActivity.getLayoutInflater();
@@ -231,6 +244,7 @@ public final class PostPlayForPlayer extends PostPlay
             else {
                 b = false;
             }
+            final boolean equals = TextUtils.equals((CharSequence)this.mPostPlayExperience.getType(), (CharSequence)"nextEpisodeSeamless");
             this.mBackgroundContainer.getLayoutParams().width = DeviceUtils.getScreenWidthInPixels((Context)this.mNetflixActivity) * this.mPostPlayExperience.getItems().size();
             int n;
             if (b) {
@@ -241,6 +255,9 @@ public final class PostPlayForPlayer extends PostPlay
             }
             int n2;
             if (nonMemberPlayback) {
+                n2 = 2130903239;
+            }
+            else if (equals) {
                 n2 = 2130903238;
             }
             else if (b) {

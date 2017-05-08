@@ -58,24 +58,24 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private static String mVideoIdOnWidget;
     
     private RemoteViews adjustLogoAndRefreshIcon(final Context context, final RemoteViews remoteViews, int n, final PVideo pVideo, final PDiskData$ListType pDiskData$ListType, final int n2, final int n3, final String s, final List<PVideo> list) {
-        remoteViews.setOnClickPendingIntent(2131690153, this.getWidgetHomeIntent(n2));
-        if (2130903242 == n3) {
-            remoteViews.setOnClickPendingIntent(2131690154, this.getWidgetRefreshIntent(pVideo, pDiskData$ListType, n2));
-            remoteViews.setViewVisibility(2131690152, 8);
+        remoteViews.setOnClickPendingIntent(2131690154, this.getWidgetHomeIntent(n2));
+        if (2130903243 == n3) {
+            remoteViews.setOnClickPendingIntent(2131690155, this.getWidgetRefreshIntent(pVideo, pDiskData$ListType, n2));
+            remoteViews.setViewVisibility(2131690153, 8);
             remoteViews.setViewVisibility(this.getGradientResourceId(1), 0);
         }
         else {
-            remoteViews.setOnClickPendingIntent(2131690152, this.getWidgetRefreshIntent(pVideo, pDiskData$ListType, n2));
+            remoteViews.setOnClickPendingIntent(2131690153, this.getWidgetRefreshIntent(pVideo, pDiskData$ListType, n2));
             if (this.canFitListName(context, n2)) {
                 if (PDiskData$ListType.NON_MEMBER.equals(pDiskData$ListType)) {
                     n = list.indexOf(pVideo) / n;
                     if (n <= 0) {
                         n = 0;
                     }
-                    remoteViews.setTextViewText(2131690152, (CharSequence)this.getPreAppAdString(context, n));
+                    remoteViews.setTextViewText(2131690153, (CharSequence)this.getPreAppAdString(context, n));
                     return remoteViews;
                 }
-                remoteViews.setTextViewText(2131690152, (CharSequence)s);
+                remoteViews.setTextViewText(2131690153, (CharSequence)s);
                 return remoteViews;
             }
         }
@@ -84,11 +84,11 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private void adjustViews(final Context context, final RemoteViews remoteViews, int n) {
         final int n2 = 0;
-        remoteViews.setViewVisibility(2131690149, 8);
-        remoteViews.setViewVisibility(2131690159, 8);
-        remoteViews.setViewVisibility(2131690153, 0);
-        remoteViews.setViewVisibility(2131690156, 0);
+        remoteViews.setViewVisibility(2131690150, 8);
+        remoteViews.setViewVisibility(2131690160, 8);
+        remoteViews.setViewVisibility(2131690154, 0);
         remoteViews.setViewVisibility(2131690157, 0);
+        remoteViews.setViewVisibility(2131690158, 0);
         final int cellFromDp = cellFromDp(this.getWidgetHeight(context, n));
         final int cellFromDp2 = cellFromDp(this.getWidgetWidth(context, n));
         n = n2;
@@ -96,11 +96,11 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
             n = 1;
         }
         if (n != 0 && cellFromDp2 <= 3) {
-            remoteViews.setViewVisibility(2131690157, 8);
+            remoteViews.setViewVisibility(2131690158, 8);
         }
         if (cellFromDp <= 1) {
-            remoteViews.setViewVisibility(2131690156, 8);
             remoteViews.setViewVisibility(2131690157, 8);
+            remoteViews.setViewVisibility(2131690158, 8);
         }
     }
     
@@ -171,20 +171,20 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     }
     
     private RemoteViews buildWidgetStaticImageRemoteView(final Context context, final int n) {
-        int n2 = 2130903243;
+        int n2 = 2130903244;
         if (this.toAlignByHeight(context, n) || this.isWidgetOneCellHigh(context, n)) {
-            n2 = 2130903242;
+            n2 = 2130903243;
         }
         Log.d("nf_preapp_widgetagent", "buildWidgetStaticImageRemoteView layoutId:" + n2);
         final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), n2);
         this.adjustViews(context, remoteViews, n);
-        remoteViews.setImageViewResource(2131690148, 2130837905);
-        remoteViews.setViewVisibility(2131690156, 0);
+        remoteViews.setImageViewResource(2131690149, 2130837905);
         remoteViews.setViewVisibility(2131690157, 0);
-        remoteViews.setTextViewText(2131690156, context.getText(2131231252));
-        remoteViews.setOnClickPendingIntent(2131690148, this.getWidgetHomeIntent(n));
-        remoteViews.setOnClickPendingIntent(2131690152, this.getWidgetRefreshIntent(null, null, n));
-        remoteViews.setOnClickPendingIntent(2131690153, this.getWidgetHomeIntent(n));
+        remoteViews.setViewVisibility(2131690158, 0);
+        remoteViews.setTextViewText(2131690157, context.getText(2131231254));
+        remoteViews.setOnClickPendingIntent(2131690149, this.getWidgetHomeIntent(n));
+        remoteViews.setOnClickPendingIntent(2131690153, this.getWidgetRefreshIntent(null, null, n));
+        remoteViews.setOnClickPendingIntent(2131690154, this.getWidgetHomeIntent(n));
         return remoteViews;
     }
     
@@ -300,13 +300,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getGradientResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131690151;
+                return 2131690152;
             }
             case 2: {
-                return 2131690163;
+                return 2131690164;
             }
             case 3: {
-                return 2131690170;
+                return 2131690171;
             }
         }
     }
@@ -314,21 +314,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getImageGroupResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131690174;
-            }
-            case 2: {
-                return 2131690160;
-            }
-            case 3: {
-                return 2131690167;
-            }
-        }
-    }
-    
-    private int getImageResourceId(final int n) {
-        switch (n) {
-            default: {
-                return 2131690148;
+                return 2131690175;
             }
             case 2: {
                 return 2131690161;
@@ -339,12 +325,26 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         }
     }
     
+    private int getImageResourceId(final int n) {
+        switch (n) {
+            default: {
+                return 2131690149;
+            }
+            case 2: {
+                return 2131690162;
+            }
+            case 3: {
+                return 2131690169;
+            }
+        }
+    }
+    
     private PDiskData$ImageType getImageType(final PVideo pVideo, final PDiskData$ListType pDiskData$ListType, final int n, final int n2) {
         Log.d("nf_preapp_widgetagent", String.format("getImageType - getResizedBitmapForTrickplay%d, listType:%s, videoPos:%d", n, pDiskData$ListType, n2));
-        if (2130903244 == n && n2 > 1) {
+        if (2130903245 == n && n2 > 1) {
             return PDiskData$ImageType.HORIZONTAL_ART;
         }
-        if (2130903242 == n) {
+        if (2130903243 == n) {
             return PDiskData$ImageType.TITLE_CARD;
         }
         if (PDiskData$ListType.CW.equals(pDiskData$ListType) && pVideo.isPlayable) {
@@ -385,24 +385,24 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private int getLayoutId(final Context context, int n) {
         if (this.isWidgetOneCellHigh(context, n)) {
-            Log.d("nf_preapp_widgetagent", String.format("using preapp_widget_align_height %d", 2130903242));
-            return 2130903242;
+            Log.d("nf_preapp_widgetagent", String.format("using preapp_widget_align_height %d", 2130903243));
+            return 2130903243;
         }
         if (this.toAlignByWidth(context, n)) {
-            Log.d("nf_preapp_widgetagent", String.format("using preapp_widget_vertical %d", 2130903244));
-            return 2130903244;
+            Log.d("nf_preapp_widgetagent", String.format("using preapp_widget_vertical %d", 2130903245));
+            return 2130903245;
         }
         final int cellFromDp = cellFromDp(this.getWidgetWidth(context, n));
         if (this.toAlignByHeight(context, n)) {
-            n = 2130903242;
+            n = 2130903243;
         }
         else if (cellFromDp > 2) {
-            n = 2130903245;
-        }
-        else {
             n = 2130903246;
         }
-        Log.d("nf_preapp_widgetagent", String.format("using %d, preapp_widget_align_height=%d, preapp_width:%d, (widthInCell:%d) preapp_width_2cell:%d", n, 2130903242, 2130903245, cellFromDp, 2130903246));
+        else {
+            n = 2130903247;
+        }
+        Log.d("nf_preapp_widgetagent", String.format("using %d, preapp_widget_align_height=%d, preapp_width:%d, (widthInCell:%d) preapp_width_2cell:%d", n, 2130903243, 2130903246, cellFromDp, 2130903247));
         return n;
     }
     
@@ -642,11 +642,11 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private int getNumberOfImages(final Context context, int widgetHeight, final int n) {
         int n2 = 3;
-        if (2130903242 == widgetHeight || 2130903246 == widgetHeight) {
+        if (2130903243 == widgetHeight || 2130903247 == widgetHeight) {
             n2 = 1;
         }
-        else if (2130903244 != widgetHeight) {
-            if (2130903245 != widgetHeight) {
+        else if (2130903245 != widgetHeight) {
+            if (2130903246 != widgetHeight) {
                 return 1;
             }
             widgetHeight = this.getWidgetHeight(context, n);
@@ -670,13 +670,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getPlayResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131690149;
+                return 2131690150;
             }
             case 2: {
-                return 2131690162;
+                return 2131690163;
             }
             case 3: {
-                return 2131690169;
+                return 2131690170;
             }
         }
     }
@@ -685,15 +685,15 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         String s = null;
         switch (n % 3) {
             default: {
-                s = context.getString(2131231252);
+                s = context.getString(2131231254);
                 break;
             }
             case 0: {
-                s = context.getString(2131231250);
+                s = context.getString(2131231252);
                 break;
             }
             case 1: {
-                s = context.getString(2131231251);
+                s = context.getString(2131231253);
                 break;
             }
         }
@@ -704,13 +704,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getProgressGroupResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131690158;
+                return 2131690159;
             }
             case 2: {
-                return 2131690164;
+                return 2131690165;
             }
             case 3: {
-                return 2131690171;
+                return 2131690172;
             }
         }
     }
@@ -718,13 +718,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getProgressResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131690159;
+                return 2131690160;
             }
             case 2: {
-                return 2131690166;
+                return 2131690167;
             }
             case 3: {
-                return 2131690173;
+                return 2131690174;
             }
         }
     }
@@ -808,7 +808,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private String getVideoTitle(final Context context, final PDiskData$ListType pDiskData$ListType, final PVideo pVideo) {
         if (PDiskData$ListType.CW.equals(pDiskData$ListType) && VideoType.SHOW.equals(pVideo.videoType)) {
-            return context.getString(2131231157, new Object[] { pVideo.title, pVideo.playableSeasonNumAbbrLabel, pVideo.playableEpisodeNumber });
+            return context.getString(2131231159, new Object[] { pVideo.title, pVideo.playableSeasonNumAbbrLabel, pVideo.playableEpisodeNumber });
         }
         return pVideo.title;
     }
@@ -816,13 +816,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getVideoTitleResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131690156;
+                return 2131690157;
             }
             case 2: {
-                return 2131690165;
+                return 2131690166;
             }
             case 3: {
-                return 2131690172;
+                return 2131690173;
             }
         }
     }
@@ -961,16 +961,16 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     }
     
     private void setViewsToDefault(final RemoteViews remoteViews) {
-        remoteViews.setTextViewText(2131690152, (CharSequence)"");
-        remoteViews.setViewVisibility(2131690149, 8);
-        remoteViews.setViewVisibility(2131690162, 8);
-        remoteViews.setViewVisibility(2131690169, 8);
-        remoteViews.setViewVisibility(2131690151, 8);
+        remoteViews.setTextViewText(2131690153, (CharSequence)"");
+        remoteViews.setViewVisibility(2131690150, 8);
         remoteViews.setViewVisibility(2131690163, 8);
         remoteViews.setViewVisibility(2131690170, 8);
-        remoteViews.setViewVisibility(2131690158, 8);
+        remoteViews.setViewVisibility(2131690152, 8);
         remoteViews.setViewVisibility(2131690164, 8);
         remoteViews.setViewVisibility(2131690171, 8);
+        remoteViews.setViewVisibility(2131690159, 8);
+        remoteViews.setViewVisibility(2131690165, 8);
+        remoteViews.setViewVisibility(2131690172, 8);
     }
     
     private boolean toAlignByHeight(final Context context, int cellFromDp) {

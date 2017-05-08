@@ -214,8 +214,8 @@ public abstract class WebViewAccountActivity extends AccountActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903271);
-        this.mWebView = (WebView)this.findViewById(2131690269);
+        this.setContentView(2130903272);
+        this.mWebView = (WebView)this.findViewById(2131690270);
         this.mFlipper = (ViewFlipper)this.findViewById(2131689831);
         this.mWebViewClient = this.createWebViewClient();
         AndroidUtils.setWindowSecureFlag(this);

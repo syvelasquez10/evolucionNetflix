@@ -60,7 +60,7 @@ public class CwDiscoveryView extends CwView
         this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231048), cwVideo.getTitle()));
         this.clicker.update(this.info, cwVideo, this.img.getPressedStateHandler());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.setTitle(this.getContext().getString(2131231178, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            this.setTitle(this.getContext().getString(2131231180, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
             this.title.setVisibility(0);
         }
         else {

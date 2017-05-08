@@ -70,7 +70,7 @@ public interface IBrowseInterface
     
     void fetchShowDetails(final String p0, final String p1, final boolean p2, final int p3, final int p4);
     
-    void fetchShowDetailsAndSeasons(final String p0, final String p1, final boolean p2, final int p3, final int p4);
+    void fetchShowDetailsAndSeasons(final String p0, final String p1, final boolean p2, final boolean p3, final int p4, final int p5);
     
     void fetchSimilarVideosForPerson(final String p0, final int p1, final int p2, final int p3, final String p4);
     
@@ -103,6 +103,8 @@ public interface IBrowseInterface
     void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final boolean p6, final int p7, final int p8);
     
     void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final boolean p8, final int p9, final int p10);
+    
+    void prefetchVideoListDetails(final List<? extends Video> p0, final int p1, final int p2);
     
     void refreshCw(final boolean p0);
     

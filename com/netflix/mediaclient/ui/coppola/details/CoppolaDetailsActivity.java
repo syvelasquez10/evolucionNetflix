@@ -132,29 +132,30 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
         this.playerFragment.resetCurrentPlayback();
         this.playerFragment.setExternalBundle(PlayerFragment.getBundle(this.getPlayableId(), this.getPlayableVideoType(), (Parcelable)this.playContext));
         this.playerFragment.requestDetailsIfNeeded(this.getServiceManager());
+        this.startDPTTISession();
         if (videoType == VideoType.MOVIE) {
             if (this.videoType == VideoType.MOVIE) {
                 ((MovieDetailsFrag)this.detailsFrag).setVideoId(this.videoId);
                 this.reattachFragment(this.detailsFrag);
                 ((MovieDetailsFrag)this.detailsFrag).scrollTop();
                 Log.i("CoppolaDetailsActivity", "onNewIntent() for movie");
-                return;
             }
-            this.getFragmentManager().beginTransaction().remove(this.detailsFrag).commitAllowingStateLoss();
-            this.detailsFrag = this.createEpisodesFrag();
-            this.getFragmentManager().beginTransaction().add(2131689744, this.detailsFrag).commitAllowingStateLoss();
+            else {
+                this.getFragmentManager().beginTransaction().remove(this.detailsFrag).commitAllowingStateLoss();
+                this.detailsFrag = this.createEpisodesFrag();
+                this.getFragmentManager().beginTransaction().add(2131689744, this.detailsFrag).commitAllowingStateLoss();
+                ((EpisodesFrag)this.detailsFrag).setVideoId(this.videoId);
+                this.doOnManagerReady();
+                Log.i("CoppolaDetailsActivity", "onNewIntent() for show after movie");
+                this.invalidateOptionsMenu();
+            }
+        }
+        else if (this.videoType == VideoType.SHOW) {
             ((EpisodesFrag)this.detailsFrag).setVideoId(this.videoId);
-            this.doOnManagerReady();
-            Log.i("CoppolaDetailsActivity", "onNewIntent() for show after movie");
-            this.invalidateOptionsMenu();
+            this.reattachFragment(this.detailsFrag);
+            Log.i("CoppolaDetailsActivity", "onNewIntent() for show");
         }
         else {
-            if (this.videoType == VideoType.SHOW) {
-                ((EpisodesFrag)this.detailsFrag).setVideoId(this.videoId);
-                this.reattachFragment(this.detailsFrag);
-                Log.i("CoppolaDetailsActivity", "onNewIntent() for show");
-                return;
-            }
             this.getFragmentManager().beginTransaction().remove(this.detailsFrag).commitAllowingStateLoss();
             this.detailsFrag = MovieDetailsFrag.create(this.videoId);
             this.getFragmentManager().beginTransaction().add(2131689744, this.detailsFrag).commitAllowingStateLoss();
@@ -163,6 +164,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
             Log.i("CoppolaDetailsActivity", "onNewIntent() for movie after show");
             this.invalidateOptionsMenu();
         }
+        this.registerLoadingStatusCallback();
     }
     
     private void hidePlayerUI() {

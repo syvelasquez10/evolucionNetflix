@@ -41,6 +41,6 @@ class MovieDetailsFrag$6 implements VideoDetailsViewGroup$DetailsStringProvider
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131231207, this.val$details.getActors());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131231209, this.val$details.getActors());
     }
 }

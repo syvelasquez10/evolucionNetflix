@@ -95,6 +95,7 @@ class EpisodesFrag$FetchDataCallback extends LoggingManagerCallback
                 return;
             }
             this.this$0.updateShowDetails(showDetails);
+            DPPrefetchABTestUtils.reportDPMetadataFetchedEvent(status);
             if (this.this$0.hasSeasons(list)) {
                 this.this$0.updateSeasonData(list);
                 return;

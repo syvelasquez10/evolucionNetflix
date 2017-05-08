@@ -15,6 +15,8 @@ import com.netflix.mediaclient.media.Language;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.android.widget.advisor.Advisor;
 import android.app.Activity;
+import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.media.Watermark$Anchor;
 import android.widget.RelativeLayout$LayoutParams;
@@ -26,12 +28,10 @@ import com.netflix.mediaclient.media.Watermark;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import android.os.Build;
-import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.servicemgr.Asset;
+import android.os.Build;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView;
 import android.view.SurfaceHolder;
 import android.widget.ViewFlipper;
@@ -108,18 +108,6 @@ public class PlayScreen implements Screen
         this.mQuickActions = view.findViewById(2131690088);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
-        final Asset currentAsset = mController.getCurrentAsset();
-        if (currentAsset == null) {
-            Log.w("screen", "PlayerFragment getCurrentAsset() is null. Advisory notice is disabled.");
-            return;
-        }
-        this.createAdvisories(currentAsset);
-    }
-    
-    private void createAdvisories(final Asset asset) {
-        if (!this.mIsAdvisoryDisabled && this.mController != null && isBrowseValid(this.mController)) {
-            this.mController.getServiceManager().getBrowse().fetchAdvisories(asset.getPlayableId(), new PlayScreen$1(this, asset));
-        }
     }
     
     static PlayScreen createInstance(final PlayerFragment playerFragment, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
@@ -266,7 +254,7 @@ public class PlayScreen implements Screen
             autoResizeTextView.setGravity(119);
             final int dipToPixels = AndroidUtils.dipToPixels((Context)this.mController.getActivity(), 5);
             autoResizeTextView.setPadding(dipToPixels, dipToPixels, dipToPixels, dipToPixels);
-            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231228, new Object[] { watermark.getIdentifier() }));
+            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231230, new Object[] { watermark.getIdentifier() }));
             float n;
             if (this.mController.getNetflixActivity().isTablet()) {
                 n = this.mController.getResources().getDimension(2131362255);
@@ -338,6 +326,16 @@ public class PlayScreen implements Screen
             return;
         }
         this.moveToState(PlayerUiState.Playing);
+    }
+    
+    void createAdvisories() {
+        final Asset currentAsset = this.mController.getCurrentAsset();
+        if (currentAsset == null) {
+            Log.w("screen", "PlayerFragment getCurrentAsset() is null. Advisory notice is disabled.");
+        }
+        else if (!this.mIsAdvisoryDisabled && this.mController != null && isBrowseValid(this.mController)) {
+            this.mController.getServiceManager().getBrowse().fetchAdvisories(currentAsset.getPlayableId(), new PlayScreen$1(this, currentAsset));
+        }
     }
     
     void destroy() {
@@ -432,8 +430,7 @@ public class PlayScreen implements Screen
         return this.mTopPanel;
     }
     
-    public void hideAdvisories() {
-        this.mIsAdvisoryDisabled = (Advisor.getQueueSize() <= 0);
+    void hideAdvisories() {
         Advisor.dismissAll();
     }
     
@@ -494,7 +491,7 @@ public class PlayScreen implements Screen
         this.mPostPlayManager.transitionToPostPlay();
     }
     
-    public void moveToState(final PlayerUiState playerUiState) {
+    void moveToState(final PlayerUiState playerUiState) {
         while (true) {
             Label_0079: {
                 synchronized (this) {
@@ -812,8 +809,7 @@ public class PlayScreen implements Screen
         return !this.mController.isStalled() && this.mState != PlayerUiState.Loading;
     }
     
-    public void showAdvisories() {
-        this.mIsAdvisoryDisabled = (Advisor.getQueueSize() <= 0);
+    void showAdvisories() {
         Advisor.showAll();
     }
     
@@ -892,6 +888,9 @@ public class PlayScreen implements Screen
             return;
         }
         this.mBottomPanel.startDragging();
+    }
+    
+    public void startSeamlessMode() {
     }
     
     public void stopBif() {

@@ -218,13 +218,13 @@ public class MdxMiniPlayerViews
             this.episodesDivider = null;
         }
         if (this.languageCollapsed != null) {
-            this.initCollapsedButton(this.languageCollapsed, 2131231322, 2131230879, 18);
+            this.initCollapsedButton(this.languageCollapsed, 2131231324, 2131230879, 18);
         }
         if (this.episodesCollapsed != null) {
-            this.initCollapsedButton(this.episodesCollapsed, 2131231324, 2131230878, 20);
+            this.initCollapsedButton(this.episodesCollapsed, 2131231326, 2131230878, 20);
         }
         if (this.skipBackCollapsed != null) {
-            this.initCollapsedButton(this.skipBackCollapsed, 2131231339, 2131230884, 24);
+            this.initCollapsedButton(this.skipBackCollapsed, 2131231341, 2131230884, 24);
         }
         this.collapsedViews = new ArrayList<View>();
         if (this.playOrPauseCollapsed != null) {

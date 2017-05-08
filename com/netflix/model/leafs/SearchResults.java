@@ -108,6 +108,11 @@ public class SearchResults implements ISearchResults
     }
     
     @Override
+    public List<SearchVideo> getResultsVideos() {
+        return this.videos;
+    }
+    
+    @Override
     public SearchTrackable getSuggestionsListTrackable() {
         return this.suggestionsListSummary;
     }

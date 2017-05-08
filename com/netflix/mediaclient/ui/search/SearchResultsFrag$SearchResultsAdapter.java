@@ -6,6 +6,9 @@ package com.netflix.mediaclient.ui.search;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import android.app.Activity;
 import android.util.Pair;
@@ -109,7 +112,7 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     private void setResid() {
         switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
             default: {
-                this.resId = 2130903260;
+                this.resId = 2130903261;
             }
             case 2: {
                 this.resId = SearchUtils.getSearchViewLayoutPeople();

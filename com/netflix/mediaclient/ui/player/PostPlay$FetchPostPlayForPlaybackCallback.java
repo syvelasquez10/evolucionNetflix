@@ -83,8 +83,19 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                         final PostPlayItem postPlayItem = this.this$0.mPostPlayExperience.getItems().get(this.this$0.mPostPlayExperience.getItemsInitialIndex());
                         if (postPlayItem != null) {
                             postPlayItem.setAutoPlay(true);
-                            postPlayItem.setAutoPlaySeconds(this.this$0.mPostPlayExperience.getAutoplaySeconds());
-                            postPlayItem.setNextEpisodeAutoPlay(this.this$0.mPostPlayExperience.getType().equals("nextEpisode"));
+                            this.this$0.mSeamless = this.this$0.mPostPlayExperience.getType().equals("nextEpisodeSeamless");
+                            if (this.this$0.mSeamless) {
+                                Log.d("nf_postplay", "Entering post play next episode seamless experience");
+                                this.this$0.mPostPlayExperience.setAutoplaySeconds(this.this$0.mPostPlayExperience.getSeamlessCountdownSeconds());
+                                postPlayItem.setNextEpisodeSeamless(true);
+                                postPlayItem.setAutoPlaySeconds(this.this$0.mPostPlayExperience.getAutoplaySeconds());
+                                postPlayItem.setSeamlessStart(postPlayItem.getPlayAction().getSeamlessStart());
+                            }
+                            else {
+                                Log.d("nf_postplay", "Entering post play next episode experience");
+                                postPlayItem.setAutoPlaySeconds(this.this$0.mPostPlayExperience.getAutoplaySeconds());
+                                postPlayItem.setNextEpisodeAutoPlay(this.this$0.mPostPlayExperience.getType().equals("nextEpisode"));
+                            }
                         }
                         else {
                             Log.e("nf_postplay", "Could not find autoplay item");
@@ -92,7 +103,7 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                     }
                     int i = 0;
                     int n = 0;
-                Label_0555_Outer:
+                Label_0660_Outer:
                     while (i < this.this$0.mPostPlayExperience.getItems().size()) {
                         final PostPlayItem postPlayItem2 = this.this$0.mPostPlayExperience.getItems().get(i);
                         if (postPlayItem2 != null) {
@@ -112,7 +123,7 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                         }
                         while (true) {
                             ++i;
-                            continue Label_0555_Outer;
+                            continue Label_0660_Outer;
                             continue;
                         }
                     }

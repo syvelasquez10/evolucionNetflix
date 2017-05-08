@@ -408,7 +408,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final TextView title = baseLoLoMoAdapter$RowHolder.title;
         String text;
         if (t.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131231206);
+            text = this.activity.getString(2131231208);
         }
         else {
             text = t.getTitle();

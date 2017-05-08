@@ -29,7 +29,7 @@ class DetailsActivity$MyListCallback extends LoggingManagerCallback
             n = 2131231129;
         }
         else if (status.getStatusCode() == StatusCode.ALREADY_IN_QUEUE) {
-            n = 2131231227;
+            n = 2131231229;
         }
         else if (status.getStatusCode() == StatusCode.NOT_VALID) {
             n = 2131231071;

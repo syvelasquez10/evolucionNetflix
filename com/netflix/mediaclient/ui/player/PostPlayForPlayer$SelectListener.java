@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.player;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.netflix.model.leafs.PostPlayItem;
+import android.text.TextUtils;
 import com.netflix.model.leafs.PostPlayAction;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;

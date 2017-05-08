@@ -598,7 +598,7 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final ManagerCallback managerCallback) {
+    public boolean fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final boolean b2, final ManagerCallback managerCallback) {
         synchronized (this) {
             if (StringUtils.isEmpty(s)) {
                 throw new IllegalArgumentException("Parameter cannot be null");
@@ -610,17 +610,17 @@ public final class BrowseManager implements IBrowseManager
             Log.d("ServiceManagerBrowse", "fetchShowDetailsAndSeasons requestId=" + wrappedRequestId + " id=" + s3);
         }
         final INetflixService service = this.mgr.getService();
-        boolean b2;
+        boolean b3;
         if (service != null) {
-            service.getBrowse().fetchShowDetailsAndSeasons(s3, s2, b, this.mgr.getClientId(), wrappedRequestId);
-            b2 = true;
+            service.getBrowse().fetchShowDetailsAndSeasons(s3, s2, b, b2, this.mgr.getClientId(), wrappedRequestId);
+            b3 = true;
         }
         else {
             Log.w("ServiceManagerBrowse", "fetchShowDetailsAndSeasons:: service is not available");
-            b2 = false;
+            b3 = false;
         }
         // monitorexit(this)
-        return b2;
+        return b3;
     }
     
     @Override
@@ -862,6 +862,21 @@ public final class BrowseManager implements IBrowseManager
             return true;
         }
         Log.w("ServiceManagerBrowse", "prefetchLoLoMo:: service is not available");
+        return false;
+    }
+    
+    @Override
+    public boolean prefetchVideoListDetails(final List<? extends Video> list, final ManagerCallback managerCallback) {
+        final int requestId = this.mgr.getRequestId(managerCallback);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManagerBrowse", "prefetchDPForLomoRow requestId=" + requestId);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().prefetchVideoListDetails(list, this.mgr.getClientId(), requestId);
+            return true;
+        }
+        Log.w("ServiceManagerBrowse", "prefetchDPForLomoRow:: service is not available");
         return false;
     }
     

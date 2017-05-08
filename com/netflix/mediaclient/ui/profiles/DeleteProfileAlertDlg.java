@@ -35,8 +35,8 @@ public class DeleteProfileAlertDlg extends NetflixDialogFrag
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
         final DialogInterface$OnClickListener dialogInterface$OnClickListener = (DialogInterface$OnClickListener)this.getActivity();
         alertDialog$Builder.setNegativeButton(2131230993, dialogInterface$OnClickListener);
-        alertDialog$Builder.setPositiveButton(2131231260, dialogInterface$OnClickListener);
-        alertDialog$Builder.setMessage((CharSequence)this.getString(2131231261));
+        alertDialog$Builder.setPositiveButton(2131231262, dialogInterface$OnClickListener);
+        alertDialog$Builder.setMessage((CharSequence)this.getString(2131231263));
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
         return (Dialog)create;

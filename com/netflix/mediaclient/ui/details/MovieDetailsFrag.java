@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.StringUtils;
@@ -24,6 +23,8 @@ import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.ui.mdx.MementoMovieDetailsActivity;
 import android.support.v7.widget.RecyclerView$LayoutManager;
@@ -123,7 +124,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     @Override
     protected int getLayoutId() {
-        return 2130903257;
+        return 2130903258;
     }
     
     @Override
@@ -149,6 +150,10 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     @Override
     protected String getVideoId() {
         return this.videoId;
+    }
+    
+    protected void handlePrefetchDPData(final List<Video> list) {
+        DPPrefetchABTestUtils.prefetchDPForSimilars(this.getServiceManager(), list);
     }
     
     @Override
@@ -291,6 +296,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     protected void showSimsItems(final MovieDetails movieDetails) {
         if (movieDetails.getSimilars().size() != 0) {
             this.adapter.setItems(movieDetails.getSimilars());
+            this.handlePrefetchDPData(movieDetails.getSimilars());
         }
         else if (this.getVideoDetailsViewGroup() != null) {
             this.getVideoDetailsViewGroup().hideRelatedTitle();

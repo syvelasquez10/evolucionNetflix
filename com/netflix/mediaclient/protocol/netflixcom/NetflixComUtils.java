@@ -4,8 +4,9 @@
 
 package com.netflix.mediaclient.protocol.netflixcom;
 
-import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import android.content.Context;
+import com.netflix.mediaclient.ui.launch.NetflixComLaunchActivity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.pm.ActivityInfo;
@@ -126,6 +127,11 @@ public class NetflixComUtils
     
     public static void startHomeActivity(final NetflixActivity netflixActivity) {
         netflixActivity.startActivity(HomeActivity.createStartIntent(netflixActivity));
+        netflixActivity.overridePendingTransition(0, 0);
+    }
+    
+    public static void startLaunchActivity(final NetflixActivity netflixActivity) {
+        netflixActivity.startActivity(new Intent((Context)netflixActivity, (Class)NetflixComLaunchActivity.class));
         netflixActivity.overridePendingTransition(0, 0);
     }
     

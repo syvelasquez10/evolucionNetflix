@@ -141,7 +141,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     private static void showConnectivityErrorDialog(final NetflixActivity netflixActivity, final Status status) {
-        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131231244), status.getStatusCode().getValue())).setPositiveButton(2131231128, (DialogInterface$OnClickListener)new PinDialog$2()).show();
+        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131231246), status.getStatusCode().getValue())).setPositiveButton(2131231128, (DialogInterface$OnClickListener)new PinDialog$2()).show();
     }
     
     private void showErrorIcon(final boolean mInError) {

@@ -329,7 +329,7 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         this.viewCreator = viewCreator;
     }
     
-    protected void updateItems(final Collection<? extends Video> collection, final int n) {
+    public void updateItems(final Collection<? extends Video> collection, final int n) {
         if (Log.isLoggable()) {
             final StringBuilder append = new StringBuilder().append("updateItems, newItems: ");
             Serializable value;

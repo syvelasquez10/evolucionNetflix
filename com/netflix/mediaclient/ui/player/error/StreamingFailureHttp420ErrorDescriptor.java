@@ -20,7 +20,7 @@ class StreamingFailureHttp420ErrorDescriptor extends PlaybackErrorDescriptor
     }
     
     static StreamingFailureHttp420ErrorDescriptor build(final PlayerFragment playerFragment, final Error error) {
-        return new StreamingFailureHttp420ErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131231275), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231061), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://netflix.com/proxy")));
+        return new StreamingFailureHttp420ErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131231277), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231061), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://netflix.com/proxy")));
     }
     
     static boolean isValid(final Error error) {

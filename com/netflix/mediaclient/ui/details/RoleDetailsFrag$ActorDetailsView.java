@@ -92,17 +92,17 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void findViews() {
-        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690227);
-        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690228);
-        this.knownFor = (TextView)this.findViewById(2131690232);
-        this.knownForLabel = (TextView)this.findViewById(2131690231);
-        this.spouse = (TextView)this.findViewById(2131690236);
-        this.spouseLabel = (TextView)this.findViewById(2131690235);
-        this.name = (TextView)this.findViewById(2131690230);
-        this.born = (TextView)this.findViewById(2131690234);
-        this.bornLabel = (TextView)this.findViewById(2131690233);
-        this.onNetFlixLabel = this.findViewById(2131690229);
-        this.this$0.caret = this.findViewById(2131690237);
+        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690228);
+        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690229);
+        this.knownFor = (TextView)this.findViewById(2131690233);
+        this.knownForLabel = (TextView)this.findViewById(2131690232);
+        this.spouse = (TextView)this.findViewById(2131690237);
+        this.spouseLabel = (TextView)this.findViewById(2131690236);
+        this.name = (TextView)this.findViewById(2131690231);
+        this.born = (TextView)this.findViewById(2131690235);
+        this.bornLabel = (TextView)this.findViewById(2131690234);
+        this.onNetFlixLabel = this.findViewById(2131690230);
+        this.this$0.caret = this.findViewById(2131690238);
     }
     
     private void init() {
@@ -217,7 +217,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903255;
+        return 2130903256;
     }
     
     void updateDetails(final FalkorPerson falkorPerson, final boolean b) {

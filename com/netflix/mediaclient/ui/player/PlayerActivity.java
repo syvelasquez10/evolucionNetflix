@@ -111,6 +111,9 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
         else {
             this.playerFragment = PlayerFragment.createPlayerFragment(getAssetFromIntent(this.getIntent()));
         }
+        if (intent.hasExtra("SeamlessMode")) {
+            this.playerFragment.getArguments().putBoolean("SeamlessMode", intent.getBooleanExtra("SeamlessMode", false));
+        }
         if (intent.hasExtra("BookmarkSecondsFromStart")) {
             this.playerFragment.getArguments().putInt("BookmarkSecondsFromStart", intent.getIntExtra("BookmarkSecondsFromStart", -1));
         }

@@ -7,9 +7,9 @@ package com.netflix.mediaclient.service.user.volley;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
-import java.util.List;
 import com.netflix.mediaclient.service.webclient.model.leafs.User$Summary;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
+import java.util.List;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile$Summary;
@@ -84,10 +84,10 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         if (FalkorParseUtils.isEmpty(dataObj)) {
             throw new FalkorException("UserProfiles empty!!!");
         }
-        ArrayList<UserProfile> userProfiles;
+        ArrayList<UserProfile> list;
         while (true) {
             while (true) {
-                Label_0434: {
+                Label_0429: {
                     while (true) {
                         int n = 0;
                         Label_0240: {
@@ -96,10 +96,10 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                             try {
                                 final JsonObject asJsonObject = dataObj.getAsJsonObject("profilesList");
                                 if (!asJsonObject.has("summary")) {
-                                    break Label_0434;
+                                    break Label_0429;
                                 }
                                 final int length = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", ListSummary.class).getLength();
-                                userProfiles = new ArrayList<UserProfile>();
+                                list = new ArrayList<UserProfile>();
                                 n = 0;
                                 if (n > length) {
                                     break;
@@ -120,7 +120,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                                 throw new FalkorException("response missing user json objects", ex);
                             }
                             userProfile.subtitlePreference = FalkorParseUtils.getPropertyObject(asJsonObject2, "subtitlePreference", SubtitlePreference.class);
-                            userProfiles.add(userProfile);
+                            list.add(userProfile);
                         }
                         ++n;
                         continue;
@@ -130,7 +130,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                 continue;
             }
         }
-        final AccountData accountData = new AccountData();
+        final AccountData accountData = new AccountData(list);
         if (b) {
             final User user = new User();
             JsonObject asJsonObject3;
@@ -150,7 +150,6 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
             user.setUmaAlert(getUmaAlert(asJsonObject3));
             accountData.setUser(user);
         }
-        accountData.setUserProfiles(userProfiles);
         return accountData;
     }
     

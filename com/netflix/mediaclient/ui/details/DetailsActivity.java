@@ -4,24 +4,26 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.view.MenuItem;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
+import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.app.Activity;
 import com.netflix.mediaclient.util.Coppola1Utils;
+import java.util.Collections;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
-import java.util.Map;
-import com.netflix.mediaclient.service.logging.perf.Sessions;
-import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
+import java.util.Map;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -52,6 +54,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private final BroadcastReceiver reloadReceiver;
     private ServiceManager serviceMan;
     private boolean shareMenuCreated;
+    private boolean startDPTTISession;
     protected String videoId;
     
     public DetailsActivity() {
@@ -132,6 +135,12 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         return this;
     }
     
+    public void endDPTTISession(final Map<String, String> map) {
+        this.startDPTTISession = false;
+        PerformanceProfiler.getInstance().endSession(Sessions.DP_TTI, map);
+        PerformanceProfiler.getInstance().flushApmEvents(this.getApmSafely());
+    }
+    
     protected void fillVideoAndEpisodeIds() {
         this.videoId = this.getIntent().getStringExtra("extra_video_id");
         this.episodeId = this.getIntent().getStringExtra("extra_episode_id");
@@ -204,6 +213,9 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             bundle.setClassLoader(this.getClass().getClassLoader());
             this.mNotificationOpenedReportAlreadySent = bundle.getBoolean("notification_beacon_sent");
         }
+        else {
+            this.startDPTTISession();
+        }
         this.fillVideoAndEpisodeIds();
         this.mAction = (DetailsActivity$Action)this.getIntent().getSerializableExtra("extra_action");
         this.mActionToken = this.getIntent().getStringExtra("extra_action_token");
@@ -214,7 +226,6 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         }
         super.onCreate(bundle);
         this.registerReceivers();
-        PerformanceProfiler.getInstance().endSession(Sessions.TDP, null);
     }
     
     @Override
@@ -224,6 +235,14 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         this.shareMenuCreated = true;
         DetailsMenu.addItems(this, menu, false);
         super.onCreateOptionsMenu(menu, menu2);
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (this.startDPTTISession) {
+            this.endDPTTISession(Collections.singletonMap("reason", IClientLogging$CompletionReason.canceled.name()));
+        }
     }
     
     @Override
@@ -245,7 +264,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             NflxProtocolUtils.reportUserOpenedNotification(this.serviceMan, this.getIntent());
         }
         this.handleAction();
-        this.setLoadingStatusCallback(new DetailsActivity$1(this));
+        this.registerLoadingStatusCallback();
     }
     
     @Override
@@ -275,6 +294,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         super.onSaveInstanceState(bundle);
     }
     
+    public void registerLoadingStatusCallback() {
+        this.setLoadingStatusCallback(new DetailsActivity$1(this));
+    }
+    
     protected void setAction(final DetailsActivity$Action mAction, final String mActionToken) {
         if (Log.isLoggable()) {
             Log.d("DetailsActivity", "Action " + mAction + ", msg token: " + mActionToken);
@@ -299,5 +322,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     @Override
     public boolean shouldApplyPaddingToSlidingPanel() {
         return false;
+    }
+    
+    public void startDPTTISession() {
+        this.startDPTTISession = true;
+        PerformanceProfiler.getInstance().startSession(Sessions.DP_TTI);
     }
 }

@@ -30,11 +30,13 @@ public abstract class Advisory implements JsonMerger, JsonPopulator
     
     public static ArrayList<Advisory> asList(final JsonArray jsonArray) {
         final ArrayList<Advisory> list = new ArrayList<Advisory>();
-        for (int i = 0; i < jsonArray.size(); ++i) {
-            final JsonObject asJsonObject = jsonArray.get(i).getAsJsonObject();
-            final Advisory make = make(Advisory$Type.fromString(asJsonObject.get("type").getAsString()), asJsonObject);
-            if (make != null) {
-                list.add(make);
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.size(); ++i) {
+                final JsonObject asJsonObject = jsonArray.get(i).getAsJsonObject();
+                final Advisory make = make(Advisory$Type.fromString(asJsonObject.get("type").getAsString()), asJsonObject);
+                if (make != null) {
+                    list.add(make);
+                }
             }
         }
         return list;

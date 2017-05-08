@@ -25,11 +25,11 @@ import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
 
-class KidsGenresLoMoFrag$1 extends GridLayoutManager$SpanSizeLookup
+class GalleryGenresLoMoFrag$1 extends GridLayoutManager$SpanSizeLookup
 {
-    final /* synthetic */ KidsGenresLoMoFrag this$0;
+    final /* synthetic */ GalleryGenresLoMoFrag this$0;
     
-    KidsGenresLoMoFrag$1(final KidsGenresLoMoFrag this$0) {
+    GalleryGenresLoMoFrag$1(final GalleryGenresLoMoFrag this$0) {
         this.this$0 = this$0;
     }
     

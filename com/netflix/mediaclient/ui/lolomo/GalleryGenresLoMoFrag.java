@@ -25,31 +25,37 @@ import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 
-public class KidsGenresLoMoFrag extends LoLoMoFrag
+public class GalleryGenresLoMoFrag extends LoLoMoFrag
 {
-    private static final String TAG = "KidsGenresLoMoFrag";
+    private static final String TAG = "GalleryGenresLoMoFrag";
     private RecyclerViewHeaderAdapter adapter;
+    private boolean hasMoreData;
     private int numColumns;
     protected RecyclerView recyclerView;
+    private int startIndex;
     
-    public static KidsGenresLoMoFrag create(final String s, final GenreList list) {
-        final KidsGenresLoMoFrag kidsGenresLoMoFrag = new KidsGenresLoMoFrag();
+    public GalleryGenresLoMoFrag() {
+        this.startIndex = 0;
+    }
+    
+    public static GalleryGenresLoMoFrag create(final String s, final GenreList list) {
+        final GalleryGenresLoMoFrag galleryGenresLoMoFrag = new GalleryGenresLoMoFrag();
         final Bundle arguments = new Bundle();
         arguments.putString("genre_id", s);
         arguments.putBoolean("is_genre_list", !"lolomo".equals(s));
         if (list != null) {
             arguments.putParcelable("genre_parcel", (Parcelable)list);
         }
-        kidsGenresLoMoFrag.setArguments(arguments);
-        return kidsGenresLoMoFrag;
+        galleryGenresLoMoFrag.setArguments(arguments);
+        return galleryGenresLoMoFrag;
     }
     
     private void setNumColums() {
-        this.numColumns = LoMoUtils.getKidsLomoGenreNumColumns(this.getActivity());
+        this.numColumns = LoMoUtils.getGalleryLomoGenreNumColumns(this.getNetflixActivity());
     }
     
     private void setupRecyclerViewAdapter() {
-        (this.adapter = new KidsGenresLoMoFrag$ProgressiveAdapter(this, false, this.numColumns, new KidsGenresLoMoFrag$2(this))).addHeaderView(ViewUtils.createActionBarDummyView(this.getNetflixActivity()));
+        (this.adapter = new GalleryGenresLoMoFrag$ProgressiveAdapter(this, false, this.numColumns, new GalleryGenresLoMoFrag$2(this))).addHeaderView(ViewUtils.createActionBarDummyView(this.getNetflixActivity()));
         final int dimensionPixelSize = this.getActivity().getResources().getDimensionPixelSize(2131362197);
         this.recyclerView.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
         this.recyclerView.setAdapter(this.adapter);
@@ -57,7 +63,7 @@ public class KidsGenresLoMoFrag extends LoLoMoFrag
     
     private void setupRecyclerViewLayoutManager() {
         final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
-        layoutManager.setSpanSizeLookup(new KidsGenresLoMoFrag$1(this));
+        layoutManager.setSpanSizeLookup(new GalleryGenresLoMoFrag$1(this));
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362195), this.numColumns));
     }
@@ -67,7 +73,7 @@ public class KidsGenresLoMoFrag extends LoLoMoFrag
         if (BrowseExperience.showKidsExperience()) {
             return 2130903152;
         }
-        return 2130903257;
+        return 2130903258;
     }
     
     @Override
@@ -77,19 +83,22 @@ public class KidsGenresLoMoFrag extends LoLoMoFrag
     
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-        Log.v("KidsGenresLoMoFrag", "onManagerReady");
+        Log.v("GalleryGenresLoMoFrag", "onManagerReady");
         if (status.isError()) {
-            Log.w("KidsGenresLoMoFrag", "Manager status code not okay");
+            Log.w("GalleryGenresLoMoFrag", "Manager status code not okay");
             return;
         }
         this.genreId = this.getArguments().getString("genre_id");
-        ((KidsGenresLoMoFrag$ProgressiveAdapter)this.adapter).fetchData();
+        this.startIndex = 0;
+        ((GalleryGenresLoMoFrag$ProgressiveAdapter)this.adapter).fetchData();
     }
     
     @Override
     public void refresh() {
         this.showLoadingView();
-        ((KidsGenresLoMoFrag$ProgressiveAdapter)this.adapter).fetchData();
+        this.startIndex = 0;
+        this.adapter.clearData();
+        ((GalleryGenresLoMoFrag$ProgressiveAdapter)this.adapter).fetchData();
     }
     
     @Override

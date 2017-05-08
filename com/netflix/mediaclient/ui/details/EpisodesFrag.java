@@ -252,7 +252,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         if (Log.isLoggable()) {
             Log.v("EpisodesFrag", "Fetching data for show ID: " + this.getShowId());
         }
-        serviceManager.getBrowse().fetchShowDetailsAndSeasons(this.showId, this.episodeId, BrowseExperience.shouldLoadKubrickLeavesInDetails(), new EpisodesFrag$FetchDataCallback(this, this.requestId));
+        serviceManager.getBrowse().fetchShowDetailsAndSeasons(this.showId, this.episodeId, BrowseExperience.shouldLoadKubrickLeavesInDetails(), DPPrefetchABTestUtils.isInTest((Context)this.getActivity()), new EpisodesFrag$FetchDataCallback(this, this.requestId));
     }
     
     protected void findViews(final View view) {
@@ -277,7 +277,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected int getlayoutId() {
-        return 2130903257;
+        return 2130903258;
     }
     
     protected void initDetailsViewGroup() {

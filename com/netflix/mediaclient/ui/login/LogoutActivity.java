@@ -37,7 +37,7 @@ public class LogoutActivity extends AccountActivity
         Log.i("LogoutActivity", "Handling logout completion...");
         PerformanceProfiler.getInstance().flushApmEvents(this.getApmSafely());
         UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging$CompletionReason.success, null);
-        Toast.makeText(this.getApplicationContext(), 2131231185, 1).show();
+        Toast.makeText(this.getApplicationContext(), 2131231187, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }
     
@@ -58,7 +58,7 @@ public class LogoutActivity extends AccountActivity
     }
     
     public static void showLogoutDialog(final Activity activity) {
-        new AlertDialog$Builder((Context)activity).setMessage(2131231095).setNegativeButton(2131230993, (DialogInterface$OnClickListener)null).setPositiveButton(2131231184, (DialogInterface$OnClickListener)new LogoutActivity$1(activity)).show();
+        new AlertDialog$Builder((Context)activity).setMessage(2131231095).setNegativeButton(2131230993, (DialogInterface$OnClickListener)null).setPositiveButton(2131231186, (DialogInterface$OnClickListener)new LogoutActivity$1(activity)).show();
     }
     
     @Override

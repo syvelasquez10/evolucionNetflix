@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import java.util.List;
 import android.view.View;
 import com.netflix.mediaclient.Log;
@@ -75,6 +76,14 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
             this.fetchMoreData();
         }
         return this.paginatedAdapter.getView(this.viewRecycler, this.lomo, n);
+    }
+    
+    protected void handlePrefetchDPData(final List<T> list, final int n) {
+        if (n > 0) {
+            Log.d("BaseProgressiveRowAdapter", "prefetch DP only for videos in first page.");
+            return;
+        }
+        DPPrefetchABTestUtils.prefetchDPForLomoRow(this.manager, this.lomo, list, this.paginatedAdapter.computeNumItemsPerPage());
     }
     
     @Override
@@ -162,5 +171,6 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
         }
         this.paginatedAdapter.appendData(list, s, n, n2, this.hasMoreData);
         this.adapterCallbacks.notifyParentOfDataSetChange();
+        this.handlePrefetchDPData(list, n);
     }
 }

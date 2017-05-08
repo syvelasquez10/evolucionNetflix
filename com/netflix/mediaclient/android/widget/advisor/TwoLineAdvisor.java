@@ -36,8 +36,8 @@ public class TwoLineAdvisor extends Advisor
         this.animateOutInterpolator = (Interpolator)new AccelerateInterpolator();
         this.mHideAnimatorEndListener = (Animator$AnimatorListener)new TwoLineAdvisor$1(this);
         final View rootView = this.getRootView();
-        this.netflixBarView = rootView.findViewById(2131690308);
-        this.container = rootView.findViewById(2131690305);
+        this.netflixBarView = rootView.findViewById(2131690309);
+        this.container = rootView.findViewById(2131690306);
         this.translationY = rootView.getResources().getDimensionPixelSize(2131362065);
         this.container.setVisibility(0);
     }
@@ -84,17 +84,17 @@ public class TwoLineAdvisor extends Advisor
     
     @Override
     public int getLayoutId() {
-        return 2130903284;
+        return 2130903285;
     }
     
     @Override
     public int getMessageViewId() {
-        return 2131690306;
+        return 2131690307;
     }
     
     @Override
     public int getSecondaryMessageViewId() {
-        return 2131690307;
+        return 2131690308;
     }
     
     @Override

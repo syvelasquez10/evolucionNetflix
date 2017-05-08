@@ -32,7 +32,10 @@ public abstract class PostPlayItemView extends LinearLayout
         this.findViews();
     }
     
-    protected abstract void startTimer();
+    public void onTick(final int n) {
+    }
+    
+    protected abstract void startTimer(final int p0);
     
     protected abstract void stopTimer();
     

@@ -116,6 +116,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     String getPreAppWidgetExperience();
     
+    ABTestConfig$Cell getPrefetchDPConfig();
+    
     ABTestConfig$Cell getPrefetchLolomoConfig();
     
     int getPresentationTrackingAggregationSize();

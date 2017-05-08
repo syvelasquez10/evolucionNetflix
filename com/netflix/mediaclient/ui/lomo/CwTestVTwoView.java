@@ -48,7 +48,7 @@ public class CwTestVTwoView extends CwView
         super.update(cwVideo, trackable, n, b, b2);
         this.episodeInfo = (TextView)this.findViewById(2131689739);
         if (VideoType.SHOW == cwVideo.getType()) {
-            this.episodeInfo.setText((CharSequence)this.getContext().getString(2131231178, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            this.episodeInfo.setText((CharSequence)this.getContext().getString(2131231180, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
             ViewUtils.setVisibleOrGone((View)this.episodeInfo, this.showEpisodeInfo);
             return;
         }

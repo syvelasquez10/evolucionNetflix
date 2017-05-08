@@ -15,6 +15,7 @@ import java.util.List;
 
 public class ABTestConfigData
 {
+    public static final String AIM_LOW_PREFETCH_DP_TEST_ID = "7722";
     public static final String AIM_LOW_PREFETCH_LOLOMO_TEST_ID = "7480";
     public static final String COPPOLA_1_AB_TEST_ID = "6729";
     public static final String COPPOLA_2_AB_TEST_ID = "6941";
@@ -28,6 +29,8 @@ public class ABTestConfigData
     private static final String TAG = "nf_config";
     public static final String VOICE_SEARCH_AB_TEST_ID = "6786";
     private static List<String> testIds;
+    @SerializedName("7722")
+    private ABTestConfig aimLowPrefetchDPConfig;
     @SerializedName("7480")
     private ABTestConfig aimLowPrefetchLolomoConfig;
     @SerializedName("6729")
@@ -75,12 +78,17 @@ public class ABTestConfigData
         ABTestConfigData.testIds.add("7131");
         ABTestConfigData.testIds.add("7714");
         ABTestConfigData.testIds.add("7480");
+        ABTestConfigData.testIds.add("7722");
         if (DeviceUtils.isNotTabletByContext(context)) {
             ABTestConfigData.testIds.add("6729");
             ABTestConfigData.testIds.add("6941");
             ABTestConfigData.testIds.add("7129");
         }
         return StringUtils.joinArray(ABTestConfigData.testIds.toArray(new String[ABTestConfigData.testIds.size()]));
+    }
+    
+    public ABTestConfig getAimLowPrefetchDPConfig() {
+        return this.aimLowPrefetchDPConfig;
     }
     
     public ABTestConfig getAimLowPrefetchLolomoConfig() {

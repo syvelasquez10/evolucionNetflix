@@ -34,7 +34,7 @@ public final class PlaybackLauncher
         netflixActivity.displayDialog(AlertDialogFactory.createDialog((Context)netflixActivity, null, new AlertDialogFactory$AlertDialogDescriptor("", netflixActivity.getString(n), null, null)));
     }
     
-    private static Intent getOldPlaybackIntent(final NetflixActivity netflixActivity, final Asset asset, final int n) {
+    private static Intent getOldPlaybackIntent(final NetflixActivity netflixActivity, final Asset asset, final int n, final boolean b) {
         final Intent intent = new Intent((Context)netflixActivity, (Class)PlayerActivity.class);
         intent.addFlags(131072);
         intent.addFlags(268435456);
@@ -44,6 +44,7 @@ public final class PlaybackLauncher
         else {
             Log.w("nf_play", "Start time parameter was ignored since it exceeds the total duration.");
         }
+        intent.putExtra("SeamlessMode", b);
         asset.toIntent(intent);
         return intent;
     }
@@ -84,7 +85,7 @@ public final class PlaybackLauncher
         }
     }
     
-    public static void playVideo(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n) {
+    public static void playVideo(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n, final boolean b2) {
         if (Log.isLoggable()) {
             Log.d("nf_play", "Asset to playback: " + asset);
         }
@@ -92,18 +93,18 @@ public final class PlaybackLauncher
             return;
         }
         if (DeviceUtils.isTabletByContext((Context)netflixActivity) || !Coppola1Utils.isNewPlayerExperience((Context)netflixActivity)) {
-            netflixActivity.startActivity(getOldPlaybackIntent(netflixActivity, asset, n));
+            netflixActivity.startActivity(getOldPlaybackIntent(netflixActivity, asset, n, b2));
             return;
         }
-        Coppola1Utils.launchCoppolaDetails(netflixActivity, asset, b, n);
+        Coppola1Utils.launchCoppolaDetails(netflixActivity, asset, b, n, b2);
     }
     
     public static void playVideo(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
-        playVideo(netflixActivity, playable, playContext, -1);
+        playVideo(netflixActivity, playable, playContext, -1, false);
     }
     
-    public static void playVideo(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext, final int n) {
-        playVideo(netflixActivity, Asset.create(playable, playContext, false), true, n);
+    public static void playVideo(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext, final int n, final boolean b) {
+        playVideo(netflixActivity, Asset.create(playable, playContext, false), true, n, b);
     }
     
     public static boolean shouldPlayOnRemoteTarget(final ServiceManager serviceManager) {
@@ -135,10 +136,10 @@ public final class PlaybackLauncher
                 verifyAgeAndPinToPlay(netflixActivity, asset, true, n);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131231231);
+                displayErrorDialog(netflixActivity, 2131231233);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131231232);
+                displayErrorDialog(netflixActivity, 2131231234);
             }
         }
     }
@@ -170,11 +171,11 @@ public final class PlaybackLauncher
         else {
             if (netflixActivity.getServiceManager().getConfiguration().getPlaybackConfiguration().isLocalPlaybackEnabled()) {
                 Log.d("nf_play", "Start local playback");
-                playVideo(netflixActivity, asset, true, n);
+                playVideo(netflixActivity, asset, true, n, false);
                 return;
             }
             Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131231231);
+            displayErrorDialog(netflixActivity, 2131231233);
         }
     }
     

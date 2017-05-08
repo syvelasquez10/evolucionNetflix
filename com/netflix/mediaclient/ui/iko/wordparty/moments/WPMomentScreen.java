@@ -1233,30 +1233,30 @@ public class WPMomentScreen implements CardListener, WPCardVOPlayer
     public void setInteractiveMomentAndFindViewsForMoment(final WPInteractiveMomentsModel$WPMoment currentMoment, final View view) {
         this.currentMoment = currentMoment;
         if (this.wpContainer == null) {
-            this.wpContainer = (ViewGroup)view.findViewById(2131690325);
+            this.wpContainer = (ViewGroup)view.findViewById(2131690326);
         }
         if (this.isLearnMoment()) {
             WPCardLayout wordWallyCard1Reference;
             if ((wordWallyCard1Reference = this.wordWallyCard1Reference) == null) {
-                wordWallyCard1Reference = (WPWordWallyCardLayout)view.findViewById(2131690340);
+                wordWallyCard1Reference = (WPWordWallyCardLayout)view.findViewById(2131690341);
                 this.wordWallyCard1Reference = wordWallyCard1Reference;
             }
             this.card1 = wordWallyCard1Reference;
             WPCardLayout wordWallyCard2Reference;
             if ((wordWallyCard2Reference = this.wordWallyCard2Reference) == null) {
-                wordWallyCard2Reference = (WPWordWallyCardLayout)view.findViewById(2131690341);
+                wordWallyCard2Reference = (WPWordWallyCardLayout)view.findViewById(2131690342);
                 this.wordWallyCard2Reference = wordWallyCard2Reference;
             }
             this.card2 = wordWallyCard2Reference;
             WPCardLayout wordWallyCard3Reference;
             if ((wordWallyCard3Reference = this.wordWallyCard3Reference) == null) {
-                wordWallyCard3Reference = (WPWordWallyCardLayout)view.findViewById(2131690342);
+                wordWallyCard3Reference = (WPWordWallyCardLayout)view.findViewById(2131690343);
                 this.wordWallyCard3Reference = wordWallyCard3Reference;
             }
             this.card3 = wordWallyCard3Reference;
             WPCardLayout wordWallyCard4Reference;
             if ((wordWallyCard4Reference = this.wordWallyCard4Reference) == null) {
-                wordWallyCard4Reference = (WPWordWallyCardLayout)view.findViewById(2131690343);
+                wordWallyCard4Reference = (WPWordWallyCardLayout)view.findViewById(2131690344);
                 this.wordWallyCard4Reference = wordWallyCard4Reference;
             }
             this.card4 = wordWallyCard4Reference;
@@ -1264,50 +1264,50 @@ public class WPMomentScreen implements CardListener, WPCardVOPlayer
         else {
             WPCardLayout standardCard1Reference;
             if ((standardCard1Reference = this.standardCard1Reference) == null) {
-                standardCard1Reference = (WPStandardCardLayout)view.findViewById(2131690336);
+                standardCard1Reference = (WPStandardCardLayout)view.findViewById(2131690337);
                 this.standardCard1Reference = standardCard1Reference;
             }
             this.card1 = standardCard1Reference;
             WPCardLayout standardCard2Reference;
             if ((standardCard2Reference = this.standardCard2Reference) == null) {
-                standardCard2Reference = (WPStandardCardLayout)view.findViewById(2131690337);
+                standardCard2Reference = (WPStandardCardLayout)view.findViewById(2131690338);
                 this.standardCard2Reference = standardCard2Reference;
             }
             this.card2 = standardCard2Reference;
             WPCardLayout standardCard3Reference;
             if ((standardCard3Reference = this.standardCard3Reference) == null) {
-                standardCard3Reference = (WPStandardCardLayout)view.findViewById(2131690338);
+                standardCard3Reference = (WPStandardCardLayout)view.findViewById(2131690339);
                 this.standardCard3Reference = standardCard3Reference;
             }
             this.card3 = standardCard3Reference;
             WPCardLayout standardCard4Reference;
             if ((standardCard4Reference = this.standardCard4Reference) == null) {
-                standardCard4Reference = (WPStandardCardLayout)view.findViewById(2131690339);
+                standardCard4Reference = (WPStandardCardLayout)view.findViewById(2131690340);
                 this.standardCard4Reference = standardCard4Reference;
             }
             this.card4 = standardCard4Reference;
         }
         if (this.panelContainer == null) {
-            this.panelContainer = (LinearLayout)view.findViewById(2131690331);
+            this.panelContainer = (LinearLayout)view.findViewById(2131690332);
         }
         ViewUtils.setVisibleOrGone((View)this.panelContainer, false);
         if (this.panel1 == null) {
-            this.panel1 = view.findViewById(2131690332);
+            this.panel1 = view.findViewById(2131690333);
         }
         if (this.panel2 == null) {
-            this.panel2 = view.findViewById(2131690333);
+            this.panel2 = view.findViewById(2131690334);
         }
         if (this.panel3 == null) {
-            this.panel3 = view.findViewById(2131690334);
+            this.panel3 = view.findViewById(2131690335);
         }
         if (this.panel4 == null) {
-            this.panel4 = view.findViewById(2131690335);
+            this.panel4 = view.findViewById(2131690336);
         }
         if (this.bgView == null) {
-            this.bgView = (ImageView)view.findViewById(2131690330);
+            this.bgView = (ImageView)view.findViewById(2131690331);
         }
         if (this.fgView == null) {
-            this.fgView = (ImageView)view.findViewById(2131690344);
+            this.fgView = (ImageView)view.findViewById(2131690345);
         }
         this.cardClickListener = (View$OnClickListener)new WPMomentScreen$8(this);
         this.cardViewsList.clear();

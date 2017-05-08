@@ -66,6 +66,7 @@ public abstract class PostPlay
     protected boolean mPostPlayDismissed;
     protected PostPlayExperience mPostPlayExperience;
     protected View mPostPlayIgnoreTap;
+    private boolean mSeamless;
     protected TextView mSynopsis;
     protected TextView mTitle;
     private final Runnable onInterrupterDismiss;
@@ -75,8 +76,9 @@ public abstract class PostPlay
         this.mOffsetMs = 10000;
         this.mFetchPostplayOffsetMs = 10000;
         this.mInterrputerTimeoutOffset = 3600000;
-        this.onInterrupterStart = new PostPlay$6(this);
-        this.onInterrupterDismiss = new PostPlay$7(this);
+        this.mSeamless = false;
+        this.onInterrupterStart = new PostPlay$7(this);
+        this.onInterrupterDismiss = new PostPlay$8(this);
         this.mNetflixActivity = mNetflixActivity;
         this.findViewsCommon();
         this.findViews();
@@ -176,6 +178,13 @@ public abstract class PostPlay
         }
     }
     
+    private int getStartOfCredits() {
+        if (this.mPostPlayExperience != null && this.mSeamless) {
+            return this.mPostPlayExperience.getSeamlessEnd();
+        }
+        return this.mPlayerFragment.getCurrentAsset().getEndtime();
+    }
+    
     private boolean inPostPlay(final int n) {
         if (this.mPlayerFragment == null) {
             Log.e("nf_postplay", "inPostPlay() - called with null PlayerFragment!");
@@ -186,7 +195,7 @@ public abstract class PostPlay
                 final Asset currentAsset = this.mPlayerFragment.getCurrentAsset();
                 if (currentAsset != null) {
                     final int duration = player.getDuration();
-                    final int n2 = currentAsset.getEndtime() * 1000;
+                    final int n2 = this.getStartOfCredits() * 1000;
                     int mOffsetMs;
                     if (currentAsset.isSupplementalVideo()) {
                         mOffsetMs = (int)TimeUnit.SECONDS.toMillis(2L);
@@ -446,6 +455,9 @@ public abstract class PostPlay
         }
     }
     
+    protected void onTick(final int n) {
+    }
+    
     public void postPlayDismissed() {
         this.mPostPlayDismissed = true;
     }
@@ -495,6 +507,7 @@ public abstract class PostPlay
     protected void setupAutoPlay(final PostPlayRequestContext postPlayRequestContext) {
         (this.autoplayTimer = new TimeUtils$CountdownTimer(this.mNetflixActivity)).setTime(this.mPostPlayExperience.getAutoplaySeconds());
         this.autoplayTimer.setOnFinish(new PostPlay$5(this, new PostPlayCallToAction(this.mNetflixActivity, this.mPlayerFragment, this.mPostPlayExperience.getItems().get(this.mPostPlayExperience.getItemsInitialIndex()).getPlayAction(), postPlayRequestContext)));
+        this.autoplayTimer.setOnTick(new PostPlay$6(this));
     }
     
     protected boolean shouldPostponeFetchPostPlayData() {

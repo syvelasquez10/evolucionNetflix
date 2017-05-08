@@ -125,7 +125,7 @@ class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
                 if (Log.isLoggable()) {
                     Log.e(NotificationsFrag.TAG, "Got null notification for type: " + item.getType());
                 }
-                BaseNotification.showSingleLineText(notificationViewHolder, 2131231246);
+                BaseNotification.showSingleLineText(notificationViewHolder, 2131231248);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 return inflate;
             }

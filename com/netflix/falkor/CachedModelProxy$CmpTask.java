@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
-import com.netflix.mediaclient.util.StringUtils;
 import com.fasterxml.jackson.core.JsonFactory;
 import java.io.Reader;
 import java.util.Date;
@@ -46,6 +45,8 @@ import java.util.Comparator;
 import java.util.Collections;
 import com.netflix.mediaclient.util.AlphanumComparator;
 import com.netflix.mediaclient.service.browse.PostToHandlerCallbackWrapper;
+import com.netflix.mediaclient.util.StringUtils;
+import java.util.Arrays;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.branches.FalkorObject;
 import android.util.Pair;
@@ -62,6 +63,7 @@ import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.android.volley.VolleyError;
+import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.util.DataUtil$StringPair;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -158,6 +160,10 @@ abstract class CachedModelProxy$CmpTask implements Runnable
     protected abstract void fetchResultsAndCallbackForSuccess(final BrowseAgentCallback p0, final CachedModelProxy$GetResult p1);
     
     protected List<DataUtil$StringPair> getOptionalRequestParams() {
+        return null;
+    }
+    
+    protected Request$Priority getPriorityOverride() {
         return null;
     }
     

@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
-import com.netflix.mediaclient.util.StringUtils;
 import com.fasterxml.jackson.core.JsonFactory;
 import java.io.Reader;
 import java.util.Date;
@@ -49,8 +48,10 @@ import java.util.Iterator;
 import java.util.Comparator;
 import java.util.Collections;
 import com.netflix.mediaclient.util.AlphanumComparator;
-import java.util.ArrayList;
 import com.netflix.mediaclient.service.browse.PostToHandlerCallbackWrapper;
+import com.netflix.mediaclient.util.StringUtils;
+import java.util.Arrays;
+import java.util.ArrayList;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.branches.FalkorObject;
@@ -78,8 +79,10 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private static final boolean ENABLE_LOG_TIMING = false;
     public static final String EXTRA_USER_RATING = "extra_user_rating";
     public static final String EXTRA_VIDEO_ID = "extra_video_id";
+    private static final List<PQL> FETCH_EPISODES_LEAF_TYPES;
     public static final int FETCH_EPISODES_REQUEST_BATCH_SIZE = 40;
     private static boolean FORCE_CMP_TO_LOCAL_CACHE = false;
+    private static final int FROM_SEASON = 0;
     private static final String JSON_VALUE = "value";
     private static final int MAX_KIDS_CHARACTER_GALLERY_VIDEOS = 100;
     public static final int MAX_SEARCH_RESULTS_PER_SECTION_INDEX = 19;
@@ -94,6 +97,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private static final List<PQL> SEARCH_RESULT_TYPES;
     private static final String TAG = "CachedModelProxy";
     private static final String TAG_TIMING = "CachedModelProxy_Timing";
+    private static final int TO_SEASON = 99;
     private static long sLastWriteTimeMS;
     private final JsonParser jsonParser;
     private int lastPrefetchFromVideo;
@@ -107,6 +111,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE = false;
         SEARCH_RESULT_TYPES = PQL.array("videos", "people", "suggestions");
         SEARCH_LEAF_TYPES = PQL.array("summary", "searchTitle");
+        FETCH_EPISODES_LEAF_TYPES = PQL.array("summary", "detail", "bookmark");
         CW_VIDEO_LEAF_PQL = PQL.create(PQL.array("summary", "detail", "rating", "inQueue", "bookmark", "cleanBoxart"));
         CW_CURR_EPISODE_PQL = PQL.create("episodes", "current", PQL.array("detail", "bookmark"));
         BB_VIDEO_LEAF_PQL = CachedModelProxy.CW_VIDEO_LEAF_PQL;
@@ -136,8 +141,35 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         return PQL.create("characters", s, "gallery", PQL.range(100), "summary");
     }
     
+    private static void buildMovieDetailsPQLs(final List<PQL> list, final List<String> list2) {
+        list.add(PQL.create("movies", list2, PQL.array("summary", "detail", "rating", "inQueue", "bookmark", "evidence", "defaultTrailer")));
+        list.add(buildVideoSimsPql(true, list2));
+        list.add(buildVideoSimsSummaryPql(true, list2));
+    }
+    
     private static PQL buildScenePql(final String s, final String s2, final String s3) {
         return PQL.create(s, s2, "scenes", s3, "summary");
+    }
+    
+    private static void buildShowDetailsPQL(final List<PQL> list, final List<String> list2, final String s, final boolean b, final boolean b2, final boolean b3) {
+        final ArrayList list3 = new ArrayList(10);
+        list3.addAll(Arrays.asList("summary", "detail", "rating", "inQueue", "defaultTrailer"));
+        if (b2) {
+            list3.addAll(Arrays.asList("kubrick", "heroImgs", "evidence"));
+        }
+        list.add(PQL.create("shows", list2, list3));
+        list.add(PQL.create("shows", list2, "episodes", "current", PQL.array("detail", "bookmark")));
+        if (StringUtils.isNotEmpty(s)) {
+            list.add(PQL.create("episodes", s, PQL.array("detail", "bookmark")));
+        }
+        list.add(buildVideoSimsPql(false, list2));
+        list.add(buildVideoSimsSummaryPql(false, list2));
+        if (b) {
+            list.add(getSeasonsPQL(list2));
+        }
+        if (b3) {
+            list.add(PQL.create("shows", list2, "seasons", "current", "episodes", PQL.range(0, 39), CachedModelProxy.FETCH_EPISODES_LEAF_TYPES));
+        }
     }
     
     public static PQL buildVideoSimsPql(final boolean b, final String s) {
@@ -151,6 +183,17 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         return PQL.create(s2, s, "similars", PQL.range(11), "summary");
     }
     
+    private static PQL buildVideoSimsPql(final boolean b, final List<String> list) {
+        String s;
+        if (b) {
+            s = "movies";
+        }
+        else {
+            s = "shows";
+        }
+        return PQL.create(s, list, "similars", PQL.range(11), "summary");
+    }
+    
     private static PQL buildVideoSimsSummaryPql(final boolean b, final String s) {
         String s2;
         if (b) {
@@ -160,6 +203,17 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
             s2 = "shows";
         }
         return PQL.create(s2, s, "similars", "summary");
+    }
+    
+    private static PQL buildVideoSimsSummaryPql(final boolean b, final List<String> list) {
+        String s;
+        if (b) {
+            s = "movies";
+        }
+        else {
+            s = "shows";
+        }
+        return PQL.create(s, list, "similars", "summary");
     }
     
     private BrowseAgentCallback createHandlerWrapper(final BrowseAgentCallback browseAgentCallback) {
@@ -431,6 +485,10 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                 continue;
             }
         }
+    }
+    
+    private static PQL getSeasonsPQL(final List<String> list) {
+        return PQL.create("shows", list, "seasons", PQL.range(0, 99), "detail");
     }
     
     private FalkorObject getVideo(final PQL pql) {
@@ -2458,7 +2516,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void fetchShowDetails(final String p0, final String p1, final boolean p2, final boolean p3, final BrowseAgentCallback p4) {
+    public void fetchShowDetails(final String p0, final String p1, final boolean p2, final boolean p3, final boolean p4, final BrowseAgentCallback p5) {
         // 
         // This method could not be decompiled.
         // 
@@ -2472,10 +2530,11 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     7: aload_2        
         //     8: iload_3        
         //     9: iload           4
-        //    11: aload           5
-        //    13: invokespecial   invokespecial  !!! ERROR
-        //    16: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    19: return         
+        //    11: iload           5
+        //    13: aload           6
+        //    15: invokespecial   invokespecial  !!! ERROR
+        //    18: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    21: return         
         // 
         // The error that occurred was:
         // 
@@ -3413,6 +3472,71 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    32: invokespecial   invokespecial  !!! ERROR
         //    35: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
         //    38: return         
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
+        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
+        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
+        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
+        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    public void prefetchVideoListDetails(final List<? extends Video> p0, final BrowseAgentCallback p1) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: new             new            !!! ERROR
+        //     4: dup            
+        //     5: aload_0        
+        //     6: aload_1        
+        //     7: aload_2        
+        //     8: invokespecial   invokespecial  !!! ERROR
+        //    11: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    14: return         
+        //    Signature:
+        //  (Ljava/util/List<+Lcom/netflix/mediaclient/servicemgr/interface_/Video;>;Lcom/netflix/mediaclient/service/browse/BrowseAgentCallback;)V
         // 
         // The error that occurred was:
         // 

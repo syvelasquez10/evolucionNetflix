@@ -87,7 +87,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void createUI() {
-        this.setContentView(2130903258);
+        this.setContentView(2130903259);
         this.setupActionBar();
         this.findViews();
         this.setupLoadingWrapper();
@@ -101,16 +101,16 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131690253);
-        this.loadingWrapper = this.findViewById(2131690251);
-        (this.mVoiceSearchBtn = this.findViewById(2131690252)).setOnClickListener((View$OnClickListener)new SearchActivity$1(this));
+        this.fragGroup = (ViewGroup)this.findViewById(2131690254);
+        this.loadingWrapper = this.findViewById(2131690252);
+        (this.mVoiceSearchBtn = this.findViewById(2131690253)).setOnClickListener((View$OnClickListener)new SearchActivity$1(this));
     }
     
     private int getSearchHintPlaceholderStringId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2131231177;
+            return 2131231179;
         }
-        return 2131231281;
+        return 2131231283;
     }
     
     private void handleKeyboardVisibility() {
@@ -246,7 +246,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             this.resultsFrag = SearchResultsFrag.create();
-            this.getFragmentManager().beginTransaction().add(2131690253, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131690254, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -323,9 +323,9 @@ public class SearchActivity extends NetflixActivity
     
     protected int getInitMessageStringId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2131231177;
+            return 2131231179;
         }
-        return 2131231280;
+        return 2131231282;
     }
     
     @Override

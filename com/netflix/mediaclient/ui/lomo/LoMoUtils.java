@@ -22,11 +22,8 @@ public class LoMoUtils
         view.setPadding(getLomoFragOffsetLeftPx(netflixActivity), 0, getLomoFragOffsetRightPx(netflixActivity, loMoUtils$LoMoWidthType), 0);
     }
     
-    public static int getKidsLomoGenreNumColumns(final Activity activity) {
-        if (BrowseExperience.useLolomoBoxArt()) {
-            return activity.getResources().getInteger(2131492866);
-        }
-        return activity.getResources().getInteger(2131492865);
+    public static int getGalleryLomoGenreNumColumns(final NetflixActivity netflixActivity) {
+        return LomoConfig.computeStandardNumVideosPerPage(netflixActivity, false);
     }
     
     public static int getLomoFragImageOffsetLeftPx(final NetflixActivity netflixActivity) {

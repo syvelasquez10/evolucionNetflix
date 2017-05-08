@@ -18,6 +18,6 @@ public class SearchMenu
         else {
             icon = 2130837755;
         }
-        return menu.add(0, 2131689472, 0, 2131231279).setIcon(icon).setIntent(SearchActivity.create(netflixActivity)).setShowAsActionFlags(1);
+        return menu.add(0, 2131689472, 0, 2131231281).setIcon(icon).setIntent(SearchActivity.create(netflixActivity)).setShowAsActionFlags(1);
     }
 }

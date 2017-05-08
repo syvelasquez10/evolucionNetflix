@@ -33,6 +33,13 @@ public class ABTestConfiguration
         PreferenceUtils.putStringPref(this.mContext, "abTestConfig", null);
     }
     
+    public ABTestConfig$Cell getAimLowPrefetchDPConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getAimLowPrefetchDPConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getAimLowPrefetchDPConfig().getCell();
+    }
+    
     public ABTestConfig$Cell getAimLowPrefetchLolomoConfig() {
         if (this.mABTestConfigData == null || this.mABTestConfigData.getAimLowPrefetchLolomoConfig() == null) {
             return ABTestConfig$Cell.CELL_ONE;

@@ -21,7 +21,8 @@ import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
-import com.netflix.mediaclient.ui.lolomo.KidsGenresLoMoFrag;
+import com.netflix.mediaclient.ui.lolomo.GalleryGenresLoMoFrag;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList$GenreType;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
@@ -183,7 +184,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131231168, 1).show();
+        Toast.makeText((Context)this, 2131231170, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -302,8 +303,8 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     @Override
     protected NetflixFrag createPrimaryFrag() {
         PerformanceProfiler.getInstance().startSession(Sessions.LOLOMO_LOAD, null);
-        if (!"lolomo".equals(this.genreId) && BrowseExperience.useKidsGenresLoMo()) {
-            return KidsGenresLoMoFrag.create(this.genreId, this.genre);
+        if (!"lolomo".equals(this.genreId) && (BrowseExperience.useKidsGenresLoMo() || this.genre.getGenreType() == GenreList$GenreType.GALLERY)) {
+            return GalleryGenresLoMoFrag.create(this.genreId, this.genre);
         }
         return LoLoMoFrag.create(this.genreId, this.genre);
     }

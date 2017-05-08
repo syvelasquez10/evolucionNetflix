@@ -34,7 +34,7 @@ public class PostPlayItemBasic extends PostPlayItemView
     }
     
     @Override
-    protected void startTimer() {
+    protected void startTimer(final int n) {
     }
     
     @Override

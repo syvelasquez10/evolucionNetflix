@@ -57,17 +57,17 @@ public class PostPlayMetadata extends LinearLayout
     
     private void findViews() {
         this.countdown = (PostPlayCountDown)this.findViewById(2131690114);
-        this.logo = (AdvancedImageView)this.findViewById(2131690144);
-        this.titleBar = (LinearLayout)this.findViewById(2131690145);
-        this.episodeBadge = (TextView)this.findViewById(2131690146);
+        this.logo = (AdvancedImageView)this.findViewById(2131690145);
+        this.titleBar = (LinearLayout)this.findViewById(2131690146);
+        this.episodeBadge = (TextView)this.findViewById(2131690147);
         this.postPlayTitle = (TextView)this.findViewById(2131689863);
-        this.metadataBar = (LinearLayout)this.findViewById(2131690139);
+        this.metadataBar = (LinearLayout)this.findViewById(2131690140);
         this.ratingBar = (NetflixRatingBar)this.findViewById(2131689613);
-        this.year = (TextView)this.findViewById(2131690140);
-        this.maturityRating = (TextView)this.findViewById(2131690141);
-        this.contentLength = (TextView)this.findViewById(2131690142);
+        this.year = (TextView)this.findViewById(2131690141);
+        this.maturityRating = (TextView)this.findViewById(2131690142);
+        this.contentLength = (TextView)this.findViewById(2131690143);
         this.synopsis = (TextView)this.findViewById(2131690123);
-        this.buttonsContainer = (LinearLayout)this.findViewById(2131690143);
+        this.buttonsContainer = (LinearLayout)this.findViewById(2131690144);
     }
     
     private String getContentLength(final PostPlayItem postPlayItem) {

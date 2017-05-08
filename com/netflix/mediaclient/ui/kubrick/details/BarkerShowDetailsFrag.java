@@ -251,7 +251,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     @Override
     protected int getlayoutId() {
         if (this.showDetailsOnLaunch) {
-            return 2130903257;
+            return 2130903258;
         }
         return 2130903145;
     }
@@ -353,7 +353,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     protected void setupRecyclerView() {
         super.setupRecyclerView();
         if (this.recyclerView != null) {
-            this.recyclerView.setBackgroundResource(2131624152);
+            this.recyclerView.setBackgroundColor(-1);
         }
     }
     

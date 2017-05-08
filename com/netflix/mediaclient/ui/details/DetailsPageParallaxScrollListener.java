@@ -271,12 +271,12 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
             final long time = new Date().getTime();
             this.currentVelocity = Math.abs((time - this.lastTime) / n2);
             this.lastTime = time;
-            if (this.applyToolBarGradientTransform) {
-                this.setToolbarColor();
-            }
-            this.setListenerScrollState();
-            this.setTrackerViewPos();
         }
+        if (this.applyToolBarGradientTransform) {
+            this.setToolbarColor();
+        }
+        this.setListenerScrollState();
+        this.setTrackerViewPos();
     }
     
     protected void onTrackingViewLatched() {

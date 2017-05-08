@@ -27,12 +27,12 @@ public class PostPlayItemSignup extends PostPlayItemView
     
     @Override
     protected void findViews() {
-        this.samplingDetails = (TextView)this.findViewById(2131690133);
-        this.samplingButton = (NetflixTextButton)this.findViewById(2131690134);
+        this.samplingDetails = (TextView)this.findViewById(2131690134);
+        this.samplingButton = (NetflixTextButton)this.findViewById(2131690135);
     }
     
     @Override
-    protected void startTimer() {
+    protected void startTimer(final int n) {
     }
     
     @Override
@@ -41,7 +41,7 @@ public class PostPlayItemSignup extends PostPlayItemView
     
     @Override
     public void updateViews(final PostPlayItem postPlayItem, final NetflixActivity netflixActivity, final PlayerFragment playerFragment, final PostPlayRequestContext postPlayRequestContext, final View$OnClickListener onClickListener) {
-        this.samplingDetails.setText((CharSequence)this.getContext().getString(2131231175, new Object[] { postPlayItem.getAncestorTitle() }));
+        this.samplingDetails.setText((CharSequence)this.getContext().getString(2131231177, new Object[] { postPlayItem.getAncestorTitle() }));
         this.samplingButton.setOnClickListener(onClickListener);
     }
 }

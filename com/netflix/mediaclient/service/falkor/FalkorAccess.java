@@ -168,8 +168,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final int n, final int n2) {
-        this.mBrowseAgent.fetchShowDetailsAndSeasons(s, s2, b, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final boolean b2, final int n, final int n2) {
+        this.mBrowseAgent.fetchShowDetailsAndSeasons(s, s2, b, b2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -250,6 +250,11 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void prefetchLoLoMo(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final boolean b, final boolean b2, final boolean b3, final int n7, final int n8) {
         this.mBrowseAgent.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, b3, false, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n7, n8)));
+    }
+    
+    @Override
+    public void prefetchVideoListDetails(final List<? extends Video> list, final int n, final int n2) {
+        this.mBrowseAgent.prefetchVideoListDetails(list, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override

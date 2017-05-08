@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.List;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -33,4 +35,6 @@ public interface ServiceAgent$BrowseAgentInterface
     void fetchVideoSummary(final String p0, final BrowseAgentCallback p1);
     
     void logPostPlayImpression(final String p0, final VideoType p1, final String p2, final BrowseAgentCallback p3);
+    
+    void prefetchVideoListDetails(final List<? extends Video> p0, final BrowseAgentCallback p1);
 }

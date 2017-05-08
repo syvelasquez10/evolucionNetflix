@@ -43,14 +43,14 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     private void updateAboutDevice() {
         String s;
         if ((s = AndroidManifestUtils.getVersion(this.activity.getApplicationContext())) == null) {
-            s = this.getString(2131231222);
+            s = this.getString(2131231224);
         }
         final int versionCode = AndroidManifestUtils.getVersionCode(this.activity.getApplicationContext());
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getString(2131231220)).append(": ").append(s);
+        sb.append(this.getString(2131231222)).append(": ").append(s);
         if (versionCode > 0) {
             sb.append(" (");
-            sb.append(this.getString(2131231221)).append(" ").append(versionCode).append("), ");
+            sb.append(this.getString(2131231223)).append(" ").append(versionCode).append("), ");
         }
         sb.append(this.getString(2131231132)).append(": ").append(AndroidUtils.getAndroidVersion());
         sb.append("\n");
@@ -75,7 +75,7 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
         super.onCreate(bundle);
         this.activity = this.getActivity();
         this.addPreferencesFromResource(2131099648);
-        this.findPreference((CharSequence)this.getString(2131231376)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.findPreference((CharSequence)this.getString(2131231378)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));

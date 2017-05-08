@@ -56,7 +56,14 @@ public class BarkerMovieDetailsFrag$BarkerRelatedVideoDetailsClickListener exten
             this.this$0.leWrapper.showLoadingView(false);
             this.saveCurrentTitleState();
             this.this$0.videoId = video.getId();
+            final boolean b = netflixActivity instanceof DetailsActivity;
+            if (b) {
+                ((DetailsActivity)netflixActivity).startDPTTISession();
+            }
             this.this$0.fetchMovieData();
+            if (b) {
+                ((DetailsActivity)netflixActivity).registerLoadingStatusCallback();
+            }
         }
         else {
             super.launchDetailsActivity(netflixActivity, video, playContext);

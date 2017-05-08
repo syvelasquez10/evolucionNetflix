@@ -168,7 +168,9 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
             this.showDetailsFragInFuture = true;
             return;
         }
+        this.startDPTTISession();
         this.showNewDetailsFrag(null);
+        this.registerLoadingStatusCallback();
     }
     
     @Override

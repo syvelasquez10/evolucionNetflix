@@ -22,6 +22,6 @@ class NetworkErrorDescriptor extends PlaybackErrorDescriptor
         if (Log.isLoggable()) {
             Log.d("nf_play_error", "NetworkError " + networkError);
         }
-        return new NetworkErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131231209), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231061), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new NetworkErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131231211), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231061), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
 }

@@ -51,7 +51,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final int resId) {
         super(context);
-        this.resId = 2130903260;
+        this.resId = 2130903261;
         this.ignoreClicks = false;
         this.resId = resId;
         this.init();
@@ -59,14 +59,14 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.resId = 2130903260;
+        this.resId = 2130903261;
         this.ignoreClicks = false;
         this.init();
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131690256);
-        this.title = (TextView)this.findViewById(2131690257);
+        this.img = (AdvancedImageView)this.findViewById(2131690257);
+        this.title = (TextView)this.findViewById(2131690258);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {

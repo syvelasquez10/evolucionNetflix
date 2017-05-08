@@ -125,19 +125,19 @@ class LandingPageScreen
                 return false;
             }
             case 2131689729: {
-                this.openUrl(this.mOwner.getString(2131231381));
+                this.openUrl(this.mOwner.getString(2131231383));
                 return true;
             }
             case 2131689730: {
-                this.openUrl(this.mOwner.getString(2131231382));
+                this.openUrl(this.mOwner.getString(2131231384));
                 return true;
             }
             case 2131689732: {
-                this.openUrl(this.mOwner.getString(2131231379));
+                this.openUrl(this.mOwner.getString(2131231381));
                 return true;
             }
             case 2131689731: {
-                this.openUrl(this.mOwner.getString(2131231380));
+                this.openUrl(this.mOwner.getString(2131231382));
                 return true;
             }
             case 2131689728: {

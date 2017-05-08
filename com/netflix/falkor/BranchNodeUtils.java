@@ -190,9 +190,8 @@ public class BranchNodeUtils
     }
     
     public static void mergeArrayValue(final JsonMerger jsonMerger, final JsonParser jsonParser, JsonToken nextToken) {
-        while (!JsonToken.END_ARRAY.equals(nextToken)) {
-            jsonMerger.set(new Integer(0).toString(), jsonParser);
-            nextToken = jsonParser.nextToken();
+        for (int n = 0; !JsonToken.END_ARRAY.equals(nextToken); nextToken = jsonParser.nextToken(), ++n) {
+            jsonMerger.set(new Integer(n).toString(), jsonParser);
         }
     }
     

@@ -6,6 +6,6 @@ package com.netflix.mediaclient;
 
 public interface Build$Config$Logging
 {
-    public static final String CRITTER_VERSION_NAME = "4.10.7";
+    public static final String CRITTER_VERSION_NAME = "4.11.0";
     public static final boolean ENABLE_CRITTERCISM = true;
 }

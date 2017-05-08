@@ -149,7 +149,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             videoType = this.details.getType();
         }
-        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903254, false);
+        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903255, false);
         final FragmentTransaction beginTransaction = ((NetflixActivity)this.getContext()).getFragmentManager().beginTransaction();
         beginTransaction.add(0, (Fragment)create, "frag_dialog");
         beginTransaction.commitAllowingStateLoss();

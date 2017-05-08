@@ -19,6 +19,7 @@ class BarkerKidsDetailsActivity$1 implements ManagerStatusListener
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         ((ManagerStatusListener)this.this$0.getPrimaryFrag()).onManagerReady(serviceManager, status);
+        this.this$0.registerLoadingStatusCallback();
     }
     
     @Override

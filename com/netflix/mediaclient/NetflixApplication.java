@@ -170,7 +170,7 @@ public class NetflixApplication extends MultiDexApplication
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837781).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131231293, new Object[] { n })).setContentTitle(this.getString(2131231294, new Object[] { n })).setContentText(this.getString(2131230966, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837781).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131231295, new Object[] { n })).setContentTitle(this.getString(2131231296, new Object[] { n })).setContentText(this.getString(2131230966, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");

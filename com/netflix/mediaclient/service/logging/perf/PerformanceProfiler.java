@@ -149,6 +149,14 @@ public class PerformanceProfiler
         this.clear();
     }
     
+    public void endSession(final Sessions sessions) {
+        for (final PerfSession perfSession : this.sessions.values()) {
+            if (perfSession.getEndEvent() == null && perfSession.getStartEvent().getSessionName().equals(sessions.name())) {
+                this.endSession(sessions, null, perfSession.getStringId());
+            }
+        }
+    }
+    
     public void endSession(final Sessions sessions, final Map<String, String> map) {
         for (final PerfSession perfSession : this.sessions.values()) {
             if (perfSession.getEndEvent() == null && perfSession.getStartEvent().getSessionName().equals(sessions.name())) {
@@ -183,6 +191,7 @@ public class PerformanceProfiler
                 ApmLogUtils.endPerformanceSession(perfSession, applicationPerformanceMetricsLogging);
             }
         }
+        this.clear();
     }
     
     public long getEpoch() {
@@ -197,6 +206,15 @@ public class PerformanceProfiler
         if (Log.isLoggable()) {
             Log.v("PerformanceProfiler", "logEvent: " + events.toString());
         }
+    }
+    
+    public String startSession(final Sessions sessions) {
+        final PerfSession session = PerfSession.createSession(sessions, null);
+        this.sessions.put(String.valueOf(session.getId().getValue()), session);
+        if (Log.isLoggable()) {
+            Log.v("PerformanceProfiler", "startSession: " + session.toString());
+        }
+        return String.valueOf(session.getId().getValue());
     }
     
     public String startSession(final Sessions sessions, final Map<String, String> map) {

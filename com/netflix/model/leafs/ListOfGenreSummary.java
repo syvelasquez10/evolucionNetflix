@@ -12,6 +12,8 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.util.StringUtils;
+import java.util.Locale;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList$GenreType;
 import android.os.Parcel;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.os.Parcelable$Creator;
@@ -27,6 +29,7 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonMerg
     private String genreExperience;
     private String genreId;
     private String genreName;
+    private String genreType;
     private boolean isKidsGenre;
     
     static {
@@ -42,10 +45,19 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonMerg
         this.genreId = parcel.readString();
         this.isKidsGenre = (parcel.readByte() != 0);
         this.genreExperience = parcel.readString();
+        this.genreType = parcel.readString();
     }
     
     public int describeContents() {
         return 0;
+    }
+    
+    @Override
+    public GenreList$GenreType getGenreType() {
+        if (this.genreType == null) {
+            return GenreList$GenreType.UNKNOWN;
+        }
+        return GenreList$GenreType.valueOf(this.genreType.toUpperCase(Locale.ENGLISH));
     }
     
     public String getId() {
@@ -83,33 +95,40 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonMerg
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final String s = entry.getKey();
             int n = 0;
-            Label_0130: {
+            Label_0138: {
                 switch (s.hashCode()) {
                     case 646545070: {
                         if (s.equals("genreName")) {
                             n = 0;
-                            break Label_0130;
+                            break Label_0138;
                         }
                         break;
                     }
                     case -79774210: {
                         if (s.equals("genreId")) {
                             n = 1;
-                            break Label_0130;
+                            break Label_0138;
+                        }
+                        break;
+                    }
+                    case 646746973: {
+                        if (s.equals("genreType")) {
+                            n = 2;
+                            break Label_0138;
                         }
                         break;
                     }
                     case 1562605389: {
                         if (s.equals("genreExperience")) {
-                            n = 2;
-                            break Label_0130;
+                            n = 3;
+                            break Label_0138;
                         }
                         break;
                     }
                     case 1282907404: {
                         if (s.equals("isKidsGenre")) {
-                            n = 3;
-                            break Label_0130;
+                            n = 4;
+                            break Label_0138;
                         }
                         break;
                     }
@@ -129,10 +148,14 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonMerg
                     continue;
                 }
                 case 2: {
-                    this.genreExperience = entry.getValue().getAsString();
+                    this.genreType = entry.getValue().getAsString();
                     continue;
                 }
                 case 3: {
+                    this.genreExperience = entry.getValue().getAsString();
+                    continue;
+                }
+                case 4: {
                     this.isKidsGenre = entry.getValue().getAsBoolean();
                     continue;
                 }
@@ -157,6 +180,10 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonMerg
                 this.genreId = jsonParser.getValueAsString();
                 return true;
             }
+            case "genreType": {
+                this.genreType = jsonParser.getValueAsString();
+                return true;
+            }
             case "genreExperience": {
                 this.genreExperience = jsonParser.getValueAsString();
                 return true;
@@ -170,7 +197,7 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonMerg
     
     @Override
     public String toString() {
-        return "ListOfGenreSummary [genreName=" + this.genreName + ", genreId=" + this.genreId + ", isKidsGenre=" + this.isKidsGenre + ", genreExperience=" + this.genreExperience + ", enumType=" + this.enumType + "]";
+        return "ListOfGenreSummary [genreName=" + this.genreName + ", genreId=" + this.genreId + ", genreType=" + this.genreType + ", isKidsGenre=" + this.isKidsGenre + ", genreExperience=" + this.genreExperience + ", enumType=" + this.enumType + "]";
     }
     
     public void writeToParcel(final Parcel parcel, int n) {
@@ -185,5 +212,6 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonMerg
         }
         parcel.writeByte((byte)n);
         parcel.writeString(this.genreExperience);
+        parcel.writeString(this.genreType);
     }
 }

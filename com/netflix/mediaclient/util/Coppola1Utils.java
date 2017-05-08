@@ -90,7 +90,7 @@ public final class Coppola1Utils
         return (PersistentConfig.getCoppola1ABTestCell(context).ordinal() > ABTestConfig$Cell.CELL_TWO.ordinal() && PersistentConfig.getCoppola1ABTestCell(context).ordinal() < ABTestConfig$Cell.CELL_NINE.ordinal()) || (PersistentConfig.getCoppola1ABTestCell(context).ordinal() > ABTestConfig$Cell.CELL_TEN.ordinal() && PersistentConfig.getCoppola1ABTestCell(context).ordinal() < ABTestConfig$Cell.CELL_FIFTEEN.ordinal());
     }
     
-    public static void launchCoppolaDetails(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n) {
+    public static void launchCoppolaDetails(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n, final boolean b2) {
         final Bundle bundle = new Bundle();
         if (b) {
             bundle.putBoolean("push_to_landscape", true);
@@ -109,6 +109,7 @@ public final class Coppola1Utils
         if (asset.isEpisode()) {
             bundle.putString("extra_episode_id", asset.getPlayableId());
         }
+        bundle.putBoolean("SeamlessMode", b2);
         VideoType videoType;
         if (asset.isEpisode()) {
             videoType = VideoType.SHOW;

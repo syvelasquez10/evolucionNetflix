@@ -36,13 +36,13 @@ public class MdxErrorHandler
     private AlertDialog$Builder getDialogBuilder(final int n, final String s) {
         switch (n) {
             default: {
-                return new AlertDialog$Builder((Context)this.activity, 2131427452).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null);
+                return new AlertDialog$Builder((Context)this.activity).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null);
             }
             case 100: {
-                return new AlertDialog$Builder((Context)this.activity, 2131427452).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null).setNegativeButton(2131231061, this.kblaunch_16001);
+                return new AlertDialog$Builder((Context)this.activity).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null).setNegativeButton(2131231061, this.kblaunch_16001);
             }
             case 105: {
-                return new AlertDialog$Builder((Context)this.activity, 2131427452).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null).setNegativeButton(2131231061, this.kblaunch_16003);
+                return new AlertDialog$Builder((Context)this.activity).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null).setNegativeButton(2131231061, this.kblaunch_16003);
             }
         }
     }

@@ -31,7 +31,14 @@ public class PlaybackVolumeMetric
         else {
             final int streamVolume = audioManager.getStreamVolume(3);
             final int streamMaxVolume = audioManager.getStreamMaxVolume(3);
-            final int n2 = n = 1000000 * streamVolume / streamMaxVolume;
+            int n2;
+            if (streamMaxVolume > 0) {
+                n2 = 1000000 * streamVolume / streamMaxVolume;
+            }
+            else {
+                n2 = 0;
+            }
+            n = n2;
             if (Log.isLoggable()) {
                 Log.d("nf_audio", "Media max volume: " + streamMaxVolume + ", volume: " + streamVolume + ", volume metric: " + n2);
                 return n2;

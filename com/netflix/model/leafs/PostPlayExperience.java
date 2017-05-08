@@ -38,6 +38,8 @@ public class PostPlayExperience implements JsonMerger, JsonPopulator, FalkorObje
     private Integer promotedVideoId;
     ModelProxy<? extends BranchNode> proxy;
     private String requestId;
+    private int seamlessCountdownSeconds;
+    private int seamlessEnd;
     private String theme;
     private String type;
     
@@ -113,6 +115,14 @@ public class PostPlayExperience implements JsonMerger, JsonPopulator, FalkorObje
         return this.requestId;
     }
     
+    public int getSeamlessCountdownSeconds() {
+        return this.seamlessCountdownSeconds;
+    }
+    
+    public int getSeamlessEnd() {
+        return this.seamlessEnd;
+    }
+    
     public String getTheme() {
         return this.theme;
     }
@@ -132,103 +142,110 @@ public class PostPlayExperience implements JsonMerger, JsonPopulator, FalkorObje
             if (!(jsonElement2 instanceof JsonNull)) {
                 final String s = entry.getKey();
                 int n = 0;
-                Label_0226: {
+                Label_0234: {
                     switch (s.hashCode()) {
                         case 693933066: {
                             if (s.equals("requestId")) {
                                 n = 0;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 3575610: {
                             if (s.equals("type")) {
                                 n = 1;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 110327241: {
                             if (s.equals("theme")) {
                                 n = 2;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 1439562083: {
                             if (s.equals("autoplay")) {
                                 n = 3;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 49423260: {
                             if (s.equals("autoplaySeconds")) {
                                 n = 4;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 1741756850: {
                             if (s.equals("promotedVideoId")) {
                                 n = 5;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 1121767444: {
                             if (s.equals("promotedTitle")) {
                                 n = 6;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 2065592703: {
                             if (s.equals("promotedSupplementalMessage")) {
                                 n = 7;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case -1408207997: {
                             if (s.equals("assets")) {
                                 n = 8;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 2111580942: {
                             if (s.equals("experienceTitle")) {
                                 n = 9;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 473683339: {
                             if (s.equals("actionsInitialIndex")) {
                                 n = 10;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case -1161803523: {
                             if (s.equals("actions")) {
                                 n = 11;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case -3512370: {
                             if (s.equals("itemsInitialIndex")) {
                                 n = 12;
-                                break Label_0226;
+                                break Label_0234;
                             }
                             break;
                         }
                         case 100526016: {
                             if (s.equals("items")) {
                                 n = 13;
-                                break Label_0226;
+                                break Label_0234;
+                            }
+                            break;
+                        }
+                        case 1668395075: {
+                            if (s.equals("currentEpisodeSeamlessData")) {
+                                n = 14;
+                                break Label_0234;
                             }
                             break;
                         }
@@ -276,19 +293,19 @@ public class PostPlayExperience implements JsonMerger, JsonPopulator, FalkorObje
                             for (final Map.Entry<String, JsonElement> entry2 : jsonElement2.getAsJsonObject().entrySet()) {
                                 final String s2 = entry2.getKey();
                                 int n2 = 0;
-                                Label_0694: {
+                                Label_0722: {
                                     switch (s2.hashCode()) {
                                         case -1332194002: {
                                             if (s2.equals("background")) {
                                                 n2 = 0;
-                                                break Label_0694;
+                                                break Label_0722;
                                             }
                                             break;
                                         }
                                         case 3327403: {
                                             if (s2.equals("logo")) {
                                                 n2 = 1;
-                                                break Label_0694;
+                                                break Label_0722;
                                             }
                                             break;
                                         }
@@ -335,6 +352,16 @@ public class PostPlayExperience implements JsonMerger, JsonPopulator, FalkorObje
                             for (int i = 0; i < asJsonArray.size(); ++i) {
                                 this.items.add(new PostPlayItem(asJsonArray.get(i), this.proxy));
                             }
+                            continue;
+                        }
+                        continue;
+                    }
+                    case 14: {
+                        if (jsonElement2.getAsJsonObject().has("seamlessEnd")) {
+                            this.seamlessEnd = jsonElement2.getAsJsonObject().get("seamlessEnd").getAsInt();
+                        }
+                        if (jsonElement2.getAsJsonObject().has("seamlessCountdownSeconds")) {
+                            this.seamlessCountdownSeconds = jsonElement2.getAsJsonObject().get("seamlessCountdownSeconds").getAsInt();
                             continue;
                         }
                         continue;
@@ -387,6 +414,14 @@ public class PostPlayExperience implements JsonMerger, JsonPopulator, FalkorObje
     
     public void setRequestId(final String requestId) {
         this.requestId = requestId;
+    }
+    
+    public void setSeamlessCountdownSeconds(final int seamlessCountdownSeconds) {
+        this.seamlessCountdownSeconds = seamlessCountdownSeconds;
+    }
+    
+    public void setSeamlessEnd(final int seamlessEnd) {
+        this.seamlessEnd = seamlessEnd;
     }
     
     public void setTheme(final String theme) {

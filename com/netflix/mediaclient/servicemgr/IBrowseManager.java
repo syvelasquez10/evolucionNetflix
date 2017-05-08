@@ -69,7 +69,7 @@ public interface IBrowseManager
     
     boolean fetchShowDetails(final String p0, final String p1, final boolean p2, final ManagerCallback p3);
     
-    boolean fetchShowDetailsAndSeasons(final String p0, final String p1, final boolean p2, final ManagerCallback p3);
+    boolean fetchShowDetailsAndSeasons(final String p0, final String p1, final boolean p2, final boolean p3, final ManagerCallback p4);
     
     boolean fetchSimilarVideosForPerson(final String p0, final int p1, final ManagerCallback p2, final String p3);
     
@@ -100,6 +100,8 @@ public interface IBrowseManager
     boolean prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final boolean p6, final ManagerCallback p7);
     
     boolean prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final boolean p8, final ManagerCallback p9);
+    
+    boolean prefetchVideoListDetails(final List<? extends Video> p0, final ManagerCallback p1);
     
     void refreshCw(final boolean p0);
     

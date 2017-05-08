@@ -81,29 +81,29 @@ public final class PlayerSuspendNotification
         RemoteViews remoteViews;
         if (b) {
             if (notEmpty) {
-                remoteViews = new RemoteViews(packageName, 2130903277);
+                remoteViews = new RemoteViews(packageName, 2130903278);
             }
             else {
-                remoteViews = new RemoteViews(packageName, 2130903279);
+                remoteViews = new RemoteViews(packageName, 2130903280);
             }
         }
         else if (notEmpty) {
-            remoteViews = new RemoteViews(packageName, 2130903276);
+            remoteViews = new RemoteViews(packageName, 2130903277);
         }
         else {
-            remoteViews = new RemoteViews(packageName, 2130903278);
+            remoteViews = new RemoteViews(packageName, 2130903279);
         }
         if (bitmap != null) {
-            remoteViews.setImageViewBitmap(2131690278, bitmap);
+            remoteViews.setImageViewBitmap(2131690279, bitmap);
         }
         if (StringUtils.isNotEmpty(s)) {
-            remoteViews.setTextViewText(2131690279, (CharSequence)s);
+            remoteViews.setTextViewText(2131690280, (CharSequence)s);
         }
         else {
-            remoteViews.setTextViewText(2131690279, (CharSequence)"");
+            remoteViews.setTextViewText(2131690280, (CharSequence)"");
         }
         if (notEmpty) {
-            remoteViews.setTextViewText(2131690280, (CharSequence)s2);
+            remoteViews.setTextViewText(2131690281, (CharSequence)s2);
         }
         return remoteViews;
     }
@@ -140,7 +140,7 @@ public final class PlayerSuspendNotification
         }
         else {
             final int color = this.mActivity.getResources().getColor(2131624084);
-            final String string = this.mActivity.getResources().getString(2131231214);
+            final String string = this.mActivity.getResources().getString(2131231216);
             final Notification$Builder setVisibility = new Notification$Builder((Context)this.mActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837754).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (largeIcon != null) {
                 setVisibility.setLargeIcon(largeIcon);

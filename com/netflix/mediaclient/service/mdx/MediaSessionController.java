@@ -203,7 +203,7 @@ public class MediaSessionController
             n = 2131231105;
         }
         else {
-            n = 2131231247;
+            n = 2131231249;
         }
         mediaMetadata$Builder.putText("android.media.metadata.ALBUM", this.mContext.getText(n));
         this.mMediaSession.setMetadata(mediaMetadata$Builder.build());

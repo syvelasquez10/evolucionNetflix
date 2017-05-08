@@ -946,14 +946,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchShowDetails(s, s2, false, b, browseAgentCallback);
+        this.cmp.fetchShowDetails(s, s2, false, b, false, browseAgentCallback);
     }
     
-    public void fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchShowDetails(s, s2, true, b, browseAgentCallback);
+        this.cmp.fetchShowDetails(s, s2, true, b, b2, browseAgentCallback);
     }
     
     public void fetchSimilarVideosForPerson(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String s2) {
@@ -1068,6 +1068,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         }
         PerformanceProfiler.getInstance().startSession(Sessions.LOLOMO_PREFETCH, null);
         this.cmp.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, b3, b4, new FalkorAgent$3(this, browseAgentCallback));
+    }
+    
+    @Override
+    public void prefetchVideoListDetails(final List<? extends Video> list, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.prefetchVideoListDetails(list, browseAgentCallback);
     }
     
     public void refreshCw(final boolean b, final boolean b2) {

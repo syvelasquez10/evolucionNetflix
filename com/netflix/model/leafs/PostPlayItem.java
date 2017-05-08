@@ -42,9 +42,11 @@ public class PostPlayItem implements JsonMerger, JsonPopulator, Ratable
     private PostPlayAsset logoAsset;
     private String maturityRating;
     private boolean nextEpisodeAutoPlay;
+    private boolean nextEpisodeSeamless;
     ModelProxy<? extends BranchNode> proxy;
     private Map<String, Float> rating;
     private int runtime;
+    private int seamlessStart;
     private String seasonSequenceAbbr;
     private int seasons;
     private String seasonsLabel;
@@ -190,6 +192,10 @@ public class PostPlayItem implements JsonMerger, JsonPopulator, Ratable
         return this.runtime;
     }
     
+    public int getSeamlessStart() {
+        return this.seamlessStart;
+    }
+    
     public String getSeasonSequenceAbbr() {
         return this.seasonSequenceAbbr;
     }
@@ -248,6 +254,10 @@ public class PostPlayItem implements JsonMerger, JsonPopulator, Ratable
     
     public boolean isNextEpisodeAutoPlay() {
         return this.nextEpisodeAutoPlay;
+    }
+    
+    public boolean isNextEpisodeSeamless() {
+        return this.nextEpisodeSeamless;
     }
     
     @Override
@@ -634,12 +644,20 @@ public class PostPlayItem implements JsonMerger, JsonPopulator, Ratable
         this.nextEpisodeAutoPlay = nextEpisodeAutoPlay;
     }
     
+    public void setNextEpisodeSeamless(final boolean nextEpisodeSeamless) {
+        this.nextEpisodeSeamless = nextEpisodeSeamless;
+    }
+    
     public void setRating(final Map<String, Float> rating) {
         this.rating = rating;
     }
     
     public void setRuntime(final int runtime) {
         this.runtime = runtime;
+    }
+    
+    public void setSeamlessStart(final int seamlessStart) {
+        this.seamlessStart = seamlessStart;
     }
     
     public void setSeasonSequenceAbbr(final String seasonSequenceAbbr) {

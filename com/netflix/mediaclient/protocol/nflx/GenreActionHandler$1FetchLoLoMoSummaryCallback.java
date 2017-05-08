@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList$GenreType;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -29,7 +30,7 @@ class GenreActionHandler$1FetchLoLoMoSummaryCallback extends SimpleManagerCallba
     @Override
     public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final Status status) {
         if (status.isSucces()) {
-            HomeActivity.showGenreList(this.activity, new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.genreId, false, loLoMo.getType().toString()));
+            HomeActivity.showGenreList(this.activity, new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.genreId, GenreList$GenreType.LOLOMO.name(), false, loLoMo.getType().toString()));
         }
         NflxProtocolUtils.reportDelayedResponseHandled(this.activity);
     }

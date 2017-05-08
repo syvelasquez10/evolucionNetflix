@@ -37,6 +37,7 @@ import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import android.annotation.SuppressLint;
 import android.media.AudioDeviceInfo;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.AudioManager;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.util.ConnectivityUtils;
@@ -53,6 +54,7 @@ import com.netflix.mediaclient.event.nrdp.media.OpenComplete;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.telephony.TelephonyManager;
+import android.net.NetworkCapabilities;
 import android.os.PowerManager$WakeLock;
 import android.content.BroadcastReceiver;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -74,12 +76,13 @@ import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthDelayedBifDownload;
 import com.netflix.mediaclient.media.BifManager;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
+import android.net.ConnectivityManager;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent$ConfigAgentListener;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.AndroidUtils;
+import android.os.Build$VERSION;
 import android.telephony.SignalStrength;
 import android.telephony.PhoneStateListener;
 
@@ -93,8 +96,8 @@ class PlayerAgent$10 extends PhoneStateListener
     
     public void onSignalStrengthsChanged(final SignalStrength signalStrength) {
         try {
-            if (AndroidUtils.getAndroidVersion() >= 23) {
-                this.this$0.mMedia.updateCellLevelBandwidthMargin(signalStrength.getLevel());
+            if (Build$VERSION.SDK_INT >= 23 && this.this$0.networkCapabilities != null) {
+                this.this$0.mMedia.updateCellLevelBandwidthMargin(signalStrength.getLevel(), this.this$0.networkCapabilities.getLinkDownstreamBandwidthKbps());
             }
         }
         catch (Throwable t) {

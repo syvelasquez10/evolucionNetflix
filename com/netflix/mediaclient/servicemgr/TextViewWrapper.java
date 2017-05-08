@@ -49,7 +49,7 @@ class TextViewWrapper implements AddToListData$StateListener
     public void update(final AddToListData$AddToListState addToListData$AddToListState) {
         switch (TextViewWrapper$3.$SwitchMap$com$netflix$mediaclient$servicemgr$AddToListData$AddToListState[addToListData$AddToListState.ordinal()]) {
             case 1: {
-                this.textView.setContentDescription((CharSequence)this.activity.getString(2131231170));
+                this.textView.setContentDescription((CharSequence)this.activity.getString(2131231172));
                 this.textView.setEnabled(true);
                 this.setAsInList();
                 this.textView.setOnClickListener((View$OnClickListener)new TextViewWrapper$1(this));

@@ -7,6 +7,8 @@ package com.netflix.mediaclient.service.logging.perf;
 public enum Sessions
 {
     CONFIG_AGENT_LOADED, 
+    DP_TTI, 
+    DP_TTR, 
     DRM_LOADED, 
     FALKOR_AGENT_LOADED, 
     IMAGE_FETCH, 

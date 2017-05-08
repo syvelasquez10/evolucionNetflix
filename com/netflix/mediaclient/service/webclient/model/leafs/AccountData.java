@@ -9,7 +9,11 @@ import java.util.List;
 public class AccountData
 {
     private User user;
-    private List<UserProfile> userProfiles;
+    private final List<UserProfile> userProfiles;
+    
+    public AccountData(final List<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+    }
     
     public User getUser() {
         return this.user;
@@ -21,9 +25,5 @@ public class AccountData
     
     public void setUser(final User user) {
         this.user = user;
-    }
-    
-    public void setUserProfiles(final List<UserProfile> userProfiles) {
-        this.userProfiles = userProfiles;
     }
 }

@@ -43,7 +43,7 @@ public class MdxUtils$SetVideoRatingCallback extends LoggingManagerCallback
             return;
         }
         Log.v("MdxUtils", "onVideoRatingSet: Rating has been updated to: " + userRating.getUserRating());
-        Toast.makeText((Context)this.activity, 2131231167, 1).show();
+        Toast.makeText((Context)this.activity, 2131231169, 1).show();
         UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.success, null, null, (int)this.rating);
     }
 }

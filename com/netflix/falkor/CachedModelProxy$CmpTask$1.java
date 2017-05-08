@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
-import com.netflix.mediaclient.util.StringUtils;
 import com.fasterxml.jackson.core.JsonFactory;
 import java.io.Reader;
 import java.util.Date;
@@ -45,6 +44,8 @@ import java.util.Comparator;
 import java.util.Collections;
 import com.netflix.mediaclient.util.AlphanumComparator;
 import com.netflix.mediaclient.service.browse.PostToHandlerCallbackWrapper;
+import com.netflix.mediaclient.util.StringUtils;
+import java.util.Arrays;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.branches.FalkorObject;
 import android.util.Pair;
@@ -69,6 +70,7 @@ import android.os.SystemClock;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.netflix.mediaclient.android.app.Status;
+import com.android.volley.Request$Priority;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DataUtil;
@@ -133,6 +135,14 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
     @Override
     protected List<String> getPQLQueries() {
         return this.pqls;
+    }
+    
+    @Override
+    public Request$Priority getPriority() {
+        if (this.this$1.getPriorityOverride() != null) {
+            return this.this$1.getPriorityOverride();
+        }
+        return super.getPriority();
     }
     
     @Override

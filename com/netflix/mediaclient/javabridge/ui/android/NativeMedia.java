@@ -999,8 +999,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void updateCellLevelBandwidthMargin(final int n) {
-        this.bridge.getNrdProxy().invokeMethod(new UpdateCellLevelBandwidthMargin(n));
+    public void updateCellLevelBandwidthMargin(final int n, final int n2) {
+        this.bridge.getNrdProxy().invokeMethod(new UpdateCellLevelBandwidthMargin(n, n2));
     }
     
     @Override

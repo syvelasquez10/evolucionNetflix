@@ -64,10 +64,9 @@ public final class TopPanel extends PlayerSection
         this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131690086);
     }
     
-    private void changeControlsVisibility(final boolean b) {
-        boolean b2 = true;
-        if (b) {
-            this.mCurrentToolbarAnimation = AnimationUtils.startViewAppearanceAnimation((View)this.mToolBar, b);
+    private void changeControlsVisibility(final boolean gradientVisibility) {
+        if (gradientVisibility) {
+            this.mCurrentToolbarAnimation = AnimationUtils.startViewAppearanceAnimation((View)this.mToolBar, gradientVisibility);
             this.hideAdvisories();
             if (this.showLanguageMenuItem()) {
                 ViewUtils.setVisibility(this.mLanguage, true);
@@ -79,13 +78,6 @@ public final class TopPanel extends PlayerSection
             }
             ViewUtils.setVisibleOrInvisible((View)this.mToolBar, false);
             this.showAdvisories();
-        }
-        boolean gradientVisibility = b;
-        if (this.mScreen != null) {
-            if (this.mScreen.isAdvisoryDisabled()) {
-                b2 = false;
-            }
-            gradientVisibility = (b | b2);
         }
         this.setGradientVisibility(gradientVisibility);
     }
@@ -99,7 +91,7 @@ public final class TopPanel extends PlayerSection
         mdxTargetSelectionDialog$Builder.setCancelable(false);
         mdxTargetSelectionDialog$Builder.setTitle(2131231094);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerFragment.getActivity()));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231248), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231250), this.getCurrentTitle()));
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerFragment, b));
         mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerFragment));
         return mdxTargetSelectionDialog$Builder.create();

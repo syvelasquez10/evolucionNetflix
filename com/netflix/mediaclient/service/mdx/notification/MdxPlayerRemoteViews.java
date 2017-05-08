@@ -21,7 +21,7 @@ public final class MdxPlayerRemoteViews extends MdxRemoteViews
         if (context == null) {
             return;
         }
-        this.headerTitle = context.getResources().getString(2131231247);
+        this.headerTitle = context.getResources().getString(2131231249);
     }
     
     @Override

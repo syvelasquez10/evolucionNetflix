@@ -59,7 +59,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
         switch (ServiceErrorsHandler$7.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
-                provideDialog(activity, activity.getString(2131231244) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131231246) + " (" + statusCode.getValue() + ")");
                 return true;
             }
             case 1: {
@@ -86,7 +86,7 @@ public class ServiceErrorsHandler
                 return handleAppUpdateNeeded(activity, true);
             }
             case 5: {
-                provideDialog(activity, activity.getString(2131231209));
+                provideDialog(activity, activity.getString(2131231211));
                 return true;
             }
             case 6:
@@ -101,12 +101,12 @@ public class ServiceErrorsHandler
             case 9:
             case 10:
             case 11: {
-                provideDialog(activity, activity.getString(2131231235) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131231237) + " (" + statusCode.getValue() + ")");
                 return true;
             }
             case 12: {
                 Log.e("ServiceErrorsHandler", "Configuration can not be downloaded on first app start!");
-                provideDialogWithHelpButton(activity, activity.getString(2131231244) + " (" + statusCode.getValue() + ")");
+                provideDialogWithHelpButton(activity, activity.getString(2131231246) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }

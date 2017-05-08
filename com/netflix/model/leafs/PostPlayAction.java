@@ -43,6 +43,7 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
     private String name;
     private ModelProxy<? extends BranchNode> proxy;
     private String requestId;
+    private int seamlessStart;
     private int season;
     private String seasonSequenceAbbr;
     private String seasonSequenceLong;
@@ -63,6 +64,7 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
         this.additionalTrackIds = new HashMap<String, Integer>();
         this.inMyList = false;
         this.doNotIncrementInterrupter = false;
+        this.seamlessStart = -1;
         this.proxy = proxy;
         if (jsonElement != null) {
             this.populate(jsonElement);
@@ -142,6 +144,10 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
         return this.requestId;
     }
     
+    public int getSeamlessStart() {
+        return this.seamlessStart;
+    }
+    
     public int getSeason() {
         return this.season;
     }
@@ -199,138 +205,145 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
             if (!(jsonElement2 instanceof JsonNull)) {
                 final String s = entry.getKey();
                 int n = 0;
-                Label_0266: {
+                Label_0274: {
                     switch (s.hashCode()) {
                         case 1714331919: {
                             if (s.equals("displayText")) {
                                 n = 0;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case 3373707: {
                             if (s.equals("name")) {
                                 n = 1;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case 3575610: {
                             if (s.equals("type")) {
                                 n = 2;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -1067396154: {
                             if (s.equals("trackId")) {
                                 n = 3;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -906335517: {
                             if (s.equals("season")) {
                                 n = 4;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -1681835499: {
                             if (s.equals("seasonSequenceAbbr")) {
                                 n = 5;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -1681494944: {
                             if (s.equals("seasonSequenceLong")) {
                                 n = 6;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -1544438277: {
                             if (s.equals("episode")) {
                                 n = 7;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -1829827457: {
                             if (s.equals("bookmarkPosition")) {
                                 n = 8;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -1739932713: {
                             if (s.equals("minutesRemaining")) {
                                 n = 9;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -602057255: {
                             if (s.equals("logicalStart")) {
                                 n = 10;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case 1332961877: {
                             if (s.equals("videoType")) {
                                 n = 11;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case 1629608888: {
                             if (s.equals("forceInterrupt")) {
                                 n = 12;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case 846419272: {
                             if (s.equals("interruptThreshold")) {
                                 n = 13;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -1775808852: {
                             if (s.equals("interruptDisplayText")) {
                                 n = 14;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -563483980: {
                             if (s.equals("additionalTrackIds")) {
                                 n = 15;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case -528792081: {
                             if (s.equals("inMyList")) {
                                 n = 16;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case 771110345: {
                             if (s.equals("doNotIncrementInterrupter")) {
                                 n = 17;
-                                break Label_0266;
+                                break Label_0274;
                             }
                             break;
                         }
                         case 452782838: {
                             if (s.equals("videoId")) {
                                 n = 18;
-                                break Label_0266;
+                                break Label_0274;
+                            }
+                            break;
+                        }
+                        case -1324983797: {
+                            if (s.equals("seamlessStart")) {
+                                n = 19;
+                                break Label_0274;
                             }
                             break;
                         }
@@ -422,6 +435,10 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
                         this.videoId = jsonElement2.getAsInt();
                         continue;
                     }
+                    case 19: {
+                        this.seamlessStart = jsonElement2.getAsInt();
+                        continue;
+                    }
                 }
             }
         }
@@ -486,6 +503,10 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
     
     public void setRequestId(final String requestId) {
         this.requestId = requestId;
+    }
+    
+    public void setSeamlessStart(final int seamlessStart) {
+        this.seamlessStart = seamlessStart;
     }
     
     public void setSeason(final int season) {
