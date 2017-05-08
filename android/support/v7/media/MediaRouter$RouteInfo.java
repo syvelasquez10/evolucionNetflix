@@ -6,7 +6,6 @@ package android.support.v7.media;
 
 import java.util.Collection;
 import java.util.List;
-import android.text.TextUtils;
 import android.content.IntentSender;
 import android.view.Display;
 import android.net.Uri;
@@ -45,10 +44,6 @@ public class MediaRouter$RouteInfo
         this.mProvider = mProvider;
         this.mDescriptorId = mDescriptorId;
         this.mUniqueId = mUniqueId;
-    }
-    
-    private static boolean isSystemMediaRouteProvider(final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
-        return TextUtils.equals((CharSequence)mediaRouter$RouteInfo.getProviderInstance().getMetadata().getPackageName(), (CharSequence)"android");
     }
     
     public String getDescription() {

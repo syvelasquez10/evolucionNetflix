@@ -414,8 +414,9 @@ public class JSONArray
             int length = 0;
             int n4;
             int n5;
-            Block_7_Outer:Label_0117_Outer:Label_0044_Outer:
+            Label_0072_Outer:Label_0044_Outer:
             while (true) {
+            Label_0044:
                 while (true) {
                     Label_0135: {
                         try {
@@ -427,47 +428,49 @@ public class JSONArray
                                 return writer;
                             }
                             break Label_0135;
-                            // iftrue(Label_0117:, n <= 0)
-                            // iftrue(Label_0072:, n <= 0)
-                            // iftrue(Label_0107:, n3 >= length)
-                            // iftrue(Label_0062:, n4 == 0)
-                            Label_0072: {
-                                while (true) {
-                                    Block_8: {
+                        Label_0107:
+                            while (true) {
+                                Block_8: {
+                                    break Block_8;
+                                Block_5_Outer:
+                                    while (true) {
                                         while (true) {
-                                            while (true) {
-                                                writer.write(10);
-                                                break Label_0072;
-                                                Label_0107: {
-                                                    break Block_8;
-                                                }
-                                                JSONObject.indent(writer, n2);
-                                                continue Block_7_Outer;
-                                                writer.write(44);
-                                                Label_0062:
-                                                continue Label_0117_Outer;
-                                            }
+                                            JSONObject.indent(writer, n4);
+                                            JSONObject.writeValue(writer, this.myArrayList.get(n3), n, n4);
+                                            ++n3;
+                                            n5 = 1;
+                                            break Label_0044;
+                                            JSONObject.indent(writer, n2);
+                                            continue Label_0072_Outer;
+                                            writer.write(10);
                                             continue Label_0044_Outer;
                                         }
+                                    Block_6:
+                                        while (true) {
+                                            break Block_6;
+                                            continue;
+                                        }
+                                        writer.write(44);
+                                        Label_0062:
+                                        continue Block_5_Outer;
                                     }
-                                    writer.write(10);
-                                    continue Label_0044_Outer;
                                 }
+                                writer.write(10);
+                                continue;
                             }
-                            JSONObject.indent(writer, n5);
-                            JSONObject.writeValue(writer, this.myArrayList.get(n3), n, n5);
-                            ++n3;
-                            n4 = 1;
-                            continue;
                         }
+                        // iftrue(Label_0117:, n <= 0)
+                        // iftrue(Label_0062:, n5 == 0)
+                        // iftrue(Label_0107:, n3 >= length)
+                        // iftrue(Label_0072:, n <= 0)
                         catch (IOException ex) {
                             throw new JSONException(ex);
                         }
                     }
                     if (length != 0) {
-                        n5 = n2 + n;
-                        n4 = 0;
-                        continue;
+                        n4 = n2 + n;
+                        n5 = 0;
+                        continue Label_0044;
                     }
                     break;
                 }

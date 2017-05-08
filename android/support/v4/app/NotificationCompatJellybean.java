@@ -175,7 +175,12 @@ class NotificationCompatJellybean
     }
     
     private static NotificationCompatBase$Action getActionFromBundle(final Bundle bundle, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {
-        return notificationCompatBase$Action$Factory.build(bundle.getInt("icon"), bundle.getCharSequence("title"), (PendingIntent)bundle.getParcelable("actionIntent"), bundle.getBundle("extras"), RemoteInputCompatJellybean.fromBundleArray(BundleUtil.getBundleArrayFromBundle(bundle, "remoteInputs"), remoteInputCompatBase$RemoteInput$Factory), bundle.getBoolean("allowGeneratedReplies"));
+        boolean boolean1 = false;
+        final Bundle bundle2 = bundle.getBundle("extras");
+        if (bundle2 != null) {
+            boolean1 = bundle2.getBoolean("android.support.allowGeneratedReplies", false);
+        }
+        return notificationCompatBase$Action$Factory.build(bundle.getInt("icon"), bundle.getCharSequence("title"), (PendingIntent)bundle.getParcelable("actionIntent"), bundle.getBundle("extras"), RemoteInputCompatJellybean.fromBundleArray(BundleUtil.getBundleArrayFromBundle(bundle, "remoteInputs"), remoteInputCompatBase$RemoteInput$Factory), boolean1);
     }
     
     private static Object[] getActionObjectsLocked(final Notification p0) {
@@ -273,7 +278,15 @@ class NotificationCompatJellybean
         bundle.putInt("icon", notificationCompatBase$Action.getIcon());
         bundle.putCharSequence("title", notificationCompatBase$Action.getTitle());
         bundle.putParcelable("actionIntent", (Parcelable)notificationCompatBase$Action.getActionIntent());
-        bundle.putBundle("extras", notificationCompatBase$Action.getExtras());
+        Bundle bundle2;
+        if (notificationCompatBase$Action.getExtras() != null) {
+            bundle2 = new Bundle(notificationCompatBase$Action.getExtras());
+        }
+        else {
+            bundle2 = new Bundle();
+        }
+        bundle2.putBoolean("android.support.allowGeneratedReplies", notificationCompatBase$Action.getAllowGeneratedReplies());
+        bundle.putBundle("extras", bundle2);
         bundle.putParcelableArray("remoteInputs", (Parcelable[])RemoteInputCompatJellybean.toBundleArray(notificationCompatBase$Action.getRemoteInputs()));
         return bundle;
     }

@@ -17,7 +17,6 @@ import com.netflix.mediaclient.service.logging.logblob.BaseLogblob;
 import com.netflix.mediaclient.service.player.exoplayback.logblob.EndPlay;
 import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.google.android.exoplayer.dash.mpd.MediaPresentationDescription;
 import com.google.android.exoplayer.drm.DrmSessionManager;
 import com.netflix.mediaclient.media.manifest.Stream;
 import org.json.JSONObject;

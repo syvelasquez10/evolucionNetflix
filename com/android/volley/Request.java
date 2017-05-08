@@ -323,10 +323,10 @@ public abstract class Request<T> implements Comparable<Request<T>>
                             this.mHttpURLConnection.disconnect();
                             VolleyLog.d("Request::releaseResources: Cronet:: HTTP disconnect!", new Object[0]);
                             return;
-                            string = "null";
-                            continue;
                             b = false;
                             continue Label_0073_Outer;
+                            string = "null";
+                            continue;
                         }
                         catch (Throwable t) {
                             if (Request.DEBUG) {

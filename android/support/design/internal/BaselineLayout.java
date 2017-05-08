@@ -99,7 +99,7 @@ public class BaselineLayout extends ViewGroup
         }
         int max5 = max;
         if (mBaseline != -1) {
-            max5 = Math.max(max, n4 + mBaseline);
+            max5 = Math.max(max, Math.max(n4, this.getPaddingBottom()) + mBaseline);
             this.mBaseline = mBaseline;
         }
         this.setMeasuredDimension(ViewCompat.resolveSizeAndState(Math.max(max2, this.getSuggestedMinimumWidth()), n, n3), ViewCompat.resolveSizeAndState(Math.max(max5, this.getSuggestedMinimumHeight()), n2, n3 << 16));

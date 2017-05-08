@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCa
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQuality;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.LogUtils;
 import java.io.File;
 import com.netflix.mediaclient.android.app.BaseStatus;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;

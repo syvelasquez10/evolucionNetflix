@@ -4,7 +4,6 @@
 
 package android.support.v7.media;
 
-import android.os.Build$VERSION;
 import java.util.HashSet;
 import java.util.Collections;
 import java.util.List;

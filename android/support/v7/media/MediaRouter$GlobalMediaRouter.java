@@ -5,14 +5,12 @@
 package android.support.v7.media;
 
 import java.util.Collection;
-import android.text.TextUtils;
 import android.content.IntentSender;
 import android.view.Display;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.IntentFilter;
 import android.content.ComponentName;
-import android.os.Build$VERSION;
 import java.util.HashSet;
 import java.util.Collections;
 import java.util.List;
@@ -127,10 +125,6 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
     
     private boolean isRouteSelectable(final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
         return mediaRouter$RouteInfo.mDescriptor != null && mediaRouter$RouteInfo.mEnabled;
-    }
-    
-    private boolean isSystemBluetoothRoute(final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
-        return mediaRouter$RouteInfo.getProviderInstance() == this.mSystemProvider && !mediaRouter$RouteInfo.mDescriptorId.equals("DEFAULT_ROUTE");
     }
     
     private boolean isSystemDefaultRoute(final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
@@ -268,9 +262,9 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
                         }
                         else {
                             final MediaRouter$RouteInfo mediaRouter$RouteInfo2 = mediaRouter$ProviderInfo.mRoutes.get(routeByDescriptorId);
-                            final List access$600 = mediaRouter$ProviderInfo.mRoutes;
+                            final List access$500 = mediaRouter$ProviderInfo.mRoutes;
                             final int n4 = n2 + 1;
-                            Collections.swap(access$600, routeByDescriptorId, n2);
+                            Collections.swap(access$500, routeByDescriptorId, n2);
                             if (mediaRouter$RouteInfo2 instanceof MediaRouter$RouteGroup) {
                                 list2.add(new Pair<MediaRouter$RouteInfo, MediaRouteDescriptor>(mediaRouter$RouteInfo2, mediaRouteDescriptor));
                                 n2 = n4;
@@ -378,7 +372,7 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         }
         if (this.mBluetoothRoute == null && !this.mRoutes.isEmpty()) {
             for (final MediaRouter$RouteInfo mBluetoothRoute : this.mRoutes) {
-                if (this.isSystemBluetoothRoute(mBluetoothRoute) && this.isRouteSelectable(mBluetoothRoute)) {
+                if (this.isSystemLiveAudioOnlyRoute(mBluetoothRoute) && this.isRouteSelectable(mBluetoothRoute)) {
                     this.mBluetoothRoute = mBluetoothRoute;
                     Log.i("MediaRouter", "Found bluetooth route: " + this.mBluetoothRoute);
                     break;
@@ -494,9 +488,6 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         if (this.mSelectedRoute == null) {
             throw new IllegalStateException("There is no currently selected route.  The media router has not yet been fully initialized.");
         }
-        if (Build$VERSION.SDK_INT >= 16 && Build$VERSION.SDK_INT < 25 && isSystemMediaRouteProvider(this.mSelectedRoute)) {
-            this.syncSystemRoutes();
-        }
         return this.mSelectedRoute;
     }
     
@@ -567,32 +558,11 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
             Log.w("MediaRouter", "Ignoring attempt to select disabled route: " + mediaRouter$RouteInfo);
             return;
         }
-        if (Build$VERSION.SDK_INT >= 16 && Build$VERSION.SDK_INT < 25 && isSystemMediaRouteProvider(mediaRouter$RouteInfo)) {
-            this.syncSystemRoutes();
-        }
         this.setSelectedRouteInternal(mediaRouter$RouteInfo, n);
     }
     
     public void start() {
         (this.mRegisteredProviderWatcher = new RegisteredMediaRouteProviderWatcher(this.mApplicationContext, this)).start();
-    }
-    
-    void syncSystemRoutes() {
-        final Object mediaRouter = MediaRouterJellybean.getMediaRouter(this.mApplicationContext);
-        final boolean bluetoothA2dpOn = MediaRouterJellybean.isBluetoothA2dpOn(mediaRouter);
-        final Object selectedRoute = MediaRouterJellybean.getSelectedRoute(mediaRouter, 8388611);
-        final Object defaultRoute = this.mSystemProvider.getDefaultRoute();
-        if (bluetoothA2dpOn && selectedRoute == defaultRoute) {
-            for (final Object next : MediaRouterJellybean.getRoutes(mediaRouter)) {
-                if (next != defaultRoute) {
-                    MediaRouterJellybean.selectRoute(mediaRouter, 8388611, next);
-                    break;
-                }
-            }
-        }
-        else if (!bluetoothA2dpOn && selectedRoute != defaultRoute) {
-            MediaRouterJellybean.selectRoute(mediaRouter, 8388611, defaultRoute);
-        }
     }
     
     public void updateDiscoveryRequest() {

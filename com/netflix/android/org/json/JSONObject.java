@@ -525,88 +525,100 @@ public class JSONObject
         while (true) {
             if (o == null) {
                 Object o2 = null;
-            Label_0202_Outer:
+                String name;
+                Package package1;
+                Block_13_Outer:Label_0202_Outer:
                 while (true) {
-                    String name;
-                    Package package1;
-                    Block_5_Outer:Block_3_Outer:Block_8_Outer:
+                    Block_6_Outer:Block_11_Outer:Block_3_Outer:
                     while (true) {
                         try {
                             return JSONObject.NULL;
-                            // iftrue(Label_0251:, o instanceof Byte)
-                            // iftrue(Label_0166:, !o.getClass().isArray())
-                            // iftrue(Label_0237:, !name.startsWith("java.") && !name.startsWith("javax.") && o.getClass().getClassLoader() != null)
-                            // iftrue(Label_0253:, package1 == null)
-                            // iftrue(Label_0251:, o instanceof JSONString)
-                            // iftrue(Label_0251:, o instanceof JSONArray)
-                            // iftrue(Label_0251:, o instanceof Long)
-                            // iftrue(Label_0251:, o instanceof Short)
-                            // iftrue(Label_0251:, o instanceof Integer)
-                            // iftrue(Label_0251:, JSONObject.NULL.equals(o))
-                            // iftrue(Label_0251:, o instanceof JSONObject)
-                            // iftrue(Label_0185:, !o instanceof Map)
-                            // iftrue(Label_0251:, o instanceof Boolean)
-                            // iftrue(Label_0251:, o instanceof Float)
-                            // iftrue(Label_0251:, o instanceof Double)
-                            // iftrue(Label_0251:, o instanceof String)
-                            // iftrue(Label_0147:, !o instanceof Collection)
-                            // iftrue(Label_0251:, o instanceof Character)
-                            while (true) {
-                                Block_7: {
-                                    Block_11: {
-                                        while (true) {
-                                            while (true) {
-                                            Block_19:
-                                                while (true) {
-                                                    o2 = o;
-                                                    break Block_7;
-                                                    Label_0147: {
-                                                        return new JSONArray(o);
-                                                    }
-                                                    return o.toString();
-                                                    Label_0185:
-                                                    package1 = o.getClass().getPackage();
-                                                    break Block_19;
-                                                    o2 = o;
-                                                    continue Label_0202_Outer;
-                                                }
-                                                name = package1.getName();
-                                                continue Block_5_Outer;
-                                                o2 = o;
-                                                Block_4: {
-                                                    break Block_4;
-                                                    while (true) {
-                                                        o2 = o;
-                                                        break Block_11;
-                                                        o2 = o;
-                                                        o2 = o;
-                                                        continue Block_8_Outer;
-                                                    }
-                                                }
-                                                o2 = o;
-                                                continue Block_3_Outer;
-                                            }
-                                            o2 = o;
-                                            continue Block_8_Outer;
-                                        }
-                                        Label_0166: {
-                                            return new JSONObject((Map)o);
-                                        }
-                                    }
-                                    o2 = o;
-                                    o2 = o;
-                                    o2 = o;
-                                    o2 = o;
-                                    return new JSONArray((Collection)o);
-                                }
-                                o2 = o;
-                                continue;
-                            }
                             Label_0237: {
                                 o = new JSONObject(o);
                             }
                             return o;
+                            // iftrue(Label_0251:, o instanceof Short)
+                            // iftrue(Label_0251:, o instanceof Double)
+                            // iftrue(Label_0166:, !o.getClass().isArray())
+                            // iftrue(Label_0237:, !name.startsWith("java.") && !name.startsWith("javax.") && o.getClass().getClassLoader() != null)
+                            // iftrue(Label_0251:, o instanceof String)
+                            // iftrue(Label_0251:, o instanceof Byte)
+                            // iftrue(Label_0251:, JSONObject.NULL.equals(o))
+                            // iftrue(Label_0251:, o instanceof Integer)
+                            // iftrue(Label_0251:, o instanceof Boolean)
+                            // iftrue(Label_0251:, o instanceof JSONArray)
+                            // iftrue(Label_0251:, o instanceof Character)
+                            // iftrue(Label_0251:, o instanceof Float)
+                            // iftrue(Label_0147:, !o instanceof Collection)
+                            // iftrue(Label_0185:, !o instanceof Map)
+                            // iftrue(Label_0251:, o instanceof JSONString)
+                            // iftrue(Label_0251:, o instanceof Long)
+                        Block_19_Outer:
+                            while (true) {
+                                while (true) {
+                                    while (true) {
+                                    Block_10:
+                                        while (true) {
+                                            Block_5: {
+                                            Block_15:
+                                                while (true) {
+                                                Block_12:
+                                                    while (true) {
+                                                        o2 = o;
+                                                        Block_7: {
+                                                            while (true) {
+                                                                Block_9: {
+                                                                    break Block_9;
+                                                                    o2 = o;
+                                                                    Block_14: {
+                                                                        break Block_14;
+                                                                        Label_0147:
+                                                                        return new JSONArray(o);
+                                                                        return o.toString();
+                                                                    }
+                                                                    o2 = o;
+                                                                    break Block_15;
+                                                                    o2 = o;
+                                                                    break Block_7;
+                                                                    o2 = o;
+                                                                    break Block_5;
+                                                                }
+                                                                o2 = o;
+                                                                break Block_10;
+                                                                o2 = o;
+                                                                break Block_12;
+                                                                o2 = o;
+                                                                continue Block_11_Outer;
+                                                            }
+                                                        }
+                                                        o2 = o;
+                                                        continue Block_13_Outer;
+                                                    }
+                                                    o2 = o;
+                                                    continue Label_0202_Outer;
+                                                }
+                                                return new JSONArray((Collection)o);
+                                                Label_0166:
+                                                return new JSONObject((Map)o);
+                                                name = package1.getName();
+                                                continue Block_6_Outer;
+                                            }
+                                            o2 = o;
+                                            continue Block_11_Outer;
+                                        }
+                                        o2 = o;
+                                        continue Block_3_Outer;
+                                    }
+                                    Label_0185:
+                                    package1 = o.getClass().getPackage();
+                                    continue;
+                                }
+                                o2 = o;
+                                continue Block_19_Outer;
+                            }
                         }
+                        // iftrue(Label_0253:, package1 == null)
+                        // iftrue(Label_0251:, o instanceof JSONObject)
                         catch (Exception ex) {
                             o2 = null;
                         }
@@ -1049,15 +1061,15 @@ public class JSONObject
     
     Writer write(final Writer writer, final int n, final int n2) {
         while (true) {
-            int n3 = 0;
-            int length = 0;
-            Iterator keys;
-            Object next;
-            int n4;
-            Object next2;
-            Block_7_Outer:Label_0130_Outer:Block_6_Outer:Label_0164_Outer:Label_0090_Outer:
+            boolean b = false;
+        Label_0090_Outer:
             while (true) {
-            Label_0090:
+                int length = 0;
+                Iterator keys;
+                Object next;
+                Object next2;
+                int n3;
+                Label_0164_Outer:Label_0130_Outer:Block_10_Outer:
                 while (true) {
                     Label_0217: {
                         try {
@@ -1076,60 +1088,58 @@ public class JSONObject
                                 return writer;
                             }
                             break Label_0217;
-                            // iftrue(Label_0164:, n <= 0)
-                            // iftrue(Label_0120:, n3 == 0)
                             // iftrue(Label_0189:, !keys.hasNext())
-                            // iftrue(Label_0199:, n <= 0)
+                            // iftrue(Label_0120:, b == false)
+                            // iftrue(Label_0130:, n <= 0)
+                            // iftrue(Label_0164:, n <= 0)
                             while (true) {
-                            Block_10_Outer:
                                 while (true) {
-                                    Block_9: {
+                                Label_0199_Outer:
+                                    while (true) {
+                                    Block_7_Outer:
                                         while (true) {
+                                        Label_0120:
                                             while (true) {
-                                                while (true) {
+                                                Block_6: {
+                                                    break Block_6;
+                                                    writeValue(writer, this.map.get(next2), n, n3);
+                                                    b = true;
+                                                    continue Label_0164_Outer;
+                                                    indent(writer, n2);
+                                                    continue Label_0090_Outer;
                                                     writer.write(44);
-                                                    break Block_10_Outer;
-                                                    indent(writer, n4);
-                                                    writer.write(quote(next2.toString()));
-                                                    writer.write(58);
-                                                    break Block_9;
-                                                    next2 = keys.next();
-                                                    continue Label_0130_Outer;
+                                                    break Label_0120;
                                                 }
-                                                writeValue(writer, this.map.get(next2), n, n4);
-                                                n3 = 1;
-                                                break Label_0090;
-                                                writer.write(10);
-                                                continue Block_6_Outer;
+                                                next2 = keys.next();
+                                                continue Label_0130_Outer;
                                             }
-                                            continue Label_0164_Outer;
+                                            break Label_0199_Outer;
+                                            indent(writer, n3);
+                                            writer.write(quote(next2.toString()));
+                                            writer.write(58);
+                                            break Block_7_Outer;
+                                            writer.write(10);
+                                            continue Block_7_Outer;
                                         }
-                                        while (true) {
-                                            while (true) {
-                                                indent(writer, n2);
-                                                continue Block_7_Outer;
-                                                writer.write(10);
-                                                continue Block_10_Outer;
-                                            }
-                                            Label_0189: {
-                                                continue;
-                                            }
-                                        }
+                                        writer.write(32);
+                                        continue Label_0199_Outer;
                                     }
-                                    writer.write(32);
-                                    continue Label_0090_Outer;
+                                    writer.write(10);
+                                    continue Block_10_Outer;
                                 }
-                                continue;
+                                Label_0189: {
+                                    continue;
+                                }
                             }
                         }
-                        // iftrue(Label_0130:, n <= 0)
+                        // iftrue(Label_0199:, n <= 0)
                         catch (IOException ex) {
                             throw new JSONException(ex);
                         }
                     }
                     if (length != 0) {
-                        n4 = n2 + n;
-                        continue Label_0090;
+                        n3 = n2 + n;
+                        continue;
                     }
                     break;
                 }

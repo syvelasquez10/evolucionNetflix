@@ -5,19 +5,18 @@
 package android.support.v4.app;
 
 import android.os.Build$VERSION;
-import android.support.v4.view.ViewCompat;
+import android.view.ViewGroup;
 import java.util.Map;
 import java.util.List;
 import android.util.SparseArray;
+import android.support.v4.view.ViewCompat;
 import java.util.Collection;
 import java.util.ArrayList;
-import android.view.ViewGroup;
 import android.view.View;
 import android.support.v4.util.ArrayMap;
 import android.graphics.Rect;
-import android.view.ViewTreeObserver$OnPreDrawListener;
 
-final class FragmentTransition$4 implements ViewTreeObserver$OnPreDrawListener
+final class FragmentTransition$4 implements Runnable
 {
     final /* synthetic */ Object val$enterTransition;
     final /* synthetic */ Object val$finalSharedElementTransition;
@@ -28,12 +27,10 @@ final class FragmentTransition$4 implements ViewTreeObserver$OnPreDrawListener
     final /* synthetic */ ArrayMap val$nameOverrides;
     final /* synthetic */ View val$nonExistentView;
     final /* synthetic */ Fragment val$outFragment;
-    final /* synthetic */ ViewGroup val$sceneRoot;
     final /* synthetic */ ArrayList val$sharedElementsIn;
     final /* synthetic */ ArrayList val$sharedElementsOut;
     
-    FragmentTransition$4(final ViewGroup val$sceneRoot, final ArrayMap val$nameOverrides, final Object val$finalSharedElementTransition, final FragmentTransition$FragmentContainerTransition val$fragments, final ArrayList val$sharedElementsIn, final View val$nonExistentView, final Fragment val$inFragment, final Fragment val$outFragment, final boolean val$inIsPop, final ArrayList val$sharedElementsOut, final Object val$enterTransition, final Rect val$inEpicenter) {
-        this.val$sceneRoot = val$sceneRoot;
+    FragmentTransition$4(final ArrayMap val$nameOverrides, final Object val$finalSharedElementTransition, final FragmentTransition$FragmentContainerTransition val$fragments, final ArrayList val$sharedElementsIn, final View val$nonExistentView, final Fragment val$inFragment, final Fragment val$outFragment, final boolean val$inIsPop, final ArrayList val$sharedElementsOut, final Object val$enterTransition, final Rect val$inEpicenter) {
         this.val$nameOverrides = val$nameOverrides;
         this.val$finalSharedElementTransition = val$finalSharedElementTransition;
         this.val$fragments = val$fragments;
@@ -47,8 +44,8 @@ final class FragmentTransition$4 implements ViewTreeObserver$OnPreDrawListener
         this.val$inEpicenter = val$inEpicenter;
     }
     
-    public boolean onPreDraw() {
-        this.val$sceneRoot.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);
+    @Override
+    public void run() {
         final ArrayMap access$300 = captureInSharedElements(this.val$nameOverrides, this.val$finalSharedElementTransition, this.val$fragments);
         if (access$300 != null) {
             this.val$sharedElementsIn.addAll(access$300.values());
@@ -62,6 +59,5 @@ final class FragmentTransition$4 implements ViewTreeObserver$OnPreDrawListener
                 FragmentTransitionCompat21.getBoundsOnScreen(access$301, this.val$inEpicenter);
             }
         }
-        return true;
     }
 }

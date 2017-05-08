@@ -185,41 +185,47 @@ public abstract class GCMBaseIntentService extends IntentService
                             }
                             // monitorexit(intent)
                             break EndFinally_4;
-                            Label_0405: {
-                                final Context context;
-                                GCMRegistrar.internalUnregister(context);
-                            }
-                            // iftrue(Label_0419:, !GCMRegistrar.isRegistered(context))
-                            continue Label_0386_Outer;
                             final String s;
                             this.mLogger.log(6, "Received unknown special message: %s", s);
                             continue Label_0386_Outer;
-                            Label_0419: {
-                                final Context context;
-                                GCMRegistrar.internalRegister(context, this.getSenderIds(context));
-                            }
+                            final Context context;
+                            this.onMessage(context, intent);
                             continue Label_0386_Outer;
-                            this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
-                            return;
-                            while (true) {
-                                this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
-                                return;
-                                final Context context;
-                                this.onMessage(context, intent);
+                            // iftrue(Label_0419:, !GCMRegistrar.isRegistered(context))
+                            // iftrue(Label_0090:, !s.equals((Object)"com.google.android.gcm.intent.RETRY"))
+                            Block_26: {
+                                Block_29: {
+                                    break Block_29;
+                                    break Block_26;
+                                }
+                                GCMRegistrar.internalUnregister(context);
                                 continue Label_0386_Outer;
+                            }
+                            intent = (Intent)intent.getPackage();
+                            // iftrue(Label_0405:, intent != null && intent.equals((Object)this.getApplicationContext().getPackageName()))
+                            while (true) {
+                                Label_0331: {
+                                    break Label_0331;
+                                    this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
+                                    return;
+                                    Label_0419: {
+                                        GCMRegistrar.internalRegister(context, this.getSenderIds(context));
+                                    }
+                                    continue Label_0386_Outer;
+                                    this.mLogger.log(6, "Wakelock reference is null", new Object[0]);
+                                    return;
+                                }
                                 this.mLogger.log(6, "Ignoring retry intent from another package (%s)", intent);
                                 synchronized (GCMBaseIntentService.LOCK) {
                                     if (GCMBaseIntentService.sWakeLock != null && GCMBaseIntentService.sWakeLock.isHeld()) {
                                         GCMBaseIntentService.sWakeLock.release();
                                         return;
                                     }
+                                    continue;
                                 }
-                                continue;
+                                break;
                             }
-                            // iftrue(Label_0090:, !s.equals((Object)"com.google.android.gcm.intent.RETRY"))
-                            intent = (Intent)intent.getPackage();
                         }
-                        // iftrue(Label_0405:, intent != null && intent.equals((Object)this.getApplicationContext().getPackageName()))
                     }
                 }
             }

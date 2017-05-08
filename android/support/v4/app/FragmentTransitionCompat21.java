@@ -5,7 +5,6 @@
 package android.support.v4.app;
 
 import android.transition.Transition$EpicenterCallback;
-import android.view.ViewTreeObserver$OnPreDrawListener;
 import android.transition.Transition$TransitionListener;
 import java.util.Collection;
 import android.graphics.Rect;
@@ -239,7 +238,7 @@ class FragmentTransitionCompat21
     }
     
     public static void scheduleNameReset(final ViewGroup viewGroup, final ArrayList<View> list, final Map<String, String> map) {
-        viewGroup.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransitionCompat21$7(viewGroup, list, map));
+        OneShotPreDrawListener.add((View)viewGroup, new FragmentTransitionCompat21$7(list, map));
     }
     
     public static void scheduleRemoveTargets(final Object o, final Object o2, final ArrayList<View> list, final Object o3, final ArrayList<View> list2, final Object o4, final ArrayList<View> list3) {
@@ -279,11 +278,11 @@ class FragmentTransitionCompat21
                 }
             }
         }
-        view.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransitionCompat21$3(view, size, list2, list3, list, list4));
+        OneShotPreDrawListener.add(view, new FragmentTransitionCompat21$3(size, list2, list3, list, list4));
     }
     
     public static void setNameOverridesUnoptimized(final View view, final ArrayList<View> list, final Map<String, String> map) {
-        view.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransitionCompat21$4(view, list, map));
+        OneShotPreDrawListener.add(view, new FragmentTransitionCompat21$4(list, map));
     }
     
     public static void setSharedElementTargets(final Object o, final View view, final ArrayList<View> list) {

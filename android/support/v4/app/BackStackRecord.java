@@ -56,7 +56,7 @@ final class BackStackRecord extends FragmentTransaction implements FragmentManag
         this.mOps = new ArrayList<BackStackRecord$Op>();
         this.mAllowAddToBackStack = true;
         this.mIndex = -1;
-        this.mAllowOptimization = true;
+        this.mAllowOptimization = false;
         this.mManager = mManager;
     }
     
@@ -130,6 +130,14 @@ final class BackStackRecord extends FragmentTransaction implements FragmentManag
             if (this.mSharedElementSourceNames == null) {
                 this.mSharedElementSourceNames = new ArrayList<String>();
                 this.mSharedElementTargetNames = new ArrayList<String>();
+            }
+            else {
+                if (this.mSharedElementTargetNames.contains(s)) {
+                    throw new IllegalArgumentException("A shared element with the target name '" + s + "' has already been added to the transaction.");
+                }
+                if (this.mSharedElementSourceNames.contains(transitionName)) {
+                    throw new IllegalArgumentException("A shared element with the source name '" + transitionName + " has already been added to the transaction.");
+                }
             }
             this.mSharedElementSourceNames.add(transitionName);
             this.mSharedElementTargetNames.add(s);
@@ -443,7 +451,7 @@ final class BackStackRecord extends FragmentTransaction implements FragmentManag
                     break;
                 }
             }
-            if (!this.mAllowOptimization && backStackRecord$Op.cmd != 1) {
+            if (!this.mAllowOptimization && backStackRecord$Op.cmd != 3) {
                 this.mManager.moveFragmentToExpectedState(fragment);
             }
         }
@@ -779,5 +787,23 @@ final class BackStackRecord extends FragmentTransaction implements FragmentManag
         }
         sb.append("}");
         return sb.toString();
+    }
+    
+    void trackAddedFragmentsInPop(final ArrayList<Fragment> list) {
+        for (int i = 0; i < this.mOps.size(); ++i) {
+            final BackStackRecord$Op backStackRecord$Op = this.mOps.get(i);
+            switch (backStackRecord$Op.cmd) {
+                case 1:
+                case 7: {
+                    list.remove(backStackRecord$Op.fragment);
+                    break;
+                }
+                case 3:
+                case 6: {
+                    list.add(backStackRecord$Op.fragment);
+                    break;
+                }
+            }
+        }
     }
 }

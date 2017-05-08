@@ -23,5 +23,6 @@ public enum RootCause
     tcpConnectionRefusal, 
     tcpConnectionTimeout, 
     tcpNoRouteToHost, 
+    unhandledException, 
     unknownFailure;
 }

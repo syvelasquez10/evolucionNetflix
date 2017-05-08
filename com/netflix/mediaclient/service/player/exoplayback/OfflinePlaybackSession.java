@@ -21,7 +21,6 @@ import com.netflix.mediaclient.service.logging.logblob.BaseLogblob;
 import com.netflix.mediaclient.service.player.exoplayback.logblob.EndPlay;
 import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.google.android.exoplayer.dash.mpd.MediaPresentationDescription;
 import com.google.android.exoplayer.drm.DrmSessionManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.media.manifest.Stream;
@@ -143,13 +142,6 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
         this.mPdsPlaySession.onManifest(offlinePlaybackInterface$OfflineManifest);
         this.mOxid = offlinePlaybackInterface$OfflineManifest.getOxId();
         this.mDxid = offlinePlaybackInterface$OfflineManifest.getDxId();
-        final MediaPresentationDescription mpd = offlinePlaybackInterface$OfflineManifest.getMpd();
-        if (mpd == null) {
-            this.reportStartPlay(OfflinePlaybackState.MANIFEST_PROCESSING.toString(), "OfflinePlayback.MPDIsNull", "");
-            this.mPdsPlaySession.stop(this.getPlayTimeJson(), OfflinePlaybackState.MANIFEST_PROCESSING.toString(), "OfflinePlayback.MPDIsNull");
-            this.mCallback.handleError(new ExoPlaybackError(ExoPlaybackError$ExoPlaybackErrorCode.MPD_ERROR, "MPD is null", OfflinePlaybackState.MANIFEST_PROCESSING.toString(), null));
-            return;
-        }
         this.mVideoTracks = offlinePlaybackInterface$OfflineManifest.getVideoTrackList();
         final List<Stream> streams = this.mVideoTracks.get(0).streams;
         this.mVBitrate = streams.get(0).bitrate;
@@ -157,9 +149,9 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
         this.mAspectRatio = offlinePlaybackInterface$OfflineManifest.getAspectWidthHeight();
         final byte[] offlineKeySetId = offlinePlaybackInterface$OfflineManifest.getOfflineKeySetId();
         while (true) {
-            Label_0473: {
+            Label_0397: {
                 if (offlineKeySetId == null || offlineKeySetId.length <= 0) {
-                    break Label_0473;
+                    break Label_0397;
                 }
                 Log.logByteArrayRaw("OfflinePlayback_Session", "has KeySetId", offlineKeySetId);
                 try {
@@ -171,7 +163,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
                     if (bifFile != null) {
                         this.mOfflineBifManger = new OfflineBifManager(offlinePlaybackInterface$OfflineManifest.getBifFile());
                     }
-                    this.mOfflinePlayer = new PlayerWithStaticMPD(this.mContext, this.mMainHandler, this, mpd, offlineDrmSession, this.mBookmark);
+                    this.mOfflinePlayer = new PlayerWithStaticMPD(this.mContext, this.mMainHandler, this, offlinePlaybackInterface$OfflineManifest.getMpd(), offlineDrmSession, this.mBookmark);
                     this.mPlaybackTS = this.mBookmark;
                     if (this.mSurface != null) {
                         this.mOfflinePlayer.setSurface(this.mSurface);

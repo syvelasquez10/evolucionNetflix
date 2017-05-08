@@ -69,6 +69,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     boolean mLoadersStarted;
     boolean mMenuVisible;
     Fragment mParentFragment;
+    float mPostponedAlpha;
     boolean mRemoving;
     boolean mRestored;
     boolean mRetainInstance;

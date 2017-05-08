@@ -27,12 +27,13 @@ import java.util.List;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.content.Context;
 import android.view.ViewGroup;
 import java.util.Collection;
 import android.os.Looper;
+import android.view.animation.Animation;
 import android.view.View;
+import android.support.v4.util.ArraySet;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.os.Build$VERSION;
@@ -117,6 +118,28 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         this.mExecCommit = new FragmentManagerImpl$1(this);
     }
     
+    private void addAddedFragments(final ArraySet<Fragment> set) {
+        if (this.mCurState >= 1) {
+            final int min = Math.min(this.mCurState, 4);
+            int size;
+            if (this.mAdded == null) {
+                size = 0;
+            }
+            else {
+                size = this.mAdded.size();
+            }
+            for (int i = 0; i < size; ++i) {
+                final Fragment fragment = this.mAdded.get(i);
+                if (fragment.mState < min) {
+                    this.moveToState(fragment, min, fragment.getNextAnim(), fragment.getNextTransition(), false);
+                    if (fragment.mView != null && !fragment.mHidden && fragment.mIsNewlyAdded) {
+                        set.add(fragment);
+                    }
+                }
+            }
+        }
+    }
+    
     private void checkStateLoss() {
         if (this.mStateSaved) {
             throw new IllegalStateException("Can not perform this action after onSaveInstanceState");
@@ -144,11 +167,20 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         if (b3) {
             this.moveToState(this.mCurState, true);
         }
-        else if (this.mActive != null) {
+        if (this.mActive != null) {
             for (int size = this.mActive.size(), i = 0; i < size; ++i) {
                 final Fragment fragment = this.mActive.get(i);
-                if (fragment.mView != null && fragment.mIsNewlyAdded && backStackRecord.interactsWith(fragment.mContainerId)) {
-                    fragment.mIsNewlyAdded = false;
+                if (fragment != null && fragment.mView != null && fragment.mIsNewlyAdded && backStackRecord.interactsWith(fragment.mContainerId)) {
+                    if (Build$VERSION.SDK_INT >= 11 && fragment.mPostponedAlpha > 0.0f) {
+                        fragment.mView.setAlpha(fragment.mPostponedAlpha);
+                    }
+                    if (b3) {
+                        fragment.mPostponedAlpha = 0.0f;
+                    }
+                    else {
+                        fragment.mPostponedAlpha = -1.0f;
+                        fragment.mIsNewlyAdded = false;
+                    }
                 }
             }
         }
@@ -168,7 +200,10 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                 final int stateAfterAnimating = fragment.getStateAfterAnimating();
                 final View animatingAway = fragment.getAnimatingAway();
                 fragment.setAnimatingAway(null);
-                animatingAway.clearAnimation();
+                final Animation animation = animatingAway.getAnimation();
+                if (animation != null) {
+                    animation.cancel();
+                }
                 this.moveToState(fragment, stateAfterAnimating, 0, 0, false);
             }
         }
@@ -223,6 +258,9 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
             if (!booleanValue) {
                 backStackRecord.expandReplaceOps(this.mTmpAddedFragments);
             }
+            else {
+                backStackRecord.trackAddedFragmentsInPop(this.mTmpAddedFragments);
+            }
             int n4;
             if (booleanValue) {
                 n4 = -1;
@@ -246,8 +284,10 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         executeOps(list, list2, n, n2);
         int postponePostponableTransactions;
         if (mAllowOptimization) {
-            this.moveFragmentsToInvisible();
-            postponePostponableTransactions = this.postponePostponableTransactions(list, list2, n, n2);
+            final ArraySet<Fragment> set = new ArraySet<Fragment>();
+            this.addAddedFragments(set);
+            postponePostponableTransactions = this.postponePostponableTransactions(list, list2, n, n2, set);
+            this.makeRemovedFragmentsInvisible(set);
         }
         else {
             postponePostponableTransactions = n2;
@@ -401,6 +441,22 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         return (Animation)set;
     }
     
+    private void makeRemovedFragmentsInvisible(final ArraySet<Fragment> set) {
+        for (int size = set.size(), i = 0; i < size; ++i) {
+            final Fragment fragment = set.valueAt(i);
+            if (!fragment.mAdded) {
+                final View view = fragment.getView();
+                if (Build$VERSION.SDK_INT < 11) {
+                    fragment.getView().setVisibility(4);
+                }
+                else {
+                    fragment.mPostponedAlpha = view.getAlpha();
+                    view.setAlpha(0.0f);
+                }
+            }
+        }
+    }
+    
     static boolean modifiesAlpha(final Animation animation) {
         final boolean b = false;
         boolean b2;
@@ -428,28 +484,6 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         return b2;
     }
     
-    private void moveFragmentsToInvisible() {
-        if (this.mCurState >= 1) {
-            final int min = Math.min(this.mCurState, 4);
-            int size;
-            if (this.mAdded == null) {
-                size = 0;
-            }
-            else {
-                size = this.mAdded.size();
-            }
-            for (int i = 0; i < size; ++i) {
-                final Fragment fragment = this.mAdded.get(i);
-                if (fragment.mState < min) {
-                    this.moveToState(fragment, min, fragment.getNextAnim(), fragment.getNextTransition(), false);
-                    if (fragment.mView != null && !fragment.mHidden && fragment.mIsNewlyAdded) {
-                        fragment.mView.setVisibility(4);
-                    }
-                }
-            }
-        }
-    }
-    
     private void optimizeAndExecuteOps(final ArrayList<BackStackRecord> list, final ArrayList<Boolean> list2) {
         int i = 0;
         if (list != null && !list.isEmpty()) {
@@ -460,27 +494,32 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
             final int size = list.size();
             int n = 0;
             while (i < size) {
-                int n4;
-                int n5;
                 if (!list.get(i).mAllowOptimization) {
                     if (n != i) {
                         this.executeOpsTogether(list, list2, n, i);
                     }
-                    int n2;
-                    for (n2 = i + 1; n2 < size && !list.get(n2).mAllowOptimization; ++n2) {}
-                    this.executeOpsTogether(list, list2, i, n2);
-                    final int n3 = n2 - 1;
-                    n4 = n2;
-                    n5 = n3;
+                    int n3;
+                    int n2 = n3 = i + 1;
+                    if (list2.get(i)) {
+                        while ((n3 = n2) < size) {
+                            n3 = n2;
+                            if (!list2.get(n2)) {
+                                break;
+                            }
+                            n3 = n2;
+                            if (list.get(n2).mAllowOptimization) {
+                                break;
+                            }
+                            ++n2;
+                        }
+                    }
+                    this.executeOpsTogether(list, list2, i, n3);
+                    final int n4 = n3;
+                    final int n5 = n3 - 1;
+                    n = n4;
+                    i = n5;
                 }
-                else {
-                    final int n6 = n;
-                    n5 = i;
-                    n4 = n6;
-                }
-                final int n7 = n4;
-                i = n5 + 1;
-                n = n7;
+                ++i;
             }
             if (n != size) {
                 this.executeOpsTogether(list, list2, n, size);
@@ -509,7 +548,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         }
     }
     
-    private int postponePostponableTransactions(final ArrayList<BackStackRecord> list, final ArrayList<Boolean> list2, final int n, final int n2) {
+    private int postponePostponableTransactions(final ArrayList<BackStackRecord> list, final ArrayList<Boolean> list2, final int n, final int n2, final ArraySet<Fragment> set) {
         int i = n2 - 1;
         int n3 = n2;
         while (i >= n) {
@@ -540,7 +579,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                     list.remove(i);
                     list.add(n3, backStackRecord);
                 }
-                this.moveFragmentsToInvisible();
+                this.addAddedFragments(set);
             }
             --i;
         }
@@ -1755,7 +1794,13 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                     }
                 }
                 if (fragment.mIsNewlyAdded && fragment.mContainer != null) {
-                    fragment.mView.setVisibility(0);
+                    if (Build$VERSION.SDK_INT < 11) {
+                        fragment.mView.setVisibility(0);
+                    }
+                    else if (fragment.mPostponedAlpha > 0.0f) {
+                        fragment.mView.setAlpha(fragment.mPostponedAlpha);
+                    }
+                    fragment.mPostponedAlpha = 0.0f;
                     fragment.mIsNewlyAdded = false;
                     final Animation loadAnimation = this.loadAnimation(fragment, fragment.getNextTransition(), true, fragment.getNextTransitionStyle());
                     if (loadAnimation != null) {
@@ -1837,12 +1882,13 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
     }
     
     void moveToState(final Fragment fragment, int n, int n2, int n3, final boolean b) {
+        final boolean b2 = true;
         int n4 = 0;
-        Label_0028: {
+        Label_0031: {
             if (fragment.mAdded) {
                 n4 = n;
                 if (!fragment.mDetached) {
-                    break Label_0028;
+                    break Label_0031;
                 }
             }
             if ((n4 = n) > 1) {
@@ -1876,17 +1922,18 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                     ViewGroup mContainer;
                     ViewGroup viewGroup;
                     String resourceName;
-                    Label_0695:Label_1256_Outer:Label_1242_Outer:
+                    boolean mIsNewlyAdded;
+                    Label_0695:Label_1259_Outer:
                     while (true) {
                         Label_0650: {
+                            Label_1243_Outer:Label_1273_Outer:
                             while (true) {
-                            Label_1226_Outer:
                                 while (true) {
                                     Label_0583: {
                                         while (true) {
-                                            Label_1030:Label_1090_Outer:
+                                            Label_1047:Label_1107_Outer:
                                             while (true) {
-                                            Label_1146_Outer:
+                                            Label_1163_Outer:
                                                 while (true) {
                                                     while (true) {
                                                         switch (fragment.mState) {
@@ -1934,128 +1981,136 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                                                     this.mHost.onAttachFragment(fragment);
                                                                     break;
                                                                 }
-                                                                break Label_1030;
+                                                                break Label_1047;
                                                             }
                                                             case 1: {
                                                                 if ((n5 = n2) <= 1) {
-                                                                    break Label_1030;
+                                                                    break Label_1047;
                                                                 }
                                                                 if (FragmentManagerImpl.DEBUG) {
                                                                     Log.v("FragmentManager", "moveto ACTIVITY_CREATED: " + fragment);
                                                                 }
                                                                 if (fragment.mFromLayout) {
-                                                                    break Label_1030;
+                                                                    break Label_1047;
                                                                 }
                                                                 if (fragment.mContainerId == 0) {
                                                                     mContainer = null;
-                                                                    break Label_1146_Outer;
+                                                                    break Label_1163_Outer;
                                                                 }
                                                                 if (fragment.mContainerId == -1) {
                                                                     this.throwException(new IllegalArgumentException("Cannot create fragment " + fragment + " for a container view with no id"));
                                                                 }
                                                                 viewGroup = (ViewGroup)this.mContainer.onFindViewById(fragment.mContainerId);
                                                                 if ((mContainer = viewGroup) != null) {
-                                                                    break Label_1146_Outer;
+                                                                    break Label_1163_Outer;
                                                                 }
                                                                 mContainer = viewGroup;
                                                                 if (!fragment.mRestored) {
-                                                                    break Label_1146_Outer;
+                                                                    break Label_1163_Outer;
                                                                 }
-                                                                break Label_1146_Outer;
+                                                                break Label_1163_Outer;
                                                             }
                                                             case 2: {
-                                                                break Label_1030;
-                                                            Label_0964_Outer:
+                                                                break Label_1047;
+                                                                Label_0964_Outer:Label_1041_Outer:
                                                                 while (true) {
-                                                                    Label_1291: {
+                                                                    Label_1314: {
                                                                         while (true) {
-                                                                        Label_1277:
+                                                                        Label_1308:
                                                                             while (true) {
-                                                                                try {
-                                                                                    resourceName = fragment.getResources().getResourceName(fragment.mContainerId);
-                                                                                    this.throwException(new IllegalArgumentException("No view found for id 0x" + Integer.toHexString(fragment.mContainerId) + " (" + resourceName + ") for fragment " + fragment));
-                                                                                    mContainer = viewGroup;
-                                                                                    fragment.mContainer = mContainer;
-                                                                                    fragment.mView = fragment.performCreateView(fragment.getLayoutInflater(fragment.mSavedFragmentState), mContainer, fragment.mSavedFragmentState);
-                                                                                    if (fragment.mView == null) {
-                                                                                        break Label_1291;
-                                                                                    }
-                                                                                    fragment.mInnerView = fragment.mView;
-                                                                                    if (Build$VERSION.SDK_INT < 11) {
-                                                                                        break Label_1277;
-                                                                                    }
-                                                                                    ViewCompat.setSaveFromParentEnabled(fragment.mView, false);
-                                                                                    if (mContainer != null) {
-                                                                                        mContainer.addView(fragment.mView);
-                                                                                        fragment.mIsNewlyAdded = true;
-                                                                                    }
-                                                                                    if (fragment.mHidden) {
-                                                                                        fragment.mView.setVisibility(8);
-                                                                                        fragment.mIsNewlyAdded = false;
-                                                                                    }
-                                                                                    fragment.onViewCreated(fragment.mView, fragment.mSavedFragmentState);
-                                                                                    this.dispatchOnFragmentViewCreated(fragment, fragment.mView, fragment.mSavedFragmentState, false);
-                                                                                    fragment.performActivityCreated(fragment.mSavedFragmentState);
-                                                                                    this.dispatchOnFragmentActivityCreated(fragment, fragment.mSavedFragmentState, false);
-                                                                                    if (fragment.mView != null) {
-                                                                                        fragment.restoreViewState(fragment.mSavedFragmentState);
-                                                                                    }
-                                                                                    fragment.mSavedFragmentState = null;
-                                                                                    n5 = n2;
-                                                                                    if ((n6 = n5) > 2) {
-                                                                                        fragment.mState = 3;
-                                                                                        n6 = n5;
-                                                                                    }
-                                                                                    if ((n3 = n6) > 3) {
-                                                                                        if (FragmentManagerImpl.DEBUG) {
-                                                                                            Log.v("FragmentManager", "moveto STARTED: " + fragment);
+                                                                            Label_1294:
+                                                                                while (true) {
+                                                                                    try {
+                                                                                        resourceName = fragment.getResources().getResourceName(fragment.mContainerId);
+                                                                                        this.throwException(new IllegalArgumentException("No view found for id 0x" + Integer.toHexString(fragment.mContainerId) + " (" + resourceName + ") for fragment " + fragment));
+                                                                                        mContainer = viewGroup;
+                                                                                        fragment.mContainer = mContainer;
+                                                                                        fragment.mView = fragment.performCreateView(fragment.getLayoutInflater(fragment.mSavedFragmentState), mContainer, fragment.mSavedFragmentState);
+                                                                                        if (fragment.mView == null) {
+                                                                                            break Label_1314;
                                                                                         }
-                                                                                        fragment.performStart();
-                                                                                        this.dispatchOnFragmentStarted(fragment, false);
-                                                                                        n3 = n6;
-                                                                                    }
-                                                                                    if ((mState2 = n3) > 4) {
-                                                                                        if (FragmentManagerImpl.DEBUG) {
-                                                                                            Log.v("FragmentManager", "moveto RESUMED: " + fragment);
+                                                                                        fragment.mInnerView = fragment.mView;
+                                                                                        if (Build$VERSION.SDK_INT < 11) {
+                                                                                            break Label_1294;
                                                                                         }
-                                                                                        fragment.performResume();
-                                                                                        this.dispatchOnFragmentResumed(fragment, false);
+                                                                                        ViewCompat.setSaveFromParentEnabled(fragment.mView, false);
+                                                                                        if (mContainer != null) {
+                                                                                            mContainer.addView(fragment.mView);
+                                                                                        }
+                                                                                        if (fragment.mHidden) {
+                                                                                            fragment.mView.setVisibility(8);
+                                                                                        }
+                                                                                        fragment.onViewCreated(fragment.mView, fragment.mSavedFragmentState);
+                                                                                        this.dispatchOnFragmentViewCreated(fragment, fragment.mView, fragment.mSavedFragmentState, false);
+                                                                                        if (fragment.mView.getVisibility() != 0 || fragment.mContainer == null) {
+                                                                                            break Label_1308;
+                                                                                        }
+                                                                                        mIsNewlyAdded = b2;
+                                                                                        fragment.mIsNewlyAdded = mIsNewlyAdded;
+                                                                                        fragment.performActivityCreated(fragment.mSavedFragmentState);
+                                                                                        this.dispatchOnFragmentActivityCreated(fragment, fragment.mSavedFragmentState, false);
+                                                                                        if (fragment.mView != null) {
+                                                                                            fragment.restoreViewState(fragment.mSavedFragmentState);
+                                                                                        }
                                                                                         fragment.mSavedFragmentState = null;
-                                                                                        fragment.mSavedViewState = null;
-                                                                                        mState2 = n3;
+                                                                                        n5 = n2;
+                                                                                        if ((n6 = n5) > 2) {
+                                                                                            fragment.mState = 3;
+                                                                                            n6 = n5;
+                                                                                        }
+                                                                                        if ((n3 = n6) > 3) {
+                                                                                            if (FragmentManagerImpl.DEBUG) {
+                                                                                                Log.v("FragmentManager", "moveto STARTED: " + fragment);
+                                                                                            }
+                                                                                            fragment.performStart();
+                                                                                            this.dispatchOnFragmentStarted(fragment, false);
+                                                                                            n3 = n6;
+                                                                                        }
+                                                                                        if ((mState2 = n3) > 4) {
+                                                                                            if (FragmentManagerImpl.DEBUG) {
+                                                                                                Log.v("FragmentManager", "moveto RESUMED: " + fragment);
+                                                                                            }
+                                                                                            fragment.performResume();
+                                                                                            this.dispatchOnFragmentResumed(fragment, false);
+                                                                                            fragment.mSavedFragmentState = null;
+                                                                                            fragment.mSavedViewState = null;
+                                                                                            mState2 = n3;
+                                                                                        }
+                                                                                        break Label_0191;
+                                                                                        fragment.mView = (View)NoSaveStateFrameLayout.wrap(fragment.mView);
+                                                                                        break Label_0650;
+                                                                                        fragment.mParentFragment.onAttachFragment(fragment);
+                                                                                        break Label_1047;
+                                                                                        fragment.restoreChildFragmentState(fragment.mSavedFragmentState);
+                                                                                        fragment.mState = 1;
+                                                                                        break Label_0583;
+                                                                                        fragment.mInnerView = null;
+                                                                                        n2 = n3;
+                                                                                        continue Label_0695;
                                                                                     }
-                                                                                    break Label_0191;
-                                                                                    fragment.mInnerView = null;
-                                                                                    n2 = n3;
-                                                                                    continue Label_0695;
-                                                                                    fragment.mParentFragment.onAttachFragment(fragment);
-                                                                                    break Label_1030;
-                                                                                    fragment.restoreChildFragmentState(fragment.mSavedFragmentState);
-                                                                                    fragment.mState = 1;
-                                                                                    break Label_0583;
-                                                                                    fragment.mView = (View)NoSaveStateFrameLayout.wrap(fragment.mView);
-                                                                                    break Label_0650;
+                                                                                    catch (Resources$NotFoundException ex) {
+                                                                                        resourceName = "unknown";
+                                                                                        continue Label_0964_Outer;
+                                                                                    }
+                                                                                    break;
                                                                                 }
-                                                                                catch (Resources$NotFoundException ex) {
-                                                                                    resourceName = "unknown";
-                                                                                    continue Label_0964_Outer;
-                                                                                }
-                                                                                break;
+                                                                                fragment.mView = (View)NoSaveStateFrameLayout.wrap(fragment.mView);
+                                                                                continue Label_1041_Outer;
                                                                             }
-                                                                            fragment.mView = (View)NoSaveStateFrameLayout.wrap(fragment.mView);
-                                                                            continue Label_1090_Outer;
+                                                                            mIsNewlyAdded = false;
+                                                                            continue Label_1107_Outer;
                                                                         }
                                                                     }
                                                                     fragment.mInnerView = null;
-                                                                    continue Label_1030;
+                                                                    continue Label_1047;
                                                                 }
                                                                 break;
                                                             }
                                                             case 3: {
-                                                                continue Label_1146_Outer;
+                                                                continue Label_1163_Outer;
                                                             }
                                                             case 4: {
-                                                                continue Label_1256_Outer;
+                                                                continue Label_1259_Outer;
                                                             }
                                                         }
                                                         break;
@@ -2066,7 +2121,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                             }
                                             this.dispatchOnFragmentAttached(fragment, this.mHost.getContext(), false);
                                             if (fragment.mRetaining) {
-                                                continue Label_1242_Outer;
+                                                continue Label_1273_Outer;
                                             }
                                             break;
                                         }
@@ -2080,13 +2135,13 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                     }
                                     fragment.mView = fragment.performCreateView(fragment.getLayoutInflater(fragment.mSavedFragmentState), null, fragment.mSavedFragmentState);
                                     if (fragment.mView == null) {
-                                        continue Label_1226_Outer;
+                                        continue;
                                     }
                                     break;
                                 }
                                 fragment.mInnerView = fragment.mView;
                                 if (Build$VERSION.SDK_INT < 11) {
-                                    continue;
+                                    continue Label_1243_Outer;
                                 }
                                 break;
                             }
@@ -2131,12 +2186,13 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                             this.dispatchOnFragmentViewDestroyed(fragment, false);
                             if (fragment.mView != null && fragment.mContainer != null) {
                                 Animation loadAnimation;
-                                if (this.mCurState > 0 && !this.mDestroyed && fragment.mView.getVisibility() == 0) {
+                                if (this.mCurState > 0 && !this.mDestroyed && fragment.mView.getVisibility() == 0 && fragment.mPostponedAlpha >= 0.0f) {
                                     loadAnimation = this.loadAnimation(fragment, n2, false, n3);
                                 }
                                 else {
                                     loadAnimation = null;
                                 }
+                                fragment.mPostponedAlpha = 0.0f;
                                 if (loadAnimation != null) {
                                     fragment.setAnimatingAway(fragment.mView);
                                     fragment.setStateAfterAnimating(n);

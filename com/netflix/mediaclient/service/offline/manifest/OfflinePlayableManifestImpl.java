@@ -69,9 +69,6 @@ public class OfflinePlayableManifestImpl implements OfflinePlaybackInterface$Off
         this.mLinks = nfManifest.getLinks();
         this.mDc = mDc;
         this.mMpd = mpdBuilder.buildMpd();
-        if (this.mMpd == null) {
-            return;
-        }
         this.dump();
     }
     

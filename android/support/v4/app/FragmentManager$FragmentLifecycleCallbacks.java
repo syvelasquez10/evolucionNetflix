@@ -10,12 +10,6 @@ import android.os.Bundle;
 
 public abstract class FragmentManager$FragmentLifecycleCallbacks
 {
-    final /* synthetic */ FragmentManager this$0;
-    
-    public FragmentManager$FragmentLifecycleCallbacks(final FragmentManager this$0) {
-        this.this$0 = this$0;
-    }
-    
     public void onFragmentActivityCreated(final FragmentManager fragmentManager, final Fragment fragment, final Bundle bundle) {
     }
     

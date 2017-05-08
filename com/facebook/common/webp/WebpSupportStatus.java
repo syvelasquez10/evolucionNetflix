@@ -35,7 +35,6 @@ public class WebpSupportStatus
                     }
                     Label_0103: {
                         break Label_0103;
-                    Label_0062_Outer:
                         while (true) {
                             boolean sIsSimpleWebpSupported2 = false;
                             sIsSimpleWebpSupported = sIsSimpleWebpSupported2;
@@ -52,10 +51,9 @@ public class WebpSupportStatus
                                     WEBP_VP8L_BYTES = asciiBytes("VP8L");
                                     WEBP_VP8X_BYTES = asciiBytes("VP8X");
                                     return;
-                                    sIsSimpleWebpSupported2 = false;
-                                    continue Label_0062_Outer;
                                     sIsWebpSupportRequired2 = false;
                                     break;
+                                    sIsSimpleWebpSupported2 = false;
                                 }
                                 catch (Throwable t) {
                                     WebpSupportStatus.sWebpLibraryPresent = false;

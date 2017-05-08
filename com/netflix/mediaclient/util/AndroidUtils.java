@@ -72,12 +72,14 @@ public final class AndroidUtils
         final File file = new File(context.getCacheDir().getParent());
         if (file.exists()) {
             final String[] list = file.list();
-            for (int length = list.length, i = 0; i < length; ++i) {
-                final String s = list[i];
-                if (!s.equals("lib")) {
-                    deleteDir(new File(file, s));
-                    if (Log.isLoggable()) {
-                        Log.i("TAG", "File /data/data/com.netflix.mediaclient/" + s + " DELETED");
+            if (list != null && list.length > 0) {
+                for (int length = list.length, i = 0; i < length; ++i) {
+                    final String s = list[i];
+                    if (!s.equals("lib")) {
+                        deleteDir(new File(file, s));
+                        if (Log.isLoggable()) {
+                            Log.i("TAG", "File /data/data/com.netflix.mediaclient/" + s + " DELETED");
+                        }
                     }
                 }
             }
@@ -108,9 +110,11 @@ public final class AndroidUtils
     public static boolean deleteDir(final File file) {
         if (file != null && file.isDirectory()) {
             final String[] list = file.list();
-            for (int i = 0; i < list.length; ++i) {
-                if (!deleteDir(new File(file, list[i]))) {
-                    return false;
+            if (list != null && list.length > 0) {
+                for (int i = 0; i < list.length; ++i) {
+                    if (!deleteDir(new File(file, list[i]))) {
+                        return false;
+                    }
                 }
             }
         }

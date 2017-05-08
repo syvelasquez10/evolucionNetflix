@@ -7,13 +7,14 @@ package android.support.v4.media.session;
 import android.os.IBinder$DeathRecipient;
 import java.util.ArrayList;
 import android.app.PendingIntent;
-import android.util.Log;
 import android.os.Build$VERSION;
 import android.support.v4.media.MediaMetadataCompat;
 import android.view.KeyEvent;
 import android.os.ResultReceiver;
 import android.os.Bundle;
 import android.os.Handler;
+import java.util.Iterator;
+import android.util.Log;
 import android.os.RemoteException;
 import android.content.Context;
 import java.util.List;
@@ -41,8 +42,28 @@ class MediaControllerCompat$MediaControllerImplApi21 implements MediaControllerC
         this.requestExtraBinder();
     }
     
+    private void processPendingCallbacks() {
+        if (this.mPendingCallbacks == null || this.mExtraBinder == null) {
+            return;
+        }
+        for (final MediaControllerCompat$Callback mediaControllerCompat$Callback : this.mPendingCallbacks) {
+            final MediaControllerCompat$MediaControllerImplApi21$ExtraCallback mediaControllerCompat$MediaControllerImplApi21$ExtraCallback = new MediaControllerCompat$MediaControllerImplApi21$ExtraCallback(this, mediaControllerCompat$Callback);
+            this.mCallbackMap.put(mediaControllerCompat$Callback, mediaControllerCompat$MediaControllerImplApi21$ExtraCallback);
+            mediaControllerCompat$Callback.mHasExtraCallback = true;
+            try {
+                this.mExtraBinder.registerCallbackListener(mediaControllerCompat$MediaControllerImplApi21$ExtraCallback);
+                continue;
+            }
+            catch (RemoteException ex) {
+                Log.e("MediaControllerCompat", "Dead object in registerCallback. " + ex);
+            }
+            break;
+        }
+        this.mPendingCallbacks = null;
+    }
+    
     private void requestExtraBinder() {
-        this.sendCommand("android.support.v4.media.session.command.GET_EXTRA_BINDER", null, new MediaControllerCompat$MediaControllerImplApi21$1(this, new Handler()));
+        this.sendCommand("android.support.v4.media.session.command.GET_EXTRA_BINDER", null, new MediaControllerCompat$MediaControllerImplApi21$ExtraBinderRequestResultReceiver(this, new Handler()));
     }
     
     @Override

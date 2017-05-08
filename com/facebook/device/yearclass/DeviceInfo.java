@@ -147,53 +147,55 @@ public class DeviceInfo
         Label_0020_Outer:
             while (true) {
                 int n5 = 0;
-                Label_0129: {
-                    while (true) {
-                        int read = 0;
-                        int n = 0;
-                        try {
-                            read = fileInputStream.read(array);
-                            n = 0;
-                            break Label_0087;
-                            int n3 = 0;
-                            Label_0053: {
-                                return extractValue(array, n3);
-                            }
-                            // iftrue(Label_0073:, n2 != s.length() - 1)
-                            while (true) {
-                                final int n4;
-                                final int n2 = n3 - n4;
-                                n5 = n4;
-                                break Label_0129;
-                                Label_0073: {
-                                    ++n3;
-                                }
-                                n5 = n4;
-                                continue Label_0020_Outer;
-                            }
+            Label_0129:
+                while (true) {
+                    int read = 0;
+                    int n = 0;
+                    try {
+                        read = fileInputStream.read(array);
+                        n = 0;
+                        break Label_0087;
+                        final int n3;
+                        Label_0053: {
+                            return extractValue(array, n3);
                         }
+                        // iftrue(Label_0073:, n2 != s.length() - 1)
+                        Label_0073: {
+                            ++n3;
+                        }
+                        break Label_0020;
                         // iftrue(Label_0053:, array[n3] == s.charAt(n2))
                         // iftrue(Label_0129:, n3 >= read)
-                        catch (NumberFormatException ex) {}
-                        catch (IOException ex2) {
-                            goto Label_0081;
-                        }
-                        if (n >= read) {
-                            goto Label_0081;
-                        }
-                        if (array[n] == 10 || (n5 = n) == 0) {
-                            int n4 = n;
-                            if (array[n] == 10) {
-                                n4 = n + 1;
-                            }
-                            final int n3 = n4;
+                        final int n4;
+                    Block_7:
+                        while (true) {
+                            final int n2 = n3 - n4;
+                            break Block_7;
+                            n5 = n4;
                             continue;
                         }
-                        break;
+                        n5 = n4;
+                        break Label_0129;
                     }
+                    catch (NumberFormatException ex) {}
+                    catch (IOException ex2) {
+                        goto Label_0081;
+                    }
+                    if (n >= read) {
+                        goto Label_0081;
+                    }
+                    if (array[n] == 10 || (n5 = n) == 0) {
+                        int n4 = n;
+                        if (array[n] == 10) {
+                            n4 = n + 1;
+                        }
+                        final int n3 = n4;
+                        continue;
+                    }
+                    break;
                 }
                 int n = n5 + 1;
-                continue;
+                continue Label_0020_Outer;
             }
         }
     }

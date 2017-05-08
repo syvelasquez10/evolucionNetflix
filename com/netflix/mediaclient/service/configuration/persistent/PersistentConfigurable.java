@@ -24,9 +24,12 @@ public abstract class PersistentConfigurable
         return this.getCell(context, ABTestConfig$Cell.CELL_ONE);
     }
     
-    public ABTestConfig$Cell getCell(final Context context, final ABTestConfig$Cell abTestConfig$Cell) {
+    public ABTestConfig$Cell getCell(final Context context, final ABTestConfig$Cell mCell) {
         if (this.mCell == null) {
-            this.mCell = ABTestConfig$Cell.fromInt(PreferenceUtils.getIntPref(context, this.getPrefKey(), abTestConfig$Cell.getCellId()));
+            this.mCell = ABTestConfig$Cell.fromInt(PreferenceUtils.getIntPref(context, this.getPrefKey(), mCell.getCellId()));
+            if (this.mCell == null) {
+                this.mCell = mCell;
+            }
             ApmLogUtils.reportABTestLoadedEvent(context, this.getTestId(), this.mCell.getCellId());
         }
         return this.mCell;

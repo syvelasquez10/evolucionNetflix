@@ -56,6 +56,7 @@ public class RecyclerView extends ViewGroup implements NestedScrollingChild, Scr
     static final boolean FORCE_INVALIDATE_DISPLAY_LIST;
     static final long FOREVER_NS = Long.MAX_VALUE;
     public static final int HORIZONTAL = 0;
+    private static final boolean IGNORE_DETACHED_FOCUSED_CHILD;
     private static final int INVALID_POINTER = -1;
     public static final int INVALID_TYPE = -1;
     private static final Class<?>[] LAYOUT_MANAGER_CONSTRUCTOR_SIGNATURE;
@@ -158,6 +159,7 @@ public class RecyclerView extends ViewGroup implements NestedScrollingChild, Scr
         POST_UPDATES_ON_ANIMATION = (Build$VERSION.SDK_INT >= 16);
         ALLOW_THREAD_GAP_WORK = (Build$VERSION.SDK_INT >= 21);
         FORCE_ABS_FOCUS_SEARCH_DIRECTION = (Build$VERSION.SDK_INT <= 15);
+        IGNORE_DETACHED_FOCUSED_CHILD = (Build$VERSION.SDK_INT <= 15);
         LAYOUT_MANAGER_CONSTRUCTOR_SIGNATURE = new Class[] { Context.class, AttributeSet.class, Integer.TYPE, Integer.TYPE };
         sQuinticInterpolator = (Interpolator)new RecyclerView$3();
     }
@@ -914,7 +916,13 @@ public class RecyclerView extends ViewGroup implements NestedScrollingChild, Scr
         if (this.mPreserveFocusAfterLayout && this.mAdapter != null && this.hasFocus() && this.getDescendantFocusability() != 393216 && (this.getDescendantFocusability() != 131072 || !this.isFocused())) {
             if (!this.isFocused()) {
                 final View focusedChild = this.getFocusedChild();
-                if (!this.mChildHelper.isHidden(focusedChild) && focusedChild.getParent() == this && focusedChild.hasFocus()) {
+                if (RecyclerView.IGNORE_DETACHED_FOCUSED_CHILD && (focusedChild.getParent() == null || !focusedChild.hasFocus())) {
+                    if (this.mChildHelper.getChildCount() == 0) {
+                        this.requestFocus();
+                        return;
+                    }
+                }
+                else if (!this.mChildHelper.isHidden(focusedChild)) {
                     return;
                 }
             }
@@ -2466,7 +2474,9 @@ public class RecyclerView extends ViewGroup implements NestedScrollingChild, Scr
             }
             if (this.mAdapterUpdateDuringMeasure) {
                 this.eatRequestLayout();
+                this.onEnterLayoutOrScroll();
                 this.processAdapterUpdatesAndSetAnimationFlags();
+                this.onExitLayoutOrScroll();
                 if (this.mState.mRunPredictiveAnimations) {
                     this.mState.mInPreLayout = true;
                 }

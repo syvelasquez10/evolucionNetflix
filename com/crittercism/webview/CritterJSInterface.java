@@ -270,78 +270,80 @@ public class CritterJSInterface
         }
         b("logNetworkRequest", "httpMethod", s);
         goto Label_0049;
-        // iftrue(Label_0291:, n7 >= 42)
-        // iftrue(Label_0357:, n8 >= 0L)
-        // iftrue(Label_0682:, new int[] { 0, 100, 101, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 306, 307, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 500, 501, 502, 503, 504, 505 }[n7] != n4)
+        Label_0363: {
+            return;
+        }
         // iftrue(Label_0321:, n >= 0L)
-        // iftrue(Label_0363:, n6 == 0)
+        // iftrue(Label_0363:, n7 == 0)
+        // iftrue(Label_0357:, n6 >= 0L)
+        // iftrue(Label_0363:, n9 == 0)
+        // iftrue(Label_0682:, new int[] { 0, 100, 101, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 306, 307, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 500, 501, 502, 503, 504, 505 }[n8] != n4)
         // iftrue(Label_0285:, n4 >= 0)
-        boolean b;
-        int n6;
-        int n7;
-        long n8 = 0L;
-        Block_5_Outer:Block_8_Outer:
         while (true) {
-            while (true) {
-                Label_0259: {
+            Label_0373: {
+                while (true) {
                     while (true) {
-                        Label_0230:Block_11_Outer:Block_6_Outer:
+                        long n6 = 0L;
+                        int n7;
+                        int n8 = 0;
+                        int n9;
+                        Label_0259:Label_0230_Outer:
                         while (true) {
-                            while (true) {
-                            Block_10:
-                                while (true) {
-                                    b("logNetworkRequest", "latency", "excessively large long integer: " + n);
-                                    b = false;
-                                    break Label_0259;
-                                    Label_0357: {
-                                        b = true;
+                            Block_7: {
+                                Block_8: {
+                                Label_0230:
+                                    while (true) {
+                                        while (true) {
+                                            n6 = System.currentTimeMillis() - n;
+                                            break Block_7;
+                                            break Block_8;
+                                            Label_0321:
+                                            Block_9: {
+                                                break Block_9;
+                                                Label_0285:
+                                                n8 = 0;
+                                                break Label_0373;
+                                                n9 = 1;
+                                                break Label_0230;
+                                                Label_0291:
+                                                b("logNetworkRequest", "responseCode", "the given HTTP response is not allowed: " + n4);
+                                                n9 = 0;
+                                                break Label_0230;
+                                            }
+                                            b("logNetworkRequest", "latency", "excessively large long integer: " + n);
+                                            n7 = 0;
+                                            continue Label_0259;
+                                            continue Label_0230_Outer;
+                                        }
+                                        a("logNetworkRequest", "bytesSent", n3);
+                                        return;
+                                        b("logNetworkRequest", "responseCode", "negative integer: " + n4);
+                                        n9 = 0;
+                                        continue Label_0230;
                                     }
-                                    break Label_0259;
-                                    a("logNetworkRequest", "bytesSent", n3);
-                                    return;
-                                    Label_0363:
-                                    return;
-                                    Label_0291:
-                                    b("logNetworkRequest", "responseCode", "the given HTTP response is not allowed: " + n4);
-                                    n6 = 0;
-                                    break Label_0230;
-                                    Label_0285:
-                                    n7 = 0;
-                                    break Block_10;
-                                    n6 = 1;
-                                    break Label_0230;
-                                    Label_0321:
-                                    continue Block_11_Outer;
                                 }
-                                continue Block_6_Outer;
-                            }
-                        Block_7:
-                            while (true) {
-                                n8 = System.currentTimeMillis() - n;
-                                break Block_7;
-                                continue Block_5_Outer;
+                                this.a.a(s, s2, n, n2, n3, n4, n5, n6);
+                                return;
                             }
                             a("logNetworkRequest", "latency", n);
-                            b = false;
-                            break Label_0259;
-                            b("logNetworkRequest", "responseCode", "negative integer: " + n4);
-                            n6 = 0;
-                            continue Label_0230;
+                            n7 = 0;
+                            continue Label_0259;
+                            Label_0357:
+                            n7 = 1;
+                            continue Label_0259;
                         }
-                        this.a.a(s, s2, n, n2, n3, n4, n5, n8);
-                        return;
-                        continue Block_8_Outer;
+                        Label_0682:
+                        ++n8;
+                        break Label_0373;
+                        continue;
                     }
+                    continue;
                 }
-                continue;
             }
-            Label_0682: {
-                ++n7;
-            }
-            continue Block_8_Outer;
+            continue;
         }
     }
-    // iftrue(Label_0363:, b == false)
+    // iftrue(Label_0291:, n8 >= 42)
     
     @JavascriptInterface
     public void logUnhandledException(final String s, final String s2, final String s3) {

@@ -9,8 +9,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.os.RemoteException;
 import android.os.Build$VERSION;
-import android.content.Intent;
-import android.util.Log;
 import android.support.v4.media.VolumeProviderCompat;
 import android.support.v4.media.VolumeProviderCompat$Callback;
 import java.util.List;
@@ -54,7 +52,7 @@ class MediaSessionCompat$MediaSessionImplBase implements MediaSessionCompat$Medi
     VolumeProviderCompat mVolumeProvider;
     int mVolumeType;
     
-    public MediaSessionCompat$MediaSessionImplBase(final Context mContext, final String mTag, ComponentName mediaButtonReceiverComponent, final PendingIntent pendingIntent) {
+    public MediaSessionCompat$MediaSessionImplBase(final Context mContext, final String mTag, final ComponentName mMediaButtonReceiverComponentName, final PendingIntent mMediaButtonReceiverIntent) {
         this.mLock = new Object();
         this.mControllerCallbacks = (RemoteCallbackList<IMediaControllerCallback>)new RemoteCallbackList();
         this.mDestroyed = false;
@@ -62,36 +60,22 @@ class MediaSessionCompat$MediaSessionImplBase implements MediaSessionCompat$Medi
         this.mIsRccRegistered = false;
         this.mIsMbrRegistered = false;
         this.mVolumeCallback = new MediaSessionCompat$MediaSessionImplBase$1(this);
-        ComponentName componentName = mediaButtonReceiverComponent;
-        if (mediaButtonReceiverComponent == null) {
-            mediaButtonReceiverComponent = MediaButtonReceiver.getMediaButtonReceiverComponent(mContext);
-            if ((componentName = mediaButtonReceiverComponent) == null) {
-                Log.w("MediaSessionCompat", "Couldn't find a unique registered media button receiver in the given context.");
-                componentName = mediaButtonReceiverComponent;
-            }
-        }
-        PendingIntent broadcast = pendingIntent;
-        if (componentName != null && (broadcast = pendingIntent) == null) {
-            final Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
-            intent.setComponent(componentName);
-            broadcast = PendingIntent.getBroadcast(mContext, 0, intent, 0);
-        }
-        if (componentName == null) {
+        if (mMediaButtonReceiverComponentName == null) {
             throw new IllegalArgumentException("MediaButtonReceiver component may not be null.");
         }
         this.mContext = mContext;
         this.mPackageName = mContext.getPackageName();
         this.mAudioManager = (AudioManager)mContext.getSystemService("audio");
         this.mTag = mTag;
-        this.mMediaButtonReceiverComponentName = componentName;
-        this.mMediaButtonReceiverIntent = broadcast;
+        this.mMediaButtonReceiverComponentName = mMediaButtonReceiverComponentName;
+        this.mMediaButtonReceiverIntent = mMediaButtonReceiverIntent;
         this.mStub = new MediaSessionCompat$MediaSessionImplBase$MediaSessionStub(this);
         this.mToken = new MediaSessionCompat$Token(this.mStub);
         this.mRatingType = 0;
         this.mVolumeType = 1;
         this.mLocalStream = 3;
         if (Build$VERSION.SDK_INT >= 14) {
-            this.mRccObj = MediaSessionCompatApi14.createRemoteControlClient(broadcast);
+            this.mRccObj = MediaSessionCompatApi14.createRemoteControlClient(mMediaButtonReceiverIntent);
             return;
         }
         this.mRccObj = null;

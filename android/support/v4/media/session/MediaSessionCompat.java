@@ -11,6 +11,8 @@ import android.os.Handler;
 import java.util.Iterator;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.content.Intent;
+import android.util.Log;
 import android.text.TextUtils;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -52,7 +54,7 @@ public class MediaSessionCompat
         this(context, s, null, null);
     }
     
-    public MediaSessionCompat(final Context context, final String s, final ComponentName componentName, final PendingIntent pendingIntent) {
+    public MediaSessionCompat(final Context context, final String s, ComponentName mediaButtonReceiverComponent, final PendingIntent pendingIntent) {
         this.mActiveListeners = new ArrayList<MediaSessionCompat$OnActiveChangeListener>();
         if (context == null) {
             throw new IllegalArgumentException("context must not be null");
@@ -60,11 +62,25 @@ public class MediaSessionCompat
         if (TextUtils.isEmpty((CharSequence)s)) {
             throw new IllegalArgumentException("tag must not be null or empty");
         }
+        ComponentName component;
+        if ((component = mediaButtonReceiverComponent) == null) {
+            mediaButtonReceiverComponent = MediaButtonReceiver.getMediaButtonReceiverComponent(context);
+            if ((component = mediaButtonReceiverComponent) == null) {
+                Log.w("MediaSessionCompat", "Couldn't find a unique registered media button receiver in the given context.");
+                component = mediaButtonReceiverComponent;
+            }
+        }
+        PendingIntent broadcast = pendingIntent;
+        if (component != null && (broadcast = pendingIntent) == null) {
+            final Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
+            intent.setComponent(component);
+            broadcast = PendingIntent.getBroadcast(context, 0, intent, 0);
+        }
         if (Build$VERSION.SDK_INT >= 21) {
-            this.mImpl = new MediaSessionCompat$MediaSessionImplApi21(context, s);
+            (this.mImpl = new MediaSessionCompat$MediaSessionImplApi21(context, s)).setMediaButtonReceiver(broadcast);
         }
         else {
-            this.mImpl = new MediaSessionCompat$MediaSessionImplBase(context, s, componentName, pendingIntent);
+            this.mImpl = new MediaSessionCompat$MediaSessionImplBase(context, s, component, broadcast);
         }
         this.mController = new MediaControllerCompat(context, this);
         if (MediaSessionCompat.sMaxBitmapSize == 0) {

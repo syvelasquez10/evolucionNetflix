@@ -15,25 +15,22 @@ import android.view.ViewGroup;
 import android.transition.TransitionSet;
 import android.transition.Transition;
 import android.annotation.TargetApi;
-import java.util.ArrayList;
 import android.view.View;
+import java.util.ArrayList;
 import java.util.Map;
-import android.view.ViewTreeObserver$OnPreDrawListener;
 
-final class FragmentTransitionCompat21$4 implements ViewTreeObserver$OnPreDrawListener
+final class FragmentTransitionCompat21$4 implements Runnable
 {
     final /* synthetic */ Map val$nameOverrides;
-    final /* synthetic */ View val$sceneRoot;
     final /* synthetic */ ArrayList val$sharedElementsIn;
     
-    FragmentTransitionCompat21$4(final View val$sceneRoot, final ArrayList val$sharedElementsIn, final Map val$nameOverrides) {
-        this.val$sceneRoot = val$sceneRoot;
+    FragmentTransitionCompat21$4(final ArrayList val$sharedElementsIn, final Map val$nameOverrides) {
         this.val$sharedElementsIn = val$sharedElementsIn;
         this.val$nameOverrides = val$nameOverrides;
     }
     
-    public boolean onPreDraw() {
-        this.val$sceneRoot.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);
+    @Override
+    public void run() {
         for (int size = this.val$sharedElementsIn.size(), i = 0; i < size; ++i) {
             final View view = this.val$sharedElementsIn.get(i);
             final String transitionName = view.getTransitionName();
@@ -41,6 +38,5 @@ final class FragmentTransitionCompat21$4 implements ViewTreeObserver$OnPreDrawLi
                 view.setTransitionName(findKeyForValue(this.val$nameOverrides, transitionName));
             }
         }
-        return true;
     }
 }

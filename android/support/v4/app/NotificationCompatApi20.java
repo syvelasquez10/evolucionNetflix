@@ -46,15 +46,24 @@ class NotificationCompatApi20
     }
     
     private static Notification$Action getActionFromActionCompat(final NotificationCompatBase$Action notificationCompatBase$Action) {
-        final Notification$Action$Builder addExtras = new Notification$Action$Builder(notificationCompatBase$Action.getIcon(), notificationCompatBase$Action.getTitle(), notificationCompatBase$Action.getActionIntent()).addExtras(notificationCompatBase$Action.getExtras());
+        final Notification$Action$Builder notification$Action$Builder = new Notification$Action$Builder(notificationCompatBase$Action.getIcon(), notificationCompatBase$Action.getTitle(), notificationCompatBase$Action.getActionIntent());
+        Bundle bundle;
+        if (notificationCompatBase$Action.getExtras() != null) {
+            bundle = new Bundle(notificationCompatBase$Action.getExtras());
+        }
+        else {
+            bundle = new Bundle();
+        }
+        bundle.putBoolean("android.support.allowGeneratedReplies", notificationCompatBase$Action.getAllowGeneratedReplies());
+        notification$Action$Builder.addExtras(bundle);
         final RemoteInputCompatBase$RemoteInput[] remoteInputs = notificationCompatBase$Action.getRemoteInputs();
         if (remoteInputs != null) {
             final RemoteInput[] fromCompat = RemoteInputCompatApi20.fromCompat(remoteInputs);
             for (int length = fromCompat.length, i = 0; i < length; ++i) {
-                addExtras.addRemoteInput(fromCompat[i]);
+                notification$Action$Builder.addRemoteInput(fromCompat[i]);
             }
         }
-        return addExtras.build();
+        return notification$Action$Builder.build();
     }
     
     public static NotificationCompatBase$Action[] getActionsFromParcelableArrayList(final ArrayList<Parcelable> list, final NotificationCompatBase$Action$Factory notificationCompatBase$Action$Factory, final RemoteInputCompatBase$RemoteInput$Factory remoteInputCompatBase$RemoteInput$Factory) {

@@ -63,6 +63,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
     private static final int CL_MAX_TIME_THAN_EVENT_CAN_STAY_IN_QUEUE_MS = 60000;
     private static final int CL_MIN_NUMBER_OF_EVENTS_TO_POST = 30;
     private static final int DEFAULT_USER_SESSION_TIMEOUT_MS = 1800000;
+    public static final String EXTRA_FORCE_FLUSH = "FORCE_FLUSH";
     static final String REPOSITORY_DIR = "iclevents";
     private static final String TAG = "nf_log";
     private UserActionLoggingImpl mActionLogging;
@@ -494,41 +495,37 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         final boolean portrait = DeviceUtils.isPortrait(this.mContext);
         if (this.mApmLogging.handleIntent(intent, portrait)) {
             Log.d("nf_log", "Handled by APM logger");
-            return;
         }
-        if (this.mActionLogging.handleIntent(intent, portrait)) {
+        else if (this.mActionLogging.handleIntent(intent, portrait)) {
             Log.d("nf_log", "Handled by UI Action logger");
-            return;
         }
-        if (this.mUIViewLogging.handleIntent(intent, portrait)) {
+        else if (this.mUIViewLogging.handleIntent(intent, portrait)) {
             Log.d("nf_log", "Handled by UI View logger");
-            return;
         }
-        if (this.mSearchLogging.handleIntent(intent)) {
+        else if (this.mSearchLogging.handleIntent(intent)) {
             Log.d("nf_log", "Handled by Search logger");
-            return;
         }
-        if (this.mCustomerServiceLogging.handleIntent(intent)) {
+        else if (this.mCustomerServiceLogging.handleIntent(intent)) {
             Log.d("nf_log", "Handled by customer service logging logger");
-            return;
         }
-        if (this.mSignInLogging.handleIntent(intent)) {
+        else if (this.mSignInLogging.handleIntent(intent)) {
             Log.d("nf_log", "Handled by signIn logger");
-            return;
         }
-        if (this.mIkoLogging.handleIntent(intent)) {
+        else if (this.mIkoLogging.handleIntent(intent)) {
             Log.d("nf_log", "Handled by Iko logger");
-            return;
         }
-        if (this.mOfflineLogging.handleIntent(intent)) {
+        else if (this.mOfflineLogging.handleIntent(intent)) {
             Log.d("nf_log", "Handled by Offline logger");
-            return;
         }
-        if (this.mExceptionLoggingCl.handleIntent(intent)) {
+        else if (this.mExceptionLoggingCl.handleIntent(intent)) {
             Log.d("nf_log", "Handled by ExceptionLoggingCl logger");
-            return;
         }
-        Log.w("nf_log", "Action not handled!");
+        else {
+            Log.w("nf_log", "Action not handled!");
+        }
+        if (intent.getBooleanExtra("FORCE_FLUSH", false)) {
+            this.mEventQueue.flushEvents(true);
+        }
     }
     
     void init(final ScheduledExecutorService mExecutor) {

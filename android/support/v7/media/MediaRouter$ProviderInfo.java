@@ -5,7 +5,6 @@
 package android.support.v7.media;
 
 import java.util.Collection;
-import android.text.TextUtils;
 import android.content.IntentSender;
 import android.view.Display;
 import android.net.Uri;

@@ -569,9 +569,9 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
     }
     
     boolean updateNccpSessionKeyResponse(final byte[] array, final byte[] array2, final byte[] array3, final String s) {
-    Label_0042_Outer:
         while (true) {
             boolean b = false;
+        Label_0057_Outer:
             while (true) {
                 while (true) {
                     final byte[] array4;
@@ -581,6 +581,8 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
                                 Log.d(WidevineDrmManager.TAG, "Update key response for account " + s);
                             }
                             break Label_0194;
+                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
+                            return b;
                             try {
                                 final byte[] pendingSessionId = this.nccpCryptoFactoryCryptoSession.pendingSessionId;
                                 if (pendingSessionId != null) {
@@ -603,16 +605,14 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
                                 CryptoErrorManager.INSTANCE.mediaDrmFailure(ErrorSource.ntba, StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
                             return b;
-                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
-                            return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {
-                        continue Label_0042_Outer;
+                        continue;
                     }
                     break;
                 }
-                continue;
+                continue Label_0057_Outer;
             }
         }
     }

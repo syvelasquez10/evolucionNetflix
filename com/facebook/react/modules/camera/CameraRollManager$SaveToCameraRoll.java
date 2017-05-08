@@ -91,7 +91,7 @@ class CameraRollManager$SaveToCameraRoll extends GuardedAsyncTask<Void, Void>
         //   120: aload           8
         //   122: bipush          46
         //   124: invokevirtual   java/lang/String.indexOf:(I)I
-        //   127: iflt            546
+        //   127: iflt            542
         //   130: aload           8
         //   132: iconst_0       
         //   133: aload           8
@@ -280,37 +280,35 @@ class CameraRollManager$SaveToCameraRoll extends GuardedAsyncTask<Void, Void>
         //   499: goto            431
         //   502: astore          6
         //   504: aload_3        
-        //   505: astore          4
+        //   505: astore          5
         //   507: aload_1        
-        //   508: astore          5
+        //   508: astore          4
         //   510: aload           6
         //   512: astore_3       
-        //   513: aload           4
+        //   513: aload           5
         //   515: astore_1       
-        //   516: aload           5
-        //   518: astore          4
-        //   520: goto            431
-        //   523: astore          4
-        //   525: aload_1        
-        //   526: astore_3       
-        //   527: aconst_null    
-        //   528: astore_1       
-        //   529: goto            360
-        //   532: astore          5
-        //   534: aload_1        
-        //   535: astore_3       
-        //   536: aload           4
-        //   538: astore_1       
-        //   539: aload           5
-        //   541: astore          4
-        //   543: goto            360
-        //   546: ldc             ""
-        //   548: astore          4
-        //   550: aload           8
-        //   552: astore          5
-        //   554: iconst_0       
-        //   555: istore_2       
-        //   556: goto            161
+        //   516: goto            431
+        //   519: astore          4
+        //   521: aload_1        
+        //   522: astore_3       
+        //   523: aconst_null    
+        //   524: astore_1       
+        //   525: goto            360
+        //   528: astore          5
+        //   530: aload_1        
+        //   531: astore_3       
+        //   532: aload           4
+        //   534: astore_1       
+        //   535: aload           5
+        //   537: astore          4
+        //   539: goto            360
+        //   542: ldc             ""
+        //   544: astore          4
+        //   546: aload           8
+        //   548: astore          5
+        //   550: iconst_0       
+        //   551: istore_2       
+        //   552: goto            161
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
@@ -327,13 +325,13 @@ class CameraRollManager$SaveToCameraRoll extends GuardedAsyncTask<Void, Void>
         //  161    206    424    431    Any
         //  213    226    353    360    Ljava/io/IOException;
         //  213    226    424    431    Any
-        //  226    239    523    532    Ljava/io/IOException;
+        //  226    239    519    528    Ljava/io/IOException;
         //  226    239    490    498    Any
-        //  239    297    532    546    Ljava/io/IOException;
+        //  239    297    528    542    Ljava/io/IOException;
         //  239    297    498    502    Any
         //  308    312    341    353    Ljava/io/IOException;
         //  325    330    331    341    Ljava/io/IOException;
-        //  360    371    502    523    Any
+        //  360    371    502    519    Any
         //  382    386    412    424    Ljava/io/IOException;
         //  397    401    402    412    Ljava/io/IOException;
         //  442    446    466    478    Ljava/io/IOException;
@@ -341,7 +339,7 @@ class CameraRollManager$SaveToCameraRoll extends GuardedAsyncTask<Void, Void>
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 279, Size: 279
+        // java.lang.IndexOutOfBoundsException: Index: 277, Size: 277
         //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
         //     at java.util.ArrayList.get(ArrayList.java:429)
         //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)

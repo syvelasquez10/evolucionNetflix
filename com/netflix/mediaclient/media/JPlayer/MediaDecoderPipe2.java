@@ -106,12 +106,30 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
             if (Log.isLoggable()) {
                 Log.d(this.mTag, "has " + this.mOutputBufferCnt + " output buffers");
             }
-            this.mOutputBufferInfo = new MediaCodec$BufferInfo[this.mOutputBufferCnt];
+            final LinkedList<Integer> mOutputBuffersQ = this.mOutputBuffersQ;
+            // monitorenter(mOutputBuffersQ)
+            final MediaDecoderPipe2 mediaDecoderPipe2 = this;
+            final MediaDecoderPipe2 mediaDecoderPipe3 = this;
+            final int n = mediaDecoderPipe3.mOutputBufferCnt;
+            final MediaCodec$BufferInfo[] array = new MediaCodec$BufferInfo[n];
+            mediaDecoderPipe2.mOutputBufferInfo = array;
+            return;
         }
-        catch (Exception ex) {
+        catch (Exception mOutputBuffersQ) {
             Log.e(this.mTag, "get un-known exception while getOutputBuffers()");
             this.mOutputBufferCnt = 0;
+            return;
         }
+        try {
+            final MediaDecoderPipe2 mediaDecoderPipe2 = this;
+            final MediaDecoderPipe2 mediaDecoderPipe3 = this;
+            final int n = mediaDecoderPipe3.mOutputBufferCnt;
+            final MediaCodec$BufferInfo[] array = new MediaCodec$BufferInfo[n];
+            mediaDecoderPipe2.mOutputBufferInfo = array;
+        }
+        finally {
+        }
+        // monitorexit(mOutputBuffersQ)
     }
     
     private boolean createDecoder(final String s, final MediaCrypto mediaCrypto) {

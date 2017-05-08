@@ -122,7 +122,6 @@ public class TextInputLayout extends LinearLayout
         this.mCollapsingTextHelper.setTextSizeInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
         this.mCollapsingTextHelper.setPositionInterpolator((Interpolator)new AccelerateInterpolator());
         this.mCollapsingTextHelper.setCollapsedTextGravity(8388659);
-        this.mHintExpanded = (this.mCollapsingTextHelper.getExpansionFraction() == 1.0f);
         final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.TextInputLayout, n, R$style.Widget_Design_TextInputLayout);
         this.mHintEnabled = obtainStyledAttributes.getBoolean(R$styleable.TextInputLayout_hintEnabled, true);
         this.setHint(obtainStyledAttributes.getText(R$styleable.TextInputLayout_android_hint));
@@ -310,7 +309,7 @@ public class TextInputLayout extends LinearLayout
             this.adjustIndicatorPadding();
         }
         this.updatePasswordToggleView();
-        this.updateLabelState(false);
+        this.updateLabelState(false, true);
     }
     
     private void setError(final CharSequence text, final boolean b) {
@@ -413,6 +412,9 @@ public class TextInputLayout extends LinearLayout
                     this.mPasswordToggleView.setContentDescription(this.mPasswordToggleContentDesc);
                     this.mInputFrame.addView((View)this.mPasswordToggleView);
                     this.mPasswordToggleView.setOnClickListener((View$OnClickListener)new TextInputLayout$4(this));
+                }
+                if (this.mEditText != null && ViewCompat.getMinimumHeight((View)this.mEditText) <= 0) {
+                    this.mEditText.setMinimumHeight(ViewCompat.getMinimumHeight((View)this.mPasswordToggleView));
                 }
                 this.mPasswordToggleView.setVisibility(0);
                 this.mPasswordToggleView.setChecked(this.mPasswordToggledVisible);
@@ -883,18 +885,22 @@ public class TextInputLayout extends LinearLayout
     }
     
     void updateLabelState(final boolean b) {
-        boolean b2 = true;
+        this.updateLabelState(b, false);
+    }
+    
+    void updateLabelState(final boolean b, final boolean b2) {
+        boolean b3 = true;
         final boolean enabled = this.isEnabled();
-        boolean b3;
+        boolean b4;
         if (this.mEditText != null && !TextUtils.isEmpty((CharSequence)this.mEditText.getText())) {
-            b3 = true;
+            b4 = true;
         }
         else {
-            b3 = false;
+            b4 = false;
         }
         final boolean arrayContains = arrayContains(this.getDrawableState(), 16842908);
         if (TextUtils.isEmpty(this.getError())) {
-            b2 = false;
+            b3 = false;
         }
         if (this.mDefaultTextColor != null) {
             this.mCollapsingTextHelper.setExpandedTextColor(this.mDefaultTextColor);
@@ -908,12 +914,12 @@ public class TextInputLayout extends LinearLayout
         else if (this.mDefaultTextColor != null) {
             this.mCollapsingTextHelper.setCollapsedTextColor(this.mDefaultTextColor);
         }
-        if (b3 || (this.isEnabled() && (arrayContains || b2))) {
-            if (this.mHintExpanded) {
+        if (b4 || (this.isEnabled() && (arrayContains || b3))) {
+            if (b2 || this.mHintExpanded) {
                 this.collapseHint(b);
             }
         }
-        else if (!this.mHintExpanded) {
+        else if (b2 || !this.mHintExpanded) {
             this.expandHint(b);
         }
     }

@@ -465,18 +465,27 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         this.mOfflinePlayableListener.onInitialized(this, status2);
     }
     
-    private void handleManifestForPlayback(final NfManifest nfManifest, final Status status, final OfflinePlayable$PlayableManifestCallBack offlinePlayable$PlayableManifestCallBack) {
-        OfflinePlayableManifestImpl offlinePlayableManifestImpl = null;
-        Status status2 = status;
-        if (status.isSucces()) {
-            offlinePlayableManifestImpl = new OfflinePlayableManifestImpl(this.mContext, this.mDirPathOfPlayable, nfManifest, OfflineUtils.getKeySetIdOrNull(this.mOfflinePlayablePersistentData), OfflineUtils.getDownloadableList(this.mOfflinePlayablePersistentData.mAudioDownloadablePersistentList), OfflineUtils.getDownloadableList(this.mOfflinePlayablePersistentData.mVideoDownloadablePersistentList), OfflineUtils.getDownloadableList(this.mOfflinePlayablePersistentData.mSubtitleDownloadablePersistentList), OfflineUtils.getDownloadableList(this.mOfflinePlayablePersistentData.mTrickPlayDownloadablePersistentList), this.mOfflinePlayablePersistentData.mOxId, this.mOfflinePlayablePersistentData.mDxId, DownloadContext.createDownloadContext(this.mOfflinePlayablePersistentData));
-            status2 = status;
-            if (offlinePlayableManifestImpl.getMpd() == null) {
-                offlinePlayableManifestImpl = null;
-                status2 = new NetflixStatus(StatusCode.DL_MANIFEST_DATA_MISSING);
+    private void handleManifestForPlayback(final NfManifest nfManifest, Status status, final OfflinePlayable$PlayableManifestCallBack offlinePlayable$PlayableManifestCallBack) {
+        while (true) {
+            Label_0127: {
+                if (!status.isSucces()) {
+                    break Label_0127;
+                }
+                try {
+                    final OfflinePlayableManifestImpl offlinePlayableManifestImpl = new OfflinePlayableManifestImpl(this.mContext, this.mDirPathOfPlayable, nfManifest, OfflineUtils.getKeySetIdOrNull(this.mOfflinePlayablePersistentData), OfflineUtils.getDownloadableList(this.mOfflinePlayablePersistentData.mAudioDownloadablePersistentList), OfflineUtils.getDownloadableList(this.mOfflinePlayablePersistentData.mVideoDownloadablePersistentList), OfflineUtils.getDownloadableList(this.mOfflinePlayablePersistentData.mSubtitleDownloadablePersistentList), OfflineUtils.getDownloadableList(this.mOfflinePlayablePersistentData.mTrickPlayDownloadablePersistentList), this.mOfflinePlayablePersistentData.mOxId, this.mOfflinePlayablePersistentData.mDxId, DownloadContext.createDownloadContext(this.mOfflinePlayablePersistentData));
+                    offlinePlayable$PlayableManifestCallBack.onPlayableManifestReady(offlinePlayableManifestImpl, status);
+                    return;
+                }
+                catch (Exception ex) {
+                    LogUtils.reportErrorSafely("OfflinePlayableManifestImpl DL_MANIFEST_DATA_MISSING ", (Throwable)ex);
+                    status = new NetflixStatus(StatusCode.DL_MANIFEST_DATA_MISSING);
+                    final OfflinePlayableManifestImpl offlinePlayableManifestImpl = null;
+                    continue;
+                }
             }
+            final OfflinePlayableManifestImpl offlinePlayableManifestImpl = null;
+            continue;
         }
-        offlinePlayable$PlayableManifestCallBack.onPlayableManifestReady(offlinePlayableManifestImpl, status2);
     }
     
     private void handleManifestRefreshedFromServer(final NfManifest nfManifest, final Status persistentStatus) {

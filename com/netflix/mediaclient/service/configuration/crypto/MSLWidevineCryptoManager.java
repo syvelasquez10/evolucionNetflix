@@ -45,7 +45,7 @@ public abstract class MSLWidevineCryptoManager extends BaseCryptoManager
         }
         if (this.getCryptoProvider() == CryptoProvider.WIDEVINE_L3) {
             Log.d("nf_msl", "MediaDrm failed for Widevine L3, fail back to legacy crypto scheme ");
-            PreferenceUtils.putBooleanPref(this.mContext, "disable_widevine_l3", true);
+            PreferenceUtils.putBooleanPref(this.mContext, "nf_disable_widevine_l3", true);
             return;
         }
         Log.e("nf_msl", "Crypto provider was not supported for this error " + this.getCryptoProvider());

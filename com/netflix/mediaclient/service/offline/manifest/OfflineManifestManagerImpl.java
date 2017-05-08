@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCa
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQuality;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.LogUtils;
 import java.io.File;
 import com.netflix.mediaclient.android.app.BaseStatus;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
@@ -126,24 +127,50 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
         return baseStatus;
     }
     
-    private NfManifest readManifestFromPersistentStore(final String s, final String s2) {
-        final File file = new File(OfflinePathUtils.getFilePathOfflineManifest(s2, s));
+    private NfManifest readManifestFromPersistentStore(String string, final String s) {
+        final File file = new File(OfflinePathUtils.getFilePathOfflineManifest(s, string));
         if (!file.exists()) {
+            LogUtils.reportErrorSafely("readManifestFromPersistentStore file not found " + file.getAbsolutePath());
             Log.e("nf_offlineManifestMgr", "readManifestFromPersistentStore file not found=" + file.getAbsolutePath());
             return null;
         }
+        NfManifest nfManifest;
         while (true) {
-            try {
-                final List<NfManifest> manifestResponse = NfManifest.parseManifestResponse(new JSONObject(StringUtils.byteArrayToString(FileUtils.readFileToByteArray(file), "utf-8")));
-                if (manifestResponse != null && manifestResponse.size() > 0) {
-                    return manifestResponse.get(0);
+        Label_0124_Outer:
+            while (true) {
+                while (true) {
+                    List<NfManifest> manifestResponse = null;
+                    Label_0202: {
+                        try {
+                            manifestResponse = NfManifest.parseManifestResponse(new JSONObject(StringUtils.byteArrayToString(FileUtils.readFileToByteArray(file), "utf-8")));
+                            if (manifestResponse != null && manifestResponse.size() > 0) {
+                                nfManifest = manifestResponse.get(0);
+                                break;
+                            }
+                            break Label_0202;
+                            string = "nfManifestList size=" + manifestResponse.size();
+                            LogUtils.reportErrorSafely("readManifestFromPersistentStore " + string);
+                            return null;
+                        }
+                        catch (Exception ex) {
+                            LogUtils.reportErrorSafely("readManifestFromPersistentStore Exception:", (Throwable)ex);
+                            Log.e("nf_offlineManifestMgr", "readManifestFromPersistentStore read error", ex);
+                            return null;
+                        }
+                        break;
+                    }
+                    if (manifestResponse == null) {
+                        string = "nfManifestList is null";
+                        continue;
+                    }
+                    break;
                 }
+                continue Label_0124_Outer;
             }
-            catch (Exception ex) {
-                Log.e("nf_offlineManifestMgr", "readManifestFromPersistentStore read error", ex);
-            }
-            return null;
         }
+        return nfManifest;
+        nfManifest = null;
+        return nfManifest;
     }
     
     private void removeOldestManifest() {

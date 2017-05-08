@@ -19,7 +19,13 @@ class MediaBrowserServiceCompat$MediaBrowserServiceImplApi24 extends MediaBrowse
     
     @Override
     public Bundle getBrowserRootHints() {
-        return MediaBrowserServiceCompatApi24.getBrowserRootHints(this.mServiceObj);
+        if (this.this$0.mCurConnection == null) {
+            return MediaBrowserServiceCompatApi24.getBrowserRootHints(this.mServiceObj);
+        }
+        if (this.this$0.mCurConnection.rootHints == null) {
+            return null;
+        }
+        return new Bundle(this.this$0.mCurConnection.rootHints);
     }
     
     @Override

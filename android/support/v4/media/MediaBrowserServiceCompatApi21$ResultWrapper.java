@@ -43,6 +43,7 @@ class MediaBrowserServiceCompatApi21$ResultWrapper<T>
         }
         if (t instanceof Parcel) {
             final Parcel parcel = (Parcel)t;
+            parcel.setDataPosition(0);
             this.mResultObj.sendResult(MediaBrowser$MediaItem.CREATOR.createFromParcel(parcel));
             parcel.recycle();
             return;

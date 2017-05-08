@@ -1233,30 +1233,37 @@ public class StaggeredGridLayoutManager extends RecyclerView$LayoutManager imple
     }
     
     @Override
-    public void collectAdjacentPrefetchPositions(int i, int n, final RecyclerView$State recyclerView$State, final RecyclerView$LayoutManager$LayoutPrefetchRegistry recyclerView$LayoutManager$LayoutPrefetchRegistry) {
+    public void collectAdjacentPrefetchPositions(int n, int i, final RecyclerView$State recyclerView$State, final RecyclerView$LayoutManager$LayoutPrefetchRegistry recyclerView$LayoutManager$LayoutPrefetchRegistry) {
         final int n2 = 0;
         if (this.mOrientation != 0) {
-            i = n;
+            n = i;
         }
-        if (this.getChildCount() != 0 && i != 0) {
-            this.prepareLayoutStateForDelta(i, recyclerView$State);
+        if (this.getChildCount() != 0 && n != 0) {
+            this.prepareLayoutStateForDelta(n, recyclerView$State);
             if (this.mPrefetchDistances == null || this.mPrefetchDistances.length < this.mSpanCount) {
                 this.mPrefetchDistances = new int[this.mSpanCount];
             }
-            int[] mPrefetchDistances;
-            for (i = 0; i < this.mSpanCount; ++i) {
-                mPrefetchDistances = this.mPrefetchDistances;
+            i = 0;
+            n = 0;
+            while (i < this.mSpanCount) {
+                int n3;
                 if (this.mLayoutState.mItemDirection == -1) {
-                    n = this.mLayoutState.mStartLine - this.mSpans[i].getStartLine(this.mLayoutState.mStartLine);
+                    n3 = this.mLayoutState.mStartLine - this.mSpans[i].getStartLine(this.mLayoutState.mStartLine);
                 }
                 else {
-                    n = this.mSpans[i].getEndLine(this.mLayoutState.mEndLine) - this.mLayoutState.mEndLine;
+                    n3 = this.mSpans[i].getEndLine(this.mLayoutState.mEndLine) - this.mLayoutState.mEndLine;
                 }
-                mPrefetchDistances[i] = n;
+                int n4 = n;
+                if (n3 >= 0) {
+                    this.mPrefetchDistances[n] = n3;
+                    n4 = n + 1;
+                }
+                ++i;
+                n = n4;
             }
-            Arrays.sort(this.mPrefetchDistances, 0, this.mSpanCount);
+            Arrays.sort(this.mPrefetchDistances, 0, n);
             LayoutState mLayoutState;
-            for (i = n2; i < this.mSpanCount && this.mLayoutState.hasMore(recyclerView$State); ++i) {
+            for (i = n2; i < n && this.mLayoutState.hasMore(recyclerView$State); ++i) {
                 recyclerView$LayoutManager$LayoutPrefetchRegistry.addPosition(this.mLayoutState.mCurrentPosition, this.mPrefetchDistances[i]);
                 mLayoutState = this.mLayoutState;
                 mLayoutState.mCurrentPosition += this.mLayoutState.mItemDirection;

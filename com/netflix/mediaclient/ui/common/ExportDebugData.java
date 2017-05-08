@@ -260,7 +260,7 @@ public class ExportDebugData
                         intent.setType("text/plain");
                         intent.putExtra("android.intent.extra.EMAIL", new String[] { "spy-issues@netflix.com" });
                         intent.putExtra("android.intent.extra.SUBJECT", "Enter_JIRA_summary_here");
-                        intent.putExtra("android.intent.extra.TEXT", "\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.13.2 build 14565\ncode=14565\nandroid=" + Build$VERSION.SDK_INT + "\nbrand=" + Build.BRAND + "\nmanufacturer=" + Build.MANUFACTURER + "\nmodel=" + Build.MODEL + "\ndevice=" + Build.DEVICE + "\ndevice.locale=" + Locale.getDefault().getCountry() + "_" + Locale.getDefault().getLanguage() + "\n" + string);
+                        intent.putExtra("android.intent.extra.TEXT", "\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.13.3 build 14573\ncode=14573\nandroid=" + Build$VERSION.SDK_INT + "\nbrand=" + Build.BRAND + "\nmanufacturer=" + Build.MANUFACTURER + "\nmodel=" + Build.MODEL + "\ndevice=" + Build.DEVICE + "\ndevice.locale=" + Locale.getDefault().getCountry() + "_" + Locale.getDefault().getLanguage() + "\n" + string);
                         final Iterator<Uri> iterator = list.iterator();
                         while (iterator.hasNext()) {
                             grantRead((Context)activity, intent, iterator.next());

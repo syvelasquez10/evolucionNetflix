@@ -50,6 +50,10 @@ class PdsDownloadSessionManager$3 implements OfflinePlaybackInterface$ManifestCa
             }
             return;
         }
-        this.this$0.createDownloadSession(String.valueOf(n), offlinePlaybackInterface$OfflineManifest.getOxId(), offlinePlaybackInterface$OfflineManifest.getDxId(), offlinePlaybackInterface$OfflineManifest.getDownloadContext(), offlinePlaybackInterface$OfflineManifest.getLinks());
+        if (offlinePlaybackInterface$OfflineManifest != null) {
+            this.this$0.createDownloadSession(String.valueOf(n), offlinePlaybackInterface$OfflineManifest.getOxId(), offlinePlaybackInterface$OfflineManifest.getDxId(), offlinePlaybackInterface$OfflineManifest.getDownloadContext(), offlinePlaybackInterface$OfflineManifest.getLinks());
+            return;
+        }
+        Log.e(PdsDownloadSessionManager.TAG, "error receiving manifest from cache movieId=%d status=%s", n, status.toString());
     }
 }

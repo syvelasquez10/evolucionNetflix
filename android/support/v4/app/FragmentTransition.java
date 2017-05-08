@@ -5,14 +5,13 @@
 package android.support.v4.app;
 
 import android.os.Build$VERSION;
-import android.view.ViewTreeObserver$OnPreDrawListener;
 import android.graphics.Rect;
 import android.view.ViewGroup;
-import android.support.v4.view.ViewCompat;
-import java.util.Collection;
 import java.util.Map;
 import java.util.List;
 import android.util.SparseArray;
+import android.support.v4.view.ViewCompat;
+import java.util.Collection;
 import android.support.v4.util.ArrayMap;
 import android.view.View;
 import java.util.ArrayList;
@@ -23,6 +22,15 @@ class FragmentTransition
     
     static {
         INVERSE_OPS = new int[] { 0, 3, 0, 1, 5, 4, 7, 6 };
+    }
+    
+    private static void addSharedElementsWithMatchingNames(final ArrayList<View> list, final ArrayMap<String, View> arrayMap, final Collection<String> collection) {
+        for (int i = arrayMap.size() - 1; i >= 0; --i) {
+            final View view = arrayMap.valueAt(i);
+            if (collection.contains(ViewCompat.getTransitionName(view))) {
+                list.add(view);
+            }
+        }
     }
     
     private static void addToFirstInLastOut(final BackStackRecord backStackRecord, final BackStackRecord$Op backStackRecord$Op, final SparseArray<FragmentTransition$FragmentContainerTransition> sparseArray, final boolean b, final boolean b2) {
@@ -108,7 +116,7 @@ class FragmentTransition
                 case 6: {
                     int n4;
                     if (b2) {
-                        if (!fragment.mAdded && fragment.mView != null && fragment.mView.getVisibility() == 0) {
+                        if (!fragment.mAdded && fragment.mView != null && fragment.mView.getVisibility() == 0 && fragment.mPostponedAlpha >= 0.0f) {
                             n4 = 1;
                         }
                         else {
@@ -355,57 +363,66 @@ class FragmentTransition
     }
     
     private static Object configureSharedElementsOptimized(final ViewGroup viewGroup, View inEpicenterView, final ArrayMap<String, String> arrayMap, final FragmentTransition$FragmentContainerTransition fragmentTransition$FragmentContainerTransition, final ArrayList<View> list, final ArrayList<View> list2, final Object o, final Object o2) {
+        final View view = null;
         final Fragment lastIn = fragmentTransition$FragmentContainerTransition.lastIn;
         final Fragment firstOut = fragmentTransition$FragmentContainerTransition.firstOut;
         if (lastIn != null) {
             lastIn.getView().setVisibility(0);
         }
-        if (lastIn == null || firstOut == null) {
-            return null;
-        }
-        final boolean lastInIsPop = fragmentTransition$FragmentContainerTransition.lastInIsPop;
-        Object sharedElementTransition;
-        if (arrayMap.isEmpty()) {
-            sharedElementTransition = null;
-        }
-        else {
-            sharedElementTransition = getSharedElementTransition(lastIn, firstOut, lastInIsPop);
-        }
-        final ArrayMap<String, View> captureOutSharedElements = captureOutSharedElements(arrayMap, sharedElementTransition, fragmentTransition$FragmentContainerTransition);
-        final ArrayMap<String, View> captureInSharedElements = captureInSharedElements(arrayMap, sharedElementTransition, fragmentTransition$FragmentContainerTransition);
-        Object o3;
-        if (arrayMap.isEmpty()) {
-            o3 = null;
-        }
-        else {
-            list.addAll(captureOutSharedElements.values());
-            list2.addAll(captureInSharedElements.values());
-            o3 = sharedElementTransition;
-        }
-        if (o == null && o2 == null && o3 == null) {
-            return null;
-        }
-        callSharedElementStartEnd(lastIn, firstOut, lastInIsPop, captureOutSharedElements, true);
-        Rect rect2;
-        if (o3 != null) {
-            list2.add(inEpicenterView);
-            FragmentTransitionCompat21.setSharedElementTargets(o3, inEpicenterView, list);
-            setOutEpicenter(o3, o2, captureOutSharedElements, fragmentTransition$FragmentContainerTransition.firstOutIsPop, fragmentTransition$FragmentContainerTransition.firstOutTransaction);
-            final Rect rect = new Rect();
-            final View view = inEpicenterView = getInEpicenterView(captureInSharedElements, fragmentTransition$FragmentContainerTransition, o, lastInIsPop);
-            rect2 = rect;
-            if (view != null) {
-                FragmentTransitionCompat21.setEpicenter(o, rect);
-                rect2 = rect;
-                inEpicenterView = view;
+        if (lastIn != null && firstOut != null) {
+            final boolean lastInIsPop = fragmentTransition$FragmentContainerTransition.lastInIsPop;
+            Object sharedElementTransition;
+            if (arrayMap.isEmpty()) {
+                sharedElementTransition = null;
+            }
+            else {
+                sharedElementTransition = getSharedElementTransition(lastIn, firstOut, lastInIsPop);
+            }
+            final ArrayMap<String, View> captureOutSharedElements = captureOutSharedElements(arrayMap, sharedElementTransition, fragmentTransition$FragmentContainerTransition);
+            final ArrayMap<String, View> captureInSharedElements = captureInSharedElements(arrayMap, sharedElementTransition, fragmentTransition$FragmentContainerTransition);
+            Object o3;
+            if (arrayMap.isEmpty()) {
+                if (captureOutSharedElements != null) {
+                    captureOutSharedElements.clear();
+                }
+                if (captureInSharedElements != null) {
+                    captureInSharedElements.clear();
+                    o3 = null;
+                }
+                else {
+                    o3 = null;
+                }
+            }
+            else {
+                addSharedElementsWithMatchingNames(list, captureOutSharedElements, arrayMap.keySet());
+                addSharedElementsWithMatchingNames(list2, captureInSharedElements, arrayMap.values());
+                o3 = sharedElementTransition;
+            }
+            if (o != null || o2 != null || o3 != null) {
+                callSharedElementStartEnd(lastIn, firstOut, lastInIsPop, captureOutSharedElements, true);
+                Rect rect2;
+                if (o3 != null) {
+                    list2.add(inEpicenterView);
+                    FragmentTransitionCompat21.setSharedElementTargets(o3, inEpicenterView, list);
+                    setOutEpicenter(o3, o2, captureOutSharedElements, fragmentTransition$FragmentContainerTransition.firstOutIsPop, fragmentTransition$FragmentContainerTransition.firstOutTransaction);
+                    final Rect rect = new Rect();
+                    final View view2 = inEpicenterView = getInEpicenterView(captureInSharedElements, fragmentTransition$FragmentContainerTransition, o, lastInIsPop);
+                    rect2 = rect;
+                    if (view2 != null) {
+                        FragmentTransitionCompat21.setEpicenter(o, rect);
+                        rect2 = rect;
+                        inEpicenterView = view2;
+                    }
+                }
+                else {
+                    rect2 = null;
+                    inEpicenterView = view;
+                }
+                OneShotPreDrawListener.add((View)viewGroup, new FragmentTransition$3(lastIn, firstOut, lastInIsPop, captureInSharedElements, inEpicenterView, rect2));
+                return o3;
             }
         }
-        else {
-            rect2 = null;
-            inEpicenterView = null;
-        }
-        viewGroup.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransition$3(viewGroup, lastIn, firstOut, lastInIsPop, captureInSharedElements, inEpicenterView, rect2));
-        return o3;
+        return null;
     }
     
     private static Object configureSharedElementsUnoptimized(final ViewGroup viewGroup, final View view, final ArrayMap<String, String> arrayMap, final FragmentTransition$FragmentContainerTransition fragmentTransition$FragmentContainerTransition, final ArrayList<View> list, final ArrayList<View> list2, final Object o, Object o2) {
@@ -446,13 +463,16 @@ class FragmentTransition
         else {
             o2 = null;
         }
-        viewGroup.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransition$4(viewGroup, arrayMap, sharedElementTransition, fragmentTransition$FragmentContainerTransition, list2, view, lastIn, firstOut, lastInIsPop, list, o, (Rect)o2));
+        OneShotPreDrawListener.add((View)viewGroup, new FragmentTransition$4(arrayMap, sharedElementTransition, fragmentTransition$FragmentContainerTransition, list2, view, lastIn, firstOut, lastInIsPop, list, o, (Rect)o2));
         return sharedElementTransition;
     }
     
     private static void configureTransitionsOptimized(final FragmentManagerImpl fragmentManagerImpl, final int n, final FragmentTransition$FragmentContainerTransition fragmentTransition$FragmentContainerTransition, final View view, final ArrayMap<String, String> arrayMap) {
-        final ViewGroup viewGroup = (ViewGroup)fragmentManagerImpl.mContainer.onFindViewById(n);
-        if (viewGroup != null) {
+        Object o = null;
+        if (fragmentManagerImpl.mContainer.onHasView()) {
+            o = fragmentManagerImpl.mContainer.onFindViewById(n);
+        }
+        if (o != null) {
             final Fragment lastIn = fragmentTransition$FragmentContainerTransition.lastIn;
             final Fragment firstOut = fragmentTransition$FragmentContainerTransition.firstOut;
             final boolean lastInIsPop = fragmentTransition$FragmentContainerTransition.lastInIsPop;
@@ -461,7 +481,7 @@ class FragmentTransition
             final ArrayList<View> list2 = new ArrayList<View>();
             final Object enterTransition = getEnterTransition(lastIn, lastInIsPop);
             final Object exitTransition = getExitTransition(firstOut, firstOutIsPop);
-            final Object configureSharedElementsOptimized = configureSharedElementsOptimized(viewGroup, view, arrayMap, fragmentTransition$FragmentContainerTransition, list2, list, enterTransition, exitTransition);
+            final Object configureSharedElementsOptimized = configureSharedElementsOptimized((ViewGroup)o, view, arrayMap, fragmentTransition$FragmentContainerTransition, list2, list, enterTransition, exitTransition);
             if (enterTransition != null || configureSharedElementsOptimized != null || exitTransition != null) {
                 final ArrayList<View> configureEnteringExitingViews = configureEnteringExitingViews(exitTransition, firstOut, list2, view);
                 final ArrayList<View> configureEnteringExitingViews2 = configureEnteringExitingViews(enterTransition, lastIn, list, view);
@@ -471,8 +491,8 @@ class FragmentTransition
                     replaceHide(exitTransition, firstOut, configureEnteringExitingViews);
                     final ArrayList<String> prepareSetNameOverridesOptimized = FragmentTransitionCompat21.prepareSetNameOverridesOptimized(list);
                     FragmentTransitionCompat21.scheduleRemoveTargets(mergeTransitions, enterTransition, configureEnteringExitingViews2, exitTransition, configureEnteringExitingViews, configureSharedElementsOptimized, list);
-                    FragmentTransitionCompat21.beginDelayedTransition(viewGroup, mergeTransitions);
-                    FragmentTransitionCompat21.setNameOverridesOptimized((View)viewGroup, list2, list, prepareSetNameOverridesOptimized, arrayMap);
+                    FragmentTransitionCompat21.beginDelayedTransition((ViewGroup)o, mergeTransitions);
+                    FragmentTransitionCompat21.setNameOverridesOptimized((View)o, list2, list, prepareSetNameOverridesOptimized, arrayMap);
                     setViewVisibility(configureEnteringExitingViews2, 0);
                     FragmentTransitionCompat21.swapSharedElementTargets(configureSharedElementsOptimized, list2, list);
                 }
@@ -481,8 +501,11 @@ class FragmentTransition
     }
     
     private static void configureTransitionsUnoptimized(final FragmentManagerImpl fragmentManagerImpl, final int n, final FragmentTransition$FragmentContainerTransition fragmentTransition$FragmentContainerTransition, final View view, final ArrayMap<String, String> arrayMap) {
-        final ViewGroup viewGroup = (ViewGroup)fragmentManagerImpl.mContainer.onFindViewById(n);
-        if (viewGroup != null) {
+        Object o = null;
+        if (fragmentManagerImpl.mContainer.onHasView()) {
+            o = fragmentManagerImpl.mContainer.onFindViewById(n);
+        }
+        if (o != null) {
             final Fragment lastIn = fragmentTransition$FragmentContainerTransition.lastIn;
             final Fragment firstOut = fragmentTransition$FragmentContainerTransition.firstOut;
             final boolean lastInIsPop = fragmentTransition$FragmentContainerTransition.lastInIsPop;
@@ -491,7 +514,7 @@ class FragmentTransition
             Object exitTransition = getExitTransition(firstOut, firstOutIsPop);
             final ArrayList<View> list = new ArrayList<View>();
             final ArrayList<View> list2 = new ArrayList<View>();
-            final Object configureSharedElementsUnoptimized = configureSharedElementsUnoptimized(viewGroup, view, arrayMap, fragmentTransition$FragmentContainerTransition, list, list2, enterTransition, exitTransition);
+            final Object configureSharedElementsUnoptimized = configureSharedElementsUnoptimized((ViewGroup)o, view, arrayMap, fragmentTransition$FragmentContainerTransition, list, list2, enterTransition, exitTransition);
             if (enterTransition != null || configureSharedElementsUnoptimized != null || exitTransition != null) {
                 final ArrayList<View> configureEnteringExitingViews = configureEnteringExitingViews(exitTransition, firstOut, list, view);
                 if (configureEnteringExitingViews == null || configureEnteringExitingViews.isEmpty()) {
@@ -502,10 +525,10 @@ class FragmentTransition
                 if (mergeTransitions != null) {
                     final ArrayList<View> list3 = new ArrayList<View>();
                     FragmentTransitionCompat21.scheduleRemoveTargets(mergeTransitions, enterTransition, list3, exitTransition, configureEnteringExitingViews, configureSharedElementsUnoptimized, list2);
-                    scheduleTargetChange(viewGroup, lastIn, view, list2, enterTransition, list3, exitTransition, configureEnteringExitingViews);
-                    FragmentTransitionCompat21.setNameOverridesUnoptimized((View)viewGroup, list2, arrayMap);
-                    FragmentTransitionCompat21.beginDelayedTransition(viewGroup, mergeTransitions);
-                    FragmentTransitionCompat21.scheduleNameReset(viewGroup, list2, arrayMap);
+                    scheduleTargetChange((ViewGroup)o, lastIn, view, list2, enterTransition, list3, exitTransition, configureEnteringExitingViews);
+                    FragmentTransitionCompat21.setNameOverridesUnoptimized((View)o, list2, arrayMap);
+                    FragmentTransitionCompat21.beginDelayedTransition((ViewGroup)o, mergeTransitions);
+                    FragmentTransitionCompat21.scheduleNameReset((ViewGroup)o, list2, arrayMap);
                 }
             }
         }
@@ -613,8 +636,7 @@ class FragmentTransition
         if (fragment != null && o != null && fragment.mAdded && fragment.mHidden && fragment.mHiddenChanged) {
             fragment.setHideReplaced(true);
             FragmentTransitionCompat21.scheduleHideFragmentView(o, fragment.getView(), list);
-            final ViewGroup mContainer = fragment.mContainer;
-            mContainer.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransition$1(mContainer, list));
+            OneShotPreDrawListener.add((View)fragment.mContainer, new FragmentTransition$1(list));
         }
     }
     
@@ -627,7 +649,7 @@ class FragmentTransition
     }
     
     private static void scheduleTargetChange(final ViewGroup viewGroup, final Fragment fragment, final View view, final ArrayList<View> list, final Object o, final ArrayList<View> list2, final Object o2, final ArrayList<View> list3) {
-        viewGroup.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new FragmentTransition$2(viewGroup, o, view, fragment, list, list2, list3, o2));
+        OneShotPreDrawListener.add((View)viewGroup, new FragmentTransition$2(o, view, fragment, list, list2, list3, o2));
     }
     
     private static void setOutEpicenter(final Object o, final Object o2, final ArrayMap<String, View> arrayMap, final boolean b, final BackStackRecord backStackRecord) {
