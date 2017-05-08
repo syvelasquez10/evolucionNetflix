@@ -17,11 +17,12 @@ import android.support.design.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.TextView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 public class Snackbar$SnackbarLayout extends LinearLayout
 {
-    private TextView mActionView;
+    private Button mActionView;
     private int mMaxInlineActionWidth;
     private int mMaxWidth;
     private TextView mMessageView;
@@ -41,7 +42,7 @@ public class Snackbar$SnackbarLayout extends LinearLayout
         }
         obtainStyledAttributes.recycle();
         this.setClickable(true);
-        LayoutInflater.from(context).inflate(R$layout.layout_snackbar_include, (ViewGroup)this);
+        LayoutInflater.from(context).inflate(R$layout.design_layout_snackbar_include, (ViewGroup)this);
     }
     
     private static void updateTopBottomPadding(final View view, final int n, final int n2) {
@@ -83,7 +84,7 @@ public class Snackbar$SnackbarLayout extends LinearLayout
         }
     }
     
-    TextView getActionView() {
+    Button getActionView() {
         return this.mActionView;
     }
     
@@ -94,7 +95,7 @@ public class Snackbar$SnackbarLayout extends LinearLayout
     protected void onFinishInflate() {
         super.onFinishInflate();
         this.mMessageView = (TextView)this.findViewById(R$id.snackbar_text);
-        this.mActionView = (TextView)this.findViewById(R$id.snackbar_action);
+        this.mActionView = (Button)this.findViewById(R$id.snackbar_action);
     }
     
     protected void onLayout(final boolean b, final int n, final int n2, final int n3, final int n4) {
@@ -114,8 +115,8 @@ public class Snackbar$SnackbarLayout extends LinearLayout
                 super.onMeasure(measureSpec, n2);
             }
         }
-        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(R$dimen.snackbar_padding_vertical_2lines);
-        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(R$dimen.snackbar_padding_vertical);
+        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(R$dimen.design_snackbar_padding_vertical_2lines);
+        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(R$dimen.design_snackbar_padding_vertical);
         if (this.mMessageView.getLayout().getLineCount() > 1) {
             n = 1;
         }

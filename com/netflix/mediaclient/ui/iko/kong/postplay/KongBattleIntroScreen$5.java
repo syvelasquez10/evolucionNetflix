@@ -52,17 +52,26 @@ class KongBattleIntroScreen$5 implements View$OnClickListener
         if (!hasTimerExpired) {
             this.this$0.postPlayManager.setUserInteraction();
         }
-        int battleWinVideoId = this.this$0.postPlayManager.getBattleWinVideoId();
+        final int battleWinVideoId = this.this$0.postPlayManager.getBattleWinVideoId();
         final int battleLoseVideoId = this.this$0.postPlayManager.getBattleLoseVideoId();
+        int battleWinTrackId = this.this$0.postPlayManager.getBattleWinTrackId();
+        final int battleLoseTrackId = this.this$0.postPlayManager.getBattleLoseTrackId();
+        int n;
+        if (!this.this$0.isBattleResultWin) {
+            n = battleWinVideoId;
+        }
+        else {
+            n = battleLoseVideoId;
+        }
+        if (this.this$0.isBattleResultWin) {
+            battleWinTrackId = battleLoseTrackId;
+        }
         if (this.this$0.postPlayManager.postPlayState == KongInteractivePostPlayManager$POST_PLAY_STATE.RESULT && !this.this$0.hasWatchedAllBattlesForEpisode) {
-            if (this.this$0.isBattleResultWin) {
-                battleWinVideoId = battleLoseVideoId;
-            }
-            this.this$0.postPlayManager.startPlayback(battleWinVideoId, VideoType.MOVIE, hasTimerExpired);
+            this.this$0.postPlayManager.startPlayback(n, battleWinTrackId, VideoType.MOVIE, hasTimerExpired);
             return;
         }
         if (this.this$0.postPlayManager.postPlayState == KongInteractivePostPlayManager$POST_PLAY_STATE.POWERUP || battleWinVideoId == battleLoseVideoId) {
-            this.this$0.postPlayManager.startPlayback(battleWinVideoId, VideoType.MOVIE, hasTimerExpired);
+            this.this$0.postPlayManager.startPlayback(battleWinVideoId, battleWinTrackId, VideoType.MOVIE, hasTimerExpired);
             return;
         }
         this.this$0.postPlayManager.showGearSelection();

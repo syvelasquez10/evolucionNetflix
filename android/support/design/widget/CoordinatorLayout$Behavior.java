@@ -8,10 +8,18 @@ import android.view.View$BaseSavedState;
 import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.support.v4.view.WindowInsetsCompat;
+import android.util.AttributeSet;
+import android.content.Context;
 import android.view.View;
 
 public abstract class CoordinatorLayout$Behavior<V extends View>
 {
+    public CoordinatorLayout$Behavior() {
+    }
+    
+    public CoordinatorLayout$Behavior(final Context context, final AttributeSet set) {
+    }
+    
     public boolean blocksInteractionBelow(final CoordinatorLayout coordinatorLayout, final V v) {
         return this.getScrimOpacity(coordinatorLayout, v) > 0.0f;
     }

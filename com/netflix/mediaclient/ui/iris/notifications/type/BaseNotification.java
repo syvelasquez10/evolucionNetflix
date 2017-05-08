@@ -41,7 +41,7 @@ public abstract class BaseNotification
     }
     
     public static final NotificationViewHolder getViewHolder(final View view, final IrisNotificationSummary$NotificationTypes irisNotificationSummary$NotificationTypes) {
-        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131624645), (AdvancedImageView)view.findViewById(2131624319), (TextView)view.findViewById(2131624318), (TextView)view.findViewById(2131624316), (TextView)view.findViewById(2131624317), (TextView)view.findViewById(2131624647), (Button)view.findViewById(2131624648), (Button)view.findViewById(2131624649), view.findViewById(2131624646), view.findViewById(2131624644), (AdvancedImageView)view.findViewById(2131624315), view.findViewById(2131624314));
+        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131690275), (AdvancedImageView)view.findViewById(2131689902), (TextView)view.findViewById(2131689901), (TextView)view.findViewById(2131689899), (TextView)view.findViewById(2131689900), (TextView)view.findViewById(2131690277), (Button)view.findViewById(2131690278), (Button)view.findViewById(2131690279), view.findViewById(2131690276), view.findViewById(2131690274), (AdvancedImageView)view.findViewById(2131689898), view.findViewById(2131689897));
     }
     
     public static void showSingleLineText(final NotificationViewHolder notificationViewHolder, final int text) {

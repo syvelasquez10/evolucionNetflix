@@ -43,6 +43,7 @@ import java.util.Map;
 import android.view.ViewTreeObserver$OnPreDrawListener;
 import java.util.concurrent.atomic.AtomicBoolean;
 import android.widget.LinearLayout;
+import android.graphics.Point;
 
 class EnhancedSubtitleManager$3 implements Runnable
 {

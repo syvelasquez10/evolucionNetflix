@@ -89,6 +89,16 @@ class ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl implements V
     }
     
     @Override
+    public void scaleX(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        this.postStartMessage(viewPropertyAnimatorCompat, view);
+    }
+    
+    @Override
+    public void scaleY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        this.postStartMessage(viewPropertyAnimatorCompat, view);
+    }
+    
+    @Override
     public void setDuration(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final long n) {
     }
     

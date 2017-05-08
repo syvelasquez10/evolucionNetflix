@@ -6,5 +6,5 @@ package com.viewpagerindicator;
 
 public final class R$integer
 {
-    public static final int default_circle_indicator_orientation = 2131427337;
+    public static final int default_circle_indicator_orientation = 2131492873;
 }

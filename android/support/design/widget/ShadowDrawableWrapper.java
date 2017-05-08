@@ -48,9 +48,9 @@ class ShadowDrawableWrapper extends DrawableWrapper
         this.mDirty = true;
         this.mAddPaddingForCorners = true;
         this.mPrintedShadowClipWarning = false;
-        this.mShadowStartColor = resources.getColor(R$color.shadow_start_color);
-        this.mShadowMiddleColor = resources.getColor(R$color.shadow_mid_color);
-        this.mShadowEndColor = resources.getColor(R$color.shadow_end_color);
+        this.mShadowStartColor = resources.getColor(R$color.design_fab_shadow_start_color);
+        this.mShadowMiddleColor = resources.getColor(R$color.design_fab_shadow_mid_color);
+        this.mShadowEndColor = resources.getColor(R$color.design_fab_shadow_end_color);
         (this.mCornerShadowPaint = new Paint(5)).setStyle(Paint$Style.FILL);
         this.mCornerRadius = Math.round(n);
         this.mContentBounds = new RectF();

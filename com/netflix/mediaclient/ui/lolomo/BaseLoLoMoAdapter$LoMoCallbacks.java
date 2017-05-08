@@ -6,12 +6,16 @@ package com.netflix.mediaclient.ui.lolomo;
 
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
+import android.widget.RelativeLayout$LayoutParams;
+import android.graphics.Typeface;
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AbsListView;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
+import com.netflix.mediaclient.util.Coppola2Utils;
 import android.widget.ListView;
 import com.netflix.mediaclient.util.ViewUtils;
+import android.app.Activity;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.Iterator;

@@ -13,6 +13,8 @@ import com.netflix.mediaclient.service.mdx.message.target.PlayerStateChanged;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerCurrentState;
 import org.json.JSONException;
 import com.netflix.mediaclient.service.mdx.message.target.HandshakeAccepted;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.NetflixApplication;
 import org.json.JSONObject;
 import java.security.InvalidParameterException;
 import com.netflix.mediaclient.util.WebApiUtils;
@@ -313,15 +315,17 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
         }
         else {
             String s2 = null;
-            Label_0113: {
+            Label_0122: {
                 if (!StringUtils.isNotEmpty(this.mDialUuid)) {
-                    break Label_0113;
+                    break Label_0122;
                 }
                 s2 = this.mDialUuid;
                 while (true) {
-                    this.scheduleStateCheck();
+                    if (!BrowseExperience.shouldShowMemento(NetflixApplication.getContext())) {
+                        this.scheduleStateCheck();
+                    }
                     if (!"HANDSHAKE_ACCEPTED".equals(s)) {
-                        break Label_0113;
+                        break Label_0122;
                     }
                     try {
                         if (new HandshakeAccepted(jsonObject).isAccepted()) {

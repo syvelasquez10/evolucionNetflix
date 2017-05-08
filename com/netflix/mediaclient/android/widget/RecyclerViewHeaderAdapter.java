@@ -153,6 +153,11 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         this.notifyDataSetChanged();
     }
     
+    public void clearItemChecked() {
+        this.itemCheckedPosition = -1;
+        this.notifyDataSetChanged();
+    }
+    
     public int getCheckedItemPosition() {
         return this.itemCheckedPosition;
     }

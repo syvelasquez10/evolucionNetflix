@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.player.subtitles;
 
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.service.net.DnsManager;
 import java.io.File;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -582,9 +583,9 @@ public class TextSubtitleParser extends BaseTextSubtitleParser
         return this.mUserDefaults;
     }
     
-    protected void handleDownloadedSubtitleData(final byte[] array, final String s) {
+    protected void handleDownloadedSubtitleData(final byte[] array, final String s, final String[] array2) {
         Log.d("nf_subtitles", "MEDIA_SUBTITLE_DATA 100");
-        new BackgroundTask().execute(new TextSubtitleParser$2(this, array, s));
+        new BackgroundTask().execute(new TextSubtitleParser$2(this, array, s, array2));
     }
     
     protected boolean handleImport() {
@@ -611,13 +612,22 @@ public class TextSubtitleParser extends BaseTextSubtitleParser
     }
     
     protected void handleSubtitleData(final String s) {
+        final String[] nameServers = DnsManager.getInstance().getNameServers();
         if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Download file " + s);
         }
         if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Subtitles download started from URL " + s);
+            if (nameServers == null || nameServers.length < 1) {
+                Log.d("nf_subtitles", "Name servers missing");
+            }
+            else {
+                for (int length = nameServers.length, i = 0; i < length; ++i) {
+                    Log.d("nf_subtitles", "Name server: " + nameServers[i]);
+                }
+            }
         }
-        this.mPlayer.getResourceFetcher().fetchResourceDirectly(s, IClientLogging$AssetType.subtitles, new TextSubtitleParser$1(this, s));
+        this.mPlayer.getResourceFetcher().fetchResourceDirectly(s, IClientLogging$AssetType.subtitles, new TextSubtitleParser$1(this, s, nameServers));
         Log.d("nf_subtitles", "Subtitles download start done.");
     }
     
@@ -638,7 +648,7 @@ public class TextSubtitleParser extends BaseTextSubtitleParser
     @Override
     public void load() {
         if (!this.handleImport()) {
-            this.handleSubtitleData(this.mSubtitleData.getUrl());
+            this.handleSubtitleData(this.mSubtitleData.getDownloadUrl());
         }
     }
     

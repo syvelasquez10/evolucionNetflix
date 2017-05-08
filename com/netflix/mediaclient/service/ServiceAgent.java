@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.ThreadUtils;
+import com.netflix.mediaclient.service.logging.perf.AgentPerfHelper;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import android.content.Context;
@@ -121,6 +122,7 @@ public abstract class ServiceAgent
     
     public final void init(final ServiceAgent$AgentContext serviceAgent$AgentContext, final ServiceAgent$InitCallback initCallback) {
         synchronized (this) {
+            AgentPerfHelper.startSession(this);
             ThreadUtils.assertOnMain();
             Log.d("nf_service_ServiceAgent", "Request to init " + this.getClass().getSimpleName());
             if (this.initCalled) {
@@ -141,6 +143,7 @@ public abstract class ServiceAgent
     
     protected final void initCompleted(final Status initErrorResult) {
         synchronized (this) {
+            AgentPerfHelper.endSession(this);
             this.initErrorResult = initErrorResult;
             if (Log.isLoggable()) {
                 Log.d("nf_service_ServiceAgent", "InitComplete with errorCode " + this.initErrorResult + " for " + this.getClass().getSimpleName());

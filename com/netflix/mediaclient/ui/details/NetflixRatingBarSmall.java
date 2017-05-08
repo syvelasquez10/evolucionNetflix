@@ -23,11 +23,11 @@ public class NetflixRatingBarSmall extends NetflixRatingBar
     
     @Override
     protected int getNetflixStarRatingDrawableId() {
-        return 2130837948;
+        return 2130837960;
     }
     
     @Override
     protected int getUserStarRatingDrawableId() {
-        return 2130837951;
+        return 2130837963;
     }
 }

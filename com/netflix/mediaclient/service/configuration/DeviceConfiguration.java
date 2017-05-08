@@ -66,7 +66,6 @@ public class DeviceConfiguration
     private int mUserSessionDurationInSeconds;
     private int mVideoResolutionOverride;
     private VoipConfiguration mVoipConfiguration;
-    private int mVoipConfirmationDialogAllocationPercentage;
     
     static {
         DeviceConfiguration.TAG = "nf_configuration_device";
@@ -99,7 +98,7 @@ public class DeviceConfiguration
             this.mIsWidevineL1Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l1", false);
             this.mIsWidevineL3Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l3", false);
         }
-        this.mIsDynecomSignInEnabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_dynecom_signin", false);
+        this.mIsDynecomSignInEnabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_dynecom_signin", true);
         this.mIsVoipEnabledOnDevice = PreferenceUtils.getBooleanPref(this.mContext, "enable_voip_on_device", false);
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
         this.mBreadcrumbLoggingSpecification = BreadcrumbLoggingSpecification.loadFromPreferences(mContext);
@@ -117,7 +116,6 @@ public class DeviceConfiguration
         this.mIgnorePreloadForPlayBilling = PreferenceUtils.getBooleanPref(this.mContext, "ignore_preload_playbilling", false);
         this.mVoipConfiguration = VoipConfiguration.loadFromPreferences(mContext);
         this.mSubtitleDownloadRetryPolicy = SubtitleDownloadRetryPolicy.loadFromPreferences(mContext);
-        this.mVoipConfirmationDialogAllocationPercentage = PreferenceUtils.getIntPref(this.mContext, "voip_confirmation_dialog", 25);
         if (Log.isLoggable()) {
             Log.d(DeviceConfiguration.TAG, "constructor DeviceConfiguration: Disable mIsVoipEnabledOnDevice " + this.mIsVoipEnabledOnDevice + ", disabledInCode? " + false);
         }
@@ -460,10 +458,6 @@ public class DeviceConfiguration
         return this.mVoipConfiguration;
     }
     
-    public int getVoipConfirmationDialogAllocationPercentage() {
-        return this.mVoipConfirmationDialogAllocationPercentage;
-    }
-    
     public int getmAudioFormat() {
         return this.mAudioFormat;
     }
@@ -575,7 +569,6 @@ public class DeviceConfiguration
         netflixPreference.putBooleanPref("disable_playbilling", deviceConfigData.isPlayBillingDisabled());
         this.mIgnorePreloadForPlayBilling = deviceConfigData.toIgnorePrelaodForPlayBilling();
         netflixPreference.putBooleanPref("ignore_preload_playbilling", deviceConfigData.toIgnorePrelaodForPlayBilling());
-        netflixPreference.putIntPref("voip_confirmation_dialog", this.mVoipConfirmationDialogAllocationPercentage = deviceConfigData.getVoipConfirmationDialogAllocationPercentage());
         netflixPreference.putBooleanPref("disable_cast_faststart", this.mDisableCastFaststart = deviceConfigData.getDisableCastFaststart());
         netflixPreference.putBooleanPref("disable_data_saver", this.mDisableDataSaver = deviceConfigData.getDisableDataSaver());
         if (!this.isDeviceConfigInCache()) {

@@ -17,15 +17,15 @@ public class AccountSettingsUnavailableAlertDialog extends NetflixDialogFrag
 {
     protected static AccountSettingsUnavailableAlertDialog createAccountSettingsUnavailableAlertDialog(final NetflixActivity netflixActivity) {
         final AccountSettingsUnavailableAlertDialog accountSettingsUnavailableAlertDialog = new AccountSettingsUnavailableAlertDialog();
-        accountSettingsUnavailableAlertDialog.setStyle(1, 2131361916);
+        accountSettingsUnavailableAlertDialog.setStyle(1, 2131427452);
         return accountSettingsUnavailableAlertDialog;
     }
     
     public Dialog onCreateDialog(final Bundle bundle) {
         super.onCreate(bundle);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setPositiveButton(2131165588, (DialogInterface$OnClickListener)new AccountSettingsUnavailableAlertDialog$1(this));
-        alertDialog$Builder.setMessage((CharSequence)this.getString(2131165361));
+        alertDialog$Builder.setPositiveButton(2131231125, (DialogInterface$OnClickListener)new AccountSettingsUnavailableAlertDialog$1(this));
+        alertDialog$Builder.setMessage((CharSequence)this.getString(2131230898));
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
         return (Dialog)create;

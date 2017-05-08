@@ -7,5 +7,6 @@ package com.netflix.mediaclient.ui.iko.model;
 public enum InteractiveMomentsModel$INTERACTIVE_MOMENTS_TYPE
 {
     KONG, 
-    UNKNOWN;
+    UNKNOWN, 
+    WORD_PARTY;
 }

@@ -70,9 +70,6 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     }
     
     private void castLaunchApplication(final MediaRouter$RouteInfo mediaRouter$RouteInfo) {
-        if (this.mSelectedMdxCastApp != null) {
-            this.mSelectedMdxCastApp.stop();
-        }
         if (mediaRouter$RouteInfo == null) {
             this.onFailToLaunch("launch route is null");
             return;
@@ -257,21 +254,22 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         this.mPreviousDiscoveryTime = System.currentTimeMillis();
         this.mMapOfRoutes.clear();
         this.mMediaRouter.addCallback(this.mMediaRouteSelector, this, 1);
-        this.mSelectedRoute = this.mMediaRouter.getSelectedRoute();
-        if (this.mSelectedRoute != null && this.mSelectedRoute.matchesSelector(this.mMediaRouteSelector)) {
+        final MediaRouter$RouteInfo selectedRoute = this.mMediaRouter.getSelectedRoute();
+        if (selectedRoute != null && selectedRoute.matchesSelector(this.mMediaRouteSelector)) {
+            this.mSelectedRoute = selectedRoute;
             this.onRouteAdded(this.mMediaRouter, this.mSelectedRoute);
         }
     }
     
     private void stopDiscovery() {
         Log.d(CastManager.TAG, "stopDiscovery");
-        this.mPreviousDiscoveryTime = 0L;
-        this.mSelectedRoute = null;
-        this.mMapOfRoutes.clear();
-        if (this.mMediaRouter != null) {
+        if (this.mMediaRouter != null && this.mMediaRouter.getSelectedRoute() != null && this.mSelectedRoute != null && this.mMediaRouter.getSelectedRoute().equals(this.mSelectedRoute)) {
             this.mMediaRouter.unselect(3);
             this.mMediaRouter.removeCallback(this);
         }
+        this.mPreviousDiscoveryTime = 0L;
+        this.mSelectedRoute = null;
+        this.mMapOfRoutes.clear();
         Log.d(CastManager.TAG, "stopDiscovery done");
     }
     

@@ -405,9 +405,11 @@ public final class FileUtils
         return byteArrayOutputStream.toByteArray();
     }
     
-    public static void writeStringToFile(final String s, final String s2, final String s3) {
+    public static boolean writeStringToFile(final String s, final String s2, final String s3) {
         try {
             final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + s3);
+            file.getParentFile().mkdirs();
+            file.createNewFile();
             final FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(s2);
             fileWriter.close();
@@ -415,9 +417,11 @@ public final class FileUtils
             Log.v(s, "Wrote string to file: " + file);
             Log.v(s, "Get file with command: adb pull /sdcard/" + s3);
             Log.v(s, "*****************************************************************");
+            return true;
         }
         catch (IOException ex) {
             Log.handleException(s, ex);
+            return false;
         }
     }
 }

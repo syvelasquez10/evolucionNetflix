@@ -34,7 +34,9 @@ public class KongGearSelectionScreen extends KongBaseScreen
     private static final String TAG = "KongGearSelectionScreen";
     private int autoPlayInterval;
     private KongBattleIntroScreen battleIntroScreen;
+    private int battleLoseTrackId;
     private int battleLoseVideoId;
+    private int battleWinTrackId;
     private int battleWinVideoId;
     private Bitmap bitmapGear1;
     private Bitmap bitmapGear2;
@@ -98,8 +100,16 @@ public class KongGearSelectionScreen extends KongBaseScreen
         this.gear2Group.setClickable(true);
     }
     
+    int getBattleLoseTrackId() {
+        return this.battleLoseTrackId;
+    }
+    
     int getBattleLostVideoId() {
         return this.battleLoseVideoId;
+    }
+    
+    int getBattleWinTrackId() {
+        return this.battleWinTrackId;
     }
     
     int getBattleWinVideoId() {
@@ -114,28 +124,28 @@ public class KongGearSelectionScreen extends KongBaseScreen
     
     @Override
     void initViews(final View view) {
-        this.gear1Group = (ViewGroup)view.findViewById(2131624464);
-        this.gear2Group = (ViewGroup)view.findViewById(2131624465);
+        this.gear1Group = (ViewGroup)view.findViewById(2131690062);
+        this.gear2Group = (ViewGroup)view.findViewById(2131690063);
         this.leftGateWidth = DeviceUtils.getScreenWidthInPixels((Context)this.postPlayManager.getActivity());
         this.rightGateWidth = this.leftGateWidth;
         if (this.gear1Group != null) {
-            this.gear1 = (ImageView)this.gear1Group.findViewById(2131624020);
-            this.gear1Background = (ImageView)this.gear1Group.findViewById(2131624263);
-            final PressAnimationFrameLayout pressAnimationFrameLayout = (PressAnimationFrameLayout)this.gear1Group.findViewById(2131624262);
+            this.gear1 = (ImageView)this.gear1Group.findViewById(2131689561);
+            this.gear1Background = (ImageView)this.gear1Group.findViewById(2131689853);
+            final PressAnimationFrameLayout pressAnimationFrameLayout = (PressAnimationFrameLayout)this.gear1Group.findViewById(2131689852);
             ViewUtils.setVisibleOrGone((View)this.gear1Background, false);
-            this.gear1Title = (TextView)this.gear1Group.findViewById(2131624024);
-            this.gear1Timer = (TextView)this.gear1Group.findViewById(2131624264);
+            this.gear1Title = (TextView)this.gear1Group.findViewById(2131689565);
+            this.gear1Timer = (TextView)this.gear1Group.findViewById(2131689854);
             final KongGearSelectionScreen$BattleResultClickListener onClickListener = new KongGearSelectionScreen$BattleResultClickListener(this, 0);
             this.gear1Group.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(pressAnimationFrameLayout.getPressedStateHandler(), (View$OnClickListener)onClickListener));
             this.gear1Timer.setOnClickListener((View$OnClickListener)onClickListener);
         }
         if (this.gear2Group != null) {
-            this.gear2 = (ImageView)this.gear2Group.findViewById(2131624020);
-            this.gear2Background = (ImageView)this.gear2Group.findViewById(2131624263);
-            final PressAnimationFrameLayout pressAnimationFrameLayout2 = (PressAnimationFrameLayout)this.gear2Group.findViewById(2131624262);
+            this.gear2 = (ImageView)this.gear2Group.findViewById(2131689561);
+            this.gear2Background = (ImageView)this.gear2Group.findViewById(2131689853);
+            final PressAnimationFrameLayout pressAnimationFrameLayout2 = (PressAnimationFrameLayout)this.gear2Group.findViewById(2131689852);
             ViewUtils.setVisibleOrGone((View)this.gear2Background, false);
-            this.gear2Title = (TextView)this.gear2Group.findViewById(2131624024);
-            this.gear2Timer = (TextView)this.gear2Group.findViewById(2131624264);
+            this.gear2Title = (TextView)this.gear2Group.findViewById(2131689565);
+            this.gear2Timer = (TextView)this.gear2Group.findViewById(2131689854);
             final KongGearSelectionScreen$BattleResultClickListener onClickListener2 = new KongGearSelectionScreen$BattleResultClickListener(this, 1);
             this.gear2Group.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(pressAnimationFrameLayout2.getPressedStateHandler(), (View$OnClickListener)onClickListener2));
             this.gear2Timer.setOnClickListener((View$OnClickListener)onClickListener2);
@@ -157,10 +167,14 @@ public class KongGearSelectionScreen extends KongBaseScreen
             if ("Win".equalsIgnoreCase(this.gear1Item.getItemResult())) {
                 this.battleLoseVideoId = this.gear2Item.getVideoId();
                 this.battleWinVideoId = this.gear1Item.getVideoId();
+                this.battleWinTrackId = this.gear1Item.getTrackId();
+                this.battleLoseTrackId = this.gear2Item.getTrackId();
             }
             else {
                 this.battleWinVideoId = this.gear2Item.getVideoId();
                 this.battleLoseVideoId = this.gear1Item.getVideoId();
+                this.battleWinTrackId = this.gear2Item.getTrackId();
+                this.battleLoseTrackId = this.gear1Item.getTrackId();
             }
             this.gear1BadgeUrl = this.gear1Item.getBadgeUrl();
             this.gear2BadgeUrl = this.gear2Item.getBadgeUrl();

@@ -4,25 +4,26 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import android.widget.FrameLayout$LayoutParams;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
-import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import java.util.HashMap;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.content.res.Resources;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.model.leafs.originals.BillboardDateBadge;
+import com.netflix.model.leafs.originals.BillboardAwardsHeadline;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
-import com.netflix.model.leafs.originals.BillboardLogo;
-import java.util.HashMap;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.net.Uri;
 import com.netflix.mediaclient.ui.common.MediaPlayerWrapper$PlaybackEventsListener;
-import android.text.TextUtils;
 import com.netflix.model.leafs.originals.BillboardBackground;
-import com.netflix.model.leafs.originals.BillboardSummary;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
@@ -31,9 +32,9 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
+import android.text.TextUtils;
+import com.netflix.model.leafs.originals.BillboardSummary;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.model.leafs.originals.BillboardCTA;
@@ -54,8 +55,8 @@ import android.view.View;
 import java.util.Map;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.Button;
+import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import android.widget.RelativeLayout;
@@ -66,6 +67,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
     public static final float MUTE_VOLUME = 0.0f;
     private static final String TAG = "BillboardView";
     private AddToListData$StateListener addToListWrapper;
+    private AdvancedImageView awardsHeadline;
     private Button cta1Button;
     private Button cta2Button;
     private AdvancedImageView dateBadge;
@@ -74,6 +76,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
     private Map<String, String> impressionParams;
     private TextView info;
     private Button infoButton;
+    private TextView infoPhone;
     private String infoText;
     private View infoViewGroup;
     private View infoWrapper;
@@ -161,15 +164,34 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         this.cta1Button.setVisibility(8);
     }
     
-    private String getDefaultInfoText(final Billboard billboard) {
-        CharSequence charSequence;
-        if (billboard.getType() == VideoType.MOVIE) {
-            charSequence = StringUtils.getBasicMovieInfoString(this.getContext(), billboard.getYear(), billboard.getCertification(), billboard.getRuntime());
+    private View$OnClickListener generateDetailsClickListener() {
+        return (View$OnClickListener)new BillboardView$2(this, ((NetflixActivity)this.getContext()).getServiceManager());
+    }
+    
+    private String getInfoText(final BillboardSummary billboardSummary) {
+        this.infoText = billboardSummary.getSupplementalMessage();
+        final String string = this.getResources().getString(2131230916);
+        if (this.isNSREEpisodic(billboardSummary) && !this.showArtworkOnly) {
+            String infoText;
+            if (!TextUtils.isEmpty((CharSequence)billboardSummary.getTitle())) {
+                infoText = this.getResources().getString(2131231062, new Object[] { billboardSummary.getTitle() });
+            }
+            else {
+                infoText = this.infoText;
+            }
+            this.infoText = infoText;
         }
-        else {
-            charSequence = StringUtils.getBasicShowInfoString(this.getContext(), billboard.getYear(), billboard.getCertification(), billboard.getNumSeasonsLabel());
+        LoMoUtils.toggleEpisodeBadge(billboardSummary.getBadgeKeys(), this.episodeBadge);
+        if (this.isNSREShow(billboardSummary) && this.showArtworkOnly) {
+            this.infoText = string;
         }
-        return (String)charSequence;
+        if (!TextUtils.isEmpty((CharSequence)this.infoText)) {
+            this.info.setTypeface(this.info.getTypeface(), 1);
+        }
+        else if (this.showArtworkOnly) {
+            this.infoText = string;
+        }
+        return this.infoText;
     }
     
     private void hideMotionBB() {
@@ -185,18 +207,20 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         this.setFocusable(true);
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         this.detailsListener = new VideoDetailsClickListener(netflixActivity, this);
-        netflixActivity.getLayoutInflater().inflate(2130903071, (ViewGroup)this);
-        this.infoViewGroup = this.findViewById(2131624074);
-        this.info = (TextView)this.findViewById(2131624078);
-        this.infoWrapper = this.findViewById(2131624076);
-        this.episodeBadge = (TextView)this.findViewById(2131624077);
-        this.dateBadge = (AdvancedImageView)this.findViewById(2131624079);
-        this.synopsis = (TextView)this.findViewById(2131624080);
-        this.tvCard = (AdvancedImageView)this.findViewById(2131624075);
-        this.storyArtFrame = (FrameLayout)this.findViewById(2131624069);
-        this.storyArt = (TopCropImageView)this.findViewById(2131624070);
-        this.motionStoryArt = (TextureView)this.findViewById(2131624071);
-        this.muteButton = (TextView)this.findViewById(2131624086);
+        netflixActivity.getLayoutInflater().inflate(2130903077, (ViewGroup)this);
+        this.infoViewGroup = this.findViewById(2131689660);
+        this.info = (TextView)this.findViewById(2131689665);
+        this.infoPhone = (TextView)this.findViewById(2131689657);
+        this.infoWrapper = this.findViewById(2131689663);
+        this.episodeBadge = (TextView)this.findViewById(2131689664);
+        this.dateBadge = (AdvancedImageView)this.findViewById(2131689666);
+        this.awardsHeadline = (AdvancedImageView)this.findViewById(2131689661);
+        this.synopsis = (TextView)this.findViewById(2131689667);
+        this.tvCard = (AdvancedImageView)this.findViewById(2131689662);
+        this.storyArtFrame = (FrameLayout)this.findViewById(2131689654);
+        this.storyArt = (TopCropImageView)this.findViewById(2131689655);
+        this.motionStoryArt = (TextureView)this.findViewById(2131689656);
+        this.muteButton = (TextView)this.findViewById(2131689673);
         if (netflixActivity.getServiceManager() != null) {
             this.isTablet = netflixActivity.getServiceManager().isTablet();
         }
@@ -212,14 +236,14 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             n = DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) / 3;
         }
         ViewUtils.setPaddingStart((View)this.storyArtFrame, n);
-        this.shadowOverlay = this.findViewById(2131624072);
+        this.shadowOverlay = this.findViewById(2131689658);
         ((RelativeLayout$LayoutParams)this.shadowOverlay.getLayoutParams()).width = n;
-        this.shadowOverlayGradient = this.findViewById(2131624073);
+        this.shadowOverlayGradient = this.findViewById(2131689659);
         ((RelativeLayout$LayoutParams)this.shadowOverlayGradient.getLayoutParams()).setMarginStart(n);
-        this.cta1Button = (Button)this.findViewById(2131624082);
-        this.cta2Button = (Button)this.findViewById(2131624083);
-        this.myListButton = (Button)this.findViewById(2131624084);
-        this.infoButton = (Button)this.findViewById(2131624085);
+        this.cta1Button = (Button)this.findViewById(2131689669);
+        this.cta2Button = (Button)this.findViewById(2131689670);
+        this.myListButton = (Button)this.findViewById(2131689671);
+        this.infoButton = (Button)this.findViewById(2131689672);
         this.updateViewVisibility();
         if (PersistentConfig.getMotionBBTestCell(this.getContext()).ordinal() == ABTestConfig$Cell.CELL_TWO.ordinal()) {
             motionBillboardsEnabled = true;
@@ -240,18 +264,18 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         return this.isBillboardType(billboardSummary, BillboardView$BillboardType.NSRE_SHOW);
     }
     
-    private void setCustomBackground(final BillboardBackground billboardBackground) {
+    private void setTonedBackground(final BillboardBackground billboardBackground) {
         if (billboardBackground != null) {
             this.storyArtUrl = billboardBackground.getUrl();
             if (!billboardBackground.getTone().equals("light")) {
-                this.synopsis.setTextColor(this.getResources().getColor(2131558415));
-                this.synopsis.setShadowLayer(2.0f, 0.0f, -1.0f, 2131558586);
-                this.info.setTextColor(this.getResources().getColor(2131558608));
-                this.info.setShadowLayer(2.0f, 0.0f, -1.0f, 2131558586);
+                this.synopsis.setTextColor(this.getResources().getColor(2131623959));
+                this.synopsis.setShadowLayer(2.0f, 0.0f, -1.0f, 2131624139);
+                this.info.setTextColor(this.getResources().getColor(2131624162));
+                this.info.setShadowLayer(2.0f, 0.0f, -1.0f, 2131624139);
                 return;
             }
-            this.synopsis.setTextColor(this.getResources().getColor(2131558416));
-            this.info.setTextColor(this.getResources().getColor(2131558417));
+            this.synopsis.setTextColor(this.getResources().getColor(2131623960));
+            this.info.setTextColor(this.getResources().getColor(2131623961));
             this.info.setShadowLayer(0.0f, 0.0f, 0.0f, 0);
             this.synopsis.setShadowLayer(0.0f, 0.0f, 0.0f, 0);
         }
@@ -304,7 +328,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
                 }
                 final ServiceManager serviceManager = ((NetflixActivity)this.getContext()).getServiceManager();
                 if (TextUtils.equals((CharSequence)this.video.getId(), (CharSequence)billboardCTA.getVideoId())) {
-                    this.AddPlayableToCTA(this.video, button, bookmarkPosition);
+                    this.addPlayableToCTA(this.video, button, bookmarkPosition);
                     return;
                 }
                 if (billboardCTA.getName().toLowerCase().contains("trailer") || billboardCTA.getName().toLowerCase().contains("recap")) {
@@ -348,7 +372,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
     
     private void showMDPButton() {
         this.infoButton.setVisibility(0);
-        this.infoButton.setOnClickListener((View$OnClickListener)new BillboardView$2(this, ((NetflixActivity)this.getContext()).getServiceManager()));
+        this.infoButton.setOnClickListener(this.generateDetailsClickListener());
     }
     
     private void showMotionBB() {
@@ -368,47 +392,27 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         this.updateMyListState();
     }
     
-    private void showOriginalBillboard(final Billboard billboard, final VideoType videoType) {
-        final BillboardSummary billboardSummary = billboard.getBillboardSummary();
+    private void updateAwardsHeadline(final BillboardSummary billboardSummary) {
+        BillboardAwardsHeadline awardsHeadline;
         if (billboardSummary != null) {
-            (this.impressionParams = new HashMap<String, String>()).put("awardCampaign", billboardSummary.getAwardTrackId());
-            this.impressionParams.put("billboardTheme", billboardSummary.getBillboardTheme());
-            this.impressionParams.put("billboardType", billboardSummary.getBillboardType());
-            if (billboardSummary.isOriginal() && !this.isNSREEpisodic(billboardSummary)) {
-                this.storyArtFrame.setPadding(0, 0, 0, 0);
-                this.shadowOverlay.setVisibility(8);
-                this.shadowOverlayGradient.setVisibility(8);
-                this.setCustomBackground(billboardSummary.getBackground());
-                final BillboardLogo logo = billboardSummary.getLogo();
-                if (logo != null) {
-                    this.tvCardUrl = logo.getUrl();
-                }
-                this.synopsisText = billboardSummary.getSynopsis();
-                if (this.isTablet && !DeviceUtils.isPortrait(this.getContext())) {
-                    ((RelativeLayout$LayoutParams)this.infoViewGroup.getLayoutParams()).setMarginStart(Math.round(this.getContext().getResources().getDimension(2131296269) * 2.0f));
-                }
-            }
-            this.updateLogoSize(billboardSummary);
-            if (!TextUtils.isEmpty((CharSequence)billboardSummary.getSupplementalMessage())) {
-                this.infoText = billboardSummary.getSupplementalMessage();
-                this.info.setTypeface(this.info.getTypeface(), 1);
-                this.info.setSingleLine(false);
-                this.info.setMaxLines(2);
-            }
-            else {
-                this.info.setSingleLine(true);
-                if (videoType == VideoType.MOVIE) {
-                    this.infoText = StringUtils.getBasicMovieInfoString(this.getContext(), Integer.parseInt(billboardSummary.getYear()), billboardSummary.getMaturityRating(), Integer.parseInt(billboardSummary.getRuntime())).toString();
-                }
-                else {
-                    this.infoText = StringUtils.getBasicShowInfoString(this.getContext(), Integer.parseInt(billboardSummary.getYear()), billboardSummary.getMaturityRating(), billboard.getNumSeasonsLabel()).toString();
-                }
-            }
-            this.updateDateBadge(billboardSummary);
-            if (this.motionBillboardsEnabled) {
-                this.setUpMotionBillboard(billboardSummary.getMotionUrl(), billboardSummary.getMotionShouldLoop());
-            }
+            awardsHeadline = billboardSummary.getAwardsHeadline();
         }
+        else {
+            awardsHeadline = null;
+        }
+        String url;
+        if (awardsHeadline != null) {
+            url = awardsHeadline.getUrl();
+        }
+        else {
+            url = "";
+        }
+        if (!url.isEmpty() && this.isTablet) {
+            NetflixActivity.getImageLoader(this.getContext()).showImg(this.awardsHeadline, url, IClientLogging$AssetType.merchStill, this.infoText, ImageLoader$StaticImgConfig.DARK, true, 1);
+            this.awardsHeadline.setVisibility(0);
+            return;
+        }
+        this.awardsHeadline.setVisibility(8);
     }
     
     private void updateDateBadge(final BillboardSummary billboardSummary) {
@@ -426,7 +430,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         else {
             url = "";
         }
-        if (billboardSummary != null && this.isNSREShow(billboardSummary) && !url.isEmpty()) {
+        if (this.isNSREShow(billboardSummary) && !url.isEmpty()) {
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.dateBadge, url, IClientLogging$AssetType.merchStill, this.infoText, ImageLoader$StaticImgConfig.DARK, true, 1);
             this.dateBadge.setVisibility(0);
             this.infoWrapper.setVisibility(8);
@@ -437,20 +441,22 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
     }
     
     private void updateLogoSize(final BillboardSummary billboardSummary) {
-        final int n = 2131296451;
-        int n2 = 2131296452;
-        int n3 = n;
+        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131362018);
+        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(2131362019);
+        final int screenWidthInPixels = DeviceUtils.getScreenWidthInPixels(this.getContext());
+        int width = dimensionPixelSize2;
+        int height = dimensionPixelSize;
         if (billboardSummary != null) {
-            n2 = n2;
-            n3 = n;
+            width = dimensionPixelSize2;
+            height = dimensionPixelSize;
             if (billboardSummary.isOriginal()) {
-                n3 = 2131296449;
-                n2 = 2131296450;
+                width = screenWidthInPixels / 3;
+                height = (int)(width * 0.4);
             }
         }
         final ViewGroup$LayoutParams layoutParams = this.tvCard.getLayoutParams();
-        layoutParams.height = this.getResources().getDimensionPixelSize(n3);
-        layoutParams.width = this.getResources().getDimensionPixelSize(n2);
+        layoutParams.width = width;
+        layoutParams.height = height;
         this.tvCard.setLayoutParams(layoutParams);
     }
     
@@ -460,10 +466,10 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             final Resources resources = this.getResources();
             int n;
             if (this.mediaPlayerWrapper.isMuted()) {
-                n = 2131165781;
+                n = 2131231321;
             }
             else {
-                n = 2131165783;
+                n = 2131231323;
             }
             muteButton.setText((CharSequence)resources.getString(n));
             this.muteButton.setOnClickListener((View$OnClickListener)new BillboardView$6(this));
@@ -523,14 +529,14 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         synopsis.setVisibility(visibility4);
     }
     
-    void AddPlayableToCTA(final Playable playable, final Button button, final String s) {
+    void addPlayableToCTA(final Playable playable, final Button button, final String s) {
         final ServiceManager serviceManager = ((NetflixActivity)this.getContext()).getServiceManager();
         button.requestFocus();
         button.setOnClickListener((View$OnClickListener)new BillboardView$3(this, serviceManager, s, playable));
     }
     
-    void AddPlayableToCTA(final VideoDetails videoDetails, final Button button, final String s) {
-        this.AddPlayableToCTA(videoDetails.getPlayable(), button, s);
+    void addPlayableToCTA(final VideoDetails videoDetails, final Button button, final String s) {
+        this.addPlayableToCTA(videoDetails.getPlayable(), button, s);
     }
     
     public String getGUID() {
@@ -579,96 +585,89 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         }
     }
     
+    protected void recordImpression(final BillboardSummary billboardSummary) {
+        (this.impressionParams = new HashMap<String, String>()).put("awardCampaign", billboardSummary.getAwardTrackId());
+        this.impressionParams.put("billboardTheme", billboardSummary.getBillboardTheme());
+        this.impressionParams.put("billboardType", billboardSummary.getBillboardType());
+    }
+    
     public void update(final Billboard video, final Trackable trackable, final int n, final boolean b, final boolean b2) {
         final ServiceManager serviceManager = ((NetflixActivity)this.getContext()).getServiceManager();
         final BillboardSummary billboardSummary = video.getBillboardSummary();
-        this.playContext = new PlayContextImp(trackable, n);
-        this.video = video;
-        if (Log.isLoggable()) {
-            Log.v("BillboardView", "updating billboard, title: " + video.getTitle() + ", story url: " + video.getStoryUrl());
-        }
-        this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131165354), video.getTitle());
-        this.setContentDescription((CharSequence)format);
-        if (this.showArtworkOnly) {
-            this.storyArt.setPressedStateHandlerEnabled(true);
-            this.detailsListener.update((View)this.storyArt, video, this.storyArt.getPressedStateHandler());
-            String s;
-            if (this.isTablet) {
-                s = video.getHighResolutionLandscapeBoxArtUrl();
-            }
-            else {
-                s = video.getHorzDispUrl();
-            }
+        if (billboardSummary == null || billboardSummary.getLogo() == null || billboardSummary.getBackground() == null || billboardSummary.getBackgroundPortrait() == null) {
             if (Log.isLoggable()) {
-                Log.v("BillboardView", "Showing artwork only, image url: " + s);
+                Log.e("BillboardView", "Data missing when trying to render billboard");
             }
-            NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, s, IClientLogging$AssetType.merchStill, format, ImageLoader$StaticImgConfig.DARK, true, 1);
         }
         else {
-            this.storyArtUrl = video.getStoryUrl();
-            this.tvCardUrl = video.getTvCardUrl();
-            this.synopsisText = video.getSynopsis();
-            this.infoText = this.getDefaultInfoText(video);
-            this.storyArt.setTopCroppingEnabled(video.getBillboardSummary() != null && video.getBillboardSummary().isOriginal());
-            this.showOriginalBillboard(video, video.getType());
-            if (this.isNSREEpisodic(billboardSummary)) {
-                String storyArtUrl;
-                if (billboardSummary.getBackground() != null) {
-                    storyArtUrl = billboardSummary.getBackground().getUrl();
+            if (Log.isLoggable()) {
+                Log.v("BillboardView", "updating billboard, title: " + video.getTitle() + ", story url: " + video.getStoryUrl());
+            }
+            this.playContext = new PlayContextImp(trackable, n);
+            this.video = video;
+            this.setVisibility(0);
+            final String format = String.format(this.getResources().getString(2131230891), video.getTitle());
+            this.setContentDescription((CharSequence)format);
+            this.recordImpression(billboardSummary);
+            this.storyArtUrl = billboardSummary.getBackground().getUrl();
+            this.tvCardUrl = billboardSummary.getLogo().getUrl();
+            this.synopsisText = billboardSummary.getSynopsis();
+            this.infoText = this.getInfoText(billboardSummary);
+            this.updateDateBadge(billboardSummary);
+            this.updateAwardsHeadline(billboardSummary);
+            if (this.motionBillboardsEnabled && billboardSummary.getMotionUrl() != null) {
+                this.setUpMotionBillboard(billboardSummary.getMotionUrl(), billboardSummary.getMotionShouldLoop());
+            }
+            ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(serviceManager, video, this.playContext);
+            this.detailsListener.update((View)this.storyArt, video, this.storyArt.getPressedStateHandler());
+            this.infoPhone.setOnClickListener(this.generateDetailsClickListener());
+            if (this.showArtworkOnly) {
+                this.storyArt.setPressedStateHandlerEnabled(true);
+                if (!StringUtils.isEmpty(this.infoText)) {
+                    this.infoPhone.setText((CharSequence)this.infoText);
+                    this.infoPhone.setVisibility(0);
                 }
-                else {
-                    storyArtUrl = this.storyArtUrl;
+                final String url = billboardSummary.getBackgroundPortrait().getUrl();
+                if (Log.isLoggable()) {
+                    Log.v("BillboardView", "Showing artwork only, image url: " + url);
                 }
-                this.storyArtUrl = storyArtUrl;
-                String tvCardUrl;
-                if (billboardSummary.getLogo() != null) {
-                    tvCardUrl = billboardSummary.getLogo().getUrl();
-                }
-                else {
-                    tvCardUrl = this.tvCardUrl;
-                }
-                this.tvCardUrl = tvCardUrl;
-                String infoText;
-                if (!TextUtils.isEmpty((CharSequence)billboardSummary.getTitle())) {
-                    infoText = this.getResources().getString(2131165527, new Object[] { billboardSummary.getTitle() });
-                }
-                else {
-                    infoText = this.infoText;
-                }
-                this.infoText = infoText;
-                String synopsisText;
-                if (!TextUtils.isEmpty((CharSequence)billboardSummary.getSynopsis())) {
-                    synopsisText = billboardSummary.getSynopsis();
-                }
-                else {
-                    synopsisText = this.infoText;
-                }
-                this.synopsisText = synopsisText;
-                this.info.setSingleLine(false);
-                this.info.setMaxLines(2);
-                LoMoUtils.toggleEpisodeBadge(billboardSummary.getBadgeKeys(), this.episodeBadge);
+                this.storyArt.setPadding(0, 0, 0, this.getContext().getResources().getDimensionPixelSize(2131362017));
+                NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, url, IClientLogging$AssetType.merchStill, format, ImageLoader$StaticImgConfig.DARK, true, 1);
             }
             else {
-                this.info.setSingleLine(true);
-                this.info.setMaxLines(1);
-                this.episodeBadge.setVisibility(8);
+                this.infoPhone.setVisibility(8);
+                this.storyArt.setCutomCroppingEnabled(billboardSummary.isOriginal());
+                this.storyArt.setPadding(0, 0, 0, 0);
+                this.setTonedBackground(billboardSummary.getBackground());
+                if (Log.isLoggable()) {
+                    Log.v("BillboardView", "Showing static billboard with action buttons, image url: " + this.storyArtUrl);
+                }
+                this.updateLogoSize(billboardSummary);
+                NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, this.storyArtUrl, IClientLogging$AssetType.merchStill, format, ImageLoader$StaticImgConfig.DARK, true, 1);
+                NetflixActivity.getImageLoader(this.getContext()).showImg(this.tvCard, this.tvCardUrl, IClientLogging$AssetType.boxArt, format, ImageLoader$StaticImgConfig.DARK_NO_PLACEHOLDER, true, 1);
+                this.info.setText((CharSequence)this.infoText);
+                this.synopsis.setText((CharSequence)this.synopsisText);
+                this.generateCallsToAction(video);
             }
-            if (Log.isLoggable()) {
-                Log.v("BillboardView", "Showing static billboard with action buttons, image url: " + this.storyArtUrl);
+            if (serviceManager != null && serviceManager.isReady()) {
+                Log.v("BillboardView", "Loggin billboard impression for video: " + video.getId());
+                serviceManager.getBrowse().logBillboardActivity(video, BillboardInteractionType.IMPRESSION, this.impressionParams);
             }
-            NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, this.storyArtUrl, IClientLogging$AssetType.merchStill, format, ImageLoader$StaticImgConfig.DARK, true, 1);
-            NetflixActivity.getImageLoader(this.getContext()).showImg(this.tvCard, this.tvCardUrl, IClientLogging$AssetType.boxArt, format, ImageLoader$StaticImgConfig.DARK_NO_PLACEHOLDER, true, 1);
-            this.storyArt.setPressedStateHandlerEnabled(false);
-            this.detailsListener.remove((View)this.storyArt);
-            this.info.setText((CharSequence)this.infoText);
-            this.synopsis.setText((CharSequence)this.synopsisText);
-            ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(serviceManager, video, this.playContext);
-            this.generateCallsToAction(video);
         }
-        if (serviceManager != null && serviceManager.isReady()) {
-            Log.v("BillboardView", "Loggin billboard impression for video: " + video.getId());
-            serviceManager.getBrowse().logBillboardActivity(video, BillboardInteractionType.IMPRESSION, this.impressionParams);
+        this.updateViewVisibility();
+        this.updateOriginalsLayout(billboardSummary);
+    }
+    
+    protected void updateOriginalsLayout(final BillboardSummary billboardSummary) {
+        if (billboardSummary != null && billboardSummary.isOriginal() && !this.isNSREEpisodic(billboardSummary)) {
+            this.storyArtFrame.setPadding(0, 0, 0, 0);
+            this.shadowOverlay.setVisibility(8);
+            this.shadowOverlayGradient.setVisibility(8);
+            if (this.isTablet && !DeviceUtils.isPortrait(this.getContext())) {
+                ((RelativeLayout$LayoutParams)this.infoViewGroup.getLayoutParams()).setMarginStart(Math.round(this.getContext().getResources().getDimension(2131361806) * 2.0f));
+            }
+            return;
         }
+        this.storyArt.setLayoutParams((ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
     }
 }

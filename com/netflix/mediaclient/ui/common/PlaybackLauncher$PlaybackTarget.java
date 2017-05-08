@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.common;
 
-enum PlaybackLauncher$PlaybackTarget
+public enum PlaybackLauncher$PlaybackTarget
 {
     local, 
     localButDisabled, 

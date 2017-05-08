@@ -8,18 +8,20 @@ import android.content.Intent;
 import java.util.Iterator;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.content.Context;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import android.os.Parcelable;
+import android.support.v7.widget.RecyclerView$LayoutManager;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
-import android.support.v7.widget.GridLayoutManager;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -36,17 +38,13 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
         this.backStack = new ArrayList<MovieDetailsActivity$BackStackData>();
     }
     
-    private static ClassLoader getClassLoaderForLayoutManager() {
-        final ClassLoader classLoader = GridLayoutManager.class.getClassLoader();
-        if (classLoader != null) {
-            return classLoader;
-        }
-        return ClassLoader.getSystemClassLoader();
-    }
-    
     private void handleNewVideoId() {
         if (StringUtils.isNotEmpty(this.getVideoId())) {
-            final MovieDetailsActivity$BackStackData movieDetailsActivity$BackStackData = new MovieDetailsActivity$BackStackData(this.getVideoId(), this.getPlayContext(), ((MovieDetailsFrag)this.getPrimaryFrag()).getLayoutManager());
+            RecyclerView$LayoutManager layoutManager = null;
+            if (this.getPrimaryFrag() instanceof ILayoutManager) {
+                layoutManager = ((ILayoutManager)this.getPrimaryFrag()).getLayoutManager();
+            }
+            final MovieDetailsActivity$BackStackData movieDetailsActivity$BackStackData = new MovieDetailsActivity$BackStackData(this.getVideoId(), this.getPlayContext(), layoutManager);
             if (Log.isLoggable()) {
                 Log.v("MovieDetailsActivity", "Adding curr video to back stack: " + movieDetailsActivity$BackStackData);
             }
@@ -61,8 +59,8 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
         if (this.manager != null) {
             this.setPrimaryFrag(this.createPrimaryFrag());
             ((MovieDetailsFrag)this.getPrimaryFrag()).setLayoutManagerSavedState(layoutManagerSavedState);
-            final FragmentTransaction replace = this.getFragmentManager().beginTransaction().replace(2131624157, this.getPrimaryFrag(), "primary");
-            if (!CoppolaUtils.shouldInjectPlayerFragment((Context)this)) {
+            final FragmentTransaction replace = this.getFragmentManager().beginTransaction().replace(2131689744, this.getPrimaryFrag(), "primary");
+            if (!Coppola1Utils.shouldInjectPlayerFragment((Context)this)) {
                 replace.setTransition(4099);
             }
             replace.commit();
@@ -74,6 +72,11 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     @Override
     protected Fragment createPrimaryFrag() {
         return MovieDetailsFrag.create(this.getVideoId());
+    }
+    
+    @Override
+    public boolean destroyed() {
+        return AndroidUtils.isActivityFinishedOrDestroyed(this);
     }
     
     @Override
@@ -100,7 +103,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     
     @Override
     protected void onCreate(final Bundle bundle) {
-        if (bundle != null) {
+        if (bundle != null && bundle.containsKey("extra_back_stack")) {
             final Iterator<Parcelable> iterator = bundle.getParcelableArrayList("extra_back_stack").iterator();
             while (iterator.hasNext()) {
                 this.backStack.add((MovieDetailsActivity$BackStackData)iterator.next());

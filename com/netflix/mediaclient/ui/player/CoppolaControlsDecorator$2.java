@@ -13,7 +13,7 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import android.media.AudioManager;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.content.Context;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import android.view.ViewGroup;
 import android.database.ContentObserver;
 import com.netflix.mediaclient.android.widget.TimelineSeekBar;

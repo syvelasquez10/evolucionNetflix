@@ -5,12 +5,12 @@
 package com.netflix.model.leafs.originals;
 
 import com.google.gson.JsonArray;
-import java.util.Iterator;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.util.JsonUtils;
-import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
+import java.util.Iterator;
+import com.netflix.mediaclient.util.JsonUtils;
+import java.util.Map;
 import com.google.gson.JsonElement;
 import java.util.ArrayList;
 import com.netflix.model.leafs.Rating;
@@ -51,6 +51,62 @@ public class BillboardSummary implements JsonPopulator, FalkorObject
         this.badgeKeys = new ArrayList<String>(3);
     }
     
+    private void getMotionBillboardData(final JsonElement jsonElement) {
+        for (final Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().entrySet()) {
+            final JsonElement jsonElement2 = entry.getValue();
+            if (entry.getKey().equals("horizontalBackground")) {
+                for (final Map.Entry<String, JsonElement> entry2 : jsonElement2.getAsJsonObject().entrySet()) {
+                    final JsonElement jsonElement3 = entry2.getValue();
+                    final String s = entry2.getKey();
+                    int n = 0;
+                    Label_0158: {
+                        switch (s.hashCode()) {
+                            case -157174927: {
+                                if (s.equals("motionId")) {
+                                    n = 0;
+                                    break Label_0158;
+                                }
+                                break;
+                            }
+                            case -577443367: {
+                                if (s.equals("motionUrl")) {
+                                    n = 1;
+                                    break Label_0158;
+                                }
+                                break;
+                            }
+                            case -483381427: {
+                                if (s.equals("motionShouldLoop")) {
+                                    n = 2;
+                                    break Label_0158;
+                                }
+                                break;
+                            }
+                        }
+                        n = -1;
+                    }
+                    switch (n) {
+                        default: {
+                            continue;
+                        }
+                        case 0: {
+                            this.motionId = JsonUtils.getAsStringSafe(jsonElement3);
+                            continue;
+                        }
+                        case 1: {
+                            this.motionUrl = JsonUtils.getAsStringSafe(jsonElement3);
+                            continue;
+                        }
+                        case 2: {
+                            this.motionShouldLoop = JsonUtils.getAsBoolSafe(jsonElement3);
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     public List<BillboardCTA> getActions() {
         return this.actions;
     }
@@ -63,11 +119,25 @@ public class BillboardSummary implements JsonPopulator, FalkorObject
         return this.awardTrackId;
     }
     
+    public BillboardAwardsHeadline getAwardsHeadline() {
+        if (this.assets == null) {
+            return null;
+        }
+        return this.assets.getAwardsHeadline();
+    }
+    
     public BillboardBackground getBackground() {
         if (this.assets == null) {
             return null;
         }
         return this.assets.getBackground();
+    }
+    
+    public BillboardBackgroundPortrait getBackgroundPortrait() {
+        if (this.assets == null) {
+            return null;
+        }
+        return this.assets.getBackgroundPortrait();
     }
     
     public List<String> getBadgeKeys() {
@@ -174,166 +244,152 @@ public class BillboardSummary implements JsonPopulator, FalkorObject
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0290: {
+            Label_0274: {
                 switch (s.hashCode()) {
                     case 3355: {
                         if (s.equals("id")) {
                             n = 0;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 452553294: {
                         if (s.equals("ancestorId")) {
                             n = 1;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 585773339: {
                         if (s.equals("isOriginal")) {
                             n = 2;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 110371416: {
                         if (s.equals("title")) {
                             n = 3;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 1828656532: {
                         if (s.equals("synopsis")) {
                             n = 4;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 417758403: {
                         if (s.equals("supplementalMessage")) {
                             n = 5;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case -2030197974: {
                         if (s.equals("imageDescriptor")) {
                             n = 6;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 3704893: {
                         if (s.equals("year")) {
                             n = 7;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 1362349198: {
                         if (s.equals("maturityRating")) {
                             n = 8;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 1968370160: {
                         if (s.equals("seasons")) {
                             n = 9;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 1550962648: {
                         if (s.equals("runtime")) {
                             n = 10;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
-                    case -157174927: {
-                        if (s.equals("motionId")) {
+                    case 526707678: {
+                        if (s.equals("videoAssets")) {
                             n = 11;
-                            break Label_0290;
-                        }
-                        break;
-                    }
-                    case -577443367: {
-                        if (s.equals("motionUrl")) {
-                            n = 12;
-                            break Label_0290;
-                        }
-                        break;
-                    }
-                    case -483381427: {
-                        if (s.equals("motionShouldLoop")) {
-                            n = 13;
-                            break Label_0290;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 2054629203: {
                         if (s.equals("isAward")) {
-                            n = 14;
-                            break Label_0290;
+                            n = 12;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 1853554345: {
                         if (s.equals("awardTrackId")) {
-                            n = 15;
-                            break Label_0290;
+                            n = 13;
+                            break Label_0274;
                         }
                         break;
                     }
                     case -1037500982: {
                         if (s.equals("billboardTheme")) {
-                            n = 16;
-                            break Label_0290;
+                            n = 14;
+                            break Label_0274;
                         }
                         break;
                     }
                     case -171998439: {
                         if (s.equals("billboardType")) {
-                            n = 17;
-                            break Label_0290;
+                            n = 15;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 2112468023: {
                         if (s.equals("badgeKeys")) {
-                            n = 18;
-                            break Label_0290;
+                            n = 16;
+                            break Label_0274;
                         }
                         break;
                     }
                     case -1408207997: {
                         if (s.equals("assets")) {
-                            n = 19;
-                            break Label_0290;
+                            n = 17;
+                            break Label_0274;
                         }
                         break;
                     }
                     case 823466996: {
                         if (s.equals("delivery")) {
-                            n = 20;
-                            break Label_0290;
+                            n = 18;
+                            break Label_0274;
                         }
                         break;
                     }
                     case -1161803523: {
                         if (s.equals("actions")) {
-                            n = 21;
-                            break Label_0290;
+                            n = 19;
+                            break Label_0274;
                         }
                         break;
                     }
                     case -938102371: {
                         if (s.equals("rating")) {
-                            n = 22;
-                            break Label_0290;
+                            n = 20;
+                            break Label_0274;
                         }
                         break;
                     }
@@ -389,34 +445,29 @@ public class BillboardSummary implements JsonPopulator, FalkorObject
                     continue;
                 }
                 case 11: {
-                    this.motionId = JsonUtils.getAsStringSafe(jsonElement2);
+                    if (!jsonElement2.isJsonNull()) {
+                        this.getMotionBillboardData(jsonElement2);
+                        continue;
+                    }
                     continue;
                 }
                 case 12: {
-                    this.motionUrl = JsonUtils.getAsStringSafe(jsonElement2);
-                    continue;
-                }
-                case 13: {
-                    this.motionShouldLoop = JsonUtils.getAsBoolSafe(jsonElement2);
-                    continue;
-                }
-                case 14: {
                     this.isAward = JsonUtils.getAsBoolSafe(jsonElement2);
                     continue;
                 }
-                case 15: {
+                case 13: {
                     this.awardTrackId = JsonUtils.getAsStringSafe(jsonElement2);
                     continue;
                 }
-                case 16: {
+                case 14: {
                     this.billboardTheme = JsonUtils.getAsStringSafe(jsonElement2);
                     continue;
                 }
-                case 17: {
+                case 15: {
                     this.billboardType = JsonUtils.getAsStringSafe(jsonElement2);
                     continue;
                 }
-                case 18: {
+                case 16: {
                     if (!jsonElement2.isJsonNull()) {
                         final JsonArray asJsonArray = jsonElement2.getAsJsonArray();
                         for (int i = 0; i < asJsonArray.size(); ++i) {
@@ -426,19 +477,19 @@ public class BillboardSummary implements JsonPopulator, FalkorObject
                     }
                     continue;
                 }
-                case 19: {
+                case 17: {
                     this.assets = new BillboardAssets(jsonElement2);
                     continue;
                 }
-                case 20: {
+                case 18: {
                     this.delivery = new Delivery(jsonElement2);
                     continue;
                 }
-                case 21: {
+                case 19: {
                     this.actions = BillboardCTA.getListOfActions(jsonElement2);
                     continue;
                 }
-                case 22: {
+                case 20: {
                     this.rating = new Rating(jsonElement2);
                     continue;
                 }

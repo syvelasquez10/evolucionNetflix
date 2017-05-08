@@ -43,7 +43,7 @@ class BillboardView$FetchSupplementalsCallback extends LoggingManagerCallback
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
         super.onEpisodeDetailsFetched(episodeDetails, status);
         if (episodeDetails != null) {
-            this.this$0.AddPlayableToCTA(episodeDetails, this.ctaButton, this.bookmarkPosition);
+            this.this$0.addPlayableToCTA(episodeDetails, this.ctaButton, this.bookmarkPosition);
         }
     }
     
@@ -51,7 +51,7 @@ class BillboardView$FetchSupplementalsCallback extends LoggingManagerCallback
     public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
         super.onEpisodesFetched(list, status);
         if (!list.isEmpty()) {
-            this.this$0.AddPlayableToCTA(list.get(0).getPlayable(), this.ctaButton, this.bookmarkPosition);
+            this.this$0.addPlayableToCTA(list.get(0).getPlayable(), this.ctaButton, this.bookmarkPosition);
         }
     }
     
@@ -59,7 +59,7 @@ class BillboardView$FetchSupplementalsCallback extends LoggingManagerCallback
     public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
         super.onMovieDetailsFetched(movieDetails, status);
         if (movieDetails != null) {
-            this.this$0.AddPlayableToCTA(movieDetails, this.ctaButton, this.bookmarkPosition);
+            this.this$0.addPlayableToCTA(movieDetails, this.ctaButton, this.bookmarkPosition);
         }
     }
     
@@ -68,7 +68,7 @@ class BillboardView$FetchSupplementalsCallback extends LoggingManagerCallback
         super.onShowDetailsFetched(showDetails, status);
         if (showDetails != null) {
             if (!this.continueWatching) {
-                this.this$0.AddPlayableToCTA(showDetails, this.ctaButton, this.bookmarkPosition);
+                this.this$0.addPlayableToCTA(showDetails, this.ctaButton, this.bookmarkPosition);
                 return;
             }
             ((NetflixActivity)this.this$0.getContext()).getServiceManager().getBrowse().fetchEpisodeDetails(showDetails.getCurrentEpisodeId(), null, new BillboardView$FetchSupplementalsCallback(this.this$0, this.ctaButton, this.bookmarkPosition));

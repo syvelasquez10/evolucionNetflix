@@ -54,6 +54,6 @@ class KongBattleIntroScreen$6 implements View$OnClickListener
         if (!hasTimerExpired) {
             this.this$0.postPlayManager.setUserInteraction();
         }
-        this.this$0.postPlayManager.startPlayback(this.this$0.nextEpisodeVideoId, VideoType.EPISODE, hasTimerExpired);
+        this.this$0.postPlayManager.startPlayback(this.this$0.nextEpisodeVideoId, this.this$0.nextEpisodeTrackId, VideoType.EPISODE, hasTimerExpired);
     }
 }

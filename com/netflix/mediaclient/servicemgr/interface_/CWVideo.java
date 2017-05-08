@@ -12,8 +12,6 @@ public interface CWVideo extends Playable, Video
     
     String getCurrentEpisodeTitle();
     
-    String getInterestingUrl();
-    
     String getTrickplayBigImgBaseUrl();
     
     String getTrickplayImgBaseUrl();

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.user;
 
+import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
@@ -22,6 +23,8 @@ public interface UserAgent$UserAgentCallback
     void onLogoutComplete(final Status p0);
     
     void onProfilesListUpdateResult(final Status p0);
+    
+    void onSurveyFetched(final Survey p0, final Status p1);
     
     void onVerified(final boolean p0, final Status p1);
 }

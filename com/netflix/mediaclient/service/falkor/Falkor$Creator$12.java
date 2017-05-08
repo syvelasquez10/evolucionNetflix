@@ -4,14 +4,21 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.falkor.Ref;
-import com.netflix.model.branches.FalkorEvidenceList;
+import com.netflix.falkor.BranchNode;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$12 implements Func<FalkorEvidenceList<Ref>>
+final class Falkor$Creator$12 implements Func<FalkorVideo>
 {
+    final /* synthetic */ ModelProxy val$proxy;
+    
+    Falkor$Creator$12(final ModelProxy val$proxy) {
+        this.val$proxy = val$proxy;
+    }
+    
     @Override
-    public FalkorEvidenceList<Ref> call() {
-        return new FalkorEvidenceList<Ref>(Falkor$Creator.Ref);
+    public FalkorVideo call() {
+        return new FalkorVideo(this.val$proxy);
     }
 }

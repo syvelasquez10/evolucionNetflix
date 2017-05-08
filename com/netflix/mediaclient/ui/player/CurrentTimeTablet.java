@@ -50,6 +50,9 @@ public class CurrentTimeTablet extends CurrentTime
         }
         this.mBifDownloaded.set(byteBuffer != null);
         if (this.playerFragment == null || this.currentTime == null) {
+            if (Log.isLoggable()) {
+                Log.d("CurrentTimeTablet", "start: bb -> playerFragment or currentTime is null");
+            }
             return;
         }
         this.updateCurrentTime();

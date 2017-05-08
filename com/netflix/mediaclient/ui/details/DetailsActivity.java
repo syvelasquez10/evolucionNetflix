@@ -8,11 +8,14 @@ import android.view.MenuItem;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.app.Activity;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
 import android.view.View;
@@ -119,12 +122,6 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         ((ErrorWrapper$Callback)fragment).onRetryRequested();
     }
     
-    private void updateSocialNotificationsState() {
-        if (this.serviceMan != null) {
-            this.serviceMan.getBrowse().refreshIrisNotifications(false);
-        }
-    }
-    
     @Override
     protected boolean canApplyBrowseExperience() {
         return true;
@@ -216,6 +213,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         }
         super.onCreate(bundle);
         this.registerReceivers();
+        PerformanceProfiler.getInstance().endSession(Sessions.TDP, null);
     }
     
     @Override
@@ -234,14 +232,13 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         if (this.shareMenuCreated) {
             this.invalidateOptionsMenu();
         }
-        CoppolaUtils.injectPlayerFragmentIfNeeded(this, this.videoId, this.getVideoType(), this.getPlayContext(), serviceMan, status);
-        CoppolaUtils.forceToPortraitIfNeeded(this);
+        Coppola1Utils.injectPlayerFragmentIfNeeded(this, this.videoId, this.getVideoType(), this.getPlayContext(), serviceMan, status);
+        Coppola1Utils.forceToPortraitIfNeeded(this);
         ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(serviceMan, status);
         final Fragment secondaryFrag = this.getSecondaryFrag();
         if (secondaryFrag != null) {
             ((ManagerStatusListener)secondaryFrag).onManagerReady(serviceMan, status);
         }
-        this.updateSocialNotificationsState();
         if (!this.mNotificationOpenedReportAlreadySent) {
             this.mNotificationOpenedReportAlreadySent = true;
             NflxProtocolUtils.reportUserOpenedNotification(this.serviceMan, this.getIntent());
@@ -285,8 +282,13 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         this.mActionToken = mActionToken;
     }
     
-    protected void setPlayContext(final PlayContext playContext) {
+    public void setPlayContext(final PlayContext playContext) {
         this.playContext = playContext;
+    }
+    
+    public void setVideoAndEpisodeIds(final String videoId, final String episodeId) {
+        this.videoId = videoId;
+        this.episodeId = episodeId;
     }
     
     protected void setVideoId(final String videoId) {

@@ -66,7 +66,7 @@ public final class MdxTargetSelection
             for (int length = array.length, i = 0; i < length; ++i) {
                 final MdxTarget mdxTarget = array[i];
                 if (mdxTarget.isLocal()) {
-                    list.add(context.getString(2131165555));
+                    list.add(context.getString(2131231090));
                 }
                 else {
                     list.add(mdxTarget.getFriendlyName());

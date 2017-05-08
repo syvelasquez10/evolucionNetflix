@@ -23,10 +23,10 @@ class SnackbarManager
         this.mHandler = new Handler(Looper.getMainLooper(), (Handler$Callback)new SnackbarManager$1(this));
     }
     
-    private boolean cancelSnackbarLocked(final SnackbarManager$SnackbarRecord snackbarManager$SnackbarRecord) {
+    private boolean cancelSnackbarLocked(final SnackbarManager$SnackbarRecord snackbarManager$SnackbarRecord, final int n) {
         final SnackbarManager$Callback snackbarManager$Callback = (SnackbarManager$Callback)snackbarManager$SnackbarRecord.callback.get();
         if (snackbarManager$Callback != null) {
-            snackbarManager$Callback.dismiss();
+            snackbarManager$Callback.dismiss(n);
             return true;
         }
         return false;
@@ -42,7 +42,7 @@ class SnackbarManager
     private void handleTimeout(final SnackbarManager$SnackbarRecord snackbarManager$SnackbarRecord) {
         synchronized (this.mLock) {
             if (this.mCurrentSnackbar == snackbarManager$SnackbarRecord || this.mNextSnackbar == snackbarManager$SnackbarRecord) {
-                this.cancelSnackbarLocked(snackbarManager$SnackbarRecord);
+                this.cancelSnackbarLocked(snackbarManager$SnackbarRecord, 2);
             }
         }
     }
@@ -91,13 +91,13 @@ class SnackbarManager
         }
     }
     
-    public void dismiss(final SnackbarManager$Callback snackbarManager$Callback) {
+    public void dismiss(final SnackbarManager$Callback snackbarManager$Callback, final int n) {
         synchronized (this.mLock) {
             if (this.isCurrentSnackbar(snackbarManager$Callback)) {
-                this.cancelSnackbarLocked(this.mCurrentSnackbar);
+                this.cancelSnackbarLocked(this.mCurrentSnackbar, n);
             }
-            if (this.isNextSnackbar(snackbarManager$Callback)) {
-                this.cancelSnackbarLocked(this.mNextSnackbar);
+            else if (this.isNextSnackbar(snackbarManager$Callback)) {
+                this.cancelSnackbarLocked(this.mNextSnackbar, n);
             }
         }
     }
@@ -141,7 +141,7 @@ class SnackbarManager
                     }
                     if (this.isNextSnackbar(snackbarManager$Callback)) {
                         this.mNextSnackbar.duration = n;
-                        if (this.mCurrentSnackbar != null && this.cancelSnackbarLocked(this.mCurrentSnackbar)) {
+                        if (this.mCurrentSnackbar != null && this.cancelSnackbarLocked(this.mCurrentSnackbar, 4)) {
                             return;
                         }
                         break;

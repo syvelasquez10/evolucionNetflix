@@ -34,6 +34,8 @@ public interface INetflixService
     
     void fetchResource(final String p0, final IClientLogging$AssetType p1, final long p2, final long p3, final int p4, final int p5);
     
+    void fetchSurvey(final int p0, final int p1);
+    
     String getAccountOwnerToken();
     
     List<? extends UserProfile> getAllProfiles();
@@ -105,6 +107,8 @@ public interface INetflixService
     void loginUserByTokens(final ActivationTokens p0, final int p1, final int p2);
     
     void logoutUser(final int p0, final int p1);
+    
+    void markSurveysAsRead();
     
     void recordEndOfGrandfatheringImpression(final String p0, final String p1);
     

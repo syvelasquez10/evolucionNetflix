@@ -187,7 +187,7 @@ public abstract class BaseSubtitleParser implements SubtitleParser
         return this.mReady;
     }
     
-    protected boolean onError(final String s, final IMedia$SubtitleFailure media$SubtitleFailure, final Status status) {
+    protected boolean onError(final String s, final String[] array, final IMedia$SubtitleFailure media$SubtitleFailure, final Status status) {
         boolean downloadFailed = false;
         if (this.mCallback != null) {
             Log.d("nf_subtitles", "onError: callback");
@@ -196,7 +196,7 @@ public abstract class BaseSubtitleParser implements SubtitleParser
         else {
             Log.w("nf_subtitles", "onError: no callback");
         }
-        this.mPlayer.reportFailedSubtitle(s, this.mSubtitleData, media$SubtitleFailure, downloadFailed, status);
+        this.mPlayer.reportFailedSubtitle(s, this.mSubtitleData, media$SubtitleFailure, downloadFailed, status, array);
         return downloadFailed;
     }
     

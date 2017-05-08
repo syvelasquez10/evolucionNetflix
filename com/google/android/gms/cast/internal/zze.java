@@ -199,8 +199,8 @@ public final class zze extends zzj<zzi>
         try {
             this.zzpc().disconnect();
         }
-        catch (IllegalStateException ex) {}
-        catch (RemoteException zzYJ) {}
+        catch (RemoteException ex) {}
+        catch (IllegalStateException zzYJ) {}
     }
     
     public ApplicationMetadata getApplicationMetadata() {

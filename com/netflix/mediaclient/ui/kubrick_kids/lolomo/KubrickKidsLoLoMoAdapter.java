@@ -17,8 +17,8 @@ public class KubrickKidsLoLoMoAdapter extends LoLoMoAdapter
     }
     
     static void updateTitleStyle(final TextView textViewToBold) {
-        ViewUtils.setTextViewColor(textViewToBold, 2131558503);
-        ViewUtils.setTextViewSizeByRes(textViewToBold, 2131296337);
+        ViewUtils.setTextViewColor(textViewToBold, 2131624053);
+        ViewUtils.setTextViewSizeByRes(textViewToBold, 2131361883);
         ViewUtils.setTextViewToBold(textViewToBold);
         ViewUtils.removeShadow(textViewToBold);
     }

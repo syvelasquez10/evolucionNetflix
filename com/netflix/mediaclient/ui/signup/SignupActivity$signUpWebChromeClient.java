@@ -17,7 +17,9 @@ class SignupActivity$signUpWebChromeClient extends WebChromeClient
     }
     
     public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
-        Log.i("JavaScript", consoleMessage.message() + " -- From line " + consoleMessage.lineNumber() + " of " + consoleMessage.sourceId());
+        if (Log.isLoggable()) {
+            Log.i("JavaScript", consoleMessage.message() + " -- From line " + consoleMessage.lineNumber() + " of " + consoleMessage.sourceId());
+        }
         return true;
     }
 }

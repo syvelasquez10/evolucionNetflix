@@ -20,6 +20,7 @@ import android.animation.Animator$AnimatorListener;
 import android.animation.TimeInterpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.netflix.mediaclient.util.AndroidUtils;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.view.View;

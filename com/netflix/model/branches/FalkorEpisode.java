@@ -22,6 +22,19 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
     }
     
     @Override
+    public boolean episodeIsNSRE() {
+        return this.episodeDetail != null && this.episodeDetail.isNSRE();
+    }
+    
+    @Override
+    public int getAutoPlayMaxCount() {
+        if (this.episodeDetail == null) {
+            return -1;
+        }
+        return this.episodeDetail.getAutoPlayMaxCount();
+    }
+    
+    @Override
     public String getAvailabilityDateMessage() {
         if (this.episodeDetail == null) {
             return null;
@@ -91,6 +104,22 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
             return null;
         }
         return this.episodeDetail.getId();
+    }
+    
+    @Override
+    public String getInterestingSmallUrl() {
+        if (this.episodeDetail == null) {
+            return null;
+        }
+        return this.episodeDetail.getInterestingSmallUrl();
+    }
+    
+    @Override
+    public String getInterestingUrl() {
+        if (this.episodeDetail == null) {
+            return null;
+        }
+        return this.episodeDetail.getInterestingUrl();
     }
     
     @Override
@@ -200,6 +229,11 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
     @Override
     public boolean isAutoPlayEnabled() {
         return this.episodeDetail != null && this.episodeDetail.isAutoPlayEnabled();
+    }
+    
+    @Override
+    public boolean isExemptFromInterrupterLimit() {
+        return this.episodeDetail != null && this.episodeDetail.isExemptFromInterrupterLimit();
     }
     
     @Override

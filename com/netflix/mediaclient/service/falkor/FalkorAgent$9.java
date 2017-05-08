@@ -17,7 +17,7 @@ class FalkorAgent$9 implements Runnable
     @Override
     public void run() {
         if (this.this$0.getService() != null) {
-            this.this$0.refreshSocialNotifications(true, true, null);
+            this.this$0.refreshIrisNotifications(true, true, null);
         }
     }
 }

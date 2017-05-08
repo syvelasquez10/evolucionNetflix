@@ -5,19 +5,27 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import java.io.Serializable;
 import android.os.Parcelable;
-import android.content.Context;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Intent;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.ui.mdx.MementoShowDetailsActivity;
+import com.netflix.mediaclient.ui.mdx.MementoMovieDetailsActivity;
+import com.netflix.mediaclient.ui.mdx.MementoBarkerShowDetailsActivity;
+import com.netflix.mediaclient.ui.mdx.MementoBarkerMovieDetailsActivity;
+import android.content.Context;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class DetailsActivityLauncher
@@ -33,6 +41,22 @@ public class DetailsActivityLauncher
     public static final String INTENT_MDP = "com.netflix.mediaclient.intent.action.NOTIFICATION_MOVIE_DETAILS";
     public static final String INTENT_SDP = "com.netflix.mediaclient.intent.action.NOTIFICATION_SHOW_DETAILS";
     private static final String TAG = "DetailsActivityLauncher";
+    
+    private static Class<?> getDetailsClassTypeForMemento(final NetflixActivity netflixActivity, final VideoType videoType) {
+        final boolean equals = VideoType.MOVIE.equals(videoType);
+        if (BarkerHelper.isInTest((Context)netflixActivity)) {
+            if (equals) {
+                return MementoBarkerMovieDetailsActivity.class;
+            }
+            return MementoBarkerShowDetailsActivity.class;
+        }
+        else {
+            if (equals) {
+                return MementoMovieDetailsActivity.class;
+            }
+            return MementoShowDetailsActivity.class;
+        }
+    }
     
     public static Intent getEpisodeDetailsIntent(final NetflixActivity netflixActivity, final String s, final String s2, final PlayContext playContext) {
         return getEpisodeDetailsIntent(netflixActivity, s, s2, playContext, null, null);
@@ -153,18 +177,20 @@ public class DetailsActivityLauncher
     
     private static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4, final Bundle bundle, final int n) {
         final BrowseExperience value = BrowseExperience.get();
-        Class<? extends DetailsActivity> detailsClassTypeForVideo;
-        if (CoppolaUtils.isCoppolaExperience((Context)netflixActivity)) {
-            detailsClassTypeForVideo = CoppolaDetailsActivity.class;
+        Class<?> clazz;
+        if ((clazz = showMementoDetails(netflixActivity, videoType)) == null) {
+            if (Coppola1Utils.isCoppolaExperience((Context)netflixActivity)) {
+                clazz = CoppolaDetailsActivity.class;
+            }
+            else {
+                clazz = value.getDetailsClassTypeForVideo(videoType);
+            }
         }
-        else {
-            detailsClassTypeForVideo = value.getDetailsClassTypeForVideo(videoType);
-        }
-        if (detailsClassTypeForVideo == null) {
+        if (clazz == null) {
             logInvalidVideoType(netflixActivity, value, s, null, videoType, playContext, s4);
             return;
         }
-        startActivity(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, bundle, n, detailsClassTypeForVideo);
+        startActivity(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, bundle, n, clazz);
     }
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final String s3) {
@@ -184,6 +210,21 @@ public class DetailsActivityLauncher
             return;
         }
         netflixActivity.startActivity(episodeDetailsIntent);
+        PerformanceProfiler.getInstance().startSession(Sessions.TDP, null);
+    }
+    
+    public static void showMemento(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext) {
+        if (validateAndlogVideoType(videoType, netflixActivity)) {
+            startActivity(netflixActivity, videoType, s, s2, playContext, null, null, null, 0, getDetailsClassTypeForMemento(netflixActivity, videoType));
+        }
+    }
+    
+    private static Class<?> showMementoDetails(final NetflixActivity netflixActivity, final VideoType videoType) {
+        Class<?> detailsClassTypeForMemento = null;
+        if (netflixActivity instanceof MementoBarkerMovieDetailsActivity || netflixActivity instanceof MementoBarkerShowDetailsActivity || netflixActivity instanceof MementoMovieDetailsActivity || netflixActivity instanceof MementoShowDetailsActivity) {
+            detailsClassTypeForMemento = getDetailsClassTypeForMemento(netflixActivity, videoType);
+        }
+        return detailsClassTypeForMemento;
     }
     
     private static void showPreReleaseDP(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4, final Bundle bundle, final int n) {
@@ -195,7 +236,14 @@ public class DetailsActivityLauncher
             bundle2 = bundle;
         }
         bundle2.putBoolean("extra_is_movie", videoType == VideoType.MOVIE);
-        startActivity(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, bundle2, n, PreReleaseDetailsActivity.class);
+        Serializable s5;
+        if (BarkerHelper.isInTest((Context)netflixActivity)) {
+            s5 = BarkerPreReleaseDetailsActivity.class;
+        }
+        else {
+            s5 = PreReleaseDetailsActivity.class;
+        }
+        startActivity(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, bundle2, n, (Class<?>)s5);
     }
     
     private static void startActivity(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final Bundle bundle, final int n, final Class<?> clazz) {
@@ -210,6 +258,7 @@ public class DetailsActivityLauncher
             intent.addFlags(n);
         }
         netflixActivity.startActivity(intent);
+        PerformanceProfiler.getInstance().startSession(Sessions.TDP, null);
     }
     
     static boolean validateAndlogVideoType(final VideoType videoType, final NetflixActivity netflixActivity) {

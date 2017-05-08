@@ -442,12 +442,16 @@ public final class DeviceUtils
                     }
                     System.load(string);
                     return true;
-                    // iftrue(Label_0173:, !Log.isLoggable())
-                    Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
-                    Label_0173: {
-                        System.loadLibrary(s);
+                    while (true) {
+                        Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
+                        Label_0173: {
+                            System.loadLibrary(s);
+                        }
+                        return true;
+                        continue;
                     }
                 }
+                // iftrue(Label_0173:, !Log.isLoggable())
                 catch (Throwable t) {
                     Log.e("nf_device_utils", "Failed to load library from assumed location", t);
                     ErrorLoggingManager.logHandledException(t);
@@ -457,6 +461,20 @@ public final class DeviceUtils
             }
             continue;
         }
+    }
+    
+    public static void lockScreenToSensorOrientation(final Activity activity) {
+        if (isLandscape((Context)activity)) {
+            if (Log.isLoggable()) {
+                Log.i("nf_device_utils", "Locking orientation to landscape");
+            }
+            activity.setRequestedOrientation(6);
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.i("nf_device_utils", "Locking orientation to portrait");
+        }
+        activity.setRequestedOrientation(7);
     }
     
     public static boolean shouldShow3DIcon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {

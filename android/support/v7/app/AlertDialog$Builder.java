@@ -71,8 +71,22 @@ public class AlertDialog$Builder
         return this;
     }
     
+    public AlertDialog$Builder setSingleChoiceItems(final CharSequence[] mItems, final int mCheckedItem, final DialogInterface$OnClickListener mOnClickListener) {
+        this.P.mItems = mItems;
+        this.P.mOnClickListener = mOnClickListener;
+        this.P.mCheckedItem = mCheckedItem;
+        this.P.mIsSingleChoice = true;
+        return this;
+    }
+    
     public AlertDialog$Builder setTitle(final CharSequence mTitle) {
         this.P.mTitle = mTitle;
         return this;
+    }
+    
+    public AlertDialog show() {
+        final AlertDialog create = this.create();
+        create.show();
+        return create;
     }
 }

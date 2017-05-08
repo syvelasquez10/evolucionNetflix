@@ -10,6 +10,11 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 final class LaunchActivity$7 implements Video
 {
     @Override
+    public String getBoxartImageTypeIdentifier() {
+        return null;
+    }
+    
+    @Override
     public String getBoxshotUrl() {
         return null;
     }
@@ -52,16 +57,6 @@ final class LaunchActivity$7 implements Video
     @Override
     public VideoType getType() {
         return VideoType.SHOW;
-    }
-    
-    @Override
-    public boolean hasWatched() {
-        return false;
-    }
-    
-    @Override
-    public boolean isNSRE() {
-        return false;
     }
     
     @Override

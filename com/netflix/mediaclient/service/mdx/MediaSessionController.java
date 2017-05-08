@@ -200,10 +200,10 @@ public class MediaSessionController
         mediaMetadata$Builder.putText("android.media.metadata.TITLE", (CharSequence)this.mTitle);
         int n;
         if (this.mIsPostPlay) {
-            n = 2131165567;
+            n = 2131231102;
         }
         else {
-            n = 2131165700;
+            n = 2131231240;
         }
         mediaMetadata$Builder.putText("android.media.metadata.ALBUM", this.mContext.getText(n));
         this.mMediaSession.setMetadata(mediaMetadata$Builder.build());

@@ -24,6 +24,7 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
@@ -41,7 +42,6 @@ import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.android.app.Status;
 import java.util.List;
 import android.widget.AdapterView$OnItemClickListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -92,28 +92,28 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(int visibility, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903223, viewGroup, false);
-            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131624067), (TextView)inflate.findViewById(2131624612), inflate.findViewById(2131624611)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903248, viewGroup, false);
+            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131689609), (TextView)inflate.findViewById(2131690220), inflate.findViewById(2131690219)));
         }
         final ProfileSelectionActivity$Holder profileSelectionActivity$Holder = (ProfileSelectionActivity$Holder)inflate.getTag();
         final UserProfile item = this.getItem(visibility);
         if (visibility == this.this$0.profiles.size()) {
-            profileSelectionActivity$Holder.img.setImageResource(2130837904);
-            profileSelectionActivity$Holder.title.setText(2131165708);
+            profileSelectionActivity$Holder.img.setImageResource(2130837916);
+            profileSelectionActivity$Holder.title.setText(2131231248);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);
             return inflate;
         }
         profileSelectionActivity$Holder.title.setText((CharSequence)item.getProfileName());
         NetflixActivity.getImageLoader((Context)this.this$0).showImg(profileSelectionActivity$Holder.img, item.getAvatarUrl(), IClientLogging$AssetType.profileAvatar, item.getFirstName(), ImageLoader$StaticImgConfig.DARK, true);
-        final View access$1000 = profileSelectionActivity$Holder.topEditImg;
+        final View access$900 = profileSelectionActivity$Holder.topEditImg;
         if (this.this$0.isProfileEditMode) {
             visibility = 0;
         }
         else {
             visibility = 8;
         }
-        access$1000.setVisibility(visibility);
-        final AdvancedImageView access$1001 = profileSelectionActivity$Holder.img;
+        access$900.setVisibility(visibility);
+        final AdvancedImageView access$901 = profileSelectionActivity$Holder.img;
         float alpha;
         if (this.this$0.isProfileEditMode) {
             alpha = 0.2f;
@@ -121,7 +121,7 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
         else {
             alpha = 1.0f;
         }
-        access$1001.setAlpha(alpha);
+        access$901.setAlpha(alpha);
         return inflate;
     }
     

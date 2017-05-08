@@ -102,10 +102,10 @@ public class KongUnlockScreen extends KongBaseScreen
     void initViews(final View view) {
         this.unlockingGearContainer = (ViewGroup)view;
         if (view != null) {
-            this.unlockingGear = (ImageView)view.findViewById(2131624020);
-            this.unlockingGearBackground = (ImageView)view.findViewById(2131624263);
-            this.unlockingGearTitle = (TextView)view.findViewById(2131624024);
-            ViewUtils.setVisibleOrGone((View)(this.unlockingGearTimer = (TextView)view.findViewById(2131624264)), false);
+            this.unlockingGear = (ImageView)view.findViewById(2131689561);
+            this.unlockingGearBackground = (ImageView)view.findViewById(2131689853);
+            this.unlockingGearTitle = (TextView)view.findViewById(2131689565);
+            ViewUtils.setVisibleOrGone((View)(this.unlockingGearTimer = (TextView)view.findViewById(2131689854)), false);
         }
     }
     

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.ums;
 
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
@@ -56,6 +57,10 @@ public final class EogUtils
             Log.d("eog_utils", String.format(" shouldShow:%b - eogAlredyShown:%b, isKidsProfile:%b, ", b, serviceManager.getEndOfGrandfatheringAlert().isDirty, KidsUtils.isKidsProfile(serviceManager.getCurrentProfile())));
         }
         return b;
+    }
+    
+    public static boolean shouldShowOtherPlans(final EogAlert eogAlert) {
+        return StringUtils.isNotEmpty(eogAlert.seeOtherPlansText);
     }
     
     public static boolean shouldUseLayoutWithImages(final EogAlert eogAlert) {

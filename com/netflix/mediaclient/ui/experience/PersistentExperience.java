@@ -7,7 +7,6 @@ package com.netflix.mediaclient.ui.experience;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import java.io.Serializable;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -30,7 +29,6 @@ public enum PersistentExperience
         Serializable s = PreferenceUtils.getStringPref(context, "persistent_experience_key", null);
         if (StringUtils.isEmpty((String)s)) {
             Log.w("PersistentExperience", "SPY-7682: found null string for PERSISTENT_EXPERIENCE_PREFS_KEY - falling back to non-kubrick");
-            ErrorLoggingManager.logHandledException("SPY-7682: found null string for PERSISTENT_EXPERIENCE_PREFS_KEY - falling back to non-kubrick");
             s = PersistentExperience.NON_KUBRICK;
         }
         else {

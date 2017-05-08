@@ -21,7 +21,6 @@ import android.text.Html;
 import com.netflix.mediaclient.util.MdxUtils;
 import android.widget.FrameLayout$LayoutParams;
 import android.content.Context;
-import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.animation.Animator;
 import android.animation.Animator$AnimatorListener;
@@ -33,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.os.Handler;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
@@ -68,6 +68,7 @@ class CoppolaLoadingDecorator$1 implements PlayerFragment$OnPlaybackStateListene
         if (!this.this$0.getController().isPaused()) {
             this.this$0.playerScreen.setMediaImage(false);
         }
+        Coppola1Utils.unlockOrientationIfNeeded(this.this$0.getController().getActivity());
     }
     
     @Override

@@ -4,7 +4,7 @@
 
 package android.support.design.widget;
 
-import android.widget.TextView;
+import android.widget.Button;
 import android.text.TextUtils;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup$LayoutParams;

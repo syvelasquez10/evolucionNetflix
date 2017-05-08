@@ -33,7 +33,7 @@ public class SettingsActivity extends FragmentHostActivity implements BandwidthP
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903114;
+        return 2130903128;
     }
     
     @Override

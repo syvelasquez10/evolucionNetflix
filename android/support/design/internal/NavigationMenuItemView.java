@@ -40,7 +40,7 @@ public class NavigationMenuItemView extends TextView implements aa
     
     public NavigationMenuItemView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.mIconSize = context.getResources().getDimensionPixelSize(R$dimen.navigation_icon_size);
+        this.mIconSize = context.getResources().getDimensionPixelSize(R$dimen.design_navigation_icon_size);
     }
     
     private StateListDrawable createDefaultBackground() {

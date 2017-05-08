@@ -15,6 +15,7 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.Watermark;
 import com.netflix.mediaclient.media.TrickplayUrl;
 import com.netflix.mediaclient.media.PlayoutMetadata;
+import android.graphics.Point;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
@@ -59,6 +60,8 @@ public interface IMedia
     
     float getDisplayAspectRatio();
     
+    Point getDisplayAspectRatioDimension();
+    
     int getDuration();
     
     int getMediaPosition();
@@ -89,7 +92,7 @@ public interface IMedia
     
     void removeEventListener(final String p0, final EventListener p1);
     
-    void reportFailedSubtitle(final String p0, final SubtitleUrl p1, final IMedia$SubtitleFailure p2, final boolean p3, final Status p4);
+    void reportFailedSubtitle(final String p0, final SubtitleUrl p1, final IMedia$SubtitleFailure p2, final boolean p3, final Status p4, final String[] p5);
     
     void reportSubtitleQoe(final String p0, final int p1, final int p2);
     

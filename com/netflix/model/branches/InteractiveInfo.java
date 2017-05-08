@@ -7,14 +7,12 @@ package com.netflix.model.branches;
 import java.util.HashSet;
 import java.util.Set;
 import com.netflix.model.leafs.InteractivePostplay;
-import com.netflix.model.leafs.InteractivePlaybackMoments;
 import com.netflix.model.leafs.InteractiveDetails;
 import com.netflix.falkor.BranchNode;
 
 public class InteractiveInfo implements BranchNode
 {
     public InteractiveDetails details;
-    public InteractivePlaybackMoments moments;
     public InteractivePostplay postplay;
     
     @Override
@@ -25,9 +23,6 @@ public class InteractiveInfo implements BranchNode
             }
             case "postplay": {
                 return this.postplay;
-            }
-            case "moments": {
-                return this.moments;
             }
             case "details": {
                 return this.details;
@@ -44,9 +39,6 @@ public class InteractiveInfo implements BranchNode
         if (this.details != null) {
             set.add("details");
         }
-        if (this.moments != null) {
-            set.add("moments");
-        }
         return set;
     }
     
@@ -62,9 +54,6 @@ public class InteractiveInfo implements BranchNode
             }
             case "postplay": {
                 return this.postplay = new InteractivePostplay();
-            }
-            case "moments": {
-                return this.moments = new InteractivePlaybackMoments();
             }
             case "details": {
                 return this.details = new InteractiveDetails();
@@ -83,10 +72,6 @@ public class InteractiveInfo implements BranchNode
             this.postplay = (InteractivePostplay)o;
             return;
         }
-        if ("moments".equals(s)) {
-            this.moments = (InteractivePlaybackMoments)o;
-            return;
-        }
         if ("details".equals(s)) {
             this.details = (InteractiveDetails)o;
             return;
@@ -96,6 +81,6 @@ public class InteractiveInfo implements BranchNode
     
     @Override
     public String toString() {
-        return "InteractiveInfo{postplay=" + this.postplay + ", moments=" + this.moments + ", details=" + this.details + '}';
+        return "InteractiveInfo{postplay=" + this.postplay + ", details=" + this.details + '}';
     }
 }

@@ -439,6 +439,13 @@ public class KongInteractivePostPlayModel extends InteractivePostplayModel
         return this.nextEpisode.title;
     }
     
+    public int getNextEpisodeTrackId() {
+        if (this.nextEpisode == null) {
+            return -1;
+        }
+        return this.nextEpisode.trackId;
+    }
+    
     public int getNextEpisodeVideoId() {
         if (this.nextEpisode == null) {
             return -1;

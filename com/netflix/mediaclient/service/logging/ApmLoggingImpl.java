@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.service.logging.apm.model.UIModalViewImpressionEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIModalViewChangedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
@@ -12,6 +13,7 @@ import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
+import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
@@ -23,6 +25,8 @@ import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEv
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.SharedContextSessionEndedEvent;
+import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
+import com.netflix.mediaclient.service.logging.perf.PerfSession;
 import com.netflix.mediaclient.service.logging.apm.model.UIDataRequestSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIAssetRequestSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.AppSessionEndedEvent;
@@ -389,6 +393,11 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         this.uiViewChanged(b, IClientLogging$ModalView.valueOf(intent.getStringExtra("view")));
     }
     
+    private void handleViewImpressionEvent(final Intent intent, final boolean b) {
+        Log.d("nf_log_apm", "UI_MODAL_VIEW_IMPRESSION_EVENT");
+        this.uiViewImpressionEvent(b, IClientLogging$ModalView.valueOf(intent.getStringExtra("view")));
+    }
+    
     private void populateEvent(final Event event, final DataContext dataContext, final IClientLogging$ModalView modalView) {
         if (event == null) {
             return;
@@ -497,6 +506,17 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         this.populateEvent(endedEvent, this.mDataContext, this.mCurrentUiView);
         this.mEventHandler.post(endedEvent);
         Log.d("nf_log_apm", "Data request session end event posted.");
+    }
+    
+    @Override
+    public void endPerformanceSession(final PerfSession perfSession) {
+        final SessionEndedEvent endEvent = perfSession.getEndEvent();
+        this.populateEvent(endEvent, this.mDataContext, this.mCurrentUiView);
+        this.mEventHandler.removeSession(perfSession);
+        this.mEventHandler.post(endEvent);
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", perfSession.getName() + ": session end event posted.");
+        }
     }
     
     @Override
@@ -628,6 +648,10 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
                 this.handleViewChanged(intent, b);
                 return true;
             }
+            case "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_IMPRESSION": {
+                this.handleViewImpressionEvent(intent, b);
+                return true;
+            }
             case "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET": {
                 this.handlePreappAddWidget(intent);
                 return true;
@@ -689,6 +713,15 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         }
         this.mEventHandler.post(new PreAppWidgetInstallEvent(PreAppWidgetInstallEvent$WidgetInstallAction.DELETE, s, n));
         Log.d("nf_log_apm", "preapp delete widget done");
+    }
+    
+    @Override
+    public void reportPerformanceEvent(final Event event) {
+        this.populateEvent(event, this.mDataContext, this.mCurrentUiView);
+        this.mEventHandler.post(event);
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", event.getName() + ": event posted.");
+        }
     }
     
     @Override
@@ -755,6 +788,18 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         }
         Log.d("nf_log_apm", "Data session start done.");
         return true;
+    }
+    
+    @Override
+    public void startPerformanceSession(final PerfSession perfSession) {
+        final SessionStartedEvent startEvent = perfSession.getStartEvent();
+        this.mNrdpLogSessionId = String.valueOf(perfSession.getId());
+        this.mEventHandler.addSession(perfSession);
+        this.populateEvent(startEvent, this.mDataContext, this.mCurrentUiView);
+        this.mEventHandler.post(startEvent);
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", perfSession.getName() + ": session start event posted.");
+        }
     }
     
     @Override
@@ -911,5 +956,17 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         this.populateEvent(uiModalViewChangedEvent, this.mDataContext, this.mCurrentUiView);
         this.mEventHandler.post(uiModalViewChangedEvent);
         Log.d("nf_log_apm", "UI view changed event posted.");
+    }
+    
+    @Override
+    public void uiViewImpressionEvent(final boolean b, final IClientLogging$ModalView mCurrentUiView) {
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", "UI view impression " + mCurrentUiView);
+        }
+        this.mCurrentUiView = mCurrentUiView;
+        final UIModalViewImpressionEvent uiModalViewImpressionEvent = new UIModalViewImpressionEvent(b, mCurrentUiView);
+        this.populateEvent(uiModalViewImpressionEvent, this.mDataContext, this.mCurrentUiView);
+        this.mEventHandler.post(uiModalViewImpressionEvent);
+        Log.d("nf_log_apm", "UI impression event event posted.");
     }
 }

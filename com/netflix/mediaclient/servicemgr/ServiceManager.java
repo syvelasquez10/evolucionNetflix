@@ -17,12 +17,12 @@ import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixService;
+import android.content.Context;
 import android.content.ServiceConnection;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public final class ServiceManager implements IServiceManagerAccess
 {
@@ -33,24 +33,25 @@ public final class ServiceManager implements IServiceManagerAccess
     public static final String BROWSE_PARAM_CUR_EPISODE_NUMBER = "curEpisodeNumber";
     public static final String BROWSE_PARAM_CUR_SEASON_NUMBER = "curSeasonNumber";
     public static final String DETAIL_PAGE_RELOAD = "com.netflix.mediaclient.intent.action.DETAIL_PAGE_REFRESH";
+    public static final String DISCOVERY_LIST_UPDATED = "com.netflix.mediaclient.intent.action.DISCOVERY_LIST_UPDATED";
     public static final String IRIS_NOTIFICATIONS_LIST_UPDATED = "com.netflix.mediaclient.intent.action.BA_IRIS_NOTIFICATION_LIST_UPDATED";
     public static final String LOCAL_PLAYER_PLAY_START = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_START";
     public static final String LOCAL_PLAYER_PLAY_STOP = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP";
     public static final String NOTIFICATIONS_LIST_STATUS = "notifications_list_status";
     private static final String TAG = "ServiceManager";
     private AddToMyListWrapper addToMyListWrapper;
-    private final NetflixActivity mActivity;
     private final IBrowseManager mBrowseManager;
     private ManagerStatusListener mCallback;
     private final ServiceManager$CallbackMuxer mCallbackMuxer;
     private int mClientId;
     private final ServiceConnection mConnection;
+    private final Context mContext;
     private NetflixService mLocalService;
     private boolean mReady;
     private INetflixService mService;
     private ServiceManager$ServiceListener mServiceListener;
     
-    public ServiceManager(final NetflixActivity mActivity, final ManagerStatusListener mCallback) {
+    public ServiceManager(final Context mContext, final ManagerStatusListener mCallback) {
         this.mClientId = -1;
         this.mCallbackMuxer = new ServiceManager$CallbackMuxer(null);
         this.mConnection = (ServiceConnection)new ServiceManager$1(this);
@@ -60,8 +61,8 @@ public final class ServiceManager implements IServiceManagerAccess
         Log.d("ServiceManager", "ServiceManager created");
         this.mCallback = mCallback;
         this.mBrowseManager = new BrowseManager(this);
-        (this.mActivity = mActivity).startService(new Intent((Context)this.mActivity, (Class)NetflixService.class));
-        if (!this.mActivity.bindService(this.getServiceIntent(), this.mConnection, 1)) {
+        (this.mContext = mContext).startService(new Intent(this.mContext, (Class)NetflixService.class));
+        if (!this.mContext.bindService(this.getServiceIntent(), this.mConnection, 1)) {
             Log.e("ServiceManager", "ServiceManager could not bind to NetflixService!");
         }
     }
@@ -79,7 +80,7 @@ public final class ServiceManager implements IServiceManagerAccess
     }
     
     private Intent getServiceIntent() {
-        return new Intent((Context)this.mActivity, (Class)NetflixService.class);
+        return new Intent(this.mContext, (Class)NetflixService.class);
     }
     
     public static ServiceManager getServiceManager(final NetflixActivity netflixActivity) {
@@ -145,6 +146,10 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
+    public AddToListData$StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n) {
+        return this.addToMyListWrapper.createAddToMyListWrapper(netflixActivity, textView, s, videoType, n);
+    }
+    
     public AddToListData$StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n, final boolean b) {
         return this.addToMyListWrapper.createAddToMyListWrapper(netflixActivity, textView, s, videoType, n, b);
     }
@@ -184,29 +189,26 @@ public final class ServiceManager implements IServiceManagerAccess
             try {
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
-            Block_4_Outer:
-                while (true) {
-                    final int addCallback;
-                    Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                    while (true) {
-                        Label_0073: {
-                            break Label_0073;
-                            this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
-                            b = true;
-                            return b;
-                            Label_0103: {
-                                Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
-                            }
-                            return b;
-                        }
-                        continue;
-                    }
-                    addCallback = this.addCallback(managerCallback);
-                    continue Block_4_Outer;
+                Label_0103: {
+                    Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
                 }
+                return b;
+                final int addCallback = this.addCallback(managerCallback);
+                // iftrue(Label_0073:, !Log.isLoggable())
+                // iftrue(Label_0103:, !this.validateService())
+            Block_4:
+                while (true) {
+                    Block_3: {
+                        break Block_3;
+                        break Block_4;
+                    }
+                    Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
+                    continue;
+                }
+                this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                b = true;
+                return b;
             }
-            // iftrue(Label_0103:, !this.validateService())
-            // iftrue(Label_0073:, !Log.isLoggable())
             finally {
             }
             // monitorexit(this)
@@ -247,8 +249,12 @@ public final class ServiceManager implements IServiceManagerAccess
         return b;
     }
     
-    public NetflixActivity getActivity() {
-        return this.mActivity;
+    public void fetchSurvey(final ManagerCallback managerCallback) {
+        if (this.validateService()) {
+            this.mService.fetchSurvey(this.mClientId, this.addCallback(managerCallback));
+            return;
+        }
+        Log.w("ServiceManager", "fetchSurvey:: service is not available");
     }
     
     public List<? extends UserProfile> getAllProfiles() {
@@ -284,6 +290,10 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "getConfiguration: service is not available");
         return null;
+    }
+    
+    public Context getContext() {
+        return this.mContext;
     }
     
     public String getCurrentAppLocale() {
@@ -526,6 +536,14 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
+    public void markSurveysAsRead() {
+        if (this.validateService()) {
+            this.mService.markSurveysAsRead();
+            return;
+        }
+        Log.w("ServiceManager", "markSurveysAsRead:: service is not available");
+    }
+    
     public void recordEndOfGrandfatheringImpression(final String s, final String s2) {
         if (this.validateService()) {
             this.mService.recordEndOfGrandfatheringImpression(s, s2);
@@ -565,7 +583,7 @@ public final class ServiceManager implements IServiceManagerAccess
                     this.mService.unregisterCallback(this.mServiceListener);
                 }
                 Log.d("ServiceManager", "ServiceManager unbindService");
-                this.mActivity.unbindService(this.mConnection);
+                this.mContext.unbindService(this.mConnection);
                 if (this.mCallbackMuxer != null) {
                     this.mCallbackMuxer.reset();
                 }

@@ -4,13 +4,13 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.model.leafs.SearchTrackableListSummary;
+import com.netflix.model.branches.MementoVideoSwatch;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$10 implements Func<SearchTrackableListSummary>
+final class Falkor$Creator$10 implements Func<MementoVideoSwatch>
 {
     @Override
-    public SearchTrackableListSummary call() {
-        return new SearchTrackableListSummary();
+    public MementoVideoSwatch call() {
+        return new MementoVideoSwatch();
     }
 }

@@ -17,7 +17,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-class CopyrightView
+public class CopyrightView
 {
     private TextView copyrightTextView;
     private ViewGroup copyrightViewGroup;
@@ -36,7 +36,7 @@ class CopyrightView
     }
     
     public static CopyrightView create(final VideoDetails videoDetails, final Context context) {
-        final ViewGroup viewGroup = (ViewGroup)((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903255, (ViewGroup)null);
+        final ViewGroup viewGroup = (ViewGroup)((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903283, (ViewGroup)null);
         if (viewGroup != null) {
             return new CopyrightView(videoDetails, context, viewGroup);
         }
@@ -45,7 +45,7 @@ class CopyrightView
     
     private void init() {
         if (this.details != null && this.copyrightViewGroup != null) {
-            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131624670);
+            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131690309);
             if (this.copyrightTextView != null && this.details != null) {
                 this.copyrightTextView.setText((CharSequence)this.details.getCopyright());
                 this.copyrightTextView.setVisibility(0);
@@ -56,7 +56,7 @@ class CopyrightView
     }
     
     private void setExpandedText(final VideoDetails videoDetails, final Context context, final View view) {
-        final TextView textView = (TextView)view.findViewById(2131624671);
+        final TextView textView = (TextView)view.findViewById(2131690310);
         if (textView != null) {
             textView.setText((CharSequence)videoDetails.getCopyright());
         }
@@ -88,7 +88,7 @@ class CopyrightView
     
     private void showExpandedCopyrightPopup(final VideoDetails videoDetails, final Context context) {
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(context);
-        final View inflate = ((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903256, (ViewGroup)null);
+        final View inflate = ((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903284, (ViewGroup)null);
         if (inflate == null) {
             return;
         }

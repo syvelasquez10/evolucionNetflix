@@ -8,6 +8,7 @@ import com.netflix.mediaclient.StatusCode;
 import com.android.volley.NetworkResponse;
 import com.netflix.mediaclient.android.app.NetworkErrorStatus;
 import org.json.JSONException;
+import org.json.JSONArray;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -23,6 +24,7 @@ public class SendSubtitleError extends BaseInvoke
 {
     private static final String METHOD = "sendSubtitleError";
     private static final String PROPERTY_CDN_ID = "cdnid";
+    private static final String PROPERTY_DNS_SERVERS = "nameServers";
     private static final String PROPERTY_DOWNLOADABLE_ID = "did";
     private static final String PROPERTY_ERROR = "error";
     private static final String PROPERTY_ERROR_CAUSE = "cause";
@@ -46,9 +48,9 @@ public class SendSubtitleError extends BaseInvoke
     private static final String SUBTITLE_TYPE_TEXT = "text";
     private static final String TARGET = "android";
     
-    public SendSubtitleError(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Subtitle subtitle, final Status status) {
+    public SendSubtitleError(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Subtitle subtitle, final Status status, final String[] array) {
         super("android", "sendSubtitleError");
-        this.setArguments(s, subtitleUrl, media$SubtitleFailure, b, subtitle, status);
+        this.setArguments(s, subtitleUrl, media$SubtitleFailure, b, subtitle, status, array);
     }
     
     private void addThrowable(final VolleyError volleyError, final JSONObject jsonObject) {
@@ -77,59 +79,83 @@ public class SendSubtitleError extends BaseInvoke
         }
     }
     
-    private void setArguments(String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Subtitle subtitle, final Status status) {
+    private void setArguments(String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Subtitle subtitle, final Status status, final String[] array) {
         if (s != null) {
             if (Log.isLoggable()) {
                 Log.d("nf_invoke", "Subtitle data: " + subtitle);
             }
-            try {
-                final JSONObject jsonObject = new JSONObject();
-                jsonObject.put("url", (Object)s);
-                jsonObject.put("retry", b);
-                if (media$SubtitleFailure != null) {
-                    jsonObject.put("reason", (Object)media$SubtitleFailure.toString());
-                }
-                if (subtitleUrl != null) {
-                    jsonObject.put("xid", subtitleUrl.getXid());
-                    jsonObject.put("cdnid", subtitleUrl.getCdnId());
-                    if (subtitleUrl.getDownloadableId() != null) {
-                        jsonObject.put("did", (Object)subtitleUrl.getDownloadableId());
-                    }
-                    if (subtitleUrl.getProfile() != null) {
-                        if (subtitleUrl.getProfile() == IMedia$SubtitleProfile.IMAGE) {
-                            goto Label_0313;
+            while (true) {
+                while (true) {
+                    Label_0415: {
+                        while (true) {
+                            JSONObject jsonObject;
+                            try {
+                                jsonObject = new JSONObject();
+                                jsonObject.put("url", (Object)s);
+                                jsonObject.put("retry", b);
+                                if (media$SubtitleFailure != null) {
+                                    jsonObject.put("reason", (Object)media$SubtitleFailure.toString());
+                                }
+                                if (subtitleUrl != null) {
+                                    jsonObject.put("xid", subtitleUrl.getXid());
+                                    jsonObject.put("cdnid", subtitleUrl.getCdnId());
+                                    if (subtitleUrl.getDownloadableId() != null) {
+                                        jsonObject.put("did", (Object)subtitleUrl.getDownloadableId());
+                                    }
+                                    if (subtitleUrl.getProfile() != null) {
+                                        if (subtitleUrl.getProfile() == IMedia$SubtitleProfile.IMAGE) {
+                                            break Label_0415;
+                                        }
+                                        s = "text";
+                                        jsonObject.put("subtitleType", (Object)s);
+                                    }
+                                }
+                                if (array == null || array.length <= 0) {
+                                    goto Label_0375;
+                                }
+                                final JSONArray jsonArray = new JSONArray();
+                                for (int length = array.length, i = 0; i < length; ++i) {
+                                    jsonArray.put((Object)array[i]);
+                                }
+                                jsonObject.put("nameServers", (Object)jsonArray);
+                                if (subtitle != null) {
+                                    jsonObject.put("trackType", subtitle.getTrackType());
+                                    if (subtitle.getId() != null) {
+                                        jsonObject.put("subtitleId", (Object)subtitle.getId());
+                                    }
+                                    if (subtitle.getLanguageDescription() != null) {
+                                        jsonObject.put("language", (Object)subtitle.getLanguageDescription());
+                                    }
+                                    if (subtitle.getLanguageCodeIso639_1() != null) {
+                                        jsonObject.put("iso639_1", (Object)subtitle.getLanguageCodeIso639_1());
+                                    }
+                                }
+                                final JSONObject error = this.toError(status);
+                                if (error != null) {
+                                    jsonObject.put("error", (Object)error);
+                                    this.arguments = jsonObject.toString();
+                                    if (Log.isLoggable()) {
+                                        Log.d("nf_invoke", "Argument: " + this.arguments);
+                                        return;
+                                    }
+                                    break;
+                                }
+                            }
+                            catch (JSONException ex) {
+                                Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
+                                return;
+                            }
+                            catch (Throwable t) {
+                                Log.e("nf_invoke", "Unable to Log failed subtitle ", t);
+                                return;
+                            }
+                            jsonObject.put("error", (Object)new JSONObject());
+                            continue;
                         }
-                        s = "text";
-                        jsonObject.put("subtitleType", (Object)s);
                     }
+                    s = "image";
+                    continue;
                 }
-                if (subtitle != null) {
-                    jsonObject.put("trackType", subtitle.getTrackType());
-                    if (subtitle.getId() != null) {
-                        jsonObject.put("subtitleId", (Object)subtitle.getId());
-                    }
-                    if (subtitle.getLanguageDescription() != null) {
-                        jsonObject.put("language", (Object)subtitle.getLanguageDescription());
-                    }
-                    if (subtitle.getLanguageCodeIso639_1() != null) {
-                        jsonObject.put("iso639_1", (Object)subtitle.getLanguageCodeIso639_1());
-                    }
-                }
-                final JSONObject error = this.toError(status);
-                if (error == null) {
-                    goto Label_0319;
-                }
-                jsonObject.put("error", (Object)error);
-                this.arguments = jsonObject.toString();
-                if (Log.isLoggable()) {
-                    Log.d("nf_invoke", "Argument: " + this.arguments);
-                }
-            }
-            catch (JSONException ex) {
-                Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
-            }
-            catch (Throwable t) {
-                Log.e("nf_invoke", "Unable to Log failed subtitle ", t);
             }
         }
     }

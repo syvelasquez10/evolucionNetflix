@@ -7,8 +7,8 @@ package com.netflix.mediaclient.ui.details;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable$Orientation;
-import android.widget.FrameLayout$LayoutParams;
 import com.netflix.mediaclient.Log;
+import android.widget.FrameLayout$LayoutParams;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +21,7 @@ import android.animation.Animator$AnimatorListener;
 import android.animation.TimeInterpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.netflix.mediaclient.util.AndroidUtils;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.view.View;
@@ -28,20 +29,22 @@ import android.support.v7.widget.RecyclerView$OnScrollListener;
 
 public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollListener
 {
-    static final int ACTION_BAR_GRADIENT_RANGE = 76;
-    static final int OPAQUE = 255;
+    public static final int DEFAULT_ACTION_BAR_ALPHA_RANGE = 76;
+    public static final int OPAQUE = 255;
     static final float PARALLAX_EFFECT_PERCENT = 40.0f;
     private static final String TAG = "DetailsPageParallaxScrollListener";
     private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_DURATION_FASTSCROLL = 100;
     private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEIN_DURATION = 300;
     private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEOUT_DURATION = 300;
-    static final int TRANSPARENT = 0;
+    public static final int TRANSPARENT = 0;
     private float actionBarFadeRatio;
     private int actionBarPosition;
     private View anchorView;
     private boolean animating;
     private boolean applyToolBarGradientTransform;
     private long currentVelocity;
+    private int dy;
+    private int endingAlpha;
     private int fadeOutDuration;
     protected int initialBottomColor;
     protected int initialTopColor;
@@ -56,8 +59,9 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     private final SeasonsSpinner seasonsSpinner;
     protected final View trackingView;
     
-    public DetailsPageParallaxScrollListener(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] parallaxViews, final View trackingView, final int initialTopColor, final int initialBottomColor, final View anchorView) {
+    public DetailsPageParallaxScrollListener(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] parallaxViews, final View trackingView, final int initialTopColor, final int initialBottomColor, final int endingAlpha, final View anchorView) {
         this.applyToolBarGradientTransform = true;
+        this.endingAlpha = endingAlpha;
         this.seasonsSpinner = seasonsSpinner;
         this.parallaxViews = parallaxViews;
         this.trackingView = trackingView;
@@ -69,6 +73,12 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
             this.originalTrackingViewParent = (ViewGroup)trackingView.getParent();
         }
         this.init();
+    }
+    
+    private int adjustAlpha(final int n, int alpha) {
+        final float n2 = alpha / 255.0f;
+        alpha = Color.alpha(n);
+        return Color.argb((int)(n2 * (255 - alpha)) + alpha, Color.red(n), Color.green(n), Color.blue(n));
     }
     
     private void adjustForParallax(final View view, final int n) {
@@ -94,13 +104,21 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         if (DeviceUtils.isTabletByContext(this.recyclerView.getContext())) {
             n *= 2.0f;
         }
-        this.actionBarFadeRatio = 76.0f / n;
+        this.actionBarFadeRatio = this.endingAlpha / n;
     }
     
     private void calculateScrollVelocity(final int n) {
         final long time = new Date().getTime();
         this.currentVelocity = Math.abs((time - this.lastTime) / n);
         this.lastTime = time;
+    }
+    
+    public static DetailsPageParallaxScrollListener createDefault(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
+        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131624144), 0, 255, view2);
+    }
+    
+    public static DetailsPageParallaxScrollListener createParallaxOnly(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
+        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131624144), 0, 0, view2);
     }
     
     private void detachTrackingViewFromOriginalParent() {
@@ -127,41 +145,36 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     private int getScrollY() {
-        int max = 0;
-        if (this.recyclerView != null) {
-            int n;
-            if (this.recyclerView.getChildCount() > 0) {
-                final View child = this.recyclerView.getChildAt(0);
-                if (!((RecyclerViewHeaderAdapter)this.recyclerView.getAdapter()).isViewHeader(child, this.recyclerView)) {
-                    if (this.seasonsSpinner != null && child.getTag(2131623951) != null) {
-                        this.postSetSpinnerSelectionRunnable((int)child.getTag(2131623951));
-                    }
-                    this.onItemsShown();
-                    n = 76;
+        if (this.recyclerView == null) {
+            return 0;
+        }
+        int endingAlpha;
+        if (this.recyclerView.getChildCount() > 0) {
+            final View child = this.recyclerView.getChildAt(0);
+            if (!((RecyclerViewHeaderAdapter)this.recyclerView.getAdapter()).isViewHeader(child, this.recyclerView)) {
+                endingAlpha = this.endingAlpha;
+                if (this.seasonsSpinner != null && child.getTag(2131689490) != null) {
+                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131689490));
                 }
-                else {
-                    final int n2 = (int)(-child.getTop() * this.actionBarFadeRatio);
-                    final View[] parallaxViews = this.parallaxViews;
-                    for (int length = parallaxViews.length, i = 0; i < length; ++i) {
-                        final View view = parallaxViews[i];
-                        if (view != null) {
-                            this.adjustForParallax(view, child.getTop());
-                        }
-                    }
-                    this.onHeaderShown();
-                    n = n2;
-                }
+                this.onItemsShown();
             }
             else {
-                n = 0;
-            }
-            final int n3 = max = Math.max(0, Math.min(n, 76));
-            if (Log.isLoggable()) {
-                Log.v("DetailsPageParallaxScrollListener", "scrollY: " + n3);
-                return n3;
+                final int n = (int)(-child.getTop() * this.actionBarFadeRatio);
+                final View[] parallaxViews = this.parallaxViews;
+                for (int length = parallaxViews.length, i = 0; i < length; ++i) {
+                    final View view = parallaxViews[i];
+                    if (view != null) {
+                        this.adjustForParallax(view, child.getTop());
+                    }
+                }
+                this.onHeaderShown();
+                endingAlpha = n;
             }
         }
-        return max;
+        else {
+            endingAlpha = 0;
+        }
+        return Math.max(0, endingAlpha);
     }
     
     private void init() {
@@ -216,6 +229,10 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         return 0;
     }
     
+    public int getScrollDeltaY() {
+        return this.dy;
+    }
+    
     protected int getTrackerViewFinalXPosition() {
         return 0;
     }
@@ -256,6 +273,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     @Override
     public void onScrolled(final RecyclerView recyclerView, final int n, final int n2) {
         super.onScrolled(recyclerView, n, n2);
+        this.dy += n2;
         this.calculateScrollVelocity(n2);
         if (this.applyToolBarGradientTransform) {
             this.setToolbarColor();
@@ -294,19 +312,9 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         this.applyToolBarGradientTransform = applyToolBarGradientTransform;
     }
     
-    public void setInitialBottomColor(final int initialBottomColor) {
-        this.initialBottomColor = initialBottomColor;
-        this.setToolbarColor();
-    }
-    
     protected void setInitialToolbarColor() {
         this.setToolbarColor();
         this.setListenerScrollState();
-    }
-    
-    public void setInitialTopColor(final int initialTopColor) {
-        this.initialTopColor = initialTopColor;
-        this.setToolbarColor();
     }
     
     protected void setListenerScrollState() {
@@ -325,13 +333,17 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     protected void setToolbarColor() {
-        final int initialTopColor = this.initialTopColor;
-        final int initialBottomColor = this.initialBottomColor;
-        final int[] array = { initialTopColor, initialBottomColor };
+        this.setToolbarColor(this.getScrollY());
+    }
+    
+    public void setToolbarColor(int adjustAlpha) {
+        final int[] array = { this.initialTopColor, this.initialBottomColor };
         final GradientDrawable backgroundDrawable = new GradientDrawable(GradientDrawable$Orientation.TOP_BOTTOM, array);
-        final int scrollY = this.getScrollY();
-        array[0] = initialTopColor + (scrollY << 24);
-        array[1] = initialBottomColor + (scrollY << 24);
+        final int max = Math.max(0, Math.min(this.endingAlpha, adjustAlpha));
+        adjustAlpha = this.adjustAlpha(this.initialTopColor, max);
+        final int adjustAlpha2 = this.adjustAlpha(this.initialBottomColor, max);
+        array[0] = adjustAlpha;
+        array[1] = adjustAlpha2;
         ((NetflixActivity)this.recyclerView.getContext()).getSupportActionBar().setBackgroundDrawable((Drawable)backgroundDrawable);
     }
     

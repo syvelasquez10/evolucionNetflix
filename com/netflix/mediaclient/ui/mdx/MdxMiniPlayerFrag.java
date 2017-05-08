@@ -8,10 +8,12 @@ import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
+import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -22,7 +24,6 @@ import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.Fragment;
@@ -39,12 +40,9 @@ import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
-import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
-import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 
-public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$EpisodeRowListener, NetflixRatingBar$RatingBarDataProvider, MdxUtils$MdxTargetSelectionDialogInterface
+public class MdxMiniPlayerFrag extends NetflixFrag implements IMiniPlayerFrag
 {
     private static final boolean DISABLED = false;
     private static final String EXTRA_SAVED_POSITION_SECONDS = "saved_position_seconds";
@@ -66,7 +64,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
     private MdxErrorHandler mdxErrorHandler;
     private final MdxKeyEventHandler$MdxKeyEventCallbacks mdxKeyEventCallbacks;
     private MdxKeyEventHandler mdxKeyEventHandler;
-    private final MdxMiniPlayerViews$MdxMiniPlayerViewCallbacks mdxMiniPlayerViewCallbacks;
+    private final IMdxMiniPlayerViewCallbacks mdxMiniPlayerViewCallbacks;
     private String parentActivityClass;
     private RemotePlayer remotePlayer;
     private final RemotePlayer$RemoteTargetUiListener remoteTargetUiListener;
@@ -118,8 +116,10 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         synchronized (this) {
             this.log("Hiding MDX Player frag (internal)");
             final FragmentManager fragmentManager = this.getFragmentManager();
-            fragmentManager.beginTransaction().hide((Fragment)this).commit();
-            fragmentManager.executePendingTransactions();
+            if (fragmentManager != null) {
+                fragmentManager.beginTransaction().hide((Fragment)this).commit();
+                fragmentManager.executePendingTransactions();
+            }
             this.hideDialogFragmentIfNecessary();
             this.hideVisibleDialogIfNecessary();
             this.activity.notifyMdxMiniPlayerHidden();
@@ -131,30 +131,6 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
             Log.d("MdxMiniPlayerFrag", "MDX dialog currently shown - hiding");
             this.activity.removeVisibleDialog();
         }
-    }
-    
-    private void initMdxComponents() {
-        this.log("initMdxComponents()");
-        final IMdx mdx = this.mdxMiniPlayerViewCallbacks.getMdx();
-        if (mdx != null) {
-            final VideoDetails videoDetail = mdx.getVideoDetail();
-            if (videoDetail != null) {
-                this.updateVideoMetadata(videoDetail);
-                this.views.setControlsEnabled(MdxMiniPlayerFrag.state.controlsEnabled);
-                this.updateVisibility(MdxMiniPlayerFrag.state.shouldShowSelf, mdx.isPaused());
-            }
-            this.remotePlayer = new RemotePlayer(this.activity, this.remoteTargetUiListener);
-            if (this.isShowing()) {
-                if (MdxMiniPlayerFrag.state.controlsEnabled) {
-                    this.log("Controls are enabled & mini player is showing. Requesting subs and dubs...");
-                    this.remotePlayer.requestAudioAndSubtitleData();
-                }
-                this.log("Syncing with remote player...");
-                this.remotePlayer.sync();
-            }
-        }
-        this.languageSelector = LanguageSelector.createInstance(this.activity, DeviceUtils.isTabletByContext((Context)this.activity), this.languageSelectorCallback);
-        this.views.onManagerReady(this.getServiceManager());
     }
     
     private void log(final String s) {
@@ -185,15 +161,17 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
             else {
                 this.log("Showing MDX Player frag");
                 final FragmentManager fragmentManager = this.getFragmentManager();
-                fragmentManager.beginTransaction().show((Fragment)this).commit();
-                fragmentManager.executePendingTransactions();
-                this.activity.notifyMdxMiniPlayerShown();
+                if (fragmentManager != null) {
+                    fragmentManager.beginTransaction().show((Fragment)this).commit();
+                    fragmentManager.executePendingTransactions();
+                    this.activity.notifyMdxMiniPlayerShown(false);
+                }
             }
         }
     }
     
     private void startSimulatedVideoPositionUpdate(final long n) {
-        if (!this.activity.destroyed()) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed(this.activity)) {
             this.handler.removeCallbacks(this.updateSeekBarRunnable);
             this.simulatedCurrentTimelinePositionMs = n * 1000L;
             this.simulatedVideoPositionTimeFiredMs = System.currentTimeMillis();
@@ -203,7 +181,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
     }
     
     private void stopSimulatedVideoPositionUpdate() {
-        if (!this.activity.destroyed()) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed(this.activity)) {
             this.handler.removeCallbacks(this.updateSeekBarRunnable);
             this.log("Simulated position update -stopped-");
         }
@@ -219,9 +197,9 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getPlayable().getParentTitle());
-            String s = this.activity.getString(2131165526, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() });
+            String s = this.activity.getString(2131231061, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() });
             if (this.currentVideo.isNSRE()) {
-                s = this.activity.getString(2131165527, new Object[] { this.currentVideo.getTitle() });
+                s = this.activity.getString(2131231062, new Object[] { this.currentVideo.getTitle() });
             }
             this.views.updateSubtitleText(s);
         }
@@ -296,30 +274,28 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         this.views.setVolumeButtonVisibility(b);
     }
     
+    @Override
     public void attachMenuItem(final MdxMenu mdxMenu) {
         this.views.attachMenuItem(mdxMenu);
     }
     
-    @Override
     public boolean destroyed() {
         return this.isDestroyed();
     }
     
+    @Override
     public boolean dispatchKeyEvent(final KeyEvent keyEvent) {
         return this.mdxKeyEventHandler.handleKeyEvent(keyEvent, this.getServiceManager(), this.remotePlayer);
     }
     
-    @Override
     public long getCurrentPositionMs() {
         return this.simulatedCurrentTimelinePositionMs;
     }
     
-    @Override
     public PlayContext getPlayContext() {
         return PlayContext.EMPTY_CONTEXT;
     }
     
-    @Override
     public Playable getPlayable() {
         if (this.isPlayingRemotely() && this.currentVideo != null) {
             return this.currentVideo.getPlayable();
@@ -327,22 +303,20 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         return null;
     }
     
-    @Override
     public RemotePlayer getPlayer() {
         return this.remotePlayer;
     }
     
+    @Override
     public View getSlidingPanelDragView() {
         return this.views.getSlidingPanelDragView();
     }
     
-    @Override
     public MdxTargetSelection getTargetSelection() {
         final IMdx mdx = this.mdxMiniPlayerViewCallbacks.getMdx();
         return new MdxTargetSelection(mdx.getTargetList(), mdx.getCurrentTarget(), this.getServiceManager().getConfiguration().getPlaybackConfiguration().isLocalPlaybackEnabled());
     }
     
-    @Override
     public String getVideoId() {
         if (this.currentVideo == null) {
             return null;
@@ -350,7 +324,6 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         return this.currentVideo.getId();
     }
     
-    @Override
     public VideoType getVideoType() {
         if (this.currentVideo == null) {
             return null;
@@ -358,38 +331,66 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         return this.currentVideo.getType();
     }
     
+    @Override
     public int getVolume() {
         return MdxMiniPlayerFrag.state.mostRecentVolume;
+    }
+    
+    public boolean handleBackPressed() {
+        return false;
+    }
+    
+    @Override
+    public void initMdxComponents() {
+        this.log("initMdxComponents()");
+        final IMdx mdx = this.mdxMiniPlayerViewCallbacks.getMdx();
+        if (mdx != null) {
+            final VideoDetails videoDetail = mdx.getVideoDetail();
+            if (videoDetail != null) {
+                this.updateVideoMetadata(videoDetail);
+                this.views.setControlsEnabled(MdxMiniPlayerFrag.state.controlsEnabled);
+                this.updateVisibility(MdxMiniPlayerFrag.state.shouldShowSelf, mdx.isPaused());
+            }
+            this.remotePlayer = new RemotePlayer(this.activity, this.remoteTargetUiListener);
+            if (this.isShowing()) {
+                if (MdxMiniPlayerFrag.state.controlsEnabled) {
+                    this.log("Controls are enabled & mini player is showing. Requesting subs and dubs...");
+                    this.remotePlayer.requestAudioAndSubtitleData();
+                }
+                this.log("Syncing with remote player...");
+                this.remotePlayer.sync();
+            }
+        }
+        this.languageSelector = LanguageSelector.createInstance(this.activity, DeviceUtils.isTabletByContext((Context)this.activity), this.languageSelectorCallback);
+        this.views.onManagerReady(this.getServiceManager());
     }
     
     public boolean isLoadingData() {
         return false;
     }
     
+    @Override
     public boolean isMdxMenuEnabled() {
         return this.views.computeMdxMenuEnabled(MdxMiniPlayerFrag.state.controlsEnabled);
     }
     
-    @Override
     public boolean isPlayingLocally() {
         return false;
     }
     
-    @Override
     public boolean isPlayingRemotely() {
         return this.isShowing && !this.isEndOfPlayback;
     }
     
+    @Override
     public boolean isShowing() {
         return this.isShowing;
     }
     
-    @Override
     public void notifyPlayingBackLocal() {
         this.hideSelf();
     }
     
-    @Override
     public void notifyPlayingBackRemote() {
         this.views.setControlsEnabled(false);
     }
@@ -429,7 +430,6 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         super.onDestroy();
     }
     
-    @Override
     public void onEpisodeSelectedForPlayback(final EpisodeDetails episodeDetails, final PlayContext playContext) {
         this.hideDialogFragmentIfNecessary();
         PlaybackLauncher.startPlaybackAfterPIN(this.activity, episodeDetails.getPlayable(), playContext);
@@ -442,6 +442,10 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         if (this.activity == null || AndroidUtils.isActivityFinishedOrDestroyed(this.activity)) {
             this.log("Activity is null or destroyed - bailing early");
             return;
+        }
+        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131690002);
+        if (mementoFrag != null) {
+            mementoFrag.onManagerReady(serviceManager, status);
         }
         this.log("manager ready");
         this.initMdxComponents();
@@ -457,6 +461,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         this.hideSelf();
     }
     
+    @Override
     public void onPanelCollapsed() {
         this.views.onPanelCollapsed();
         if (this.isEndOfPlayback) {
@@ -465,10 +470,12 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         }
     }
     
+    @Override
     public void onPanelExpanded() {
         this.views.onPanelExpanded();
     }
     
+    @Override
     public void onPanelSlide(final float n) {
         this.views.onPanelSlide(n);
     }
@@ -478,6 +485,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         this.views.onResume();
     }
     
+    @Override
     public void onResumeFragments() {
         this.log("onResumeFragments");
         this.isInBackground = false;
@@ -503,12 +511,14 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         }
     }
     
+    @Override
     public void sendDialogResponse(final String s) {
         if (this.remotePlayer != null) {
             this.remotePlayer.sendDialogResponse(s);
         }
     }
     
+    @Override
     public void setVolume(final int n) {
         MdxMiniPlayerFrag.state.mostRecentVolume = n;
         if (this.remotePlayer != null) {

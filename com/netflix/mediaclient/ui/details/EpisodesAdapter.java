@@ -48,7 +48,7 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
     }
     
     private void logEmptySeasonId(final SeasonDetails seasonDetails) {
-        LogUtils.logEmptySeasonId(this.activity, this.episodeListFrag.getShowId(), seasonDetails);
+        LogUtils.logEmptySeasonId(this.activity.getServiceManager().getClientLogging(), this.episodeListFrag.getShowId(), seasonDetails);
     }
     
     private void onFetchError() {

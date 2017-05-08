@@ -111,8 +111,8 @@ class SwipeDismissBehavior$1 extends ViewDragHelper$Callback
     
     @Override
     public void onViewPositionChanged(final View view, final int n, final int n2, final int n3, final int n4) {
-        final float n5 = view.getWidth() * this.this$0.mAlphaStartSwipeDistance;
-        final float n6 = view.getWidth() * this.this$0.mAlphaEndSwipeDistance;
+        final float n5 = this.mOriginalCapturedViewLeft + view.getWidth() * this.this$0.mAlphaStartSwipeDistance;
+        final float n6 = this.mOriginalCapturedViewLeft + view.getWidth() * this.this$0.mAlphaEndSwipeDistance;
         if (n <= n5) {
             ViewCompat.setAlpha(view, 1.0f);
             return;

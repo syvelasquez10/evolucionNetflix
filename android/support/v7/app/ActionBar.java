@@ -83,6 +83,8 @@ public abstract class ActionBar
     
     public abstract void setLogo(final int p0);
     
+    public abstract void setLogo(final Drawable p0);
+    
     public void setShowHideAnimationEnabled(final boolean b) {
     }
     

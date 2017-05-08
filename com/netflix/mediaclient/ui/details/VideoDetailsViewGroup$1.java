@@ -10,11 +10,11 @@ final class VideoDetailsViewGroup$1 extends EnumMap<VideoDetailsViewGroup$Suppor
 {
     VideoDetailsViewGroup$1(final Class clazz) {
         super(clazz);
-        this.put(VideoDetailsViewGroup$SupportedCapabilities.HD, Integer.valueOf(2131165782));
-        this.put(VideoDetailsViewGroup$SupportedCapabilities.UHD, Integer.valueOf(2131165774));
-        this.put(VideoDetailsViewGroup$SupportedCapabilities._5dot1, Integer.valueOf(2131165771));
-        this.put(VideoDetailsViewGroup$SupportedCapabilities._3D, Integer.valueOf(2131165769));
-        this.put(VideoDetailsViewGroup$SupportedCapabilities.HDR10, Integer.valueOf(2131165773));
-        this.put(VideoDetailsViewGroup$SupportedCapabilities.DOLBY_VISION, Integer.valueOf(2131165772));
+        this.put(VideoDetailsViewGroup$SupportedCapabilities.HD, Integer.valueOf(2131231322));
+        this.put(VideoDetailsViewGroup$SupportedCapabilities.UHD, Integer.valueOf(2131231312));
+        this.put(VideoDetailsViewGroup$SupportedCapabilities._5dot1, Integer.valueOf(2131231309));
+        this.put(VideoDetailsViewGroup$SupportedCapabilities._3D, Integer.valueOf(2131231307));
+        this.put(VideoDetailsViewGroup$SupportedCapabilities.HDR10, Integer.valueOf(2131231311));
+        this.put(VideoDetailsViewGroup$SupportedCapabilities.DOLBY_VISION, Integer.valueOf(2131231310));
     }
 }

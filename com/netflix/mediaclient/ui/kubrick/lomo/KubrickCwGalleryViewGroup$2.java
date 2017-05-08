@@ -11,7 +11,7 @@ import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import java.util.List;
 import android.view.View;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v7.widget.RecyclerView$Adapter;
 import android.support.v7.widget.RecyclerView$LayoutManager;

@@ -28,7 +28,7 @@ public class NativeNetworkDiagnosis extends NativeNrdObject implements NetworkDi
         jsonObject = this.getJSONObject(jsonObject, "data", null);
         if (jsonObject != null && jsonObject.has("type")) {
             final String string = this.getString(jsonObject, "type", null);
-            if (string.equalsIgnoreCase("dnsresult") || string.equalsIgnoreCase("getresult")) {
+            if ("dnsresult".equalsIgnoreCase(string) || "getresult".equalsIgnoreCase(string)) {
                 return this.handleListener("INetwork", new NetworkEvent(jsonObject));
             }
         }

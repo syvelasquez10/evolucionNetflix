@@ -9,7 +9,6 @@ import com.netflix.mediaclient.ui.launch.UIWebViewActivity;
 import com.netflix.mediaclient.ui.launch.NetflixComLaunchActivity;
 import android.os.Bundle;
 import android.app.Activity;
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import java.util.Iterator;
@@ -34,7 +33,6 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     private final AtomicInteger mActivitiesCount;
     private final AtomicInteger mActivitiesVisibleCount;
     private Intent mCachedIntent;
-    private boolean mForeground;
     private final AtomicLong mLastUserInteraction;
     private final List<ApplicationStateListener> mListeners;
     private final ScheduledExecutorService mScheduler;
@@ -80,21 +78,22 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     }
     
     private void postOnBackground(final Context context) {
+        final boolean applicationInForeground = this.isApplicationInForeground();
         if (Log.isLoggable()) {
-            Log.d("nf_input", "Foreground " + this.mForeground);
+            Log.d("nf_input", "Foreground " + applicationInForeground);
         }
-        if (AndroidUtils.isApplicationInForeground(context)) {
-            Log.d("nf_input", "Our app is still in foreground");
+        if (applicationInForeground) {
+            Log.d("nf_input", "Our app is still in foreground!");
             return;
         }
-        Log.d("nf_input", "Our app is in background");
-        this.mForeground = false;
+        Log.d("nf_input", "Our app is in background now");
         this.mScheduler.execute(new UserInputManager$5(this));
     }
     
     private void postOnFocusGain(final Context context) {
+        final boolean applicationInForeground = this.isApplicationInForeground();
         if (Log.isLoggable()) {
-            Log.d("nf_input", "Foreground " + this.mForeground + ", visible " + this.mActivitiesVisibleCount.get());
+            Log.d("nf_input", "Foreground " + applicationInForeground + ", visible " + this.mActivitiesVisibleCount.get());
         }
         if (this.mActivitiesVisibleCount.get() <= 0) {
             Log.d("nf_input", "Our app UI was not in focus!");
@@ -105,8 +104,9 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     }
     
     private void postOnFocusLost(final Context context) {
+        final boolean applicationInForeground = this.isApplicationInForeground();
         if (Log.isLoggable()) {
-            Log.d("nf_input", "Foreground " + this.mForeground + ", visible " + this.mActivitiesVisibleCount.get());
+            Log.d("nf_input", "Foreground " + applicationInForeground + ", visible " + this.mActivitiesVisibleCount.get());
         }
         if (this.mActivitiesVisibleCount.get() > 0) {
             Log.d("nf_input", "Our app UI still has focus!");
@@ -116,22 +116,22 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
         this.mScheduler.execute(new UserInputManager$6(this));
     }
     
-    private void postOnForeground(final Context context, final Intent mCachedIntent) {
+    private void postOnForeground(final Context context, final Intent mCachedIntent, final boolean b) {
         while (true) {
-        Label_0123:
+        Label_0112:
             while (true) {
                 synchronized (this) {
                     if (Log.isLoggable()) {
-                        Log.d("nf_input", "F Foreground " + this.mForeground);
+                        Log.d("nf_input", "F Foreground " + b);
                     }
-                    if (this.mForeground) {
+                    if (b) {
                         if (mCachedIntent == null) {
                             Log.d("nf_input", "Our app is in foreground already and we do not have a deep link");
                         }
                         else {
                             Log.d("nf_input", "Our app is in foreground already, deep link most likely");
                             if (!this.isSuspendLoggingReady()) {
-                                break Label_0123;
+                                break Label_0112;
                             }
                             Log.d("nf_input", "We are initialized, report...");
                             this.mScheduler.execute(new UserInputManager$4(this, mCachedIntent));
@@ -139,8 +139,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
                         return;
                     }
                 }
-                Log.d("nf_input", "Our app is in foreground");
-                this.mForeground = true;
+                Log.d("nf_input", "Our app was in background");
                 continue;
             }
             if (mCachedIntent != null) {
@@ -209,7 +208,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     }
     
     public boolean isApplicationInForeground() {
-        return this.mForeground;
+        return this.mActivitiesVisibleCount.get() > 0;
     }
     
     public void onActivityCreated(final Activity activity, final Bundle bundle) {
@@ -246,6 +245,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
             Log.d("nf_input", "NetflixComLaunchActivity, ignore");
             return;
         }
+        final boolean applicationInForeground = this.isApplicationInForeground();
         this.mActivitiesVisibleCount.incrementAndGet();
         if (activity instanceof UIWebViewActivity || activity instanceof LaunchActivity) {
             final Intent intent = activity.getIntent();
@@ -255,10 +255,10 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
             else {
                 Log.d("nf_input", "LaunchActivity: Foreground without intent");
             }
-            this.postOnForeground((Context)activity, intent);
+            this.postOnForeground((Context)activity, intent, applicationInForeground);
         }
         else {
-            this.postOnForeground((Context)activity, null);
+            this.postOnForeground((Context)activity, null, applicationInForeground);
         }
         this.postOnFocusGain((Context)activity);
     }

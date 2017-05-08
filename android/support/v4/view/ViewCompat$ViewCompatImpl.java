@@ -96,6 +96,8 @@ interface ViewCompat$ViewCompatImpl
     
     void setElevation(final View p0, final float p1);
     
+    void setFitsSystemWindows(final View p0, final boolean p1);
+    
     void setImportantForAccessibility(final View p0, final int p1);
     
     void setLayerType(final View p0, final int p1, final Paint p2);

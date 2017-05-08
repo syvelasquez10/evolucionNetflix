@@ -149,8 +149,8 @@ class PresentationTrackingManager implements PresentationTracking
     }
     
     @Override
-    public void reportPresentation(final Trackable trackable, final List<String> list, final int n, final UiLocation uiLocation) {
-        this.mExecutor.execute(new PresentationTrackingManager$1(this, trackable, list, n, uiLocation));
+    public void reportPresentation(final Trackable trackable, final List<String> list, final List<String> list2, final int n, final UiLocation uiLocation) {
+        this.mExecutor.execute(new PresentationTrackingManager$1(this, trackable, list, list2, n, uiLocation));
     }
     
     void resumeDelivery(final boolean b) {

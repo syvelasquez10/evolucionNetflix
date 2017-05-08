@@ -70,7 +70,7 @@ class KongInteractivePostPlayManager$6 extends KongInteractivePostPlayManager$Ba
         }
         if (status.isError() || videoDetails == null) {
             Log.e("KongInteractivePostPlayManager", "Error loading video details for video playback");
-            Toast.makeText((Context)this.this$0.getActivity(), 2131165543, 1).show();
+            Toast.makeText((Context)this.this$0.getActivity(), 2131231078, 1).show();
             return;
         }
         this.this$0.playerFragment.playNextVideo(videoDetails.getPlayable(), this.val$playContext, this.val$autoplay);

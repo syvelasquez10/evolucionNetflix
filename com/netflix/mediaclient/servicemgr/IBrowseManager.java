@@ -9,6 +9,7 @@ import com.netflix.model.leafs.social.IrisNotificationSummary;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
+import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -25,6 +26,8 @@ public interface IBrowseManager
     
     void expiringContent(final String p0, final ManagerCallback p1, final ExpiringContentAction p2);
     
+    boolean fetchActorDetailsAndRelatedForTitle(final String p0, final ManagerCallback p1);
+    
     boolean fetchCWVideos(final int p0, final int p1, final ManagerCallback p2);
     
     boolean fetchEpisodeDetails(final String p0, final String p1, final ManagerCallback p2);
@@ -39,7 +42,7 @@ public interface IBrowseManager
     
     boolean fetchIQVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final ManagerCallback p4);
     
-    boolean fetchInteractiveVideoMoments(final VideoType p0, final String p1, final ManagerCallback p2);
+    boolean fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final ManagerCallback p3);
     
     boolean fetchKidsCharacterDetails(final String p0, final ManagerCallback p1);
     
@@ -50,6 +53,10 @@ public interface IBrowseManager
     boolean fetchMovieDetails(final String p0, final String p1, final ManagerCallback p2);
     
     boolean fetchNotificationsList(final int p0, final int p1, final ManagerCallback p2);
+    
+    boolean fetchPersonDetail(final String p0, final ManagerCallback p1, final String p2);
+    
+    boolean fetchPersonRelated(final String p0, final ManagerCallback p1);
     
     boolean fetchPostPlayVideos(final String p0, final VideoType p1, final ManagerCallback p2);
     
@@ -66,6 +73,8 @@ public interface IBrowseManager
     boolean fetchSimilarVideosForPerson(final String p0, final int p1, final ManagerCallback p2, final String p3);
     
     boolean fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final ManagerCallback p2, final String p3);
+    
+    void fetchTask(final CachedModelProxy$CmpTaskDetails p0, final ManagerCallback p1);
     
     boolean fetchVideoSummary(final String p0, final ManagerCallback p1);
     

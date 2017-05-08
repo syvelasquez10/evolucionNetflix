@@ -17,7 +17,7 @@ import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
 
 public final class LogUtils
@@ -57,13 +57,13 @@ public final class LogUtils
         }
     }
     
-    public static void logEmptySeasonId(final NetflixActivity netflixActivity, String format, final SeasonDetails seasonDetails) {
+    public static void logEmptySeasonId(final IClientLogging clientLogging, String format, final SeasonDetails seasonDetails) {
         if (seasonDetails == null) {
             Log.v("nf_log", "No season details");
             return;
         }
         format = String.format("For Show Id %s, the Current Season Details Id is empty - %s, see SPY-7455", format, seasonDetails.toString());
-        netflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(format);
+        clientLogging.getErrorLogging().logHandledException(format);
     }
     
     public static void reportErrorSafely(final String s, final Throwable t) {
@@ -97,9 +97,9 @@ public final class LogUtils
             uiLocation = UiLocation.HOME_LOLOMO;
         }
         if (Log.isLoggable()) {
-            Log.v("nf_presentation", String.format("%s, %s, offset %d, id: %s", basicLoMo.getTitle(), uiLocation, n, video.getId()));
+            Log.v("nf_presentation", String.format("%s, %s, offset %d, id: %s, boxartImageTypeIdentifier: %s", basicLoMo.getTitle(), uiLocation, n, video.getId(), video.getBoxartImageTypeIdentifier()));
         }
-        serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, Collections.singletonList(video.getId()), n, uiLocation);
+        serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, Collections.singletonList(video.getId()), Collections.singletonList(video.getBoxartImageTypeIdentifier()), n, uiLocation);
     }
     
     public static void reportSignUpOnDevice(final Context context) {

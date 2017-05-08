@@ -28,13 +28,13 @@ public final class MdxMenu
         Log.v("MdxMenu", "creating");
         this.activity = activity;
         this.useDarkIcon = useDarkIcon;
-        final MdxMiniPlayerFrag mdxMiniPlayerFrag = this.activity.getMdxMiniPlayerFrag();
+        final IMiniPlayerFrag mdxMiniPlayerFrag = this.activity.getMdxMiniPlayerFrag();
         this.handler = new Handler();
         if (mdxMiniPlayerFrag == null) {
             throw new IllegalArgumentException("Activity that uses MdxMenu must own a reference to mdxFrag!");
         }
         mdxMiniPlayerFrag.attachMenuItem(this);
-        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131165635))).setShowAsAction(1);
+        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131231172))).setShowAsAction(1);
         this.mdxItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MdxMenu$1(this));
         this.setEnabled(mdxMiniPlayerFrag.isMdxMenuEnabled());
         this.update();
@@ -50,15 +50,15 @@ public final class MdxMenu
     
     private int getIcon() {
         if (this.activity.isConnectingToTarget()) {
-            return 2130837670;
+            return 2130837678;
         }
         if (MdxUtils.isTargetReadyToControl(this.activity.getServiceManager())) {
-            return 2130837669;
+            return 2130837677;
         }
         if (this.useDarkIcon) {
-            return 2130837699;
+            return 2130837707;
         }
-        return 2130837674;
+        return 2130837682;
     }
     
     private boolean isAnyMdxTargetAvailable() {

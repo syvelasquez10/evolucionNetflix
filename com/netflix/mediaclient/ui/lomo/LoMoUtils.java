@@ -24,13 +24,13 @@ public class LoMoUtils
     
     public static int getKidsLomoGenreNumColumns(final Activity activity) {
         if (BrowseExperience.useLolomoBoxArt()) {
-            return activity.getResources().getInteger(2131427330);
+            return activity.getResources().getInteger(2131492866);
         }
-        return activity.getResources().getInteger(2131427329);
+        return activity.getResources().getInteger(2131492865);
     }
     
     public static int getLomoFragImageOffsetLeftPx(final NetflixActivity netflixActivity) {
-        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131296631);
+        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131362219);
     }
     
     public static int getLomoFragOffsetLeftPx(final Activity activity) {
@@ -46,20 +46,20 @@ public class LoMoUtils
                 return LomoConfig.getLomoFragOffsetRightPx(netflixActivity);
             }
             case 1: {
-                return netflixActivity.getResources().getDimensionPixelOffset(2131296389);
+                return netflixActivity.getResources().getDimensionPixelOffset(2131361951);
             }
             case 2: {
                 int n;
                 if (DeviceUtils.isLandscape((Context)netflixActivity)) {
-                    n = 2131296614;
+                    n = 2131362201;
                 }
                 else {
-                    n = 2131296620;
+                    n = 2131362207;
                 }
                 return netflixActivity.getResources().getDimensionPixelOffset(n);
             }
             case 3: {
-                return netflixActivity.getResources().getDimensionPixelOffset(2131296579);
+                return netflixActivity.getResources().getDimensionPixelOffset(2131362169);
             }
         }
     }
@@ -67,28 +67,28 @@ public class LoMoUtils
     static String getTextForCTA(final Context context, final String s, final String s2) {
         switch (s) {
             default: {
-                return context.getResources().getString(2131165370);
+                return context.getResources().getString(2131230908);
             }
             case "play": {
-                return context.getResources().getString(2131165370);
+                return context.getResources().getString(2131230908);
             }
             case "playSeason": {
-                return context.getResources().getString(2131165372, new Object[] { s2 });
+                return context.getResources().getString(2131230911, new Object[] { s2 });
             }
             case "playEpisode": {
-                return context.getResources().getString(2131165367);
+                return context.getResources().getString(2131230904);
             }
             case "rewatchShow": {
-                return context.getResources().getString(2131165371);
+                return context.getResources().getString(2131230910);
             }
             case "continueWatching": {
-                return context.getResources().getString(2131165366);
+                return context.getResources().getString(2131230903);
             }
             case "playTrailer": {
-                return context.getResources().getString(2131165373);
+                return context.getResources().getString(2131230915);
             }
             case "listEpisodes": {
-                return context.getResources().getString(2131165368);
+                return context.getResources().getString(2131230906);
             }
         }
     }
@@ -98,7 +98,7 @@ public class LoMoUtils
             return;
         }
         if (list.size() > 0 && list.get(0).equalsIgnoreCase(LoMoUtils$SupportedBadge.NEW.toString())) {
-            textView.setText((CharSequence)textView.getResources().getString(2131165529));
+            textView.setText((CharSequence)textView.getResources().getString(2131231064));
             textView.setVisibility(0);
             return;
         }

@@ -31,10 +31,10 @@ public final class SubtitleManagerFactory
         String string = "";
         final NetflixActivity context = subtitleManager.getContext();
         if (subtitleManager instanceof EnhancedSubtitleManager) {
-            string = ((Context)context).getString(2131165807);
+            string = ((Context)context).getString(2131231362);
         }
         else if (subtitleManager instanceof ImageBasedSubtitleManager) {
-            return ((Context)context).getString(2131165806);
+            return ((Context)context).getString(2131231361);
         }
         return string;
     }

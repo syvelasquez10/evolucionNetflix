@@ -26,10 +26,10 @@ public class KubrickKidsActionBar extends NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837713;
+            navigationIcon = 2130837721;
         }
         else {
-            navigationIcon = 2130837712;
+            navigationIcon = 2130837720;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }

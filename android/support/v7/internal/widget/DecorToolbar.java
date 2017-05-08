@@ -66,6 +66,8 @@ public interface DecorToolbar
     
     void setLogo(final int p0);
     
+    void setLogo(final Drawable p0);
+    
     void setMenu(final Menu p0, final y p1);
     
     void setMenuCallbacks(final y p0, final j p1);

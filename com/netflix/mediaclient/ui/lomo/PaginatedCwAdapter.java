@@ -12,6 +12,7 @@ import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
+import com.netflix.mediaclient.util.CWTestUtil;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 
@@ -25,7 +26,7 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     
     @Override
     protected int computeNumItemsPerPage() {
-        return LomoConfig.computeStandardNumVideosPerPage(this.activity, true);
+        return LomoConfig.computeStandardNumVideosPerPage(this.activity, !CWTestUtil.isInTest((Context)this.activity));
     }
     
     @Override
@@ -35,7 +36,13 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     
     @Override
     public int getRowHeightInPx() {
-        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131296507);
+        int n;
+        if (CWTestUtil.isInTest((Context)this.activity)) {
+            n = (int)(super.getRowHeightInPx() + this.activity.getResources().getDimension(2131362082) + this.activity.getResources().getDimension(2131362064));
+        }
+        else {
+            n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131362081);
+        }
         Log.v("PaginatedCwAdapter", "Computed view height: " + n);
         return n;
     }

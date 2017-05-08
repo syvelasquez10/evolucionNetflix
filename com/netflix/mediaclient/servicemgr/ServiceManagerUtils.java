@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams;
-import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import java.util.List;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
@@ -45,7 +44,7 @@ public class ServiceManagerUtils
                     Log.d("ServiceManagerUtils", "schedule manifest pre-fectiion for " + playable);
                 }
                 try {
-                    serviceManager.getPlayer().getManifestCache().cacheSchedule(new IManifestCache$CacheScheduleRequest[] { new IManifestCache$CacheScheduleRequest(Integer.parseInt(playable.getPlayableId()), 0L, 1L) }, new AuthorizationParams((Context)serviceManager.getActivity(), playContext, ConnectivityUtils.getCurrentNetType((Context)serviceManager.getActivity()), serviceManager.getConfiguration().isPreviewContentEnabled()));
+                    serviceManager.getPlayer().getManifestCache().cacheSchedule(new IManifestCache$CacheScheduleRequest[] { new IManifestCache$CacheScheduleRequest(Integer.parseInt(playable.getPlayableId()), 0L, 1L) }, new AuthorizationParams(serviceManager.getContext(), playContext, ConnectivityUtils.getCurrentNetType(serviceManager.getContext()), serviceManager.getConfiguration().isPreviewContentEnabled()));
                 }
                 catch (NumberFormatException ex) {
                     Log.w("ServiceManagerUtils", "schedule manifest pre-fectiion gets invalid playableId, ignored");

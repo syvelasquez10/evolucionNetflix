@@ -7,6 +7,8 @@ package com.netflix.mediaclient.ui.verifyplay;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup;

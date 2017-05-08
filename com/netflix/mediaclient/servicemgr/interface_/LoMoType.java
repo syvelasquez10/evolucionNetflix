@@ -9,6 +9,7 @@ public enum LoMoType
     BILLBOARD("BillboardList"), 
     CHARACTERS("character"), 
     CONTINUE_WATCHING("continueWatching"), 
+    DISCOVERY_ROW("cwDiscovery"), 
     FLAT_GENRE("defaultKidsList"), 
     INSTANT_QUEUE("queue"), 
     POPULAR_TITLES("popularTitles"), 
@@ -37,5 +38,9 @@ public enum LoMoType
     
     public static boolean isRegularLomoForPreApp(final LoMoType loMoType) {
         return LoMoType.STANDARD.equals(loMoType) || LoMoType.FLAT_GENRE.equals(loMoType) || LoMoType.POPULAR_TITLES.equals(loMoType) || LoMoType.TOP_TEN.equals(loMoType);
+    }
+    
+    public static boolean usesVerticalBoxArtType(final LoMoType loMoType) {
+        return !LoMoType.CONTINUE_WATCHING.equals(loMoType) && !LoMoType.BILLBOARD.equals(loMoType) && !LoMoType.DISCOVERY_ROW.equals(loMoType);
     }
 }

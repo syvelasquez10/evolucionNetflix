@@ -7,14 +7,19 @@ package com.netflix.mediaclient.service.webclient.model.leafs;
 public enum ABTestConfig$Cell
 {
     CELL_EIGHT(8), 
+    CELL_ELEVEN(11), 
+    CELL_FIFTEEN(15), 
     CELL_FIVE(5), 
+    CELL_FORTEEN(14), 
     CELL_FOUR(4), 
     CELL_NINE(9), 
     CELL_ONE(1), 
     CELL_SEVEN(7), 
     CELL_SIX(6), 
     CELL_TEN(10), 
+    CELL_THIRTEEN(13), 
     CELL_THREE(3), 
+    CELL_TWELVE(12), 
     CELL_TWO(2);
     
     private final int cellId;

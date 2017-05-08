@@ -29,6 +29,14 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
         UIViewLogUtils.MISSING_GUID = null;
     }
     
+    public static void reportIkoNotificationImpressionEnded(final Context context) {
+        sendImpressionBroadcast(context, "com.netflix.mediaclient.intent.action.LOG_IKO_NOTIFICATION_IMPRESSION_ENDED", null, null);
+    }
+    
+    public static void reportIkoNotificationImpressionStarted(final Context context, final JSONObject jsonObject) {
+        sendImpressionBroadcast(context, "com.netflix.mediaclient.intent.action.LOG_IKO_NOTIFICATION_IMPRESSION_START", null, jsonObject);
+    }
+    
     public static void reportLeftMenuImpressionEnded(final Context context, final boolean b) {
         sendImpressionBroadcast(context, "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_IMPRESSION_ENDED", b, null);
     }

@@ -4,7 +4,6 @@
 
 package com.sothree.slidinguppanel;
 
-import android.util.Log;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
@@ -262,9 +261,9 @@ public class SlidingUpPanelLayout extends ViewGroup
         final SlidingUpPanelLayout$LayoutParams slidingUpPanelLayout$LayoutParams = (SlidingUpPanelLayout$LayoutParams)view.getLayoutParams();
         final int save = canvas.save(2);
         while (true) {
-            Label_0208: {
+            Label_0199: {
                 if (!this.mCanSlide || slidingUpPanelLayout$LayoutParams.slideable || this.mSlideableView == null) {
-                    break Label_0208;
+                    break Label_0199;
                 }
                 canvas.getClipBounds(this.mTmpRect);
                 if (this.mIsSlidingUp) {
@@ -273,9 +272,8 @@ public class SlidingUpPanelLayout extends ViewGroup
                 else {
                     this.mTmpRect.top = Math.max(this.mTmpRect.top, this.mSlideableView.getBottom());
                 }
-                canvas.clipRect(this.mTmpRect);
                 if (this.mSlideOffset >= 1.0f) {
-                    break Label_0208;
+                    break Label_0199;
                 }
                 final int n2 = 1;
                 final boolean drawChild = super.drawChild(canvas, view, n);
@@ -323,6 +321,14 @@ public class SlidingUpPanelLayout extends ViewGroup
     
     public int getPanelHeight() {
         return this.mPanelHeight;
+    }
+    
+    public void hidePane() {
+        if (this.mSlideableView == null) {
+            return;
+        }
+        this.mSlideableView.setVisibility(8);
+        this.requestLayout();
     }
     
     public boolean isAnchored() {
@@ -499,14 +505,8 @@ public class SlidingUpPanelLayout extends ViewGroup
             throw new IllegalStateException("Height must have an exact value or MATCH_PARENT");
         }
         final int n3 = size2 - this.getPaddingTop() - this.getPaddingBottom();
-        n = this.mPanelHeight;
+        final int mPanelHeight = this.mPanelHeight;
         final int childCount = this.getChildCount();
-        if (childCount > 2) {
-            Log.e(SlidingUpPanelLayout.TAG, "onMeasure: More than two child views are not supported.");
-        }
-        else if (this.getChildAt(1).getVisibility() == 8) {
-            n = 0;
-        }
         this.mSlideableView = null;
         this.mCanSlide = false;
         for (int i = 0; i < childCount; ++i) {
@@ -516,37 +516,35 @@ public class SlidingUpPanelLayout extends ViewGroup
                 slidingUpPanelLayout$LayoutParams.dimWhenOffset = false;
             }
             else {
-                int n4;
                 if (i == 1) {
                     slidingUpPanelLayout$LayoutParams.slideable = true;
                     slidingUpPanelLayout$LayoutParams.dimWhenOffset = true;
                     this.mSlideableView = child;
                     this.mCanSlide = true;
-                    n4 = n3;
+                    n2 = n3;
                 }
                 else {
-                    n4 = n3 - n;
+                    n2 = n3 - mPanelHeight;
                 }
                 if (slidingUpPanelLayout$LayoutParams.width == -2) {
-                    n2 = View$MeasureSpec.makeMeasureSpec(size, Integer.MIN_VALUE);
+                    n = View$MeasureSpec.makeMeasureSpec(size, Integer.MIN_VALUE);
                 }
                 else if (slidingUpPanelLayout$LayoutParams.width == -1) {
-                    n2 = View$MeasureSpec.makeMeasureSpec(size, 1073741824);
+                    n = View$MeasureSpec.makeMeasureSpec(size, 1073741824);
                 }
                 else {
-                    n2 = View$MeasureSpec.makeMeasureSpec(slidingUpPanelLayout$LayoutParams.width, 1073741824);
+                    n = View$MeasureSpec.makeMeasureSpec(slidingUpPanelLayout$LayoutParams.width, 1073741824);
                 }
-                int n5;
                 if (slidingUpPanelLayout$LayoutParams.height == -2) {
-                    n5 = View$MeasureSpec.makeMeasureSpec(n4, Integer.MIN_VALUE);
+                    n2 = View$MeasureSpec.makeMeasureSpec(n2, Integer.MIN_VALUE);
                 }
                 else if (slidingUpPanelLayout$LayoutParams.height == -1) {
-                    n5 = View$MeasureSpec.makeMeasureSpec(n4, 1073741824);
+                    n2 = View$MeasureSpec.makeMeasureSpec(n2, 1073741824);
                 }
                 else {
-                    n5 = View$MeasureSpec.makeMeasureSpec(slidingUpPanelLayout$LayoutParams.height, 1073741824);
+                    n2 = View$MeasureSpec.makeMeasureSpec(slidingUpPanelLayout$LayoutParams.height, 1073741824);
                 }
-                child.measure(n2, n5);
+                child.measure(n, n2);
             }
         }
         this.setMeasuredDimension(size, size2);

@@ -13,6 +13,8 @@ import com.netflix.mediaclient.service.mdx.message.target.PlayerStateChanged;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerCurrentState;
 import org.json.JSONException;
 import com.netflix.mediaclient.service.mdx.message.target.HandshakeAccepted;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.NetflixApplication;
 import java.security.InvalidParameterException;
 import com.netflix.mediaclient.util.WebApiUtils;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;

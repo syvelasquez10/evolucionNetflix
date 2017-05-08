@@ -21,7 +21,7 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
     private boolean hasMoreData;
     private BasicLoMo lomo;
     private final ServiceManager manager;
-    private final BasePaginatedAdapter<T> paginatedAdapter;
+    protected final BasePaginatedAdapter<T> paginatedAdapter;
     private long requestId;
     private final ObjectRecycler$ViewRecycler viewRecycler;
     

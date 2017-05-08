@@ -19,6 +19,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_AD_ID_TIMESTAMP = "advertisement_id_ts";
     public static final String PREFERENCE_ALERTED_LANGUAGES = "alertedLanguages";
     public static final String PREFERENCE_ALERT_MSG_FOR_MISSING_LOCALE = "device_locale_not_supported_msg";
+    public static final String PREFERENCE_API_ENVIRONMENT = "api_environment_preference";
     public static final String PREFERENCE_APM_USER_SESSION_TIMEOUT_OVERRIDE = "apm_user_session_timeout_duration_override";
     public static final String PREFERENCE_BREADCRUMB_LOGGING_CONFIGURATION = "breadcrumb_log_configuration";
     public static final String PREFERENCE_CAST_KEY_INFO = "castKeyData";
@@ -88,10 +89,10 @@ public interface PreferenceKeys
     public static final String PREFERENCE_USER_SELECTED_A_PROFILE = "user_profile_was_selected";
     public static final String PREFERENCE_VIDEO_RESOLUTION_OVERRIDE = "video_resolution_override";
     public static final String PREFERENCE_VOIP_CONFIGURATION = "voip_configuration";
-    public static final String PREFERENCE_VOIP_CONFIRMATION_DIALOG = "voip_confirmation_dialog";
     public static final String PREFERENCE_VOIP_ENABLED_ON_DEVICE = "enable_voip_on_device";
     public static final String PREFERENCE_WARN_WHEN_PLAY_ON_NOWIFI = "nf_play_no_wifi_warning";
     public static final String PREFERENCE__PLAYEROVERLAY = "ui.playeroverlay";
+    public static final String SHOULD_SHOWN_DATA_SAVER_NOTIFICATION = "should_show_ftc_data_saver_notification";
     public static final String UI_LOADING_WORKFLOW_TYPE = "ui_loading_workflow_type";
     public static final String USERAGENT_USERPROFILES_DATA = "useragent_userprofiles_data";
     public static final String USERAGENT_USER_DATA = "useragent_user_data";

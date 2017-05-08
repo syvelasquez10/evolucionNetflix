@@ -6,13 +6,17 @@ package com.netflix.mediaclient.ui.lolomo;
 
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
+import android.widget.RelativeLayout$LayoutParams;
+import android.graphics.Typeface;
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AbsListView;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
+import com.netflix.mediaclient.util.Coppola2Utils;
 import android.widget.ListView;
 import com.netflix.mediaclient.util.ViewUtils;
+import android.app.Activity;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.Iterator;
@@ -88,27 +92,28 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         circlePageIndicator.setOnPageChangeListener(viewPager.getOnPageChangeListener());
         circlePageIndicator.setViewPager(viewPager);
         circlePageIndicator.setVisibility(8);
+        circlePageIndicator.measure(0, 0);
         final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(-1, -2);
-        linearLayout$LayoutParams.topMargin = (int)(2.0f * circlePageIndicator.getRadius() + circlePageIndicator.getPaddingTop() + circlePageIndicator.getPaddingBottom() + 1.0f) * -2;
+        linearLayout$LayoutParams.topMargin = circlePageIndicator.getMeasuredHeight() * -2;
         linearLayout.addView((View)circlePageIndicator, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
         return viewPager;
     }
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131624310);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131689893);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131624312);
+        final TextView textView = (TextView)view.findViewById(2131689895);
         final Resources resources = this.activity.getResources();
         int n;
         if (BrowseExperience.showKidsExperience()) {
-            n = 2131558457;
+            n = 2131624002;
         }
         else {
-            n = 2131558547;
+            n = 2131624099;
         }
         textView.setTextColor(resources.getColor(n));
-        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131624360));
+        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131689931));
     }
     
     private void fetchMoreData() {
@@ -194,6 +199,13 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         return n;
     }
     
+    public int getItemViewType(final int n) {
+        if (this.lomos.get(n).getType() == LoMoType.DISCOVERY_ROW) {
+            return 1;
+        }
+        return 0;
+    }
+    
     protected ServiceManager getServiceManager() {
         return this.manager;
     }
@@ -206,7 +218,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     public View getView(final int n, View dummyView, final ViewGroup viewGroup) {
-        if (this.activity.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.activity)) {
             Log.d("BaseLoLoMoAdapter", "activity is destroyed - can't getView");
             dummyView = this.createDummyView();
         }
@@ -254,11 +266,18 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getViewLayoutId() {
-        return 2130903165;
+        return 2130903178;
+    }
+    
+    public int getViewTypeCount() {
+        if (Coppola2Utils.isCoppolaDiscovery((Context)this.activity)) {
+            return 2;
+        }
+        return 1;
     }
     
     protected TextView initTitleView(final View view) {
-        final TextView textView = (TextView)view.findViewById(2131624311);
+        final TextView textView = (TextView)view.findViewById(2131689894);
         if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "Manipulating title padding, view: " + textView);
         }
@@ -364,20 +383,34 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final TextView title = baseLoLoMoAdapter$RowHolder.title;
         String text;
         if (t.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131165662);
+            text = this.activity.getString(2131231199);
         }
         else {
             text = t.getTitle();
         }
         title.setText((CharSequence)text);
-        baseLoLoMoAdapter$RowHolder.title.setVisibility(BrowseExperience.get().getLomoRowTitleVisibility(this.activity, t));
+        if (t.getType() == LoMoType.DISCOVERY_ROW) {
+            baseLoLoMoAdapter$RowHolder.title.setVisibility(0);
+            baseLoLoMoAdapter$RowHolder.title.setText(2131231002);
+            baseLoLoMoAdapter$RowHolder.title.setTypeface(Typeface.create("sans-serif-light", 0));
+            baseLoLoMoAdapter$RowHolder.title.setLineSpacing(0.0f, 1.0f);
+            ((RelativeLayout$LayoutParams)baseLoLoMoAdapter$RowHolder.title.getLayoutParams()).removeRule(20);
+            ((RelativeLayout$LayoutParams)baseLoLoMoAdapter$RowHolder.title.getLayoutParams()).addRule(14, -1);
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131362065);
+            ((RelativeLayout$LayoutParams)baseLoLoMoAdapter$RowHolder.title.getLayoutParams()).setMargins(0, dimensionPixelSize * 2, 0, dimensionPixelSize);
+        }
+        else {
+            ((RelativeLayout$LayoutParams)baseLoLoMoAdapter$RowHolder.title.getLayoutParams()).addRule(20, -1);
+            ((RelativeLayout$LayoutParams)baseLoLoMoAdapter$RowHolder.title.getLayoutParams()).removeRule(14);
+            baseLoLoMoAdapter$RowHolder.title.setVisibility(BrowseExperience.get().getLomoRowTitleVisibility(this.activity, t));
+        }
         if (baseLoLoMoAdapter$RowHolder.shelf != null) {
             baseLoLoMoAdapter$RowHolder.shelf.setVisibility(this.getShelfVisibility(t, n));
         }
         baseLoLoMoAdapter$RowHolder.rowContent.refresh(t, n);
         if (BrowseExperience.showKidsExperience()) {
             Api16Util.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, null);
-            baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, this.activity.getResources().getDimensionPixelSize(2131296613));
+            baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, this.activity.getResources().getDimensionPixelSize(2131362200));
             baseLoLoMoAdapter$RowHolder.title.setTextColor(baseLoLoMoAdapter$RowHolder.defaultTitleColors);
         }
     }

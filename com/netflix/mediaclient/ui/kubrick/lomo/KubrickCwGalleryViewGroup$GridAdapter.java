@@ -14,7 +14,7 @@ import com.netflix.mediaclient.ui.lomo.LoMoUtils$LoMoWidthType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.MathUtils;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
@@ -37,7 +37,7 @@ class KubrickCwGalleryViewGroup$GridAdapter extends RecyclerView$Adapter<Kubrick
     public KubrickCwGalleryViewGroup$GridAdapter(final KubrickCwGalleryViewGroup kubrickCwGalleryViewGroup, int numVideosPerPage) {
         this.activity = (NetflixActivity)kubrickCwGalleryViewGroup.getContext();
         this.numVideosPerPage = numVideosPerPage;
-        final LoMoUtils$LoMoWidthType cwGalleryWidthType = KubrickUtils.getCwGalleryWidthType(this.activity);
+        final LoMoUtils$LoMoWidthType cwGalleryWidthType = BarkerUtils.getCwGalleryWidthType(this.activity);
         final int computeViewPagerWidth = LoMoViewPager.computeViewPagerWidth(this.activity, true, cwGalleryWidthType);
         numVideosPerPage = MathUtils.divideIntsWithRounding(computeViewPagerWidth, numVideosPerPage) * 2;
         if (Log.isLoggable()) {
@@ -45,7 +45,7 @@ class KubrickCwGalleryViewGroup$GridAdapter extends RecyclerView$Adapter<Kubrick
         }
         this.params = new RecyclerView$LayoutParams(numVideosPerPage, -1);
         this.expandedParams = new RecyclerView$LayoutParams(numVideosPerPage * 2, -1);
-        this.padding = kubrickCwGalleryViewGroup.getResources().getDimensionPixelOffset(2131296631);
+        this.padding = kubrickCwGalleryViewGroup.getResources().getDimensionPixelOffset(2131362219);
     }
     
     @Override

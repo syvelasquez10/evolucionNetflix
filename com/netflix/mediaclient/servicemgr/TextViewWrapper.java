@@ -34,11 +34,11 @@ class TextViewWrapper implements AddToListData$StateListener
     }
     
     protected void setAsInList() {
-        this.textView.setText((CharSequence)this.activity.getString(2131165573, new Object[] { "\u2212" }));
+        this.textView.setText((CharSequence)this.activity.getString(2131231109, new Object[] { "\u2212" }));
     }
     
     protected void setAsNotInList() {
-        this.textView.setText((CharSequence)this.activity.getString(2131165573, new Object[] { "+" }));
+        this.textView.setText((CharSequence)this.activity.getString(2131231109, new Object[] { "+" }));
     }
     
     protected void show() {
@@ -49,14 +49,14 @@ class TextViewWrapper implements AddToListData$StateListener
     public void update(final AddToListData$AddToListState addToListData$AddToListState) {
         switch (TextViewWrapper$3.$SwitchMap$com$netflix$mediaclient$servicemgr$AddToListData$AddToListState[addToListData$AddToListState.ordinal()]) {
             case 1: {
-                this.textView.setContentDescription((CharSequence)this.activity.getString(2131165627));
+                this.textView.setContentDescription((CharSequence)this.activity.getString(2131231164));
                 this.textView.setEnabled(true);
                 this.setAsInList();
                 this.textView.setOnClickListener((View$OnClickListener)new TextViewWrapper$1(this));
                 break;
             }
             case 2: {
-                this.textView.setContentDescription((CharSequence)this.activity.getString(2131165414));
+                this.textView.setContentDescription((CharSequence)this.activity.getString(2131230959));
                 this.textView.setEnabled(true);
                 this.setAsNotInList();
                 this.textView.setOnClickListener((View$OnClickListener)new TextViewWrapper$2(this));

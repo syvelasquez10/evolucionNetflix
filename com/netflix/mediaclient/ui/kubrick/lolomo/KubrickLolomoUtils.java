@@ -56,7 +56,7 @@ public class KubrickLolomoUtils
     }
     
     public static BaseLoLoMoAdapter$RowHolder createHolder(final NetflixActivity netflixActivity, final View view, final LinearLayout linearLayout, final TextView textView, final BaseLoLoMoAdapter$LoMoRowContent baseLoLoMoAdapter$LoMoRowContent, final View view2) {
-        return new KubrickLolomoUtils$KubrickRowHolder(netflixActivity, (View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, view.findViewById(2131624309));
+        return new KubrickLolomoUtils$KubrickRowHolder(netflixActivity, (View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, view.findViewById(2131689892));
     }
     
     public static boolean isDuplicateRow(final BasicLoMo basicLoMo) {
@@ -76,14 +76,14 @@ public class KubrickLolomoUtils
         else {
             b2 = false;
         }
-        if (b2) {
+        if (b2 && Log.isLoggable()) {
             Log.v(s, "For Kubrick Kids POPULAR_TITLES row, doing fetchVideos via lomo type");
         }
         if (!BrowseExperience.isKubrick() || loMo.getType() != LoMoType.INSTANT_QUEUE) {
             b = false;
         }
         final boolean b3 = b | b2;
-        if (b3) {
+        if (b3 && Log.isLoggable()) {
             Log.v(s, "For Kubrick INSTANT_QUEUE row, doing fetchVideos via lomo type");
         }
         return b3;
@@ -116,7 +116,7 @@ public class KubrickLolomoUtils
         }
         int dimensionPixelSize = b ? 1 : 0;
         if (n != 0) {
-            dimensionPixelSize = baseLoLoMoAdapter$RowHolder.contentGroup.getResources().getDimensionPixelSize(2131296616);
+            dimensionPixelSize = baseLoLoMoAdapter$RowHolder.contentGroup.getResources().getDimensionPixelSize(2131362203);
         }
         ViewUtils.setPaddingTop(baseLoLoMoAdapter$RowHolder.contentGroup, dimensionPixelSize);
     }

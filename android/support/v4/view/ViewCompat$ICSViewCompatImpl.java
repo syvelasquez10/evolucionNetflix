@@ -126,4 +126,9 @@ class ViewCompat$ICSViewCompatImpl extends ViewCompat$HCViewCompatImpl
         }
         ViewCompatICS.setAccessibilityDelegate(view, bridge);
     }
+    
+    @Override
+    public void setFitsSystemWindows(final View view, final boolean b) {
+        ViewCompatICS.setFitsSystemWindows(view, b);
+    }
 }

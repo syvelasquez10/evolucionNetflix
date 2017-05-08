@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.media.Language;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.servicemgr.Asset;
 
@@ -45,6 +46,36 @@ public abstract class PlayScreenDecorator
     public void onDestroy() {
         if (this.decorator != null) {
             this.decorator.onDestroy();
+        }
+    }
+    
+    public void onLanguageUpdated(final Language language) {
+        if (this.decorator != null) {
+            this.decorator.onLanguageUpdated(language);
+        }
+    }
+    
+    public void onPause() {
+        if (this.decorator != null) {
+            this.decorator.onPause();
+        }
+    }
+    
+    public void onResume() {
+        if (this.decorator != null) {
+            this.decorator.onResume();
+        }
+    }
+    
+    public void onStart() {
+        if (this.decorator != null) {
+            this.decorator.onStart();
+        }
+    }
+    
+    public void onStop() {
+        if (this.decorator != null) {
+            this.decorator.onStop();
         }
     }
     

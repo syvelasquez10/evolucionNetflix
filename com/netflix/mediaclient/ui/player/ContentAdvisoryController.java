@@ -43,12 +43,12 @@ public class ContentAdvisoryController
         this.animateOutInterpolator = (Interpolator)new AccelerateInterpolator();
         this.mHideAnimatorEndListener = (Animator$AnimatorListener)new ContentAdvisoryController$2(this);
         final View view = netflixFrag.getView();
-        this.mNetflixBarView = view.findViewById(2131624148);
+        this.mNetflixBarView = view.findViewById(2131689735);
         this.mNetflixBarView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ContentAdvisoryController$1(this));
-        this.mRating = (TextView)view.findViewById(2131624146);
-        this.mRatingDesc = (TextView)view.findViewById(2131624147);
-        this.mContainer = (RelativeLayout)view.findViewById(2131624145);
-        this.translationY = view.getResources().getDimensionPixelSize(2131296496);
+        this.mRating = (TextView)view.findViewById(2131689733);
+        this.mRatingDesc = (TextView)view.findViewById(2131689734);
+        this.mContainer = (RelativeLayout)view.findViewById(2131689732);
+        this.translationY = view.getResources().getDimensionPixelSize(2131362063);
         this.mContainer.setVisibility(0);
     }
     

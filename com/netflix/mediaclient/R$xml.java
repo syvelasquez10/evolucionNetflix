@@ -6,8 +6,8 @@ package com.netflix.mediaclient;
 
 public final class R$xml
 {
-    public static final int about = 2131034112;
-    public static final int preapp_provider = 2131034113;
-    public static final int searchable = 2131034114;
-    public static final int settings = 2131034115;
+    public static final int about = 2131099648;
+    public static final int preapp_provider = 2131099649;
+    public static final int searchable = 2131099650;
+    public static final int settings = 2131099651;
 }

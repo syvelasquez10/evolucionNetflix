@@ -301,6 +301,11 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
+    public void setLogo(final Drawable logo) {
+        this.mDecorToolbar.setLogo(logo);
+    }
+    
+    @Override
     public void setShowHideAnimationEnabled(final boolean b) {
     }
     

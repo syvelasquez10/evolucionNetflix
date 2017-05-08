@@ -5,18 +5,19 @@
 package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
-import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState$MdxPlaybackState;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.util.StringUtils;
-import android.content.Intent;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.MdxPostplayState;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Context;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.Log;
@@ -39,6 +40,10 @@ public final class MdxReceiver extends BroadcastReceiver
     }
     
     private void hideMdxController(final Context context) {
+        if (BrowseExperience.shouldShowMemento(context)) {
+            LocalBroadcastManager.getInstance((Context)this.mActivity).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MINI_PLAYER_POST_HIDE"));
+            return;
+        }
         MDXControllerActivity.finishMDXController(context);
     }
     

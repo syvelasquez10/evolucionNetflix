@@ -16,6 +16,7 @@ import com.netflix.mediaclient.service.player.subtitles.image.ImageDescriptor;
 import java.io.File;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.net.DnsManager;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentEncryptionInfo$ImageEncryptionInfo;
@@ -34,9 +35,11 @@ import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback
 class ImageV2SubtitleParser$1 extends LoggingResourceFetcherCallback
 {
     final /* synthetic */ ImageV2SubtitleParser this$0;
+    final /* synthetic */ String[] val$nameServers;
     
-    ImageV2SubtitleParser$1(final ImageV2SubtitleParser this$0) {
+    ImageV2SubtitleParser$1(final ImageV2SubtitleParser this$0, final String[] val$nameServers) {
         this.this$0 = this$0;
+        this.val$nameServers = val$nameServers;
     }
     
     @Override
@@ -46,13 +49,13 @@ class ImageV2SubtitleParser$1 extends LoggingResourceFetcherCallback
             if (Log.isLoggable()) {
                 Log.e("nf_subtitles_imv2", "Failed to download master index " + status);
             }
-            this.this$0.onError(s, IMedia$SubtitleFailure.download, status);
+            this.this$0.onError(s, this.val$nameServers, IMedia$SubtitleFailure.download, status);
             return;
         }
         if (this.this$0.parseMasterIndexContainer(array)) {
             this.this$0.handleDownloadSegmentIndexes();
             return;
         }
-        this.this$0.onError(s, IMedia$SubtitleFailure.parsing, null);
+        this.this$0.onError(s, this.val$nameServers, IMedia$SubtitleFailure.parsing, null);
     }
 }

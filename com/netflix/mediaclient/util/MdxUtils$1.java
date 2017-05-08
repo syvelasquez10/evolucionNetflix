@@ -50,7 +50,7 @@ final class MdxUtils$1 implements AdapterView$OnItemClickListener
                 Log.d("MdxUtils", "Same MDX target selected. Do nothing and dismiss dialog");
             }
         }
-        else if (CoppolaUtils.isCoppolaContext((Context)this.val$activity) && CoppolaUtils.isNewPlayerExperience((Context)this.val$activity)) {
+        else if (Coppola1Utils.isCoppolaContext((Context)this.val$activity) && Coppola1Utils.isNewPlayerExperience((Context)this.val$activity)) {
             Log.d("MdxUtils", "For Coppola - delegating MDX target icon click to PlayerFragment");
             this.val$serviceManager.getMdx().setCurrentTarget(selectedTarget.getUUID());
             ((CoppolaDetailsActivity)this.val$activity).handleMDXIconClick();

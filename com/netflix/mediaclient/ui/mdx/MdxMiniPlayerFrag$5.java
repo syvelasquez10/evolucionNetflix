@@ -6,10 +6,12 @@ package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
+import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -20,12 +22,9 @@ import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.Fragment;
-import android.app.Activity;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler$MdxKeyEventCallbacks;
 import com.netflix.mediaclient.service.mdx.MdxErrorHandler;
@@ -33,9 +32,6 @@ import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallba
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.os.Handler;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
-import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
-import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.MdxUtils;
@@ -46,6 +42,8 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.Log;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 
 class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
 {
@@ -77,7 +75,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void cancelDialog() {
-        if (this.this$0.activity.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
             return;
         }
         if (Log.isLoggable()) {
@@ -124,7 +122,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void showDialog(final RemoteDialog remoteDialog) {
-        if (this.this$0.activity.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
             return;
         }
         if (Log.isLoggable()) {
@@ -143,7 +141,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void updateDuration(final int progressMax) {
-        if (this.this$0.activity.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
             return;
         }
         this.this$0.log("updateDuration, " + progressMax);
@@ -164,7 +162,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void updateTargetCapabilities(final MdxTargetCapabilities mdxTargetCapabilities) {
-        if (this.this$0.activity.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
             return;
         }
         if (mdxTargetCapabilities == null) {

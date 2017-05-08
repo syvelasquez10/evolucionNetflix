@@ -148,6 +148,8 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
         return null;
     }
     
+    public abstract E onGetHost();
+    
     public LayoutInflater onGetLayoutInflater() {
         return (LayoutInflater)this.mContext.getSystemService("layout_inflater");
     }
@@ -165,8 +167,15 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
         return true;
     }
     
+    public void onRequestPermissionsFromFragment(final Fragment fragment, final String[] array, final int n) {
+    }
+    
     public boolean onShouldSaveFragmentState(final Fragment fragment) {
         return true;
+    }
+    
+    public boolean onShouldShowRequestPermissionRationale(final String s) {
+        return false;
     }
     
     public void onStartActivityFromFragment(final Fragment fragment, final Intent intent, final int n) {

@@ -17,18 +17,21 @@ import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import java.util.Arrays;
 import com.netflix.mediaclient.util.Base64;
 import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
@@ -191,8 +194,9 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             }
         }
         catch (Throwable t) {
-            s = t.toString().toLowerCase(Locale.US);
+            s = t.toString();
             Log.e("nf_configurationagent", "Could not fetch configuration! " + s);
+            s = s.toLowerCase(Locale.US);
             if (s.contains("could not validate certificate") || s.contains("sslhandshakeexception")) {
                 return CommonStatus.HTTP_SSL_DATE_TIME_ERROR;
             }
@@ -430,7 +434,9 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             this.initCompleted(loadConfigOverridesOnAppStart);
             return;
         }
-        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), this.getErrorHandler(), new ConfigurationAgent$1(this));
+        final ConfigurationAgent$1 configurationAgent$1 = new ConfigurationAgent$1(this);
+        PerformanceProfiler.getInstance().startSession(Sessions.DRM_LOADED, null);
+        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), this.getErrorHandler(), configurationAgent$1);
         this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
         this.initVoipSettings();
         Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
@@ -501,8 +507,18 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public ABTestConfig$Cell getBrandLoveSurveyConfig() {
+        return this.mABTestConfigOverride.getBrandLoveSurveyConfig();
+    }
+    
+    @Override
     public BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification() {
         return this.mDeviceConfigOverride.getBreadcrumbLoggingSpecification();
+    }
+    
+    @Override
+    public ABTestConfig$Cell getCWProgressBarConfig() {
+        return this.mABTestConfigOverride.getCWProgressBarConfig();
     }
     
     @Override
@@ -541,6 +557,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public ABTestConfig$Cell getCoppola2Experience() {
+        return this.mABTestConfigOverride.getCoppola2TestCell();
+    }
+    
+    @Override
     public PlayerType getCurrentPlayerType() {
         return PlayerTypeFactory.getCurrentType(this.getContext());
     }
@@ -568,6 +589,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public int getDiskCacheSizeBytes() {
         return this.mDiskCacheSizeBytes;
+    }
+    
+    @Override
+    public ABTestConfig$Cell getDisplayPageRefreshConfig() {
+        return this.mABTestConfigOverride.getDisplayPageRefreshConfig();
     }
     
     @Override
@@ -618,6 +644,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public MdxConfiguration getMdxConfiguration() {
         return this.mMdxConfiguration;
+    }
+    
+    @Override
+    public ABTestConfig$Cell getMementoConfig() {
+        return this.mABTestConfigOverride.getMementoConfig();
     }
     
     @Override
@@ -818,7 +849,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     public boolean isDeviceHd() {
-        return DrmManagerRegistry.drmSupportsHd();
+        return DrmManagerRegistry.drmSupportsHd() && this.isWidevineL1Enabled();
     }
     
     @Override
@@ -941,31 +972,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             Log.d("nf_configurationagent", "Real disable " + b2);
         }
         return b2;
-    }
-    
-    @Override
-    public boolean shouldDisplayVoipDialConfirmationDialog() {
-        final int voipConfirmationDialogAllocationPercentage = this.mDeviceConfigOverride.getVoipConfirmationDialogAllocationPercentage();
-        if (Log.isLoggable()) {
-            Log.d("nf_configurationagent", "shouldDisplayVoipDialConfirmationDialog:: allocation percentage: " + voipConfirmationDialogAllocationPercentage);
-        }
-        boolean deviceEnabled;
-        if (voipConfirmationDialogAllocationPercentage <= 0) {
-            Log.d("nf_configurationagent", "Nobody will see confirmation dialog");
-            deviceEnabled = false;
-        }
-        else {
-            if (voipConfirmationDialogAllocationPercentage >= 100) {
-                Log.d("nf_configurationagent", "Everybody will see confirmation dialog");
-                return true;
-            }
-            final boolean b = deviceEnabled = DeviceUtils.isDeviceEnabled(this.getContext(), 100 - voipConfirmationDialogAllocationPercentage);
-            if (Log.isLoggable()) {
-                Log.d("nf_configurationagent", "shouldDisplayVoipDialConfirmationDialog:: This device will see confirmation dialog: " + b);
-                return b;
-            }
-        }
-        return deviceEnabled;
     }
     
     @Override

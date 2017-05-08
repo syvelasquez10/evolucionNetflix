@@ -15,7 +15,7 @@ import com.netflix.mediaclient.android.widget.PressedStateHandler$DelayedOnClick
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;

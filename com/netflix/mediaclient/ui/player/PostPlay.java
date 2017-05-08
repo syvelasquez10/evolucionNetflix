@@ -40,9 +40,9 @@ import com.netflix.mediaclient.ui.iko.InteractivePostPlayManager;
 public abstract class PostPlay
 {
     private static final int DEFAULT_FETCH_POSTPLAY_MS = 10000;
+    protected static final int DEFAULT_INTERRUPTER_COUNT = 3;
     private static final int DEFAULT_INTERRUPTER_TIMEOUT_IN_MS = 3600000;
     private static final int DEFAULT_OFFSET_MS = 10000;
-    protected static final int INTERRUPTER_COUNT = 3;
     private static final int INTERRUPTER_VALUE_IN_MS = 120000;
     private static final double SIXTY_PERCENT = 0.6;
     protected static final String TAG = "nf_postplay";
@@ -88,17 +88,42 @@ public abstract class PostPlay
         this.findViewsCommon();
         this.findViews();
         this.setClickListeners();
-        this.mOffsetMs = mNetflixActivity.getResources().getInteger(2131427345) * 1000;
+        this.mOffsetMs = mNetflixActivity.getResources().getInteger(2131492882) * 1000;
         this.mFetchPostplayOffsetMs = this.mOffsetMs;
         this.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.notStarted;
     }
     
     protected PostPlay(final PlayerFragment mPlayerFragment) {
+        final int n = 3;
         this(mPlayerFragment.getNetflixActivity());
         this.mPlayerFragment = mPlayerFragment;
-        if (this.mPlayerFragment.getCurrentAsset() != null && this.mPlayerFragment.getCurrentAsset().getPostPlayVideoPlayed() >= 3 && this.mPlayerFragment.getState().noUserInteraction()) {
-            Log.d("nf_postplay", "This is 3rd consecutive auto play with no user interaction, start interrupter timeout");
-            this.mPlayerFragment.getHandler().postDelayed(this.onInterrupterStart, 120000L);
+        final Asset currentAsset = this.mPlayerFragment.getCurrentAsset();
+        if (currentAsset == null) {
+            if (Log.isLoggable()) {
+                Log.d("nf_postplay", "PostPlay: current asset is null");
+            }
+        }
+        else {
+            final int autoPlayMaxCount = currentAsset.getAutoPlayMaxCount();
+            final int postPlayVideoPlayed = currentAsset.getPostPlayVideoPlayed();
+            int n2;
+            if (autoPlayMaxCount <= -1) {
+                n2 = n;
+                if (Log.isLoggable()) {
+                    Log.d("nf_postplay", "PostPlay: autoPlayMaxCount = " + autoPlayMaxCount + " resetting to " + 3);
+                    n2 = n;
+                }
+            }
+            else {
+                n2 = autoPlayMaxCount;
+            }
+            if (Log.isLoggable()) {
+                Log.d("nf_postplay", "PostPlay: postPlayVideoPlayerCount = " + postPlayVideoPlayed + " autoPlayMaxCount = " + n2);
+            }
+            if (postPlayVideoPlayed >= n2 && this.mPlayerFragment.getState().noUserInteraction()) {
+                Log.d("nf_postplay", "This is 3rd consecutive auto play with no user interaction, start interrupter timeout");
+                this.mPlayerFragment.getHandler().postDelayed(this.onInterrupterStart, 120000L);
+            }
         }
     }
     
@@ -262,18 +287,18 @@ public abstract class PostPlay
     protected abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131624450);
-        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131624449);
-        this.mBackground = (AdvancedImageView)this.mNetflixActivity.findViewById(2131624530);
-        this.mSynopsis = (TextView)this.mNetflixActivity.findViewById(2131624528);
-        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131624451);
-        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131624525);
-        this.mMoreButton = this.mNetflixActivity.findViewById(2131624517);
-        this.mPlayButton = this.mNetflixActivity.findViewById(2131624515);
-        this.mStopButton = this.mNetflixActivity.findViewById(2131624516);
-        this.mTitle = (TextView)this.mNetflixActivity.findViewById(2131624527);
-        this.mInterrupter = this.mNetflixActivity.findViewById(2131624448);
-        this.mPostPlay = this.mNetflixActivity.findViewById(2131624522);
+        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131690048);
+        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131690047);
+        this.mBackground = (AdvancedImageView)this.mNetflixActivity.findViewById(2131690138);
+        this.mSynopsis = (TextView)this.mNetflixActivity.findViewById(2131690123);
+        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131690049);
+        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131690134);
+        this.mMoreButton = this.mNetflixActivity.findViewById(2131690114);
+        this.mPlayButton = this.mNetflixActivity.findViewById(2131690112);
+        this.mStopButton = this.mNetflixActivity.findViewById(2131690113);
+        this.mTitle = (TextView)this.mNetflixActivity.findViewById(2131690136);
+        this.mInterrupter = this.mNetflixActivity.findViewById(2131690046);
+        this.mPostPlay = this.mNetflixActivity.findViewById(2131690131);
     }
     
     public PlayerFragment getController() {

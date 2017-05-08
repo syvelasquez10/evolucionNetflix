@@ -20,6 +20,7 @@ public class SubtitleUrl
     private static final String ATTR_URL = "url";
     private static final String ATTR_WIDTH = "width";
     private static final String ATTR_XID = "xid";
+    private static final String TAG = "nf_dns";
     private long mCdnId;
     private String mDecryptionKey;
     private String mDownloadableId;
@@ -100,6 +101,10 @@ public class SubtitleUrl
         return this.mDecryptionKey;
     }
     
+    public String getDownloadUrl() {
+        return this.mUrl;
+    }
+    
     public String getDownloadableId() {
         return this.mDownloadableId;
     }
@@ -118,10 +123,6 @@ public class SubtitleUrl
     
     public IMedia$SubtitleProfile getProfile() {
         return this.mProfile;
-    }
-    
-    public String getUrl() {
-        return this.mUrl;
     }
     
     public int getWidth() {

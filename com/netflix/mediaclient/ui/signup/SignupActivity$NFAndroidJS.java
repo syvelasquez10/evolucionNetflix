@@ -30,6 +30,7 @@ import com.netflix.mediaclient.util.log.ApmLogUtils;
 import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
+import com.netflix.mediaclient.util.LoginUtils;
 import android.content.IntentSender$SendIntentException;
 import android.app.Activity;
 import android.os.Build;
@@ -207,7 +208,7 @@ public class SignupActivity$NFAndroidJS
         catch (JSONException ex) {
             Log.e("SignupActivity", "Failed to LoginToApp", (Throwable)ex);
             this.this$0.mSignupOngoing = false;
-            this.this$0.provideDialog(this.this$0.getString(2131165738), this.this$0.mHandleError);
+            this.this$0.provideDialog(this.this$0.getString(2131231281), this.this$0.mHandleError);
             return;
         }
         Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");

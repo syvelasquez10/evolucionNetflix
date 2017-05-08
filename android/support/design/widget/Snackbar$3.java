@@ -4,7 +4,7 @@
 
 package android.support.design.widget;
 
-import android.widget.TextView;
+import android.widget.Button;
 import android.text.TextUtils;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup$LayoutParams;
@@ -34,8 +34,8 @@ class Snackbar$3 implements SnackbarManager$Callback
     }
     
     @Override
-    public void dismiss() {
-        Snackbar.sHandler.sendMessage(Snackbar.sHandler.obtainMessage(1, (Object)this.this$0));
+    public void dismiss(final int n) {
+        Snackbar.sHandler.sendMessage(Snackbar.sHandler.obtainMessage(1, n, 0, (Object)this.this$0));
     }
     
     @Override

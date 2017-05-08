@@ -8,10 +8,11 @@ import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
-import org.json.JSONException;
 import java.util.Collection;
 import org.json.JSONArray;
+import org.json.JSONException;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.Base64;
 import android.content.Intent;
 import java.util.ArrayList;
 import org.json.JSONObject;
@@ -40,6 +41,7 @@ public class PlayBilling
     public static final int IABHELPER_ERROR_BASE = -1000;
     public static final String ITEM_TYPE_INAPP = "inapp";
     public static final String ITEM_TYPE_SUBS = "subs";
+    private static final String NFLX_KEY_RAW_RESPONSE = "rawData";
     public static final boolean PLAY_BILLING_ENABLED_IN_CODE = true;
     public static final String RESPONSE_BUY_INTENT = "BUY_INTENT";
     public static final String RESPONSE_CODE = "RESPONSE_CODE";
@@ -119,70 +121,113 @@ public class PlayBilling
         }
     }
     
+    private String getBase64EncodedString(String encodeBytes) {
+        try {
+            encodeBytes = Base64.encodeBytes(encodeBytes.getBytes());
+            return encodeBytes;
+        }
+        catch (Exception ex) {
+            Log.e("playBilling", "error encoding to base64", ex);
+            return null;
+        }
+    }
+    
     private JSONObject getJsonObjFromBundle(final Bundle bundle) {
         if (bundle == null) {
             Log.d("playBilling", "bundle is null");
             return null;
         }
         final JSONObject jsonObject = new JSONObject();
-        final Iterator<String> iterator = bundle.keySet().iterator();
-    Label_0034:
-        while (iterator.hasNext()) {
-            String s;
-            Object value;
+        final Iterator<String> iterator = (Iterator<String>)bundle.keySet().iterator();
+        String string;
+        String s;
+        Object value = null;
+        ArrayList stringArrayList = null;
+        Object wrap;
+        JSONArray jsonArray;
+        Iterator<String> iterator2;
+        JSONObject sanitizePurchaseData;
+        Label_0105_Outer:Label_0176_Outer:
+        while (true) {
             while (true) {
-                s = iterator.next();
-                while (true) {
-                    ArrayList stringArrayList = null;
-                    Label_0162: {
-                        try {
-                            value = bundle.get(s);
-                            if (PlayBilling.RESPONSE_LIST_PARAMS.contains(s)) {
-                                stringArrayList = bundle.getStringArrayList(s);
-                                if (!PlayBilling.RESPONSE_LIST_STRING_PARAMS.contains(s)) {
-                                    break Label_0162;
+                Label_0376: {
+                    if (!iterator.hasNext()) {
+                        while (true) {
+                            try {
+                                jsonObject.put("rawData", (Object)this.getBase64EncodedString(bundle.toString()));
+                                string = jsonObject.toString();
+                                if (Log.isLoggable()) {
+                                    Log.d("playBilling", "raw Bundle - " + bundle);
+                                    Log.d("playBilling", "result fromBundle - " + string);
                                 }
-                                value = new JSONArray((Collection)stringArrayList);
+                                return jsonObject;
                             }
-                            final Object wrap = JSONObject.wrap(value);
-                            if (wrap == null) {
-                                break;
+                            catch (JSONException ex) {
+                                Log.e("playBilling", "error adding raw message", (Throwable)ex);
+                                continue Label_0105_Outer;
                             }
-                            jsonObject.put(s, wrap);
+                            break;
                         }
-                        catch (JSONException ex) {
-                            if (Log.isLoggable()) {
-                                Log.d("playBilling", "failed in converting bundle. e:" + ex);
-                            }
-                        }
-                        continue Label_0034;
+                        break Label_0376;
                     }
-                    final JSONArray jsonArray = new JSONArray();
-                    final Iterator<String> iterator2 = stringArrayList.iterator();
-                    while (iterator2.hasNext()) {
-                        JSONObject sanitizePurchaseData = new JSONObject((String)iterator2.next());
+                    s = iterator.next();
+                Label_0176:
+                    while (true) {
+                        while (true) {
+                            Label_0229: {
+                                Label_0162: {
+                                    try {
+                                        value = bundle.get(s);
+                                        if (PlayBilling.RESPONSE_LIST_PARAMS.contains(s)) {
+                                            stringArrayList = bundle.getStringArrayList(s);
+                                            if (!PlayBilling.RESPONSE_LIST_STRING_PARAMS.contains(s)) {
+                                                break Label_0162;
+                                            }
+                                            value = new JSONArray((Collection)stringArrayList);
+                                        }
+                                        wrap = JSONObject.wrap(value);
+                                        if (wrap == null) {
+                                            break Label_0229;
+                                        }
+                                        jsonObject.put(s, wrap);
+                                    }
+                                    catch (JSONException ex2) {
+                                        if (!Log.isLoggable()) {
+                                            continue Label_0105_Outer;
+                                        }
+                                        Log.d("playBilling", "failed in converting bundle. e:" + ex2);
+                                    }
+                                    continue Label_0105_Outer;
+                                }
+                                jsonArray = new JSONArray();
+                                iterator2 = stringArrayList.iterator();
+                                break Label_0176;
+                            }
+                            if (Log.isLoggable()) {
+                                Log.d("playBilling", String.format("wrapping failed for key: %s, obj: %s", s, value));
+                            }
+                            if (value != null) {
+                                jsonObject.put(s, (Object)value.toString());
+                                continue Label_0105_Outer;
+                            }
+                            continue Label_0105_Outer;
+                            if (!iterator2.hasNext()) {
+                                value = jsonArray;
+                                continue Label_0176_Outer;
+                            }
+                            break;
+                        }
+                        sanitizePurchaseData = new JSONObject((String)iterator2.next());
                         if ("INAPP_PURCHASE_DATA_LIST".equals(s)) {
                             sanitizePurchaseData = this.sanitizePurchaseData(sanitizePurchaseData);
                         }
                         jsonArray.put((Object)sanitizePurchaseData);
+                        continue Label_0176;
                     }
-                    value = jsonArray;
-                    continue;
                 }
-            }
-            if (Log.isLoggable()) {
-                Log.d("playBilling", String.format("wrapping failed for key: %s, obj: %s", s, value));
-            }
-            if (value != null) {
-                jsonObject.put(s, (Object)value.toString());
+                continue;
             }
         }
-        final String string = jsonObject.toString();
-        if (Log.isLoggable()) {
-            Log.d("playBilling", "raw Bundle - " + bundle);
-            Log.d("playBilling", "result fromBundle - " + string);
-        }
-        return jsonObject;
     }
     
     private JSONObject getPurchaseHistoryFromPlayBilling(final String s) {

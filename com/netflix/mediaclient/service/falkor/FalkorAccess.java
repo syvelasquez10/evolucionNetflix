@@ -12,6 +12,7 @@ import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
+import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -56,6 +57,11 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void fetchActorDetailsAndRelatedForTitle(final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchActorDetailsAndRelatedForTitle(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    }
+    
+    @Override
     public void fetchCWVideos(final int n, final int n2, final int n3, final int n4) {
         this.mBrowseAgent.fetchCWVideos(n, n2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n3, n4)));
     }
@@ -91,8 +97,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchInteractiveVideoMoments(final VideoType videoType, final String s, final int n, final int n2) {
-        this.mBrowseAgent.fetchInteractiveVideoMoments(videoType, s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchInteractiveVideoMoments(final VideoType videoType, final String s, final String s2, final int n, final int n2) {
+        this.mBrowseAgent.fetchInteractiveVideoMoments(videoType, s, s2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -118,6 +124,16 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void fetchNotifications(final int n, final int n2, final int n3, final int n4) {
         this.mBrowseAgent.fetchNotificationsList(n, n2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n3, n4)));
+    }
+    
+    @Override
+    public void fetchPersonDetail(final String s, final int n, final int n2, final String s2) {
+        this.mBrowseAgent.fetchPersonDetail(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)), s2);
+    }
+    
+    @Override
+    public void fetchPersonRelated(final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchPersonRelated(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -163,6 +179,11 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void fetchSimilarVideosForQuerySuggestion(final String s, final int n, final int n2, final int n3, final String s2) {
         this.mBrowseAgent.fetchSimilarVideosForQuerySuggestion(s, n, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n2, n3)), s2);
+    }
+    
+    @Override
+    public void fetchTask(final CachedModelProxy$CmpTaskDetails cachedModelProxy$CmpTaskDetails, final int n, final int n2) {
+        this.mBrowseAgent.fetchTask(cachedModelProxy$CmpTaskDetails, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -237,7 +258,7 @@ public class FalkorAccess implements IBrowseInterface
     
     @Override
     public void refreshIrisNotifications(final boolean b, final boolean b2, final MessageData messageData) {
-        this.mBrowseAgent.refreshSocialNotifications(b, b2, messageData);
+        this.mBrowseAgent.refreshIrisNotifications(b, b2, messageData);
     }
     
     @Override

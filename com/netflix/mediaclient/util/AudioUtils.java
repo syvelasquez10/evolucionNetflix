@@ -12,7 +12,7 @@ public final class AudioUtils
 {
     public static SoundPool createSoundPool(final int n) {
         if (AndroidUtils.getAndroidVersion() >= 21) {
-            return Api21Util.createSoundPool();
+            return Api21Util.createSoundPool(n);
         }
         return Api19Util.createSoundPoolPreLollipop(n);
     }

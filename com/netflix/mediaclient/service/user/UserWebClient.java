@@ -22,9 +22,13 @@ public interface UserWebClient
     
     void fetchProfileData(final String p0, final UserAgentWebCallback p1);
     
+    void fetchSurvey(final UserAgentWebCallback p0);
+    
     void fetchUserData(final UserAgentWebCallback p0);
     
     boolean isSynchronous();
+    
+    void markSurveysAsRead();
     
     void recordNrmInfo(final String p0);
     

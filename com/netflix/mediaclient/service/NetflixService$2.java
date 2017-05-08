@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.servicemgr.IPushNotification;

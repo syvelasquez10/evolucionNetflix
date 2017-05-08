@@ -4,7 +4,7 @@
 
 package com.crittercism.app;
 
-import crittercism.android.dy;
+import com.crittercism.internal.dw;
 import java.util.Collection;
 import android.os.Build$VERSION;
 import java.util.LinkedList;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CrittercismConfig
 {
-    protected String a;
+    public String a;
     private String b;
     private boolean c;
     private boolean d;
@@ -71,7 +71,7 @@ public class CrittercismConfig
         return hashCode;
     }
     
-    protected static boolean a(final String s, final String s2) {
+    public static boolean a(final String s, final String s2) {
         if (s == null) {
             return s2 == null;
         }
@@ -79,7 +79,7 @@ public class CrittercismConfig
     }
     
     private static final boolean b() {
-        return Build$VERSION.SDK_INT >= 10 && Build$VERSION.SDK_INT <= 21;
+        return Build$VERSION.SDK_INT >= 10 && Build$VERSION.SDK_INT <= 23;
     }
     
     public List a() {
@@ -192,7 +192,7 @@ public class CrittercismConfig
     @Deprecated
     public final void setOptmzEnabled(final boolean g) {
         if (!b() && g) {
-            dy.a("OPTMZ is currently only allowed for api levels 10 to 21.  APM will not be installed");
+            dw.c("OPTMZ is currently only allowed for api levels 10 to 23.  APM will not be installed");
             return;
         }
         this.g = g;

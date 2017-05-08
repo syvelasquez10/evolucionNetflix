@@ -14,9 +14,10 @@ import com.netflix.mediaclient.ui.push_notify.PushNotifOptInDialogFrag;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
-import android.app.Activity;
 import android.content.Context;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
 
@@ -34,7 +35,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
             Log.d("DialogManager", "Activity has saved instance state - can't display dialog");
             return false;
         }
-        if (this.mOwner.destroyed() || this.mOwner.isFinishing()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.mOwner)) {
             Log.d("DialogManager", "Activity is destroyed - can't display dialog");
             return false;
         }
@@ -107,18 +108,18 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
         return true;
     }
     
-    public void displayDialogsIfNeeded() {
+    public boolean displayDialogsIfNeeded() {
         if (this.displayOptInDialogIfNeeded()) {
             Log.d("DialogManager", "OptIn dialog displayed");
-            return;
+            return true;
         }
         Log.d("DialogManager", "OptIn Dialog does not need to be displayed.");
-        this.displayGooglePlayServicesDialogIfNeeded();
+        return this.displayGooglePlayServicesDialogIfNeeded();
     }
     
     @Override
     public void onAccept() {
-        if (this.mOwner.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.mOwner)) {
             return;
         }
         Log.v("DialogManager", "Sending PUSH_OPTIN...");
@@ -131,7 +132,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
     
     @Override
     public void onDecline() {
-        if (this.mOwner.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.mOwner)) {
             return;
         }
         Log.v("DialogManager", "Sending PUSH_OPTOUT...");

@@ -10,14 +10,19 @@ import java.io.Serializable;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
+import com.netflix.mediaclient.util.Coppola2Utils;
 import java.util.Collection;
 import android.os.SystemClock;
+import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.ui.lolomo.KidsGenresLoMoFrag;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActionBar;
+import com.netflix.mediaclient.ui.kubrick.lolomo.BarkerHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.annotation.SuppressLint;
@@ -26,6 +31,7 @@ import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
+import android.app.Activity;
 import android.support.v4.widget.DrawerLayout$DrawerListener;
 import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -162,7 +168,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131165625, 1).show();
+        Toast.makeText((Context)this, 2131231162, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -180,16 +186,20 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131624248)).setDrawerListener(new HomeActivity$1(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131689839)).setDrawerListener(new HomeActivity$1(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
         this.drawerLayout.setFocusable(false);
-        this.drawerLayout.setScrimColor(this.getResources().getColor(2131558474));
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131624028));
         this.updateActionBar();
         this.updateSlidingDrawer();
+    }
+    
+    private void showDataSaverNotif() {
+        DataSaverNotifier.showNotificationIfNecessary(this);
     }
     
     public static void showGenreList(final NetflixActivity netflixActivity, final GenreList list) {
@@ -200,7 +210,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131624157, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131689744, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -241,8 +251,8 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
                 logoType = NetflixActionBar$LogoType.GONE;
             }
             netflixActionBar.setLogoType(logoType);
+            netflixActionBar.setSandwichIcon(false);
         }
-        netflixActionBar.setSandwichIcon(false);
     }
     
     private void updateSlidingDrawer() {
@@ -256,8 +266,8 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     protected NetflixActionBar createActionBar() {
-        if (BrowseExperience.isKubrick()) {
-            return new KubrickHomeActionBar(this, this.hasUpAction());
+        if (BrowseExperience.isKubrick() || BrowseExperience.isDisplayPageRefresh()) {
+            return new BarkerHomeActionBar(this, this.hasUpAction());
         }
         return super.createActionBar();
     }
@@ -269,6 +279,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     protected NetflixFrag createPrimaryFrag() {
+        PerformanceProfiler.getInstance().startSession(Sessions.LOLOMO_LOAD, null);
         if (!"lolomo".equals(this.genreId) && BrowseExperience.useKidsGenresLoMo()) {
             return KidsGenresLoMoFrag.create(this.genreId, this.genre);
         }
@@ -282,12 +293,12 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public int getActionBarParentViewId() {
-        return 2131624247;
+        return 2131689834;
     }
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903116;
+        return 2130903132;
     }
     
     public IClientLogging$ModalView getCurrentViewType() {
@@ -345,9 +356,11 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         if (this.mDialogManager != null) {
             this.mDialogManager.onAccept();
         }
+        this.showDataSaverNotif();
     }
     
     public void onCreate(final Bundle bundle) {
+        PerformanceProfiler.getInstance().logEvent(Events.HOME_ACTIVITY_CREATED, null);
         this.isFirstLaunch = (bundle == null);
         this.mStartedTimeMs = SystemClock.elapsedRealtime();
         if (bundle != null) {
@@ -360,6 +373,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.registerReceivers();
         this.showFetchErrorsToast();
         this.pauseTimeMs = SystemClock.elapsedRealtime();
+        Coppola2Utils.forceToPortraitIfNeeded(this);
     }
     
     @Override
@@ -379,6 +393,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         if (this.mDialogManager != null) {
             this.mDialogManager.onDecline();
         }
+        this.showDataSaverNotif();
     }
     
     @Override

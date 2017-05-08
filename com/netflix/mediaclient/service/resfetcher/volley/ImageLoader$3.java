@@ -11,40 +11,48 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.StringUtils;
 import com.android.volley.Request;
-import com.android.volley.Response$Listener;
-import com.netflix.mediaclient.StatusCode;
+import com.android.volley.Response$ErrorListener;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.UriUtil;
 import android.graphics.Bitmap$Config;
 import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import android.graphics.Bitmap;
+import com.android.volley.VolleyError;
 import android.widget.ImageView;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$InteractiveListener;
 import android.os.Looper;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
-import com.android.volley.VolleyError;
-import com.android.volley.Response$ErrorListener;
+import com.netflix.mediaclient.StatusCode;
+import android.graphics.Bitmap;
+import com.android.volley.Response$Listener;
 
-class ImageLoader$3 implements Response$ErrorListener
+class ImageLoader$3 implements Response$Listener<Bitmap>
 {
     final /* synthetic */ ImageLoader this$0;
     final /* synthetic */ String val$cacheKey;
     final /* synthetic */ String val$requestUrl;
+    final /* synthetic */ String val$sessionId;
     
-    ImageLoader$3(final ImageLoader this$0, final String val$requestUrl, final String val$cacheKey) {
+    ImageLoader$3(final ImageLoader this$0, final String val$requestUrl, final String val$sessionId, final String val$cacheKey) {
         this.this$0 = this$0;
         this.val$requestUrl = val$requestUrl;
+        this.val$sessionId = val$sessionId;
         this.val$cacheKey = val$cacheKey;
     }
     
     @Override
-    public void onErrorResponse(final VolleyError volleyError) {
-        ApmLogUtils.reportAssetRequestFailure(this.val$requestUrl, volleyError, this.this$0.mApmLogger);
-        this.this$0.onGetImageError(this.val$cacheKey, volleyError);
+    public void onResponse(final Bitmap bitmap) {
+        ApmLogUtils.reportAssetRequestResult(this.val$requestUrl, StatusCode.OK, this.this$0.mApmLogger);
+        PerformanceProfiler.getInstance().endSession(Sessions.IMAGE_FETCH, null, this.val$sessionId);
+        this.this$0.onGetImageSuccess(this.val$cacheKey, bitmap);
     }
 }

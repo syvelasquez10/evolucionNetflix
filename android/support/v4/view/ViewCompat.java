@@ -172,6 +172,20 @@ public class ViewCompat
         ViewCompat.IMPL.jumpDrawablesToCurrentState(view);
     }
     
+    public static void offsetLeftAndRight(final View view, final int n) {
+        view.offsetLeftAndRight(n);
+        if (n != 0 && Build$VERSION.SDK_INT < 11) {
+            view.invalidate();
+        }
+    }
+    
+    public static void offsetTopAndBottom(final View view, final int n) {
+        view.offsetTopAndBottom(n);
+        if (n != 0 && Build$VERSION.SDK_INT < 11) {
+            view.invalidate();
+        }
+    }
+    
     public static WindowInsetsCompat onApplyWindowInsets(final View view, final WindowInsetsCompat windowInsetsCompat) {
         return ViewCompat.IMPL.onApplyWindowInsets(view, windowInsetsCompat);
     }
@@ -218,6 +232,10 @@ public class ViewCompat
     
     public static void setElevation(final View view, final float n) {
         ViewCompat.IMPL.setElevation(view, n);
+    }
+    
+    public static void setFitsSystemWindows(final View view, final boolean b) {
+        ViewCompat.IMPL.setFitsSystemWindows(view, b);
     }
     
     public static void setImportantForAccessibility(final View view, final int n) {

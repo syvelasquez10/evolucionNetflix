@@ -72,10 +72,10 @@ class UserAgent$ActivateListener implements EventListener
             final ActivateEvent activateEvent = (ActivateEvent)uiEvent;
             if (!activateEvent.failed()) {
                 final String cookies = activateEvent.getCookies();
-                final String access$700 = this.this$0.extractToken(this.this$0.getNetflixIdName() + "=", cookies);
-                final String access$701 = this.this$0.extractToken(this.this$0.getSecureNetflixIdName() + "=", cookies);
-                if (StringUtils.isNotEmpty(access$700) && StringUtils.isNotEmpty(access$701)) {
-                    this.this$0.mUserAgentStateManager.accountOrProfileActivated(true, access$700, access$701);
+                final String access$900 = this.this$0.extractToken(this.this$0.getNetflixIdName() + "=", cookies);
+                final String access$901 = this.this$0.extractToken(this.this$0.getSecureNetflixIdName() + "=", cookies);
+                if (StringUtils.isNotEmpty(access$900) && StringUtils.isNotEmpty(access$901)) {
+                    this.this$0.mUserAgentStateManager.accountOrProfileActivated(true, access$900, access$901);
                 }
             }
             else {

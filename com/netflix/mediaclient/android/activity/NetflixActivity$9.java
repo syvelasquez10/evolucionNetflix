@@ -7,40 +7,42 @@ package com.netflix.mediaclient.android.activity;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog;
 import com.netflix.mediaclient.ui.launch.RelaunchActivity;
-import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import android.widget.Toast;
 import com.netflix.mediaclient.service.NetflixService;
+import android.widget.Toast;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
-import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
+import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.Iterator;
-import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
 import android.view.Menu;
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
-import android.app.Activity;
+import android.content.res.Resources;
+import com.netflix.mediaclient.ui.mdx.MiniPlayerControlsFrag;
+import com.netflix.mediaclient.ui.signup.SignupActivity;
+import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.login.LogoutActivity;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
@@ -62,10 +64,13 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsActionBar;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.View;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.android.widget.UpdateDialog;
 import com.netflix.mediaclient.android.widget.UpdateDialog$Builder;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
@@ -76,14 +81,13 @@ import android.support.design.widget.CoordinatorLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.ui.voip.ContactUsActivity;
-import android.content.Intent;
 import java.util.HashSet;
 import android.app.Dialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout$PanelSlideListener;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
+import com.netflix.mediaclient.ui.mdx.IMiniPlayerFrag;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.view.MenuItem;
 import android.support.design.widget.CoordinatorLayout;
@@ -91,7 +95,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import android.support.design.widget.FloatingActionButton;
 import java.util.concurrent.atomic.AtomicBoolean;
 import android.os.Handler;
-import android.content.BroadcastReceiver;
 import java.util.Set;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifier$PlayVerifyCallback;
@@ -99,12 +102,14 @@ import com.netflix.mediaclient.ui.mdx.ShowMessageDialogFrag$MessageResponseProvi
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListenerProvider;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.support.v7.app.AppCompatActivity;
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
+import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.Log;
+import android.content.BroadcastReceiver;
 
-class NetflixActivity$9 implements Runnable
+class NetflixActivity$9 extends BroadcastReceiver
 {
     final /* synthetic */ NetflixActivity this$0;
     
@@ -112,22 +117,56 @@ class NetflixActivity$9 implements Runnable
         this.this$0 = this$0;
     }
     
-    @Override
-    public void run() {
-        if (this.this$0.isVisible && !this.this$0.destroyed() && this.this$0.mdxFrag != null && this.this$0.slidingPanel != null && this.this$0.netflixActionBar != null) {
-            if (Log.isLoggable()) {
-                Log.v("NetflixActivity", "Checking to see if action bar visibility is valid.  Frag showing: " + this.this$0.mdxFrag.isShowing() + ", panel expanded: " + this.this$0.slidingPanel.isExpanded() + ", system action bar showing: " + this.this$0.netflixActionBar.isShowing());
-            }
-            if (this.this$0.mdxFrag.isShowing() && this.this$0.slidingPanel.isExpanded()) {
-                if (this.this$0.netflixActionBar.isShowing()) {
-                    Log.v("NetflixActivity", "Hiding action bar since it should not be shown");
-                    this.this$0.netflixActionBar.hide(false);
-                }
-            }
-            else if ((!CoppolaUtils.isCoppolaContext((Context)this.this$0) || DeviceUtils.isPortrait((Context)this.this$0)) && !this.this$0.netflixActionBar.isShowing()) {
-                Log.v("NetflixActivity", "Showing action bar since it should not be hidden");
-                this.this$0.netflixActionBar.show(false);
-            }
+    private void logWithClassName(final String s) {
+        if (Log.isLoggable()) {
+            Log.d("NetflixActivity", this.this$0.getClass().getSimpleName() + ": " + s);
         }
+    }
+    
+    public void onReceive(final Context context, final Intent intent) {
+        if (intent == null) {
+            this.logWithClassName("Null intent");
+            return;
+        }
+        final String action = intent.getAction();
+        if ("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_ACTIVE".equals(action)) {
+            this.logWithClassName("User profile activated - restarting app");
+            PinVerifier.getInstance().clearState();
+            this.this$0.handleProfileActivated();
+            return;
+        }
+        if ("com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_DEACTIVE".equals(action)) {
+            this.logWithClassName("Account deactivated - restarting app");
+            this.this$0.handleAccountDeactivated();
+            return;
+        }
+        if ("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_READY_TO_SELECT".equals(action)) {
+            this.logWithClassName("Ready to select profile - calling children");
+            this.this$0.handleProfileReadyToSelect();
+            return;
+        }
+        if ("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_SELECTION_RESULT".equals(action)) {
+            final int intExtra = intent.getIntExtra("com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_INT", StatusCode.OK.getValue());
+            final String stringExtra = intent.getStringExtra("com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_STRING");
+            this.logWithClassName("Profile selection status: " + intExtra);
+            this.this$0.handleProfileSelectionResult(intExtra, stringExtra);
+            return;
+        }
+        if ("com.netflix.mediaclient.intent.action.NOTIFY_PROFILES_LIST_UPDATED".equals(action)) {
+            this.logWithClassName("Profiles list updated!");
+            this.this$0.handleProfilesListUpdated();
+            return;
+        }
+        if ("com.netflix.mediaclient.intent.action.NOTIFY_CURRENT_PROFILE_INVALID".equals(action)) {
+            this.logWithClassName("current profile is invalid");
+            this.this$0.handleInvalidCurrentProfile();
+            return;
+        }
+        if ("com.netflix.mediaclient.intent.action.NOTIFY_AUTOLOGIN_TOKEN_CREATED".equals(action)) {
+            this.logWithClassName("Received autologin token");
+            this.this$0.handleDisplayToken(intent);
+            return;
+        }
+        this.logWithClassName("No action taken for intent: " + action);
     }
 }

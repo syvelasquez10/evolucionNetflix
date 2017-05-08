@@ -66,7 +66,9 @@ public final class UserAgent$PlayStopReceiver extends BroadcastReceiver
     public void onReceive(final Context context, final Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            Log.i("nf_service_useragent", "PlayStopReceiver inovoked and received Intent with Action " + action);
+            if (Log.isLoggable()) {
+                Log.i("nf_service_useragent", "PlayStopReceiver inovoked and received Intent with Action " + action);
+            }
             if ("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP".equals(action)) {
                 if (this.this$0.getCurrentProfileGuid() != null && this.this$0.mCurrentUserProfile != null) {
                     Log.i("nf_service_useragent", "Starting userProfile fetch ");

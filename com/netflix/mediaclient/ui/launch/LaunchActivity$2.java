@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.auth.api.credentials.CredentialRequest$Builder;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.LoginUtils;
 import com.netflix.mediaclient.ui.login.AccountActivity;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.IntentSender$SendIntentException;
@@ -61,6 +62,9 @@ import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.Activity;
 import com.netflix.mediaclient.android.activity.ServiceErrorsHandler;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -75,6 +79,7 @@ class LaunchActivity$2 implements ManagerStatusListener
     
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+        PerformanceProfiler.getInstance().endSession(Sessions.LAUNCH_ACTIVITY_MANAGER_LOAD, null);
         this.this$0.mManagerStatus = status;
         this.this$0.isLoading = false;
         if (ServiceErrorsHandler.handleManagerResponse(this.this$0, status)) {
@@ -86,6 +91,7 @@ class LaunchActivity$2 implements ManagerStatusListener
     
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+        PerformanceProfiler.getInstance().endSession(Sessions.LAUNCH_ACTIVITY_MANAGER_LOAD, PerformanceProfiler.createFailedMap());
         this.this$0.isLoading = false;
         this.this$0.mManagerStatus = status;
         this.this$0.mIsErrorDialogVisible = ServiceErrorsHandler.handleManagerResponse(this.this$0, status);

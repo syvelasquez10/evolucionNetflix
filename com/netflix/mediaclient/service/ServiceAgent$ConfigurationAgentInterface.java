@@ -21,10 +21,10 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecifi
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
@@ -56,13 +56,19 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     DataSaveConfigData getBWSaveConfigData();
     
+    ABTestConfig$Cell getBrandLoveSurveyConfig();
+    
     BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification();
+    
+    ABTestConfig$Cell getCWProgressBarConfig();
     
     Pair<String, byte[]> getCastPrefetchSharedSecret();
     
     ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String p0);
     
     ABTestConfig$Cell getCoppola1Experience();
+    
+    ABTestConfig$Cell getCoppola2Experience();
     
     PlayerType getCurrentPlayerType();
     
@@ -71,6 +77,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     DeviceCategory getDeviceCategory();
     
     int getDiskCacheSizeBytes();
+    
+    ABTestConfig$Cell getDisplayPageRefreshConfig();
     
     DrmManager getDrmManager();
     
@@ -91,6 +99,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     KubrickConfiguration getKubrickConfiguration();
     
     MdxConfiguration getMdxConfiguration();
+    
+    ABTestConfig$Cell getMementoConfig();
     
     ABTestConfig$Cell getMotionBBTestConfig();
     
@@ -167,8 +177,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     boolean shouldAlertForMissingLocale();
     
     boolean shouldDisableVoip();
-    
-    boolean shouldDisplayVoipDialConfirmationDialog();
     
     void userAgentLogoutComplete();
     

@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff$Mode;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.view.MenuItem;
@@ -49,7 +51,7 @@ public class NetflixActionBar
             Log.e("NetflixActionBar", "actionBarGroup is null");
         }
         else {
-            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131624044);
+            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131689585);
             if (this.toolbar == null) {
                 Log.e("NetflixActionBar", "toolBar is null");
                 return;
@@ -197,23 +199,35 @@ public class NetflixActionBar
             return;
         }
         this.systemActionBar.setDisplayShowTitleEnabled(false);
-        int fullSizeLogoId = -1;
-        if (netflixActionBar$LogoType == NetflixActionBar$LogoType.FULL_SIZE) {
+        int fullSizeLogoId;
+        if (netflixActionBar$LogoType == NetflixActionBar$LogoType.FULL_SIZE || netflixActionBar$LogoType == NetflixActionBar$LogoType.MONOCHROME) {
             fullSizeLogoId = this.getFullSizeLogoId();
         }
+        else {
+            fullSizeLogoId = -1;
+        }
         Log.v("NetflixActionBar", "set logo: " + fullSizeLogoId);
+        if (netflixActionBar$LogoType == NetflixActionBar$LogoType.MONOCHROME) {
+            final Drawable drawable = this.getActivity().getResources().getDrawable(fullSizeLogoId);
+            if (drawable != null) {
+                drawable.setColorFilter(-1, PorterDuff$Mode.SRC_ATOP);
+                this.systemActionBar.setLogo(drawable);
+            }
+        }
+        else {
+            this.systemActionBar.setLogo(fullSizeLogoId);
+        }
         this.systemActionBar.setDisplayUseLogoEnabled(true);
-        this.systemActionBar.setLogo(fullSizeLogoId);
     }
     
     public void setSandwichIcon(final boolean b) {
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837710;
+            navigationIcon = 2130837718;
         }
         else {
-            navigationIcon = 2130837708;
+            navigationIcon = 2130837716;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }
@@ -237,7 +251,7 @@ public class NetflixActionBar
     }
     
     protected void showDropShadowIfAvailable() {
-        final View viewById = this.actionBarGroup.findViewById(2131624059);
+        final View viewById = this.actionBarGroup.findViewById(2131689600);
         if (viewById != null) {
             viewById.setVisibility(0);
         }

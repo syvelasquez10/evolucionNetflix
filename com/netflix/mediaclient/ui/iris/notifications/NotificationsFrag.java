@@ -115,7 +115,7 @@ public class NotificationsFrag extends NetflixFrag
         final ServiceManager serviceManager = this.getServiceManager();
         if (serviceManager != null) {
             this.mIsLoadingData = true;
-            serviceManager.getBrowse().fetchNotificationsList(0, this.getNumNotificationsPerPage() - 1, new NotificationsFrag$4(this, NotificationsFrag.TAG));
+            serviceManager.getBrowse().fetchNotificationsList(0, this.getNumNotificationsPerPage() - 1, new NotificationsFrag$4(this, NotificationsFrag.TAG, serviceManager));
         }
     }
     
@@ -251,7 +251,7 @@ public class NotificationsFrag extends NetflixFrag
     }
     
     protected int getRowLayoutResourceId() {
-        return 2130903245;
+        return 2130903272;
     }
     
     protected boolean isListViewStatic() {
@@ -271,7 +271,7 @@ public class NotificationsFrag extends NetflixFrag
                     list.add(irisNotificationSummary);
                 }
             }
-            if (list.size() > 0) {
+            if (list.size() > 0 && this.getServiceManager() != null && this.getServiceManager().getBrowse() != null) {
                 this.getServiceManager().getBrowse().markNotificationsAsRead(list);
             }
         }
@@ -299,8 +299,8 @@ public class NotificationsFrag extends NetflixFrag
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(NotificationsFrag.TAG, "Creating new frag view...");
         this.mAreViewsCreated = true;
-        final View inflate = layoutInflater.inflate(2130903244, viewGroup, false);
-        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131624643)).setItemsCanFocus(true);
+        final View inflate = layoutInflater.inflate(2130903271, viewGroup, false);
+        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131690273)).setItemsCanFocus(true);
         this.mNotificationsList.setAsStatic(this.isListViewStatic());
         this.mIsLoadingData = true;
         this.completeInitIfPossible();

@@ -10,6 +10,7 @@ import junit.framework.Assert;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.view.View;
 import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;

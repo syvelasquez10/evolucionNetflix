@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
@@ -62,6 +66,7 @@ import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
+import com.netflix.mediaclient.service.net.DnsManager;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -78,5 +83,6 @@ class NetflixService$7 extends BroadcastReceiver
         this.this$0.mNrdController.setNetworkInterfaces();
         this.this$0.mPlayerAgent.handleConnectivityChange(intent);
         this.this$0.mClientLoggingAgent.handleConnectivityChange(intent);
+        DnsManager.getInstance().cacheFlush();
     }
 }

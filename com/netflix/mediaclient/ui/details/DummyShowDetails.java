@@ -46,6 +46,11 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public String getBoxartImageTypeIdentifier() {
+        return null;
+    }
+    
+    @Override
     public String getBoxshotUrl() {
         return "http://dummyimage.com/150x214/bb0000/884444.png&text=Sample";
     }
@@ -243,6 +248,11 @@ public class DummyShowDetails implements ShowDetails
     @Override
     public String getTitle() {
         return "GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB GKB";
+    }
+    
+    @Override
+    public String getTitleCroppedImgUrl() {
+        return null;
     }
     
     @Override

@@ -14,7 +14,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;

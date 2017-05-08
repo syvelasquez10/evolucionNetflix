@@ -5,6 +5,10 @@
 package com.netflix.mediaclient.util;
 
 import android.media.AudioManager;
+import android.app.PendingIntent;
+import com.netflix.mediaclient.ui.launch.RelaunchActivity;
+import android.app.AlarmManager;
+import com.netflix.mediaclient.service.error.action.RestartApplicationAction;
 import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import android.content.ComponentName;
@@ -12,12 +16,7 @@ import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import android.appwidget.AppWidgetManager;
 import android.util.DisplayMetrics;
 import com.netflix.mediaclient.javabridge.transport.NativeTransport;
-import java.util.Iterator;
-import java.util.List;
-import android.app.ActivityManager$RunningTaskInfo;
-import android.app.ActivityManager$RunningAppProcessInfo;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import android.app.ActivityManager;
+import com.netflix.mediaclient.NetflixApplication;
 import android.app.Activity;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.media.PlayerType;
@@ -230,6 +229,14 @@ public final class AndroidUtils
         return Formatter.formatFileSize(context, getAvailableInternalMemory());
     }
     
+    public static ClassLoader getClassLoader(final Class clazz) {
+        final ClassLoader classLoader = clazz.getClassLoader();
+        if (classLoader != null) {
+            return classLoader;
+        }
+        return ClassLoader.getSystemClassLoader();
+    }
+    
     public static int getDimensionInDip(final Context context, final int n) {
         return (int)(context.getResources().getDimension(n) / context.getResources().getDisplayMetrics().density);
     }
@@ -320,54 +327,7 @@ public final class AndroidUtils
     }
     
     public static boolean isApplicationInForeground(final Context context) {
-        final ActivityManager activityManager = (ActivityManager)context.getSystemService("activity");
-        boolean equals;
-        if (Build$VERSION.SDK_INT > 20) {
-            final List runningAppProcesses = activityManager.getRunningAppProcesses();
-            if (runningAppProcesses == null) {
-                Log.w("nf_utils", "runningProcesses is null - can't determine if app in foreground");
-                ErrorLoggingManager.logHandledException("SPY-9029: getRunningAppProcesses() returned null");
-                return false;
-            }
-            final Iterator<ActivityManager$RunningAppProcessInfo> iterator = runningAppProcesses.iterator();
-            boolean b = false;
-            while (true) {
-                equals = b;
-                if (!iterator.hasNext()) {
-                    break;
-                }
-                final ActivityManager$RunningAppProcessInfo activityManager$RunningAppProcessInfo = iterator.next();
-                boolean b2;
-                if (activityManager$RunningAppProcessInfo.importance == 100) {
-                    if (activityManager$RunningAppProcessInfo.pkgList == null) {
-                        Log.w("nf_utils", "pkgList is null - can't determine if app in foreground");
-                        ErrorLoggingManager.logHandledException("SPY-9029: pkgList is null");
-                        return false;
-                    }
-                    final String[] pkgList = activityManager$RunningAppProcessInfo.pkgList;
-                    final int length = pkgList.length;
-                    int n = 0;
-                    while (true) {
-                        b2 = b;
-                        if (n >= length) {
-                            break;
-                        }
-                        if (pkgList[n].equals(context.getPackageName())) {
-                            b = true;
-                        }
-                        ++n;
-                    }
-                }
-                else {
-                    b2 = b;
-                }
-                b = b2;
-            }
-        }
-        else {
-            equals = activityManager.getRunningTasks(1).get(0).topActivity.getPackageName().equals(context.getPackageName());
-        }
-        return equals;
+        return context != null && ((NetflixApplication)context.getApplicationContext()).getUserInput().isApplicationInForeground();
     }
     
     public static boolean isHd() {
@@ -420,6 +380,16 @@ public final class AndroidUtils
             }
         }
         return true;
+    }
+    
+    public static boolean isUnderTest() {
+        try {
+            Class.forName("com.netflix.mediaclient.test.NetflixTestRunner");
+            return true;
+        }
+        catch (ClassNotFoundException ex) {
+            return false;
+        }
     }
     
     public static boolean isWidgetInstalled(final Context context) {
@@ -492,6 +462,14 @@ public final class AndroidUtils
         }
         catch (Throwable t) {
             return null;
+        }
+    }
+    
+    public static void restartApplication(final Activity activity) {
+        new RestartApplicationAction(activity).run();
+        final AlarmManager alarmManager = (AlarmManager)activity.getSystemService("alarm");
+        if (alarmManager != null) {
+            alarmManager.set(1, System.currentTimeMillis() + 2000L, PendingIntent.getActivity((Context)activity, 0, RelaunchActivity.createStartIntent(activity, "Debug menu"), 268435456));
         }
     }
     

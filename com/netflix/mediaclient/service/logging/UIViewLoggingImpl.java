@@ -7,30 +7,32 @@ package com.netflix.mediaclient.service.logging;
 import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent$InputMethod;
 import com.netflix.mediaclient.service.logging.uiview.model.ImpressionEvent;
 import com.netflix.mediaclient.util.StringUtils;
-import org.json.JSONException;
-import com.netflix.mediaclient.service.logging.uiview.model.ImpressionSessionEndedEvent;
-import com.netflix.mediaclient.service.logging.client.model.Error;
-import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent$InputValue;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent;
+import org.json.JSONException;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import org.json.JSONObject;
+import com.netflix.mediaclient.service.logging.uiview.model.ImpressionSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.service.logging.client.model.Event;
+import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import java.util.Stack;
-import com.netflix.mediaclient.service.logging.uiview.ImpressionSession;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.service.logging.uiview.CommandSession;
+import com.netflix.mediaclient.service.logging.uiview.ImpressionSession;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 
 public final class UIViewLoggingImpl implements UIViewLogging
 {
     private static final String TAG = "nf_log";
+    private ImpressionSession mAgeVerifyImpressionSession;
     private CommandSession mCommandSession;
     private DataContext mDataContext;
     private EventHandler mEventHandler;
+    private Stack<ImpressionSession> mIkoNotificationImpressionSessions;
     private ImpressionSession mImpressionSession;
     private CommandSession mLeftPanelCommandSession;
     private ImpressionSession mLeftPanelImpressionSession;
@@ -39,7 +41,44 @@ public final class UIViewLoggingImpl implements UIViewLogging
     
     public UIViewLoggingImpl(final EventHandler mEventHandler) {
         this.mNotificationImpressionSessions = new Stack<ImpressionSession>();
+        this.mIkoNotificationImpressionSessions = new Stack<ImpressionSession>();
         this.mEventHandler = mEventHandler;
+    }
+    
+    private void handleIkoNotificationImpressionEnd(final Intent intent) {
+        if (this.mIkoNotificationImpressionSessions.size() == 0) {
+            return;
+        }
+        final boolean booleanExtra = intent.getBooleanExtra("success", false);
+        Log.d("nf_log", "IkoNotificationImpressionEnd impression session ended");
+        final ImpressionSession impressionSession = this.mIkoNotificationImpressionSessions.pop();
+        final ImpressionSessionEndedEvent endedEvent = impressionSession.createEndedEvent(booleanExtra, null);
+        this.populateEvent(endedEvent, this.mDataContext, impressionSession.getView());
+        this.mEventHandler.removeSession(impressionSession);
+        Log.d("nf_log", "IkoNotificationImpressionEnd impression session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        Log.d("nf_log", "IkoNotificationImpressionEnd impression session end event posted.");
+    }
+    
+    private void handleIkoNotificationImpressionStart(Intent stringExtra) {
+        while (true) {
+            try {
+                final JSONObject jsonObject = new JSONObject(stringExtra.getStringExtra("model"));
+                Log.d("nf_log", "IkoNotificationImpressionStart impression session starting...");
+                stringExtra = (Intent)stringExtra.getStringExtra("guid");
+                stringExtra = (Intent)new ImpressionSession(IClientLogging$ModalView.ikoNotification, (String)stringExtra, jsonObject);
+                this.mIkoNotificationImpressionSessions.push((ImpressionSession)stringExtra);
+                this.mEventHandler.addSession((LoggingSession)stringExtra);
+            }
+            catch (JSONException ex) {
+                if (Log.isLoggable()) {
+                    Log.e("nf_log", "Couldn't construct JSON model from the following String: " + stringExtra.getStringExtra("model"));
+                }
+                final JSONObject jsonObject = null;
+                continue;
+            }
+            break;
+        }
     }
     
     private void handleLeftPanelCommandEnded(final Intent intent) {
@@ -162,7 +201,7 @@ public final class UIViewLoggingImpl implements UIViewLogging
         //     6: astore_2       
         //     7: aload_2        
         //     8: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
-        //    11: ifne            228
+        //    11: ifne            230
         //    14: aload_2        
         //    15: invokestatic    com/netflix/mediaclient/servicemgr/UIViewLogging$UIViewCommandName.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/UIViewLogging$UIViewCommandName;
         //    18: astore_2       
@@ -172,7 +211,7 @@ public final class UIViewLoggingImpl implements UIViewLogging
         //    25: astore_3       
         //    26: aload_3        
         //    27: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //    30: ifeq            223
+        //    30: ifeq            225
         //    33: aload_3        
         //    34: invokestatic    com/netflix/mediaclient/servicemgr/IClientLogging$ModalView.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/IClientLogging$ModalView;
         //    37: astore_3       
@@ -182,7 +221,7 @@ public final class UIViewLoggingImpl implements UIViewLogging
         //    44: astore          4
         //    46: aload           4
         //    48: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
-        //    51: ifne            217
+        //    51: ifne            219
         //    54: aload           4
         //    56: invokestatic    com/netflix/mediaclient/service/logging/uiview/model/CommandEndedEvent$InputMethod.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/uiview/model/CommandEndedEvent$InputMethod;
         //    59: astore          4
@@ -192,7 +231,7 @@ public final class UIViewLoggingImpl implements UIViewLogging
         //    67: astore          6
         //    69: aload           6
         //    71: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //    74: ifeq            168
+        //    74: ifeq            170
         //    77: new             Lorg/json/JSONObject;
         //    80: dup            
         //    81: aload           6
@@ -200,84 +239,84 @@ public final class UIViewLoggingImpl implements UIViewLogging
         //    86: invokestatic    com/netflix/mediaclient/service/logging/client/model/DataContext.createInstance:(Lorg/json/JSONObject;)Lcom/netflix/mediaclient/service/logging/client/model/DataContext;
         //    89: astore          5
         //    91: aload_1        
-        //    92: ldc             "url"
-        //    94: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    97: astore          7
-        //    99: aload_1        
-        //   100: ldc             "model"
-        //   102: invokevirtual   android/content/Intent.hasExtra:(Ljava/lang/String;)Z
-        //   105: ifeq            212
-        //   108: new             Lorg/json/JSONObject;
-        //   111: dup            
-        //   112: aload_1        
-        //   113: ldc             "model"
-        //   115: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //   118: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
-        //   121: astore          6
-        //   123: aload           6
-        //   125: astore_1       
-        //   126: aload_0        
-        //   127: aload_2        
-        //   128: aload_3        
-        //   129: aload           4
-        //   131: aload           5
-        //   133: aload           7
-        //   135: aload_1        
-        //   136: invokevirtual   com/netflix/mediaclient/service/logging/UIViewLoggingImpl.startCommandSession:(Lcom/netflix/mediaclient/servicemgr/UIViewLogging$UIViewCommandName;Lcom/netflix/mediaclient/servicemgr/IClientLogging$ModalView;Lcom/netflix/mediaclient/service/logging/uiview/model/CommandEndedEvent$InputMethod;Lcom/netflix/mediaclient/service/logging/client/model/DataContext;Ljava/lang/String;Lorg/json/JSONObject;)V
-        //   139: return         
-        //   140: astore          5
-        //   142: ldc             "nf_log"
-        //   144: new             Ljava/lang/StringBuilder;
-        //   147: dup            
-        //   148: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   151: ldc             "failed to create dataContext: "
-        //   153: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   156: aload           6
-        //   158: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   161: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   164: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   167: pop            
-        //   168: aconst_null    
-        //   169: astore          5
-        //   171: goto            91
-        //   174: astore          6
-        //   176: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //   179: ifeq            212
-        //   182: ldc             "nf_log"
-        //   184: new             Ljava/lang/StringBuilder;
-        //   187: dup            
-        //   188: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   191: ldc             "Couldn't construct JSON model from the following String: "
-        //   193: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   196: aload_1        
-        //   197: ldc             "model"
-        //   199: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //   202: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   205: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   208: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   211: pop            
-        //   212: aconst_null    
-        //   213: astore_1       
-        //   214: goto            126
-        //   217: aconst_null    
-        //   218: astore          4
-        //   220: goto            61
-        //   223: aconst_null    
-        //   224: astore_3       
-        //   225: goto            38
-        //   228: aconst_null    
-        //   229: astore_2       
-        //   230: goto            19
+        //    92: ldc_w           "url"
+        //    95: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    98: astore          7
+        //   100: aload_1        
+        //   101: ldc             "model"
+        //   103: invokevirtual   android/content/Intent.hasExtra:(Ljava/lang/String;)Z
+        //   106: ifeq            214
+        //   109: new             Lorg/json/JSONObject;
+        //   112: dup            
+        //   113: aload_1        
+        //   114: ldc             "model"
+        //   116: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //   119: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
+        //   122: astore          6
+        //   124: aload           6
+        //   126: astore_1       
+        //   127: aload_0        
+        //   128: aload_2        
+        //   129: aload_3        
+        //   130: aload           4
+        //   132: aload           5
+        //   134: aload           7
+        //   136: aload_1        
+        //   137: invokevirtual   com/netflix/mediaclient/service/logging/UIViewLoggingImpl.startCommandSession:(Lcom/netflix/mediaclient/servicemgr/UIViewLogging$UIViewCommandName;Lcom/netflix/mediaclient/servicemgr/IClientLogging$ModalView;Lcom/netflix/mediaclient/service/logging/uiview/model/CommandEndedEvent$InputMethod;Lcom/netflix/mediaclient/service/logging/client/model/DataContext;Ljava/lang/String;Lorg/json/JSONObject;)V
+        //   140: return         
+        //   141: astore          5
+        //   143: ldc             "nf_log"
+        //   145: new             Ljava/lang/StringBuilder;
+        //   148: dup            
+        //   149: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   152: ldc_w           "failed to create dataContext: "
+        //   155: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   158: aload           6
+        //   160: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   163: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   166: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   169: pop            
+        //   170: aconst_null    
+        //   171: astore          5
+        //   173: goto            91
+        //   176: astore          6
+        //   178: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   181: ifeq            214
+        //   184: ldc             "nf_log"
+        //   186: new             Ljava/lang/StringBuilder;
+        //   189: dup            
+        //   190: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   193: ldc             "Couldn't construct JSON model from the following String: "
+        //   195: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   198: aload_1        
+        //   199: ldc             "model"
+        //   201: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //   204: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   207: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   210: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   213: pop            
+        //   214: aconst_null    
+        //   215: astore_1       
+        //   216: goto            127
+        //   219: aconst_null    
+        //   220: astore          4
+        //   222: goto            61
+        //   225: aconst_null    
+        //   226: astore_3       
+        //   227: goto            38
+        //   230: aconst_null    
+        //   231: astore_2       
+        //   232: goto            19
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                    
         //  -----  -----  -----  -----  ------------------------
-        //  77     91     140    168    Lorg/json/JSONException;
-        //  108    123    174    212    Lorg/json/JSONException;
+        //  77     91     141    170    Lorg/json/JSONException;
+        //  109    124    176    214    Lorg/json/JSONException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0126:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0127:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -431,6 +470,16 @@ public final class UIViewLoggingImpl implements UIViewLogging
         if ("com.netflix.mediaclient.intent.action.LOG_NOTIFICATION_IMPRESSION_ENDED".equals(action)) {
             Log.d("nf_log", "NOTIFICATION_IMPRESSION_ENDED");
             this.handleNotificationImpressionEnd(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_IKO_NOTIFICATION_IMPRESSION_START".equals(action)) {
+            Log.d("nf_log", "IKO_NOTIFICATION_IMPRESSION_START");
+            this.handleIkoNotificationImpressionStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_IKO_NOTIFICATION_IMPRESSION_ENDED".equals(action)) {
+            Log.d("nf_log", "IKO_NOTIFICATION_IMPRESSION_ENDED");
+            this.handleIkoNotificationImpressionEnd(intent);
             return true;
         }
         if ("com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION".equals(action)) {

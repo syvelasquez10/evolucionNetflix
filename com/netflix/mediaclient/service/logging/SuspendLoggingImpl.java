@@ -26,7 +26,7 @@ import com.netflix.mediaclient.servicemgr.SuspendLogging;
 
 public final class SuspendLoggingImpl implements SuspendLogging
 {
-    private static final String TAG = "nf_log";
+    private static final String TAG = "nf_log_suspend";
     private BackgroundingSession mBackgroundingSession;
     private EventHandler mEventHandler;
     private ForegroundSession mForegroundSession;
@@ -67,62 +67,62 @@ public final class SuspendLoggingImpl implements SuspendLogging
     @Override
     public void endBackgroundSession() {
         if (this.mSessionBackground != null) {
-            Log.d("nf_log", "Background session end started");
+            Log.d("nf_log_suspend", "Background session end started");
             this.mEventHandler.removeSession(this.mSessionBackground);
             this.mEventHandler.post(this.mSessionBackground.createEndedEvent());
             this.mSessionBackground = null;
-            Log.d("nf_log", "Background session end done.");
+            Log.d("nf_log_suspend", "Background session end done.");
         }
     }
     
     @Override
     public void endBackgroundingSession() {
         if (this.mBackgroundingSession != null) {
-            Log.d("nf_log", "Backgrounding session end started");
+            Log.d("nf_log_suspend", "Backgrounding session end started");
             this.mEventHandler.removeSession(this.mBackgroundingSession);
             this.mEventHandler.post(this.mBackgroundingSession.createEndedEvent());
             this.mBackgroundingSession = null;
-            Log.d("nf_log", "Backgrounding session end done.");
+            Log.d("nf_log_suspend", "Backgrounding session end done.");
         }
     }
     
     @Override
     public void endForegroundSession() {
         if (this.mForegroundSession != null) {
-            Log.d("nf_log", "Foreground session end started");
+            Log.d("nf_log_suspend", "Foreground session end started");
             this.mEventHandler.removeSession(this.mForegroundSession);
             this.mEventHandler.post(this.mForegroundSession.createEndedEvent());
             this.mForegroundSession = null;
-            Log.d("nf_log", "Foreground session end done.");
+            Log.d("nf_log_suspend", "Foreground session end done.");
         }
     }
     
     @Override
     public void endResumingSession() {
         if (this.mResumingSession != null) {
-            Log.d("nf_log", "Resuming session end started");
+            Log.d("nf_log_suspend", "Resuming session end started");
             this.mEventHandler.removeSession(this.mResumingSession);
             this.mEventHandler.post(this.mResumingSession.createEndedEvent());
             this.mResumingSession = null;
-            Log.d("nf_log", "Resuming session end done.");
+            Log.d("nf_log_suspend", "Resuming session end done.");
         }
     }
     
     @Override
     public void endSuspendSession() {
         if (this.mSuspendSession != null) {
-            Log.d("nf_log", "Suspend session end started");
+            Log.d("nf_log_suspend", "Suspend session end started");
             this.mEventHandler.removeSession(this.mSuspendSession);
             this.mEventHandler.post(this.mSuspendSession.createEndedEvent());
             this.mSuspendSession = null;
-            Log.d("nf_log", "Suspend session end done.");
+            Log.d("nf_log_suspend", "Suspend session end done.");
         }
     }
     
     @Override
     public void endUnfocusedSession() {
         if (this.mUnfocusedSession != null) {
-            Log.d("nf_log", "Unfocused session end started");
+            Log.d("nf_log_suspend", "Unfocused session end started");
             this.mEventHandler.removeSession(this.mUnfocusedSession);
             final UnfocusedSessionEndedEvent endedEvent = this.mUnfocusedSession.createEndedEvent();
             if (endedEvent != null && this.mUnfocusedSession.getUnfocusedSessionStartedEvent() != null) {
@@ -130,89 +130,89 @@ public final class SuspendLoggingImpl implements SuspendLogging
                 this.mEventHandler.post(endedEvent);
             }
             this.mUnfocusedSession = null;
-            Log.d("nf_log", "Unfocused session end done.");
+            Log.d("nf_log_suspend", "Unfocused session end done.");
         }
     }
     
     @Override
     public void startBackgroundSession() {
-        Log.d("nf_log", "Background session start started");
+        Log.d("nf_log_suspend", "Background session start started");
         if (this.mSessionBackground != null) {
-            Log.w("nf_log", "Background session existed before! It should not happen!");
+            Log.w("nf_log_suspend", "Background session existed before! It should not happen!");
             return;
         }
         this.mSessionBackground = new BackgroundSession();
         this.mEventHandler.addSession(this.mSessionBackground);
         this.mEventHandler.post(this.mSessionBackground.createStartEvent());
-        Log.d("nf_log", "Background session start done.");
+        Log.d("nf_log_suspend", "Background session start done.");
     }
     
     @Override
     public void startBackgroundingSession() {
-        Log.d("nf_log", "Backgrounding session start started");
+        Log.d("nf_log_suspend", "Backgrounding session start started");
         if (this.mBackgroundingSession != null) {
-            Log.w("nf_log", "Backgrounding session existed before! It should not happen!");
+            Log.w("nf_log_suspend", "Backgrounding session existed before! It should not happen!");
             return;
         }
         this.mBackgroundingSession = new BackgroundingSession();
         this.mEventHandler.addSession(this.mBackgroundingSession);
-        Log.d("nf_log", "Background session start done.");
+        Log.d("nf_log_suspend", "Background session start done.");
     }
     
     @Override
     public void startForegroundSession(final Intent intent) {
-        Log.d("nf_log", "Foreground session start started");
+        Log.d("nf_log_suspend", "Foreground session start started");
         final DeepLink deepLink = this.getDeepLink(intent);
         if (this.mForegroundSession != null) {
-            Log.d("nf_log", "Foreground session existed before");
+            Log.d("nf_log_suspend", "Foreground session existed before");
             if (deepLink == null) {
-                Log.w("nf_log", "Not deeplink, ignore.");
+                Log.w("nf_log_suspend", "Not deeplink, ignore.");
                 return;
             }
-            Log.d("nf_log", "Deeplink found, end existing foreground session...");
+            Log.d("nf_log_suspend", "Deeplink found, end existing foreground session...");
             this.endForegroundSession();
         }
         this.mForegroundSession = new ForegroundSession();
         this.mEventHandler.addSession(this.mForegroundSession);
         this.mEventHandler.post(this.mForegroundSession.createStartEvent(null, deepLink));
-        Log.d("nf_log", "Foreground session start done.");
+        Log.d("nf_log_suspend", "Foreground session start done.");
     }
     
     @Override
     public void startResumingSession() {
-        Log.d("nf_log", "Resuming session start started");
+        Log.d("nf_log_suspend", "Resuming session start started");
         if (this.mResumingSession != null) {
-            Log.w("nf_log", "Resuming session existed before! It should not happen!");
+            Log.w("nf_log_suspend", "Resuming session existed before! It should not happen!");
             return;
         }
         this.mResumingSession = new ResumingSession();
         this.mEventHandler.addSession(this.mResumingSession);
-        Log.d("nf_log", "Resuming session start done.");
+        Log.d("nf_log_suspend", "Resuming session start done.");
     }
     
     @Override
     public void startSuspendSession() {
-        Log.d("nf_log", "Suspend session start started");
+        Log.d("nf_log_suspend", "Suspend session start started");
         if (this.mSuspendSession != null) {
-            Log.w("nf_log", "Suspend session existed before! It should not happen!");
+            Log.w("nf_log_suspend", "Suspend session existed before! It should not happen!");
             return;
         }
         this.mSuspendSession = new SuspendSession();
         this.mEventHandler.addSession(this.mSuspendSession);
         this.mEventHandler.post(this.mSuspendSession.createStartEvent());
-        Log.d("nf_log", "Suspend session start done.");
+        Log.d("nf_log_suspend", "Suspend session start done.");
     }
     
     @Override
     public void startUnfocusedSession() {
-        Log.d("nf_log", "Unfocused session start started");
+        Log.d("nf_log_suspend", "Unfocused session start started");
         if (this.mUnfocusedSession != null) {
-            Log.w("nf_log", "Unfocused session existed before! It should not happen!");
+            Log.w("nf_log_suspend", "Unfocused session existed before! It should not happen!");
             return;
         }
         this.mUnfocusedSession = new UnfocusedSession();
         this.mEventHandler.addSession(this.mUnfocusedSession);
         this.mUnfocusedSession.createStartEvent();
-        Log.d("nf_log", "Unfocused session start done.");
+        Log.d("nf_log_suspend", "Unfocused session start done.");
     }
 }

@@ -6,7 +6,7 @@ package android.support.design.widget;
 
 interface SnackbarManager$Callback
 {
-    void dismiss();
+    void dismiss(final int p0);
     
     void show();
 }

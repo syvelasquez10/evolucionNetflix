@@ -5,6 +5,7 @@
 package android.support.design.widget;
 
 import android.widget.TextView;
+import android.widget.Button;
 import android.text.TextUtils;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup$LayoutParams;
@@ -25,9 +26,10 @@ import android.view.ViewGroup;
 import android.content.Context;
 import android.os.Handler;
 
-public class Snackbar
+public final class Snackbar
 {
     private static final Handler sHandler;
+    private Snackbar$Callback mCallback;
     private final Context mContext;
     private int mDuration;
     private final SnackbarManager$Callback mManagerCallback;
@@ -38,11 +40,11 @@ public class Snackbar
         sHandler = new Handler(Looper.getMainLooper(), (Handler$Callback)new Snackbar$1());
     }
     
-    Snackbar(final ViewGroup mParent) {
+    private Snackbar(final ViewGroup mParent) {
         this.mManagerCallback = new Snackbar$3(this);
         this.mParent = mParent;
         this.mContext = mParent.getContext();
-        this.mView = (Snackbar$SnackbarLayout)LayoutInflater.from(this.mContext).inflate(R$layout.layout_snackbar, this.mParent, false);
+        this.mView = (Snackbar$SnackbarLayout)LayoutInflater.from(this.mContext).inflate(R$layout.design_layout_snackbar, this.mParent, false);
     }
     
     private void animateViewIn() {
@@ -51,23 +53,27 @@ public class Snackbar
             ViewCompat.animate((View)this.mView).translationY(0.0f).setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR).setDuration(250L).setListener(new Snackbar$6(this)).start();
             return;
         }
-        final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(this.mView.getContext(), R$anim.snackbar_in);
+        final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(this.mView.getContext(), R$anim.design_snackbar_in);
         loadAnimation.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
         loadAnimation.setDuration(250L);
         loadAnimation.setAnimationListener((Animation$AnimationListener)new Snackbar$7(this));
         this.mView.startAnimation(loadAnimation);
     }
     
-    private void animateViewOut() {
+    private void animateViewOut(final int n) {
         if (Build$VERSION.SDK_INT >= 14) {
-            ViewCompat.animate((View)this.mView).translationY(this.mView.getHeight()).setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR).setDuration(250L).setListener(new Snackbar$8(this)).start();
+            ViewCompat.animate((View)this.mView).translationY(this.mView.getHeight()).setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR).setDuration(250L).setListener(new Snackbar$8(this, n)).start();
             return;
         }
-        final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(this.mView.getContext(), R$anim.snackbar_out);
+        final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(this.mView.getContext(), R$anim.design_snackbar_out);
         loadAnimation.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
         loadAnimation.setDuration(250L);
-        loadAnimation.setAnimationListener((Animation$AnimationListener)new Snackbar$9(this));
+        loadAnimation.setAnimationListener((Animation$AnimationListener)new Snackbar$9(this, n));
         this.mView.startAnimation(loadAnimation);
+    }
+    
+    private void dispatchDismiss(final int n) {
+        SnackbarManager.getInstance().dismiss(this.mManagerCallback, n);
     }
     
     private static ViewGroup findSuitableParent(View view) {
@@ -121,25 +127,24 @@ public class Snackbar
         return snackbar;
     }
     
-    private void onViewHidden() {
+    private void onViewHidden(final int n) {
         this.mParent.removeView((View)this.mView);
+        if (this.mCallback != null) {
+            this.mCallback.onDismissed(this, n);
+        }
         SnackbarManager.getInstance().onDismissed(this.mManagerCallback);
-    }
-    
-    public void dismiss() {
-        SnackbarManager.getInstance().dismiss(this.mManagerCallback);
     }
     
     public View getView() {
         return (View)this.mView;
     }
     
-    final void hideView() {
+    final void hideView(final int n) {
         if (this.mView.getVisibility() != 0 || this.isBeingDragged()) {
-            this.onViewHidden();
+            this.onViewHidden(n);
             return;
         }
-        this.animateViewOut();
+        this.animateViewOut(n);
     }
     
     public Snackbar setAction(final int n, final View$OnClickListener view$OnClickListener) {
@@ -147,15 +152,15 @@ public class Snackbar
     }
     
     public Snackbar setAction(final CharSequence text, final View$OnClickListener view$OnClickListener) {
-        final TextView actionView = this.mView.getActionView();
+        final Button actionView = this.mView.getActionView();
         if (TextUtils.isEmpty(text) || view$OnClickListener == null) {
-            actionView.setVisibility(8);
-            actionView.setOnClickListener((View$OnClickListener)null);
+            ((TextView)actionView).setVisibility(8);
+            ((TextView)actionView).setOnClickListener((View$OnClickListener)null);
             return this;
         }
-        actionView.setVisibility(0);
-        actionView.setText(text);
-        actionView.setOnClickListener((View$OnClickListener)new Snackbar$2(this, view$OnClickListener));
+        ((TextView)actionView).setVisibility(0);
+        ((TextView)actionView).setText(text);
+        ((TextView)actionView).setOnClickListener((View$OnClickListener)new Snackbar$2(this, view$OnClickListener));
         return this;
     }
     

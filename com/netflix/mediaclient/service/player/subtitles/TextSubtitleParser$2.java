@@ -11,13 +11,15 @@ import com.netflix.mediaclient.Log;
 class TextSubtitleParser$2 implements Runnable
 {
     final /* synthetic */ TextSubtitleParser this$0;
+    final /* synthetic */ String[] val$nameServers;
     final /* synthetic */ String val$requestedUrl;
     final /* synthetic */ byte[] val$responseData;
     
-    TextSubtitleParser$2(final TextSubtitleParser this$0, final byte[] val$responseData, final String val$requestedUrl) {
+    TextSubtitleParser$2(final TextSubtitleParser this$0, final byte[] val$responseData, final String val$requestedUrl, final String[] val$nameServers) {
         this.this$0 = this$0;
         this.val$responseData = val$responseData;
         this.val$requestedUrl = val$requestedUrl;
+        this.val$nameServers = val$nameServers;
     }
     
     @Override
@@ -46,7 +48,7 @@ class TextSubtitleParser$2 implements Runnable
                         }
                         catch (Throwable t) {
                             Log.e("nf_subtitles", "We failed to parse subtitle metadata", t);
-                            this.this$0.onError(this.val$requestedUrl, IMedia$SubtitleFailure.parsing, null);
+                            this.this$0.onError(this.val$requestedUrl, this.val$nameServers, IMedia$SubtitleFailure.parsing, null);
                             this.this$0.mPlayer.reportHandledException(new RuntimeException("We failed to parse subtitle metadata", t));
                             continue;
                         }

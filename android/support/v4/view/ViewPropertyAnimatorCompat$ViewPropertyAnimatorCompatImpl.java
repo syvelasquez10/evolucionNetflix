@@ -15,6 +15,10 @@ interface ViewPropertyAnimatorCompat$ViewPropertyAnimatorCompatImpl
     
     long getDuration(final ViewPropertyAnimatorCompat p0, final View p1);
     
+    void scaleX(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void scaleY(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
     void setDuration(final ViewPropertyAnimatorCompat p0, final View p1, final long p2);
     
     void setInterpolator(final ViewPropertyAnimatorCompat p0, final View p1, final Interpolator p2);

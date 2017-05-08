@@ -9,17 +9,22 @@ import android.graphics.drawable.Drawable;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
 import com.android.volley.Response$Listener;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.util.UriUtil;
 import android.graphics.Bitmap$Config;
 import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$InteractiveListener;
 import android.os.Looper;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
@@ -56,6 +61,10 @@ class ImageLoader$ValidatingListener implements ImageLoader$ImageListener
         final boolean b = !StringUtils.safeEquals(imageUrl, this.imgUrl);
         if (b) {}
         return b;
+    }
+    
+    public AdvancedImageView getImageView() {
+        return this.view;
     }
     
     @Override

@@ -71,16 +71,16 @@ class ProfileDetailsActivity$3 extends SimpleManagerCallback
             UserActionLogUtils.reportEditProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.success, IClientLogging$ModalView.profilesGate, null, this.this$0.getProfileForLogging());
         }
         else {
-            final String access$1100 = this.this$0.handleUserAgentErrors(status);
+            final String handleUserAgentErrors = this.this$0.handleUserAgentErrors(status);
             if (this.this$0.mProfileDeletionWasTriggered) {
-                UserActionLogUtils.reportDeleteProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, access$1100, ActionOnUIError.displayedError));
+                UserActionLogUtils.reportDeleteProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, handleUserAgentErrors, ActionOnUIError.displayedError));
                 return;
             }
             if (this.this$0.mNewProfileCreation) {
-                UserActionLogUtils.reportAddProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, access$1100, ActionOnUIError.displayedError), this.this$0.getProfileForLogging());
+                UserActionLogUtils.reportAddProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, handleUserAgentErrors, ActionOnUIError.displayedError), this.this$0.getProfileForLogging());
                 return;
             }
-            UserActionLogUtils.reportEditProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, access$1100, ActionOnUIError.displayedError), this.this$0.getProfileForLogging());
+            UserActionLogUtils.reportEditProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.profilesGate, ConsolidatedLoggingUtils.createUIError(status, handleUserAgentErrors, ActionOnUIError.displayedError), this.this$0.getProfileForLogging());
         }
     }
 }

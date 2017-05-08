@@ -4,20 +4,9 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
-import java.util.List;
-
-public interface MovieDetails extends EvidenceDetails, VideoDetails
+public interface MovieDetails extends EvidenceDetails, Similarable, VideoDetails
 {
     String getDirectors();
     
     int getNumDirectors();
-    
-    List<Video> getSimilars();
-    
-    int getSimilarsListPos();
-    
-    String getSimilarsRequestId();
-    
-    int getSimilarsTrackId();
 }

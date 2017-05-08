@@ -11,6 +11,7 @@ import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import android.widget.TextView;
 import android.view.View;

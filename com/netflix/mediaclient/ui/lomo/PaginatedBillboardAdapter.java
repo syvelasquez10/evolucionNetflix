@@ -11,8 +11,9 @@ import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 
@@ -22,6 +23,26 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     
     public PaginatedBillboardAdapter(final Context context) {
         super(context);
+    }
+    
+    public static int getLandscapeBillboardHeight(final NetflixActivity netflixActivity) {
+        final float n = LoMoViewPager.computeViewPagerWidth(netflixActivity, false);
+        float n2;
+        if (DeviceUtils.isLandscape((Context)netflixActivity)) {
+            n2 = 2.39f;
+        }
+        else {
+            n2 = 1.778f;
+        }
+        return (int)(n / n2);
+    }
+    
+    public static int getPortraitBillboardHeight(final NetflixActivity netflixActivity) {
+        return (int)(LoMoViewPager.computeViewPagerWidth(netflixActivity, false) * 0.5625f);
+    }
+    
+    public static int getPortraitBillboardPhoneOffset(final NetflixActivity netflixActivity) {
+        return netflixActivity.getResources().getDimensionPixelSize(2131362017);
     }
     
     @Override
@@ -36,23 +57,15 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     
     @Override
     public int getRowHeightInPx() {
-        int n;
+        int landscapeBillboardHeight;
         if (BillboardView.shouldShowArtworkOnly(this.activity)) {
-            n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, false) * 0.5625f);
+            landscapeBillboardHeight = getPortraitBillboardHeight(this.activity) + getPortraitBillboardPhoneOffset(this.activity);
         }
         else {
-            final float n2 = LoMoViewPager.computeViewPagerWidth(this.activity, false);
-            float n3;
-            if (DeviceUtils.isLandscape((Context)this.activity)) {
-                n3 = 2.39f;
-            }
-            else {
-                n3 = 1.778f;
-            }
-            n = (int)(n2 / n3);
+            landscapeBillboardHeight = getLandscapeBillboardHeight(this.activity);
         }
-        Log.v("PaginatedBillboardAdapter", "Computed view height: " + n);
-        return n;
+        Log.v("PaginatedBillboardAdapter", "Computed view height: " + landscapeBillboardHeight);
+        return landscapeBillboardHeight;
     }
     
     @Override

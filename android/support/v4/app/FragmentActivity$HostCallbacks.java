@@ -4,7 +4,24 @@
 
 package android.support.v4.app;
 
+import android.support.v4.util.SimpleArrayMap;
+import android.view.MenuItem;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.os.Parcelable;
+import android.os.Bundle;
+import android.content.res.Configuration;
+import java.util.List;
+import java.util.ArrayList;
+import android.util.Log;
+import android.os.Build$VERSION;
+import android.util.AttributeSet;
+import android.content.res.Resources;
+import android.content.res.Resources$NotFoundException;
+import android.view.ViewGroup;
+import android.os.Handler;
 import android.content.Intent;
+import android.app.Activity;
 import android.view.Window;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -36,6 +53,11 @@ class FragmentActivity$HostCallbacks extends FragmentHostCallback<FragmentActivi
     }
     
     @Override
+    public FragmentActivity onGetHost() {
+        return this.this$0;
+    }
+    
+    @Override
     public LayoutInflater onGetLayoutInflater() {
         return this.this$0.getLayoutInflater().cloneInContext((Context)this.this$0);
     }
@@ -61,8 +83,18 @@ class FragmentActivity$HostCallbacks extends FragmentHostCallback<FragmentActivi
     }
     
     @Override
+    public void onRequestPermissionsFromFragment(final Fragment fragment, final String[] array, final int n) {
+        this.this$0.requestPermissionsFromFragment(fragment, array, n);
+    }
+    
+    @Override
     public boolean onShouldSaveFragmentState(final Fragment fragment) {
         return !this.this$0.isFinishing();
+    }
+    
+    @Override
+    public boolean onShouldShowRequestPermissionRationale(final String s) {
+        return ActivityCompat.shouldShowRequestPermissionRationale(this.this$0, s);
     }
     
     @Override

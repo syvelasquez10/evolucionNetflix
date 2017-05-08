@@ -4,14 +4,17 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.netflix.mediaclient.util.PreferenceUtils;
+import android.app.Activity;
+import android.support.v4.app.ActivityCompat;
+import android.content.Context;
+import com.netflix.mediaclient.util.PermissionUtils;
 import android.os.Handler;
 import android.os.Debug;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
-import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class DebugMenuItems
@@ -24,63 +27,71 @@ public class DebugMenuItems
         this.activity = activity;
     }
     
-    private void addCrashItem(final Context context, final Menu menu) {
-        menu.add((CharSequence)"Crash").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$12(this, context));
+    private void addBarkerBars(final Menu menu) {
+        menu.add((CharSequence)"Show Barker Bars").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$18(this));
     }
     
-    private void addCreateAutoLoginToken(final Context context, final Menu menu) {
-        menu.add((CharSequence)"Create AutoLogin Token").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this, context));
+    private void addCrashItem(final Menu menu) {
+        menu.add((CharSequence)"Crash").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$13(this));
+    }
+    
+    private void addCreateAutoLoginToken(final Menu menu) {
+        menu.add((CharSequence)"Create AutoLogin Token").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$3(this));
     }
     
     private void addDumpCacheToDiskItem(final Menu menu) {
-        menu.add((CharSequence)"Dump Cache to Disk").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$3(this));
+        menu.add((CharSequence)"Dump Cache to Disk").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$4(this));
     }
     
-    private void addDumpHomeLolomoToHtmlItem(final NetflixActivity netflixActivity, final Menu menu) {
-        if (!(netflixActivity instanceof HomeActivity)) {
+    private void addDumpHomeLolomoToHtmlItem(final Menu menu) {
+        if (!(this.activity instanceof HomeActivity)) {
             return;
         }
-        menu.add((CharSequence)"Dump Lolomo to Html").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$4(this, (HomeActivity)netflixActivity));
+        menu.add((CharSequence)"Dump Lolomo to Html").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$5(this, (HomeActivity)this.activity));
+    }
+    
+    private void addDumpPerfData(final Menu menu) {
+        menu.add((CharSequence)"Dump Perf Data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$17(this));
     }
     
     private void addFlushDataCacheItem(final Menu menu) {
-        menu.add((CharSequence)"Flush Data Cache").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$15(this));
+        menu.add((CharSequence)"Flush Data Cache").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$16(this));
     }
     
     private void addHprofDumpItem(final Menu menu) {
-        menu.add((CharSequence)"Dump hprof profile").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$10(this));
+        menu.add((CharSequence)"Dump hprof profile").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$11(this));
     }
     
-    private void addLaunchNotificationsActivity(final Activity activity, final Menu menu) {
-        menu.add((CharSequence)"Launch Notifications Activity").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this, activity));
+    private void addLaunchNotificationsActivity(final Menu menu) {
+        menu.add((CharSequence)"Launch Notifications Activity").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this));
     }
     
     private void addMakeRefreshCwRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshCw Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$7(this));
+        menu.add((CharSequence)"Make refreshCw Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$8(this));
     }
     
     private void addMakeRefreshIqRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshIq Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$8(this));
+        menu.add((CharSequence)"Make refreshIq Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$9(this));
     }
     
     private void addMakeRefreshLolomoRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshLolomo Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$9(this));
+        menu.add((CharSequence)"Make refreshLolomo Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$10(this));
     }
     
     private void addSendCwRefreshBroadcast(final Menu menu) {
-        menu.add((CharSequence)"Send Cw Refresh Broadcast").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$6(this));
+        menu.add((CharSequence)"Send Cw Refresh Broadcast").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$7(this));
     }
     
     private void addSendHomeRefreshBroadcast(final Menu menu) {
-        menu.add((CharSequence)"Send Home Refresh").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$5(this));
+        menu.add((CharSequence)"Send Home Refresh").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$6(this));
     }
     
     private void addToggleFetchErrorsItem(final Menu menu) {
-        menu.add((CharSequence)"Toggle Fetch Errors").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$14(this));
+        menu.add((CharSequence)"Toggle Fetch Errors").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$15(this));
     }
     
     private void addTraceviewItem(final Menu menu) {
-        menu.add((CharSequence)"5s Traceview").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$11(this));
+        menu.add((CharSequence)"5s Traceview").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$12(this));
     }
     
     private void beginTraceview() {
@@ -88,13 +99,27 @@ public class DebugMenuItems
         Log.i(this.logTag, "Starting method trace...");
         Log.i(this.logTag, "**********************************************************************");
         Debug.startMethodTracing("nflx");
-        new Handler().postDelayed((Runnable)new DebugMenuItems$13(this), 5000L);
+        new Handler().postDelayed((Runnable)new DebugMenuItems$14(this), 5000L);
     }
     
-    public void addItems(final NetflixActivity netflixActivity, final Menu menu) {
-        this.addLaunchNotificationsActivity(netflixActivity, menu);
+    private boolean requestExternalFileWritePermission() {
+        if (PermissionUtils.shouldRequestPermission((Context)this.activity, "android.permission.WRITE_EXTERNAL_STORAGE")) {
+            ActivityCompat.requestPermissions(this.activity, new String[] { "android.permission.WRITE_EXTERNAL_STORAGE" }, 145);
+            return false;
+        }
+        return true;
+    }
+    
+    public void addAPIEnvironmentPicker(final Menu menu) {
+        menu.add((CharSequence)"Pick API environment").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this, new String[] { "INT", "TEST" }, PreferenceUtils.getStringPref((Context)this.activity, "api_environment_preference", ""), new String[] { "PROD", "STAGING" }));
+    }
+    
+    public void addItems(final Menu menu) {
+        this.addBarkerBars(menu);
+        this.addDumpPerfData(menu);
+        this.addLaunchNotificationsActivity(menu);
         this.addDumpCacheToDiskItem(menu);
-        this.addDumpHomeLolomoToHtmlItem(netflixActivity, menu);
+        this.addDumpHomeLolomoToHtmlItem(menu);
         this.addHprofDumpItem(menu);
         this.addTraceviewItem(menu);
         this.addToggleFetchErrorsItem(menu);
@@ -104,7 +129,8 @@ public class DebugMenuItems
         this.addMakeRefreshCwRemoteCall(menu);
         this.addMakeRefreshIqRemoteCall(menu);
         this.addMakeRefreshLolomoRemoteCall(menu);
-        this.addCreateAutoLoginToken((Context)netflixActivity, menu);
-        this.addCrashItem((Context)netflixActivity, menu);
+        this.addCreateAutoLoginToken(menu);
+        this.addCrashItem(menu);
+        this.addAPIEnvironmentPicker(menu);
     }
 }

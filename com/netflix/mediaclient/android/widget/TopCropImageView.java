@@ -106,12 +106,7 @@ public class TopCropImageView extends AdvancedImageView
         this.recomputeImgMatrix();
     }
     
-    protected boolean setFrame(final int n, final int n2, final int n3, final int n4) {
-        this.recomputeImgMatrix();
-        return super.setFrame(n, n2, n3, n4);
-    }
-    
-    public void setTopCroppingEnabled(final boolean isTopCropEnabled) {
+    public void setCutomCroppingEnabled(final boolean isTopCropEnabled) {
         this.isTopCropEnabled = isTopCropEnabled;
         if (isTopCropEnabled) {
             this.setScaleType(ImageView$ScaleType.MATRIX);
@@ -120,5 +115,10 @@ public class TopCropImageView extends AdvancedImageView
         else if (!StringUtils.isEmpty(this.lastScaleType)) {
             this.setScaleType(ImageView$ScaleType.values()[Integer.valueOf(this.lastScaleType)]);
         }
+    }
+    
+    protected boolean setFrame(final int n, final int n2, final int n3, final int n4) {
+        this.recomputeImgMatrix();
+        return super.setFrame(n, n2, n3, n4);
     }
 }

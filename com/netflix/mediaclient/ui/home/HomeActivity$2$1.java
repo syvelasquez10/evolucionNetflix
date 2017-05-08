@@ -10,13 +10,15 @@ import java.io.Serializable;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
+import com.netflix.mediaclient.util.Coppola2Utils;
 import java.util.Collection;
+import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.ui.lolomo.KidsGenresLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActionBar;
+import com.netflix.mediaclient.ui.kubrick.lolomo.BarkerHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.annotation.SuppressLint;
@@ -25,6 +27,7 @@ import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
+import android.app.Activity;
 import android.support.v4.widget.DrawerLayout$DrawerListener;
 import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -48,6 +51,9 @@ import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.os.SystemClock;
 import com.netflix.mediaclient.Log;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 
@@ -61,6 +67,8 @@ class HomeActivity$2$1 implements LoadingStatus$LoadingStatusCallback
     
     @Override
     public void onDataLoaded(final Status status) {
+        PerformanceProfiler.getInstance().endSession(Sessions.TTI, null);
+        PerformanceProfiler.getInstance().endSession(Sessions.LOLOMO_LOAD, null);
         this.this$1.this$0.setLoadingStatusCallback(null);
         Log.d("HomeActivity", "LOLOMO is loaded, report UI browse startup session ended in case this was on UI startup");
         this.this$1.this$0.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(SystemClock.elapsedRealtime() - this.this$1.this$0.mStartedTimeMs, status.isSucces(), null);

@@ -17,6 +17,7 @@ import java.io.File;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.net.DnsManager;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentEncryptionInfo$ImageEncryptionInfo;

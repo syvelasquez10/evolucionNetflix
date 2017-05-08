@@ -7,5 +7,6 @@ package com.netflix.mediaclient.android.widget;
 public enum NetflixActionBar$LogoType
 {
     FULL_SIZE, 
-    GONE;
+    GONE, 
+    MONOCHROME;
 }

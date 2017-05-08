@@ -17,7 +17,7 @@ public interface ServiceAgent$BrowseAgentInterface
     
     void fetchIQ(final int p0, final boolean p1, final BrowseAgentCallback p2);
     
-    void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final BrowseAgentCallback p2);
+    void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final BrowseAgentCallback p3);
     
     void fetchLoMos(final int p0, final int p1, final BrowseAgentCallback p2);
     

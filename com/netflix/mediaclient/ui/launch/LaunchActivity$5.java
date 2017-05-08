@@ -11,11 +11,14 @@ import com.netflix.mediaclient.android.fragment.LoadingView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.auth.api.credentials.CredentialRequest$Builder;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.LoginUtils;
 import com.netflix.mediaclient.ui.login.AccountActivity;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.IntentSender$SendIntentException;
-import android.app.Activity;
 import com.netflix.mediaclient.util.IntentUtils;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.ProgressBar;
@@ -62,6 +65,8 @@ import android.content.Context;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -78,6 +83,10 @@ class LaunchActivity$5 implements ResultCallback<CredentialRequestResult>
     public void onResult(final CredentialRequestResult credentialRequestResult) {
         if (Log.isLoggable()) {
             Log.d("LaunchActivity", "Received resolution for GPS credential APIs: " + credentialRequestResult);
+        }
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0)) {
+            Log.e("LaunchActivity", "Auth.CredentialsApi.request ActivityFinishedOrDestroyed");
+            return;
         }
         if (credentialRequestResult.getStatus().getStatusCode() == 4) {
             Log.d("LaunchActivity", "Sign in is required, go with regular workflow");

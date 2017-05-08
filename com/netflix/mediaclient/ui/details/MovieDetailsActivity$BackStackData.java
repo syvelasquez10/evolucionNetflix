@@ -4,24 +4,11 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.content.Intent;
-import java.util.Iterator;
-import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
-import android.content.Context;
-import com.netflix.mediaclient.util.CoppolaUtils;
-import com.netflix.mediaclient.util.StringUtils;
-import android.support.v7.widget.GridLayoutManager;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.support.v7.widget.GridLayoutManager;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Parcel;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -41,14 +28,14 @@ public class MovieDetailsActivity$BackStackData implements Parcelable
     }
     
     private MovieDetailsActivity$BackStackData(final Parcel parcel) {
-    Label_0049_Outer:
+    Label_0051_Outer:
         while (true) {
             this.videoId = parcel.readString();
             this.playContext = (PlayContext)parcel.readParcelable(PlayContextImp.class.getClassLoader());
             while (true) {
                 while (true) {
                     try {
-                        this.layoutManagerState = parcel.readParcelable(getClassLoaderForLayoutManager());
+                        this.layoutManagerState = parcel.readParcelable(AndroidUtils.getClassLoader(GridLayoutManager.class));
                         if (parcel.readByte() == 1) {
                             final boolean bIsShow = true;
                             this.bIsShow = bIsShow;
@@ -58,7 +45,7 @@ public class MovieDetailsActivity$BackStackData implements Parcelable
                     catch (Throwable t) {
                         Log.e("MovieDetailsActivity", "SPY-8852: Failed to load layout manager state", t);
                         ErrorLoggingManager.logHandledException(t);
-                        continue Label_0049_Outer;
+                        continue Label_0051_Outer;
                     }
                     break;
                 }

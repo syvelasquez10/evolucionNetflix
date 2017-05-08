@@ -5,7 +5,6 @@
 package android.support.design.widget;
 
 import android.annotation.TargetApi;
-import android.support.v4.view.ViewCompat;
 import android.view.View$MeasureSpec;
 import android.content.res.TypedArray;
 import android.support.design.R$dimen;

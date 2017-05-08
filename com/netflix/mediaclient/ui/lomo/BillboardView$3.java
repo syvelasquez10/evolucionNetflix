@@ -4,21 +4,23 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import android.widget.FrameLayout$LayoutParams;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import java.util.HashMap;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.content.res.Resources;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.model.leafs.originals.BillboardDateBadge;
+import com.netflix.model.leafs.originals.BillboardAwardsHeadline;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
-import com.netflix.model.leafs.originals.BillboardLogo;
-import java.util.HashMap;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.net.Uri;
 import com.netflix.mediaclient.ui.common.MediaPlayerWrapper$PlaybackEventsListener;
 import com.netflix.model.leafs.originals.BillboardBackground;
-import com.netflix.model.leafs.originals.BillboardSummary;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
@@ -27,8 +29,7 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.model.leafs.originals.BillboardSummary;
 import java.util.List;
 import com.netflix.model.leafs.originals.BillboardCTA;
 import java.util.ArrayList;
@@ -45,14 +46,13 @@ import android.view.TextureView;
 import com.netflix.mediaclient.ui.common.MediaPlayerWrapper;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.Button;
+import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import android.widget.RelativeLayout;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.common.PlayLocationType;
 import android.text.TextUtils;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
@@ -87,7 +87,6 @@ class BillboardView$3 implements View$OnClickListener
         else {
             int1 = Integer.parseInt(this.val$bookmarkPosition);
         }
-        this.this$0.playContext.setPlayLocation(PlayLocationType.STORY_ART);
         PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)this.this$0.getContext(), this.val$playable, this.this$0.playContext, int1);
     }
 }

@@ -13,8 +13,7 @@ import android.view.View;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.mdx.IMiniPlayerFrag;
 import android.widget.SeekBar;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
@@ -28,7 +27,7 @@ public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSee
     private SeekBar seekBar;
     
     private int getMostRecentVolume() {
-        final MdxMiniPlayerFrag mdxMiniPlayerFrag = ((NetflixActivity)this.getActivity()).getMdxMiniPlayerFrag();
+        final IMiniPlayerFrag mdxMiniPlayerFrag = this.getNetflixActivity().getMdxMiniPlayerFrag();
         if (mdxMiniPlayerFrag != null) {
             return mdxMiniPlayerFrag.getVolume();
         }
@@ -47,8 +46,8 @@ public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSee
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903266, viewGroup, false);
-        (this.seekBar = (SeekBar)inflate.findViewById(2131624684)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)this);
+        final View inflate = layoutInflater.inflate(2130903295, viewGroup, false);
+        (this.seekBar = (SeekBar)inflate.findViewById(2131690319)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)this);
         this.seekBar.setMax(100);
         return inflate;
     }
@@ -81,6 +80,6 @@ public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSee
     public void onStopTrackingTouch(final SeekBar seekBar) {
         final int progress = seekBar.getProgress();
         Log.v("VolumeDialogFrag", "Setting mdx volume to: " + progress);
-        ((NetflixActivity)this.getActivity()).getMdxMiniPlayerFrag().setVolume(progress);
+        this.getNetflixActivity().getMdxMiniPlayerFrag().setVolume(progress);
     }
 }

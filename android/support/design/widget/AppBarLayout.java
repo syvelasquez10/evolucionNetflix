@@ -10,15 +10,19 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v4.view.ViewCompat;
+import java.util.List;
 import android.support.v4.view.WindowInsetsCompat;
 import android.widget.LinearLayout;
 
+@CoordinatorLayout$DefaultBehavior(AppBarLayout$Behavior.class)
 public class AppBarLayout extends LinearLayout
 {
     private int mDownPreScrollRange;
     private int mDownScrollRange;
     boolean mHaveChildWithInterpolator;
     private WindowInsetsCompat mLastInsets;
+    private final List<AppBarLayout$OnOffsetChangedListener> mListeners;
+    private int mPendingAction;
     private float mTargetElevation;
     private int mTotalScrollRange;
     
@@ -72,11 +76,12 @@ public class AppBarLayout extends LinearLayout
             }
             final int mScrollFlags = appBarLayout$LayoutParams.mScrollFlags;
             if ((mScrollFlags & 0x5) == 0x5) {
+                final int n2 = appBarLayout$LayoutParams.bottomMargin + appBarLayout$LayoutParams.topMargin + mDownPreScrollRange;
                 if ((mScrollFlags & 0x8) != 0x0) {
-                    mDownPreScrollRange += ViewCompat.getMinimumHeight(child);
+                    mDownPreScrollRange = n2 + ViewCompat.getMinimumHeight(child);
                 }
                 else {
-                    mDownPreScrollRange += n;
+                    mDownPreScrollRange = n2 + n;
                 }
             }
             else if (mDownPreScrollRange > 0) {
@@ -103,11 +108,13 @@ public class AppBarLayout extends LinearLayout
             else {
                 n = child.getMeasuredHeight();
             }
+            final int topMargin = appBarLayout$LayoutParams.topMargin;
+            final int bottomMargin = appBarLayout$LayoutParams.bottomMargin;
             final int mScrollFlags = appBarLayout$LayoutParams.mScrollFlags;
             if ((mScrollFlags & 0x1) == 0x0) {
                 break;
             }
-            mDownScrollRange += n;
+            mDownScrollRange += n + (topMargin + bottomMargin);
             if ((mScrollFlags & 0x2) != 0x0) {
                 return mDownScrollRange - ViewCompat.getMinimumHeight(child);
             }
@@ -138,6 +145,10 @@ public class AppBarLayout extends LinearLayout
         return n;
     }
     
+    int getPendingAction() {
+        return this.mPendingAction;
+    }
+    
     public float getTargetElevation() {
         return this.mTargetElevation;
     }
@@ -164,7 +175,7 @@ public class AppBarLayout extends LinearLayout
                 if ((mScrollFlags & 0x1) == 0x0) {
                     break;
                 }
-                n += n2;
+                n += appBarLayout$LayoutParams.bottomMargin + (n2 + appBarLayout$LayoutParams.topMargin);
                 if ((mScrollFlags & 0x2) != 0x0) {
                     n -= ViewCompat.getMinimumHeight(child);
                     int systemWindowInsetTop;
@@ -186,6 +197,14 @@ public class AppBarLayout extends LinearLayout
         return this.getTotalScrollRange();
     }
     
+    final boolean hasChildWithInterpolator() {
+        return this.mHaveChildWithInterpolator;
+    }
+    
+    final boolean hasScrollableChildren() {
+        return this.getTotalScrollRange() != 0;
+    }
+    
     protected void onLayout(final boolean b, int i, int childCount, final int n, final int n2) {
         super.onLayout(b, i, childCount, n, n2);
         this.mTotalScrollRange = -1;
@@ -198,6 +217,33 @@ public class AppBarLayout extends LinearLayout
                 break;
             }
         }
+    }
+    
+    void resetPendingAction() {
+        this.mPendingAction = 0;
+    }
+    
+    public void setExpanded(final boolean b) {
+        this.setExpanded(b, ViewCompat.isLaidOut((View)this));
+    }
+    
+    public void setExpanded(final boolean b, final boolean b2) {
+        int n;
+        if (b) {
+            n = 1;
+        }
+        else {
+            n = 2;
+        }
+        int n2;
+        if (b2) {
+            n2 = 4;
+        }
+        else {
+            n2 = 0;
+        }
+        this.mPendingAction = (n2 | n);
+        this.requestLayout();
     }
     
     public void setOrientation(final int orientation) {

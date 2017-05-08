@@ -6,8 +6,8 @@ package android.support.design;
 
 public final class R$anim
 {
-    public static final int fab_in = 2130968586;
-    public static final int fab_out = 2130968587;
-    public static final int snackbar_in = 2130968588;
-    public static final int snackbar_out = 2130968589;
+    public static final int design_fab_in = 2130968587;
+    public static final int design_fab_out = 2130968588;
+    public static final int design_snackbar_in = 2130968589;
+    public static final int design_snackbar_out = 2130968590;
 }

@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
+import com.netflix.model.leafs.DiscoverySummary;
 import com.netflix.model.branches.FalkorSuggestion;
 import com.netflix.model.branches.FalkorSeason;
 import com.netflix.model.branches.SearchMap;
@@ -27,6 +28,7 @@ import com.netflix.falkor.Ref;
 import com.netflix.model.branches.FalkorEvidenceList;
 import com.netflix.model.branches.FalkorEpisode;
 import com.netflix.model.branches.FalkorKidsCharacter;
+import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.falkor.BranchMap;
 import java.io.Flushable;
 import com.netflix.falkor.BranchNode;
@@ -34,6 +36,7 @@ import com.netflix.falkor.BranchNode;
 public class Root implements BranchNode, Flushable
 {
     private static final String TAG = "Root";
+    private BranchMap<FalkorActorStill> actorVideoStills;
     private BranchMap<FalkorKidsCharacter> characters;
     private BranchMap<FalkorEpisode> episodes;
     private BranchMap<FalkorEvidenceList<Ref>> evidenceLists;
@@ -54,6 +57,7 @@ public class Root implements BranchNode, Flushable
     private BranchMap<FalkorVideo> shows;
     private BranchMap<FalkorSuggestion> suggestions;
     private BranchMap<Ref> topGenres;
+    private BranchMap<SummarizedList<Ref, DiscoverySummary>> turboCollection;
     private BranchMap<Ref> videos;
     
     @Override
@@ -115,6 +119,9 @@ public class Root implements BranchNode, Flushable
             case "people": {
                 return this.people;
             }
+            case "videoCastStills": {
+                return this.actorVideoStills;
+            }
             case "suggestions": {
                 return this.suggestions;
             }
@@ -132,6 +139,9 @@ public class Root implements BranchNode, Flushable
             }
             case "expiringContentNotice": {
                 return this.expiringContent;
+            }
+            case "turboCollection": {
+                return this.turboCollection;
             }
         }
     }
@@ -181,6 +191,9 @@ public class Root implements BranchNode, Flushable
         if (this.people != null) {
             set.add("people");
         }
+        if (this.actorVideoStills != null) {
+            set.add("videoCastStills");
+        }
         if (this.suggestions != null) {
             set.add("suggestions");
         }
@@ -198,6 +211,9 @@ public class Root implements BranchNode, Flushable
         }
         if (this.expiringContent != null) {
             set.add("expiringContentNotice");
+        }
+        if (this.turboCollection != null) {
+            set.add("turboCollection");
         }
         return set;
     }
@@ -225,7 +241,7 @@ public class Root implements BranchNode, Flushable
                 return this.flatGenres = new BranchMap<UnsummarizedList<Ref>>(Falkor$Creator.UnsummarizedListOfRef);
             }
             case "evidenceLists": {
-                return this.evidenceLists = new BranchMap<FalkorEvidenceList<Ref>>(Falkor$Creator.FalkorEvidenceList());
+                return this.evidenceLists = new BranchMap<FalkorEvidenceList<Ref>>(Falkor$Creator.FalkorEvidenceList(this.proxy));
             }
             case "genreList": {
                 return this.genreList = new ListOfListOfGenres();
@@ -251,6 +267,9 @@ public class Root implements BranchNode, Flushable
             case "people": {
                 return this.people = new BranchMap<FalkorPerson>(Falkor$Creator.FalkorPerson(this.proxy));
             }
+            case "videoCastStills": {
+                return this.actorVideoStills = new BranchMap<FalkorActorStill>(Falkor$Creator.FalkorActorStill(this.proxy));
+            }
             case "suggestions": {
                 return this.suggestions = new BranchMap<FalkorSuggestion>(Falkor$Creator.FalkorSuggestion(this.proxy));
             }
@@ -271,6 +290,9 @@ public class Root implements BranchNode, Flushable
             }
             case "expiringContentNotice": {
                 return this.expiringContent = new BranchMap<FalkorExpiringContent>(Falkor$Creator.FalkorExpiringContent(this.proxy));
+            }
+            case "turboCollection": {
+                return this.turboCollection = new BranchMap<SummarizedList<Ref, DiscoverySummary>>(Falkor$Creator.FalkorDiscoveryList(this.proxy));
             }
         }
     }
@@ -328,6 +350,9 @@ public class Root implements BranchNode, Flushable
             case "people": {
                 this.people = (BranchMap<FalkorPerson>)o;
             }
+            case "videoCastStills": {
+                this.actorVideoStills = (BranchMap<FalkorActorStill>)o;
+            }
             case "suggestions": {
                 this.suggestions = (BranchMap<FalkorSuggestion>)o;
             }
@@ -346,6 +371,9 @@ public class Root implements BranchNode, Flushable
             case "notificationsList": {
                 this.notificationsList = (SummarizedList<Ref, IrisNotificationsListSummary>)o;
             }
+            case "turboCollection": {
+                this.turboCollection = (BranchMap<SummarizedList<Ref, DiscoverySummary>>)o;
+            }
         }
     }
     
@@ -355,6 +383,6 @@ public class Root implements BranchNode, Flushable
     
     @Override
     public String toString() {
-        return "Root{lolomo=" + this.lolomo + ", lolomos=" + this.lolomos + ", lists=" + this.lists + ", flastGenres=" + this.flatGenres + ", evidenceLists=" + this.evidenceLists + ", genreList=" + this.genreList + ", topGenres=" + this.topGenres + ", videos=" + this.videos + ", movies=" + this.movies + ", shows=" + this.shows + ", episodes=" + this.episodes + ", seasons=" + this.seasons + ", people=" + this.people + ", suggestions=" + this.suggestions + ", characters=" + this.characters + ", search=" + this.search + ", notifications=" + this.notifications + ", notificationsList=" + this.notificationsList + ", nonMemberVideos=" + this.nonMemberVideos + ", proxy=" + this.proxy + '}';
+        return "Root{lolomo=" + this.lolomo + ", lolomos=" + this.lolomos + ", lists=" + this.lists + ", flastGenres=" + this.flatGenres + ", evidenceLists=" + this.evidenceLists + ", genreList=" + this.genreList + ", topGenres=" + this.topGenres + ", videos=" + this.videos + ", movies=" + this.movies + ", shows=" + this.shows + ", episodes=" + this.episodes + ", seasons=" + this.seasons + ", people=" + this.people + ", actorVideoStills=" + this.actorVideoStills + ", suggestions=" + this.suggestions + ", characters=" + this.characters + ", search=" + this.search + ", notifications=" + this.notifications + ", notificationsList=" + this.notificationsList + ", nonMemberVideos=" + this.nonMemberVideos + ", proxy=" + this.proxy + ", turboCollections=" + this.turboCollection + '}';
     }
 }

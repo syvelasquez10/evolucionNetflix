@@ -9,7 +9,6 @@ import com.netflix.mediaclient.ui.launch.UIWebViewActivity;
 import com.netflix.mediaclient.ui.launch.NetflixComLaunchActivity;
 import android.os.Bundle;
 import android.app.Activity;
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.service.logging.IntegratedClientLoggingManager;

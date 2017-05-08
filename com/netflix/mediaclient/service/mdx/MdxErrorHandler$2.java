@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;

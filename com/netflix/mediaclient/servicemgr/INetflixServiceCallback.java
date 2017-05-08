@@ -4,14 +4,15 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -21,9 +22,13 @@ import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
+import com.netflix.model.branches.FalkorActorStill;
+import com.netflix.model.branches.MementoVideoSwatch;
+import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.android.app.Status;
@@ -33,6 +38,8 @@ public interface INetflixServiceCallback
 {
     void expiringContent(final int p0, final IExpiringContentWarning p1, final Status p2, final ExpiringContentAction p3);
     
+    void onActorDetailsAndRelatedFetched(final int p0, final List<FalkorPerson> p1, final List<MementoVideoSwatch> p2, final Status p3, final List<FalkorActorStill> p4);
+    
     void onAutoLoginTokenCreated(final int p0, final String p1, final Status p2);
     
     void onAvailableAvatarsListFetched(final int p0, final List<AvatarInfo> p1, final Status p2);
@@ -40,6 +47,8 @@ public interface INetflixServiceCallback
     void onBBVideosFetched(final int p0, final List<Billboard> p1, final Status p2);
     
     void onCWVideosFetched(final int p0, final List<CWVideo> p1, final Status p2);
+    
+    void onDiscoveryVideosFetched(final int p0, final List<Discovery> p1, final Status p2);
     
     void onEpisodeDetailsFetched(final int p0, final EpisodeDetails p1, final Status p2);
     
@@ -68,6 +77,10 @@ public interface INetflixServiceCallback
     void onLogoutComplete(final int p0, final Status p1);
     
     void onMovieDetailsFetched(final int p0, final MovieDetails p1, final Status p2);
+    
+    void onPersonDetailFetched(final int p0, final FalkorPerson p1, final FalkorActorStill p2, final Status p3);
+    
+    void onPersonRelatedFetched(final int p0, final FalkorPerson p1, final List<Video> p2, final Status p3);
     
     void onPostPlayVideosFetched(final int p0, final PostPlayVideosProvider p1, final Status p2);
     
@@ -98,6 +111,8 @@ public interface INetflixServiceCallback
     void onShowDetailsFetched(final int p0, final ShowDetails p1, final Status p2);
     
     void onSimilarVideosFetched(final int p0, final SearchVideoListProvider p1, final Status p2);
+    
+    void onSurveyFetched(final int p0, final Survey p1, final Status p2);
     
     void onVerified(final int p0, final boolean p1, final Status p2);
     

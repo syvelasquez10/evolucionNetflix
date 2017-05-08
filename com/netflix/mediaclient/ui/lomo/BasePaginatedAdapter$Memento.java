@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.lomo;
 
 import java.util.List;
 
-class BasePaginatedAdapter$Memento<T>
+public class BasePaginatedAdapter$Memento<T>
 {
     final String currTitle;
     final List<T> data;

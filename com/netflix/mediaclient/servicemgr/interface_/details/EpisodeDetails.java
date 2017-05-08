@@ -6,6 +6,8 @@ package com.netflix.mediaclient.servicemgr.interface_.details;
 
 public interface EpisodeDetails extends PostPlayVideo
 {
+    boolean episodeIsNSRE();
+    
     String getAvailabilityDateMessage();
     
     int getBookmarkPosition();
@@ -13,6 +15,10 @@ public interface EpisodeDetails extends PostPlayVideo
     String getEpisodeIdUrl();
     
     int getEpisodeNumber();
+    
+    String getInterestingSmallUrl();
+    
+    String getInterestingUrl();
     
     String getNextEpisodeId();
     

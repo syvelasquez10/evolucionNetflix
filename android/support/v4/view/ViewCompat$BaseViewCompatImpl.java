@@ -268,6 +268,10 @@ class ViewCompat$BaseViewCompatImpl implements ViewCompat$ViewCompatImpl
     }
     
     @Override
+    public void setFitsSystemWindows(final View view, final boolean b) {
+    }
+    
+    @Override
     public void setImportantForAccessibility(final View view, final int n) {
     }
     

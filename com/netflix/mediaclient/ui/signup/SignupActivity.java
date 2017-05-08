@@ -36,6 +36,7 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
+import com.netflix.mediaclient.util.LoginUtils;
 import android.content.IntentSender$SendIntentException;
 import android.app.Activity;
 import android.os.Build;
@@ -152,26 +153,22 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
             if (googleApiClient != null) {
                 break Label_0018;
             }
-        Block_3_Outer:
             while (true) {
                 try {
                     Log.d("SignupActivity", "GPS client is null, unable to try to save credentials");
                     Label_0015: {
                         return;
                     }
-                    // iftrue(Label_0076:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
                     while (true) {
-                        while (true) {
-                            Log.w("SignupActivity", "Credential is empty, do not save it.");
-                            return;
-                            Log.d("SignupActivity", "Trying to save credentials to GPS");
-                            this.saveCredentials = false;
-                            continue Block_3_Outer;
-                        }
+                        Log.w("SignupActivity", "Credential is empty, do not save it.");
+                        return;
+                        Log.d("SignupActivity", "Trying to save credentials to GPS");
+                        this.saveCredentials = false;
                         continue;
                     }
                 }
                 // iftrue(Label_0015:, !this.saveCredentials)
+                // iftrue(Label_0076:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
                 finally {
                 }
                 // monitorexit(this)
@@ -206,13 +203,13 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131165639);
+            this.showToast(2131231176);
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.tokenActivate, IClientLogging$CompletionReason.success, null);
             this.clearCookies();
         }
         else {
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.tokenActivate, IClientLogging$CompletionReason.failed, status.getError());
-            this.provideDialog(this.getString(2131165738) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131231281) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -226,7 +223,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         return DeviceUtils.canUseGooglePlayServices((Context)this);
     }
     
-    private boolean isSignupDisabledDevice() {
+    public static boolean isSignupDisabledDevice() {
         return Build.MANUFACTURER.toLowerCase().contains("amazon");
     }
     
@@ -272,14 +269,16 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     
     private void saveCredentials() {
         while (true) {
-            Label_0047: {
+            Label_0053: {
                 synchronized (this) {
-                    if (!this.shouldUseAutoLogin()) {
-                        Log.d("SignupActivity", "SmartLock is disabled or device does not support GPS");
+                    if (!LoginUtils.shouldUseAutoLogin((Context)this)) {
+                        if (Log.isLoggable()) {
+                            Log.d("SignupActivity", "SmartLock is disabled or device does not support GPS");
+                        }
                     }
                     else {
                         if (this.credentialsApiClient != null) {
-                            break Label_0047;
+                            break Label_0053;
                         }
                         Log.d("SignupActivity", "GPS client unavailable, unable to attempt to save credentials");
                     }
@@ -298,9 +297,9 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     private void setUpSignInView(final ServiceManager serviceManager, final boolean b) {
-        this.setContentView(2130903242);
-        this.mWebView = (WebView)this.findViewById(2131624641);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131624245);
+        this.setContentView(2130903269);
+        this.mWebView = (WebView)this.findViewById(2131690271);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131689832);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -323,13 +322,6 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         ApmLogUtils.reportStartSharedContext((Context)this, this.mSharedContextSessionUuid);
         Log.d("SignupActivity", "Adding timeout for webview to load");
         this.mHandler.postDelayed(this.mJumpToSignInTask, this.mSignUpParams.getSignUpTimeout());
-    }
-    
-    private boolean shouldUseAutoLogin() {
-        return this.isAutoLoginEnabled() && DeviceUtils.canUseGooglePlayServices((Context)this);
-    }
-    
-    private void showDebugToast(final String s) {
     }
     
     private void showToast(final int n) {
@@ -396,7 +388,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131165737), new SignupActivity$11(this));
+            this.provideTwoButtonDialog(this.getString(2131231280), new SignupActivity$11(this));
         }
         return true;
     }
@@ -507,14 +499,16 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.mHandler = new Handler();
-        if (this.isSignupDisabledDevice()) {
-            Log.d("SignupActivity", "found signUp disabled device ... goto login");
+        if (isSignupDisabledDevice()) {
+            if (Log.isLoggable()) {
+                Log.d("SignupActivity", "found signUp disabled device ... goto login");
+            }
             this.startNextActivity(LoginActivity.createStartIntent((Context)this));
             this.finish();
         }
         else {
             AndroidUtils.setWindowSecureFlag(this);
-            if (this.shouldUseAutoLogin()) {
+            if (LoginUtils.shouldUseAutoLogin((Context)this)) {
                 (this.credentialsApiClient = new GoogleApiClient$Builder((Context)this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(Auth.CREDENTIALS_API).build()).connect();
             }
             this.mIsPlayBillingPresent = this.isPlayBillingAvailable();
@@ -529,12 +523,12 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131165638));
+            menuItem = menu.add((CharSequence)this.getString(2131231175));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$2(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131165640));
+            menuItem = menu.add((CharSequence)this.getString(2131231177));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$3(this));
         }
@@ -574,11 +568,11 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131165588), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231125), runnable)));
     }
     
     void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131165588), runnable, this.getString(2131165445), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231125), runnable, this.getString(2131230990), null)));
     }
     
     @Override
@@ -592,7 +586,9 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     void showToast(final String s) {
-        Log.v("SignupActivity", "Showing toast: " + s);
+        if (Log.isLoggable()) {
+            Log.v("SignupActivity", "Showing toast: " + s);
+        }
         if (NetflixApplication.isDebugToastEnabled()) {
             Toast.makeText((Context)this, (CharSequence)s, 1).show();
         }

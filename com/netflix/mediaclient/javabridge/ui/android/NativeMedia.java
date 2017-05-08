@@ -36,6 +36,7 @@ import com.netflix.mediaclient.javabridge.invoke.media.Open;
 import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.PlayoutMetadata;
+import android.graphics.Point;
 import com.netflix.mediaclient.javabridge.invoke.media.Close;
 import com.netflix.mediaclient.util.PlaybackVolumeMetric;
 import com.netflix.mediaclient.javabridge.invoke.android.ChangePlayer;
@@ -646,6 +647,11 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
+    public Point getDisplayAspectRatioDimension() {
+        return new Point(this.mDisplayAspectRatioX, this.mDisplayAspectRatioY);
+    }
+    
+    @Override
     public int getDuration() {
         return this.mDuration;
     }
@@ -823,9 +829,9 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Status status) {
+    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Status status, final String[] array) {
         this.bridge.getNrdProxy().invokeMethod(new SetFailedSubtitleDownloadUrl(s, media$SubtitleFailure));
-        this.bridge.getNrdProxy().invokeMethod(new SendSubtitleError(s, subtitleUrl, media$SubtitleFailure, b, this.mCurrentSubtitleTrack, status));
+        this.bridge.getNrdProxy().invokeMethod(new SendSubtitleError(s, subtitleUrl, media$SubtitleFailure, b, this.mCurrentSubtitleTrack, status, array));
     }
     
     @Override

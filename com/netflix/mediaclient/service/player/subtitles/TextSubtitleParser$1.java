@@ -12,11 +12,13 @@ import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback
 class TextSubtitleParser$1 extends LoggingResourceFetcherCallback
 {
     final /* synthetic */ TextSubtitleParser this$0;
+    final /* synthetic */ String[] val$nameServers;
     final /* synthetic */ String val$url;
     
-    TextSubtitleParser$1(final TextSubtitleParser this$0, final String val$url) {
+    TextSubtitleParser$1(final TextSubtitleParser this$0, final String val$url, final String[] val$nameServers) {
         this.this$0 = this$0;
         this.val$url = val$url;
+        this.val$nameServers = val$nameServers;
     }
     
     @Override
@@ -25,12 +27,12 @@ class TextSubtitleParser$1 extends LoggingResourceFetcherCallback
             Log.d("nf_subtitles", "Subtitles onResourceFetched for expected URL " + this.val$url + ", FOUND URL " + s + ", status: " + status);
         }
         if (status.isSucces()) {
-            this.this$0.handleDownloadedSubtitleData(array, this.val$url);
+            this.this$0.handleDownloadedSubtitleData(array, this.val$url, this.val$nameServers);
             return;
         }
         if (Log.isLoggable()) {
             Log.e("nf_subtitles", "Failed to download subtitle metadata, status " + status);
         }
-        this.this$0.onError(s, IMedia$SubtitleFailure.download, status);
+        this.this$0.onError(s, this.val$nameServers, IMedia$SubtitleFailure.download, status);
     }
 }

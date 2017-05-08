@@ -9,17 +9,24 @@ import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.android.fragment.LoadingView;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
+import android.view.ViewParent;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
+import com.netflix.mediaclient.ui.lomo.discovery.PaginatedDiscoveryAdapter;
+import android.content.Context;
+import android.widget.FrameLayout;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
+import com.netflix.mediaclient.ui.lomo.discovery.ProgressiveDiscoveryAdapter;
 import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.ui.lomo.discovery.DiscoveryBackgroundAnimator;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.EnumMap;
@@ -31,8 +38,10 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     private static final String TAG = "LoMoViewPagerAdapter";
     private final NetflixActivity activity;
     private final RowAdapterProvider$IRowAdapterProvider adapters;
+    private DiscoveryBackgroundAnimator bgAnimator;
     private final BroadcastReceiver browseReceiver;
     private RowAdapter currentAdapter;
+    private ProgressiveDiscoveryAdapter discoveryAdapter;
     private boolean isDestroyed;
     private int listViewPos;
     private BasicLoMo loMo;
@@ -42,6 +51,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     private LoMoViewPagerAdapter$Type preErrorState;
     private int previousLastPage;
     private final View reloadView;
+    private final ServiceManager serviceManager;
     private LoMoViewPagerAdapter$Type state;
     private final ObjectRecycler$ViewRecycler viewRecycler;
     
@@ -59,7 +69,8 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.viewRecycler = viewRecycler;
         this.activity = (NetflixActivity)pager.getContext();
         this.reloadView = reloadView;
-        this.adapters = BrowseExperience.get().createRowAdapterProvider(serviceManager, this.pagerAdapterCallbacks, viewRecycler, b);
+        this.adapters = BrowseExperience.get().createRowAdapterProvider(this.activity, this.pagerAdapterCallbacks, viewRecycler, b);
+        this.serviceManager = serviceManager;
         if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "Created row adapter provider of type: " + this.adapters.getClass());
         }
@@ -143,21 +154,31 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                 this.currentAdapter = this.adapters.getCwAdapter();
             }
             case 6: {
-                this.currentAdapter = this.adapters.getBillboardAdapter();
+                final ViewParent parentFrameLayout = this.pager.getParentFrameLayout();
+                if (parentFrameLayout instanceof FrameLayout && this.bgAnimator == null) {
+                    this.bgAnimator = new DiscoveryBackgroundAnimator((Context)this.activity, (View)this.pager.getParent(), (View)parentFrameLayout);
+                }
+                if (this.discoveryAdapter == null) {
+                    this.discoveryAdapter = new ProgressiveDiscoveryAdapter(new PaginatedDiscoveryAdapter((Context)this.activity, this.bgAnimator), this.serviceManager, this.pagerAdapterCallbacks, this.viewRecycler);
+                }
+                this.currentAdapter = this.discoveryAdapter;
             }
             case 7: {
-                this.currentAdapter = this.adapters.getCharacterAdapter();
+                this.currentAdapter = this.adapters.getBillboardAdapter();
             }
             case 8: {
-                this.currentAdapter = this.adapters.getKubrickHeroAdapter();
+                this.currentAdapter = this.adapters.getCharacterAdapter();
             }
             case 9: {
-                this.currentAdapter = this.adapters.getKubrickHeroDuplicateAdapter();
+                this.currentAdapter = this.adapters.getKubrickHeroAdapter();
             }
             case 10: {
-                this.currentAdapter = this.adapters.getKubrickKidsTopTenAdapter();
+                this.currentAdapter = this.adapters.getKubrickHeroDuplicateAdapter();
             }
             case 11: {
+                this.currentAdapter = this.adapters.getKubrickKidsTopTenAdapter();
+            }
+            case 12: {
                 this.currentAdapter = this.adapters.getKubrickKidsPopularAdapter();
             }
         }
@@ -186,11 +207,20 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         return new LinearLayout$LayoutParams(-1, rowHeightInPx);
     }
     
+    public void currentPageSwitched(final int n) {
+        if (this.getState() == LoMoViewPagerAdapter$Type.DISCOVERY && this.bgAnimator != null) {
+            this.bgAnimator.onPageScrolled(n, 0.0f);
+        }
+    }
+    
     public void destroy() {
         Log.v("LoMoViewPagerAdapter", "Destroying adapter");
         this.unregisterBrowseNotificationReceiver();
         this.isDestroyed = true;
         this.notifyDataSetChanged();
+        if (this.bgAnimator != null) {
+            this.bgAnimator.destroy();
+        }
     }
     
     @Override
@@ -288,6 +318,12 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         ViewUtils.setVisibleOrGone((View)this.pager, b2);
         if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "notifyDataSetChanged() - getCount(): " + this.getCount() + ", isPagerVisible: " + b2);
+        }
+    }
+    
+    public void onPageScrolled(final int n, final float n2, final int n3) {
+        if (this.getState() == LoMoViewPagerAdapter$Type.DISCOVERY && this.bgAnimator != null) {
+            this.bgAnimator.onPageScrolled(n, n2);
         }
     }
     

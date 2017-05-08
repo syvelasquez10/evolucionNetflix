@@ -6,6 +6,6 @@ package android.support.v7.appcompat;
 
 public final class R$style
 {
-    public static final int Theme_AppCompat_CompactMenu = 2131362152;
-    public static final int Theme_AppCompat_Light = 2131362157;
+    public static final int Theme_AppCompat_CompactMenu = 2131427695;
+    public static final int Theme_AppCompat_Light = 2131427700;
 }

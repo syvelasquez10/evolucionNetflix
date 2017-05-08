@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
+import com.netflix.model.survey.Survey;
 import java.util.Set;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
@@ -47,6 +48,10 @@ public abstract class SimpleUserAgentWebCallback implements UserAgentWebCallback
     
     @Override
     public void onRecommendationsSent(final Set<FriendForRecommendation> set, final Status status) {
+    }
+    
+    @Override
+    public void onSurveyFetched(final Survey survey, final Status status) {
     }
     
     @Override

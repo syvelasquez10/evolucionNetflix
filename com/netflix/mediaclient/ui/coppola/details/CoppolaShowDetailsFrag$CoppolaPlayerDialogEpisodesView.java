@@ -4,18 +4,19 @@
 
 package com.netflix.mediaclient.ui.coppola.details;
 
+import com.netflix.mediaclient.ui.details.AbsEpisodeView;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.widget.PressedStateHandler$DelayedOnClickListener;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.TextView;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView;
 
-public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView
+public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView
 {
     private static final int DEFAULT_SYNOPSIS_MAX_LINES = 4;
     private static final int DEFAULT_TITLE_MAX_LINES = 1;
@@ -25,13 +26,13 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Kubr
     
     public CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView(final CoppolaShowDetailsFrag this$0, final Context context) {
         this.this$0 = this$0;
-        super(this$0, context, 2130903082);
+        super(this$0, context, 2130903090);
         this.synopsis.setOnClickListener((View$OnClickListener)new CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView$1(this, this$0));
     }
     
     @Override
-    protected void adjustHeight() {
-        final int n = DeviceUtils.getScreenWidthInPixels(this.getContext()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296528);
+    protected void adjustEpisodeImageHeight() {
+        final int n = DeviceUtils.getScreenWidthInPixels(this.getContext()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362123);
         final int height = (int)(n * 0.5625f);
         this.image.getLayoutParams().width = n;
         this.image.getLayoutParams().height = height;
@@ -44,7 +45,7 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Kubr
     
     @Override
     protected void setupPlayButton(final EpisodeDetails episodeDetails) {
-        if (this.isCurrentEpisode && CoppolaUtils.isAutoplay((Context)this.this$0.getActivity())) {
+        if (this.isCurrentEpisode && Coppola1Utils.isAutoplay((Context)this.this$0.getActivity())) {
             this.disablePlay();
             this.nowPlaying.setVisibility(0);
         }
@@ -61,7 +62,7 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Kubr
     @Override
     protected void updateProgressBar() {
         super.updateProgressBar();
-        if (this.isCurrentEpisode && CoppolaUtils.isAutoplay((Context)this.this$0.getActivity())) {
+        if (this.isCurrentEpisode && Coppola1Utils.isAutoplay((Context)this.this$0.getActivity())) {
             this.progressBar.setVisibility(8);
             this.progressBarBackground.setVisibility(0);
         }
@@ -82,7 +83,7 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Kubr
         if (this.title == null) {
             return;
         }
-        this.title.setTextColor(this.getResources().getColor(2131558547));
-        this.title.setText((CharSequence)((Object)this.createTitleText(episodeDetails) + " "));
+        this.title.setTextColor(this.getResources().getColor(2131624099));
+        this.title.setText((CharSequence)((Object)AbsEpisodeView.createTitleText(episodeDetails, (Context)this.this$0.getActivity()) + " "));
     }
 }

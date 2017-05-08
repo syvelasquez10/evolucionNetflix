@@ -28,9 +28,8 @@ import android.graphics.BitmapShader;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Bitmap;
-import android.widget.ImageView;
 
-public class CircleImageView extends ImageView
+public class CircleImageView extends AdvancedImageView
 {
     private static final int SHADOW_COLOR = -16777216;
     private static final boolean SHADOW_ENABLED = false;
@@ -66,11 +65,6 @@ public class CircleImageView extends ImageView
     
     public CircleImageView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.init(context, set, n);
-    }
-    
-    public CircleImageView(final Context context, final AttributeSet set, final int n, final int n2) {
-        super(context, set, n, n2);
         this.init(context, set, n);
     }
     
@@ -227,6 +221,7 @@ public class CircleImageView extends ImageView
         this.setMeasuredDimension(this.measureWidth(n), this.measureHeight(n2));
     }
     
+    @Override
     public void setBorderColor(final int color) {
         if (this.mPaintBorder != null) {
             this.mPaintBorder.setColor(color);
@@ -234,6 +229,7 @@ public class CircleImageView extends ImageView
         this.invalidate();
     }
     
+    @Override
     public void setBorderWidth(final int mBorderWidth) {
         this.mBorderWidth = mBorderWidth;
         if (this.mPaintBorder != null) {
@@ -243,6 +239,7 @@ public class CircleImageView extends ImageView
         this.invalidate();
     }
     
+    @Override
     public void setImageBitmap(final Bitmap bitmap) {
         super.setImageBitmap(bitmap);
         this.mImage = bitmap;
@@ -251,6 +248,7 @@ public class CircleImageView extends ImageView
         }
     }
     
+    @Override
     public void setImageDrawable(final Drawable imageDrawable) {
         super.setImageDrawable(imageDrawable);
         this.mImage = this.drawableToBitmap(this.getDrawable());
@@ -259,6 +257,7 @@ public class CircleImageView extends ImageView
         }
     }
     
+    @Override
     public void setImageResource(final int imageResource) {
         super.setImageResource(imageResource);
         this.mImage = this.drawableToBitmap(this.getDrawable());
@@ -267,6 +266,7 @@ public class CircleImageView extends ImageView
         }
     }
     
+    @Override
     public void setImageURI(final Uri imageURI) {
         super.setImageURI(imageURI);
         this.mImage = this.drawableToBitmap(this.getDrawable());

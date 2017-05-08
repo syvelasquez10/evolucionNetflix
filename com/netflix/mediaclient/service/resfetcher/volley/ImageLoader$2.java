@@ -4,47 +4,39 @@
 
 package com.netflix.mediaclient.service.resfetcher.volley;
 
-import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
-import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
-import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
-import android.graphics.drawable.Drawable;
-import com.netflix.mediaclient.util.StringUtils;
-import com.android.volley.Request;
-import com.android.volley.Response$ErrorListener;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.UriUtil;
-import android.graphics.Bitmap$Config;
-import com.android.volley.Request$Priority;
-import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.android.volley.VolleyError;
-import android.widget.ImageView;
-import android.os.Looper;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.android.volley.RequestQueue;
-import android.os.Handler;
-import java.util.HashMap;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import com.netflix.mediaclient.util.log.ApmLogUtils;
-import com.netflix.mediaclient.StatusCode;
 import android.graphics.Bitmap;
-import com.android.volley.Response$Listener;
+import com.android.volley.VolleyError;
+import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 
-class ImageLoader$2 implements Response$Listener<Bitmap>
+class ImageLoader$2 implements ImageLoader$ImageListener
 {
     final /* synthetic */ ImageLoader this$0;
-    final /* synthetic */ String val$cacheKey;
-    final /* synthetic */ String val$requestUrl;
+    final /* synthetic */ ImageLoader$ImageLoaderListener val$listener;
     
-    ImageLoader$2(final ImageLoader this$0, final String val$requestUrl, final String val$cacheKey) {
+    ImageLoader$2(final ImageLoader this$0, final ImageLoader$ImageLoaderListener val$listener) {
         this.this$0 = this$0;
-        this.val$requestUrl = val$requestUrl;
-        this.val$cacheKey = val$cacheKey;
+        this.val$listener = val$listener;
     }
     
     @Override
-    public void onResponse(final Bitmap bitmap) {
-        ApmLogUtils.reportAssetRequestResult(this.val$requestUrl, StatusCode.OK, this.this$0.mApmLogger);
-        this.this$0.onGetImageSuccess(this.val$cacheKey, bitmap);
+    public void onErrorResponse(final VolleyError volleyError) {
+        final ImageLoader$ImageLoaderListener val$listener = this.val$listener;
+        String message;
+        if (volleyError == null) {
+            message = null;
+        }
+        else {
+            message = volleyError.getMessage();
+        }
+        val$listener.onErrorResponse(message);
+    }
+    
+    @Override
+    public void onResponse(final ImageLoader$ImageContainer imageLoader$ImageContainer, final boolean b) {
+        if (imageLoader$ImageContainer == null) {
+            this.val$listener.onResponse(null, null);
+            return;
+        }
+        this.val$listener.onResponse(imageLoader$ImageContainer.getBitmap(), imageLoader$ImageContainer.getRequestUrl());
     }
 }

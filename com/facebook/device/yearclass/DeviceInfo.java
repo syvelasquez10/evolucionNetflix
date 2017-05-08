@@ -146,7 +146,7 @@ public class DeviceInfo
             final byte[] array = new byte[1024];
         Label_0020_Outer:
             while (true) {
-                int n5 = 0;
+                int n2 = 0;
                 Label_0129: {
                     while (true) {
                         int read = 0;
@@ -155,23 +155,23 @@ public class DeviceInfo
                             read = fileInputStream.read(array);
                             n = 0;
                             break Label_0087;
-                            final int n3;
-                            Label_0053: {
-                                return extractValue(array, n3);
-                            }
-                            // iftrue(Label_0073:, n2 != s.length() - 1)
-                            // iftrue(Label_0053:, array[n3] == s.charAt(n2))
-                            // iftrue(Label_0129:, n3 >= read)
+                            // iftrue(Label_0129:, n4 >= read)
+                            // iftrue(Label_0053:, array[n4] == s.charAt(n5))
+                            final int n4;
                             while (true) {
-                                final int n4;
-                                final int n2 = n3 - n4;
-                                n5 = n4;
+                                final int n3;
+                                n2 = n3;
                                 break Label_0129;
-                                n5 = n4;
+                                n2 = n3;
+                                final int n5 = n4 - n3;
                                 continue Label_0020_Outer;
                             }
+                            Label_0053: {
+                                return extractValue(array, n4);
+                            }
+                            // iftrue(Label_0073:, n5 != s.length() - 1)
                             Label_0073: {
-                                ++n3;
+                                ++n4;
                             }
                             continue;
                         }
@@ -182,18 +182,18 @@ public class DeviceInfo
                         if (n >= read) {
                             goto Label_0081;
                         }
-                        if (array[n] == 10 || (n5 = n) == 0) {
-                            int n4 = n;
+                        if (array[n] == 10 || (n2 = n) == 0) {
+                            int n3 = n;
                             if (array[n] == 10) {
-                                n4 = n + 1;
+                                n3 = n + 1;
                             }
-                            final int n3 = n4;
+                            final int n4 = n3;
                             continue;
                         }
                         break;
                     }
                 }
-                int n = n5 + 1;
+                int n = n2 + 1;
                 continue;
             }
         }

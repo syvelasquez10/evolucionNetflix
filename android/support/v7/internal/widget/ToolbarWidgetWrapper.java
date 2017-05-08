@@ -387,6 +387,7 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         this.setLogo(drawable);
     }
     
+    @Override
     public void setLogo(final Drawable mLogo) {
         this.mLogo = mLogo;
         this.updateToolbarLogo();

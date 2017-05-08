@@ -6,9 +6,14 @@ package com.netflix.mediaclient;
 
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Events;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

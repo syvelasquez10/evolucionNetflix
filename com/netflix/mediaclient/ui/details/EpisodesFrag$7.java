@@ -37,6 +37,7 @@ import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import android.view.View;

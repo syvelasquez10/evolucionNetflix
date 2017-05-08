@@ -23,7 +23,7 @@ public class DeviceConfigData
     @SerializedName("disableCastFaststart")
     private boolean disableCastFaststart;
     @SerializedName("disableDataSaver")
-    public boolean disableDataSaver;
+    private boolean disableDataSaver;
     @SerializedName("disablePlayBilling")
     private boolean disablePlayBilling;
     private String disable_mdx;

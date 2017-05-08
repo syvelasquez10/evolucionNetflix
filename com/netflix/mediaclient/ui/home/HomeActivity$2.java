@@ -10,14 +10,16 @@ import java.io.Serializable;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
+import com.netflix.mediaclient.util.Coppola2Utils;
 import java.util.Collection;
 import android.os.SystemClock;
+import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.ui.lolomo.KidsGenresLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActionBar;
+import com.netflix.mediaclient.ui.kubrick.lolomo.BarkerHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.annotation.SuppressLint;
@@ -26,12 +28,11 @@ import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
+import android.app.Activity;
 import android.support.v4.widget.DrawerLayout$DrawerListener;
 import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
-import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
@@ -44,6 +45,12 @@ import java.util.LinkedList;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.Context;
+import com.netflix.mediaclient.ui.survey.SurveyActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -67,16 +74,20 @@ class HomeActivity$2 implements ManagerStatusListener
         this.this$0.reportUiViewChanged(this.this$0.getCurrentViewType());
         this.this$0.getPrimaryFrag().onManagerReady(serviceManager, status);
         this.this$0.slidingMenuAdapter.onManagerReady(serviceManager, status);
-        if (serviceManager != null && serviceManager.getBrowse() != null) {
-            serviceManager.getBrowse().refreshIrisNotifications(false);
-        }
         this.this$0.setLoadingStatusCallback(new HomeActivity$2$1(this));
         this.this$0.mDialogManager = new DialogManager(this.this$0);
-        this.this$0.mDialogManager.displayDialogsIfNeeded();
+        if (!this.this$0.mDialogManager.displayDialogsIfNeeded()) {
+            this.this$0.showDataSaverNotif();
+        }
+        if (SurveyActivity.shouldShowSurvey((Context)this.this$0, serviceManager)) {
+            SurveyActivity.makeSurveyRequestAndShow(this.this$0);
+        }
     }
     
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+        PerformanceProfiler.getInstance().endSession(Sessions.TTI, PerformanceProfiler.createFailedMap());
+        PerformanceProfiler.getInstance().endSession(Sessions.LOLOMO_LOAD, null);
         Log.w("HomeActivity", "ServiceManager unavailable");
         this.this$0.manager = null;
         this.this$0.getPrimaryFrag().onManagerUnavailable(serviceManager, status);

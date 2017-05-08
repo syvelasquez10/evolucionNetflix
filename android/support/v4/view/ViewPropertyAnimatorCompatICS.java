@@ -23,6 +23,14 @@ class ViewPropertyAnimatorCompatICS
         return view.animate().getDuration();
     }
     
+    public static void scaleX(final View view, final float n) {
+        view.animate().scaleX(n);
+    }
+    
+    public static void scaleY(final View view, final float n) {
+        view.animate().scaleY(n);
+    }
+    
     public static void setDuration(final View view, final long duration) {
         view.animate().setDuration(duration);
     }

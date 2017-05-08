@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
@@ -63,6 +64,9 @@ import java.util.Iterator;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.ThreadUtils;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
 
@@ -82,6 +86,7 @@ class NetflixService$1 implements ServiceAgent$InitCallback
     
     @Override
     public void onInitComplete(final ServiceAgent serviceAgent, final Status status) {
+        PerformanceProfiler.getInstance().endSession(Sessions.NETFLIX_SERVICE_LOADED, null);
         ThreadUtils.assertOnMain();
         if (status.isError()) {
             Log.e("NetflixService", "NetflixService init failed with ServiceAgent " + serviceAgent.getClass().getSimpleName() + " statusCode=" + status.getStatusCode());

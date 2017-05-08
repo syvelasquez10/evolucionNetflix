@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.media.JPlayer;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.BadPaddingException;
 import javax.crypto.ShortBufferException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -14,9 +14,9 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.Key;
 import javax.crypto.spec.IvParameterSpec;
 import java.nio.ByteBuffer;
-import java.security.NoSuchAlgorithmException;
-import com.netflix.mediaclient.Log;
 import javax.crypto.NoSuchPaddingException;
+import com.netflix.mediaclient.Log;
+import java.security.NoSuchAlgorithmException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.Cipher;
 
@@ -34,11 +34,11 @@ public class AesCencDecryptor
             this.mCipher = Cipher.getInstance("AES/CTR/NoPadding");
             this.mKeySpec = new SecretKeySpec(array, "AES");
         }
-        catch (NoSuchPaddingException ex) {}
+        catch (NoSuchAlgorithmException ex) {}
         catch (IllegalArgumentException ex2) {
             Log.d("AseCencDecryptor", "KeySpec has IllegalArgumentException");
         }
-        catch (NoSuchAlgorithmException ex3) {
+        catch (NoSuchPaddingException ex3) {
             goto Label_0029;
         }
     }
@@ -113,8 +113,8 @@ public class AesCencDecryptor
             Log.d("AseCencDecryptor", "fail to decrypt, output buffer is too short. ");
             return true;
         }
-        catch (IllegalBlockSizeException ex2) {}
-        catch (BadPaddingException ex) {
+        catch (BadPaddingException ex2) {}
+        catch (IllegalBlockSizeException ex) {
             goto Label_0380;
         }
     }

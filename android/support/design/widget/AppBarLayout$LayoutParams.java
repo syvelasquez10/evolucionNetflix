@@ -50,6 +50,10 @@ public class AppBarLayout$LayoutParams extends LinearLayout$LayoutParams
         this.mScrollFlags = 1;
     }
     
+    public int getScrollFlags() {
+        return this.mScrollFlags;
+    }
+    
     public Interpolator getScrollInterpolator() {
         return this.mScrollInterpolator;
     }

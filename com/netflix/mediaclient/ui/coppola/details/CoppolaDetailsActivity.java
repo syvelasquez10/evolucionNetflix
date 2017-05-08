@@ -7,7 +7,6 @@ package com.netflix.mediaclient.ui.coppola.details;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
 import android.support.v7.widget.RecyclerView$LayoutManager;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import android.view.KeyEvent;
 import android.graphics.drawable.Drawable;
@@ -18,6 +17,7 @@ import java.io.Serializable;
 import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.Activity;
 import android.view.Window;
 import android.widget.LinearLayout$LayoutParams;
@@ -32,13 +32,14 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.details.MovieDetailsFrag;
 import android.os.Parcelable;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.FrameLayout$LayoutParams;
 import android.content.Context;
@@ -81,24 +82,24 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     private void addTopGradientIfNeeded() {
-        final FrameLayout frameLayout = (FrameLayout)this.detailsFrag.getView().findViewById(2131624285);
-        if (frameLayout.findViewById(2131623944) == null) {
+        final FrameLayout frameLayout = (FrameLayout)this.detailsFrag.getView().findViewById(2131689870);
+        if (frameLayout.findViewById(2131689483) == null) {
             final ImageView imageView = new ImageView((Context)this);
-            imageView.setImageResource(2130837927);
-            imageView.setId(2131623944);
-            frameLayout.addView((View)imageView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.getResources().getDimension(2131296528), 48));
+            imageView.setImageResource(2130837939);
+            imageView.setId(2131689483);
+            frameLayout.addView((View)imageView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.getResources().getDimension(2131362123), 48));
         }
     }
     
     private Fragment createEpisodesFrag() {
-        if (CoppolaUtils.showNewEpisodesFrag((Context)this)) {
+        if (Coppola1Utils.showNewEpisodesFrag((Context)this)) {
             return (Fragment)CoppolaShowDetailsFrag.create(this.videoId, this.getEpisodeId(), true);
         }
         return (Fragment)EpisodesFrag.create(this.videoId, this.getEpisodeId(), true);
     }
     
     private void doOnManagerReady() {
-        this.getHandler().post((Runnable)new CoppolaDetailsActivity$2(this));
+        this.getHandler().post((Runnable)new CoppolaDetailsActivity$3(this));
     }
     
     private String getPlayableId() {
@@ -122,6 +123,11 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
         super.onNewIntent(intent);
         final VideoType videoType = this.videoType;
         this.refreshVideoTypeAndContext();
+        if (this.getServiceManager() == null || !this.getServiceManager().isReady()) {
+            Log.w("CoppolaDetailsActivity", "SPY-9355 - CoppolaDetailsActivity::handleNewIntent() was called when ServiceManager not ready - skipping...");
+            ErrorLoggingManager.logHandledException("SPY-9355 - CoppolaDetailsActivity::handleNewIntent() was called when ServiceManager not ready - skipping...");
+            return;
+        }
         this.fillVideoAndEpisodeIds();
         this.playerFragment.resetCurrentPlayback();
         this.playerFragment.setExternalBundle(PlayerFragment.getBundle(this.getPlayableId(), this.getPlayableVideoType(), (Parcelable)this.playContext));
@@ -136,7 +142,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
             }
             this.getFragmentManager().beginTransaction().remove(this.detailsFrag).commitAllowingStateLoss();
             this.detailsFrag = this.createEpisodesFrag();
-            this.getFragmentManager().beginTransaction().add(2131624158, this.detailsFrag).commitAllowingStateLoss();
+            this.getFragmentManager().beginTransaction().add(2131689745, this.detailsFrag).commitAllowingStateLoss();
             ((EpisodesFrag)this.detailsFrag).setVideoId(this.videoId);
             this.doOnManagerReady();
             Log.i("CoppolaDetailsActivity", "onNewIntent() for show after movie");
@@ -151,7 +157,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
             }
             this.getFragmentManager().beginTransaction().remove(this.detailsFrag).commitAllowingStateLoss();
             this.detailsFrag = MovieDetailsFrag.create(this.videoId);
-            this.getFragmentManager().beginTransaction().add(2131624158, this.detailsFrag).commitAllowingStateLoss();
+            this.getFragmentManager().beginTransaction().add(2131689745, this.detailsFrag).commitAllowingStateLoss();
             ((MovieDetailsFrag)this.detailsFrag).setVideoId(this.videoId);
             this.doOnManagerReady();
             Log.i("CoppolaDetailsActivity", "onNewIntent() for movie after show");
@@ -160,16 +166,25 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     private void hidePlayerUI() {
-        final View viewById = this.findViewById(2131624157);
-        viewById.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new CoppolaDetailsActivity$3(this, viewById));
+        final View viewById = this.findViewById(2131689744);
+        viewById.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new CoppolaDetailsActivity$4(this, viewById));
+    }
+    
+    private void reAttachMdxMiniPlayer() {
+        this.reattachFragment((Fragment)this.getMdxMiniPlayerFrag());
+        this.getHandler().post((Runnable)new CoppolaDetailsActivity$1(this));
     }
     
     private void reattachFragment(final Fragment fragment) {
-        this.getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commitAllowingStateLoss();
-        if (fragment instanceof NetflixFrag) {
-            ((NetflixFrag)fragment).onManagerReady(this.getServiceManager(), CommonStatus.OK);
+        if (fragment == null) {
+            Log.w("CoppolaDetailsActivity", "reattachFragment - frag is null");
         }
         else {
+            this.getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commitAllowingStateLoss();
+            if (fragment instanceof NetflixFrag) {
+                ((NetflixFrag)fragment).onManagerReady(this.getServiceManager(), CommonStatus.OK);
+                return;
+            }
             if (fragment instanceof NetflixDialogFrag) {
                 ((NetflixDialogFrag)fragment).onManagerReady(this.getServiceManager(), CommonStatus.OK);
                 return;
@@ -200,7 +215,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     private void setupImageContainer() {
-        final TappableSurfaceView tappableSurfaceView = (TappableSurfaceView)this.playerFragment.getView().findViewById(2131624490);
+        final TappableSurfaceView tappableSurfaceView = (TappableSurfaceView)this.playerFragment.getView().findViewById(2131690087);
         if (this.bIsInPortrait) {
             this.getNetflixActionBar().show(false);
             final int n = (int)(DeviceUtils.getScreenHeightInPixels((Context)this) / 2.5f);
@@ -227,7 +242,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
             }
         }
         if (tappableSurfaceView != null) {
-            tappableSurfaceView.postDelayed((Runnable)new CoppolaDetailsActivity$1(this, tappableSurfaceView), (long)CoppolaDetailsActivity.MIN_SAMSUNG_POST_DRAW_INTERVAL_MS);
+            tappableSurfaceView.postDelayed((Runnable)new CoppolaDetailsActivity$2(this, tappableSurfaceView), (long)CoppolaDetailsActivity.MIN_SAMSUNG_POST_DRAW_INTERVAL_MS);
         }
         if (this.startOrientation == 0) {
             int startOrientation;
@@ -249,9 +264,9 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
         final PlayContext playContext = this.getPlayContext();
         if (playContext != null) {
             if (Log.isLoggable()) {
-                Log.v("CoppolaDetailsActivity", "Updating play context, browsePlay: " + CoppolaUtils.isBrowsePlay(this));
+                Log.v("CoppolaDetailsActivity", "Updating play context, browsePlay: " + Coppola1Utils.isBrowsePlay(this));
             }
-            playContext.setBrowsePlay(CoppolaUtils.isBrowsePlay(this));
+            playContext.setBrowsePlay(Coppola1Utils.isBrowsePlay(this));
         }
     }
     
@@ -280,8 +295,13 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     @Override
+    public boolean destroyed() {
+        return AndroidUtils.isActivityFinishedOrDestroyed(this);
+    }
+    
+    @Override
     protected int getContentLayoutId() {
-        return 2130903081;
+        return 2130903089;
     }
     
     @Override
@@ -359,6 +379,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
         this.removeControlsIfNeeded();
         this.setupImageContainer();
         this.updatePlayContextBrowsePlayMode();
+        this.reAttachMdxMiniPlayer();
     }
     
     @Override
@@ -366,7 +387,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
         this.removeStatusBar();
         this.refreshVideoTypeAndContext();
         super.onCreate(bundle);
-        this.imageContainer = this.findViewById(2131624156);
+        this.imageContainer = this.findViewById(2131689743);
         if (this.getIntent() != null && this.getIntent().hasExtra("push_to_landscape")) {
             this.setRequestedOrientation(6);
         }
@@ -383,7 +404,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
         if (this.dynamicToolbarMenu == menu) {
             super.onCreateOptionsMenu(menu, menu2);
         }
-        else if (!CoppolaUtils.isAutoplay((Context)this) && this.dynamicToolbarMenu != null) {
+        else if (!Coppola1Utils.isAutoplay((Context)this) && this.dynamicToolbarMenu != null) {
             this.dynamicToolbarMenu.clear();
             super.onCreateOptionsMenu(this.dynamicToolbarMenu, null);
         }
@@ -442,7 +463,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     @Override
-    protected void setPlayContext(final PlayContext playContext) {
+    public void setPlayContext(final PlayContext playContext) {
         super.setPlayContext(playContext);
         this.updatePlayContextBrowsePlayMode();
     }

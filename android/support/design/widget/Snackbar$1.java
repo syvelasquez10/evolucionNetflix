@@ -19,7 +19,7 @@ final class Snackbar$1 implements Handler$Callback
                 return true;
             }
             case 1: {
-                ((Snackbar)message.obj).hideView();
+                ((Snackbar)message.obj).hideView(message.arg1);
                 return true;
             }
         }

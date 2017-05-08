@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.player;
 import android.view.SurfaceHolder;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import android.graphics.Point;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
@@ -17,7 +18,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.TimerTask;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.util.StringUtils;
@@ -969,7 +970,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         if (this.mState == 0) {
             this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
             if (this.isMPPlayerType()) {
-                if (ConnectivityUtils.isNetworkTypeCellular(this.getContext()) && CoppolaUtils.isLowBitratePlaybackOnMobileNetwork(this.getContext()) && DeviceUtils.isPortrait(this.getContext())) {
+                if (ConnectivityUtils.isNetworkTypeCellular(this.getContext()) && Coppola1Utils.isLowBitratePlaybackOnMobileNetwork(this.getContext()) && DeviceUtils.isPortrait(this.getContext())) {
                     this.mMedia.setVideoBitrateRange(0, 100);
                     Log.i(PlayerAgent.TAG, "Pushing 100kbps bitrate for faster playback launch at Coppola portrait MDP in low bitrate test cell");
                     PlayerAgent.TimeToWaitBeforeLowBRStreamsEnabled = 7000;
@@ -1221,6 +1222,11 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     @Override
     public Subtitle getCurrentSubtitleTrack() {
         return this.mMedia.getCurrentSubtitleTrack();
+    }
+    
+    @Override
+    public Point getDisplayAspectRatioDimension() {
+        return this.mMedia.getDisplayAspectRatioDimension();
     }
     
     @Override
@@ -1548,7 +1554,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mPlayerListenerManager.removePlayerListener(player$PlayerListener);
     }
     
-    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Status status) {
+    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Status status, final String[] array) {
         if (Log.isLoggable()) {
             if (status != null) {
                 Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + media$SubtitleFailure + ", details: " + status);
@@ -1558,7 +1564,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             }
         }
         this.getService().getClientLogging().getErrorLogging().logHandledException("Failed to download subtitle metadata");
-        this.mMedia.reportFailedSubtitle(s, subtitleUrl, media$SubtitleFailure, b, status);
+        this.mMedia.reportFailedSubtitle(s, subtitleUrl, media$SubtitleFailure, b, status, array);
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleFailedHandler(), new Object[0]);
     }
     

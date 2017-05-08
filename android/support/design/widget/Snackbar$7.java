@@ -4,7 +4,7 @@
 
 package android.support.design.widget;
 
-import android.widget.TextView;
+import android.widget.Button;
 import android.text.TextUtils;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup$LayoutParams;
@@ -34,6 +34,9 @@ class Snackbar$7 implements Animation$AnimationListener
     }
     
     public void onAnimationEnd(final Animation animation) {
+        if (this.this$0.mCallback != null) {
+            this.this$0.mCallback.onShown(this.this$0);
+        }
         SnackbarManager.getInstance().onShown(this.this$0.mManagerCallback);
     }
     

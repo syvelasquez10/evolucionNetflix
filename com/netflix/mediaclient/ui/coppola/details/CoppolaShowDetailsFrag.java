@@ -14,9 +14,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 
-public class CoppolaShowDetailsFrag extends KubrickShowDetailsFrag
+public class CoppolaShowDetailsFrag extends BarkerShowDetailsFrag
 {
     private static final String TAG = "CoppolaShowDetailsFrag";
     
@@ -38,6 +38,11 @@ public class CoppolaShowDetailsFrag extends KubrickShowDetailsFrag
     }
     
     @Override
+    protected int getNumColumns() {
+        return 1;
+    }
+    
+    @Override
     protected int getRecyclerViewShadowWidth() {
         return DeviceUtils.getScreenWidthInPixels((Context)this.getActivity());
     }
@@ -45,11 +50,6 @@ public class CoppolaShowDetailsFrag extends KubrickShowDetailsFrag
     @Override
     protected void initDetailsViewGroup() {
         (this.detailsViewGroup = new VideoDetailsViewGroup((Context)this.getActivity())).removeActionBarDummyView();
-    }
-    
-    @Override
-    protected int retrieveNumColumns() {
-        return 1;
     }
     
     public void setCurrentEpisodeId(final String episodeId) {

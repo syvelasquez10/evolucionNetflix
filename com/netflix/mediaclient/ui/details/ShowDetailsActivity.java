@@ -12,6 +12,8 @@ import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.Fragment;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -30,6 +32,11 @@ public class ShowDetailsActivity extends DetailsActivity implements AbsEpisodeVi
     @Override
     protected Fragment createSecondaryFrag() {
         return (Fragment)EpisodesFrag.create(this.getVideoId(), this.getEpisodeId(), !this.shouldHideDetailsView());
+    }
+    
+    @Override
+    public boolean destroyed() {
+        return AndroidUtils.isActivityFinishedOrDestroyed(this);
     }
     
     @Override

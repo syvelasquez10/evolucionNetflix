@@ -11,7 +11,7 @@ import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.IMdx;
@@ -91,11 +91,11 @@ public final class PlaybackLauncher
         if (asset == null) {
             return;
         }
-        if (DeviceUtils.isTabletByContext((Context)netflixActivity) || !CoppolaUtils.isNewPlayerExperience((Context)netflixActivity)) {
+        if (DeviceUtils.isTabletByContext((Context)netflixActivity) || !Coppola1Utils.isNewPlayerExperience((Context)netflixActivity)) {
             netflixActivity.startActivity(getOldPlaybackIntent(netflixActivity, asset, n));
             return;
         }
-        CoppolaUtils.launchCoppolaDetails(netflixActivity, asset, b, n);
+        Coppola1Utils.launchCoppolaDetails(netflixActivity, asset, b, n);
     }
     
     public static void playVideo(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
@@ -135,10 +135,10 @@ public final class PlaybackLauncher
                 verifyAgeAndPinToPlay(netflixActivity, asset, true, n);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131165687);
+                displayErrorDialog(netflixActivity, 2131231224);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131165688);
+                displayErrorDialog(netflixActivity, 2131231225);
             }
         }
     }
@@ -174,7 +174,7 @@ public final class PlaybackLauncher
                 return;
             }
             Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131165687);
+            displayErrorDialog(netflixActivity, 2131231224);
         }
     }
     

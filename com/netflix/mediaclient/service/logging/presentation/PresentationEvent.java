@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.presentation;
 
-import java.util.Iterator;
+import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONArray;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -16,6 +16,7 @@ import java.util.List;
 
 public class PresentationEvent
 {
+    private static final String IMAGE_TYPE_KEY = "image_key";
     private static final String IS_HERO = "is_hero";
     private static final String LOCATION = "location";
     private static final String RANK = "rank";
@@ -33,6 +34,7 @@ public class PresentationEvent
     private long time;
     private int trackId;
     private final List<String> videoIds;
+    private final List<String> videoImageTypeIdentifierIds;
     
     static {
         PresentationEvent.TAG = "nf_presentation";
@@ -40,10 +42,12 @@ public class PresentationEvent
     
     private PresentationEvent() {
         this.videoIds = new ArrayList<String>();
+        this.videoImageTypeIdentifierIds = new ArrayList<String>();
     }
     
-    public PresentationEvent(final Trackable trackable, final List<String> videoIds, final int rank, final UiLocation uiLocation) {
+    public PresentationEvent(final Trackable trackable, final List<String> videoIds, final List<String> videoImageTypeIdentifierIds, final int rank, final UiLocation uiLocation) {
         this.videoIds = videoIds;
+        this.videoImageTypeIdentifierIds = videoImageTypeIdentifierIds;
         this.requestId = trackable.getRequestId();
         int trackId;
         if (trackable.isHero()) {
@@ -67,6 +71,10 @@ public class PresentationEvent
         final PresentationEvent presentationEvent = new PresentationEvent();
         try {
             presentationEvent.videoIds.add(JsonUtils.getString(jsonObject, "video_id", null));
+            final String string = JsonUtils.getString(jsonObject, "image_key", null);
+            if (presentationEvent != null && presentationEvent.videoImageTypeIdentifierIds != null) {
+                presentationEvent.videoImageTypeIdentifierIds.add(string);
+            }
             presentationEvent.requestId = JsonUtils.getString(jsonObject, "request_id", null);
             presentationEvent.trackId = JsonUtils.getInt(jsonObject, "track_id", 0);
             presentationEvent.row = JsonUtils.getInt(jsonObject, "row", 0);
@@ -102,10 +110,15 @@ public class PresentationEvent
         return this.videoIds.toString();
     }
     
+    String getVideoImageTypeIdentifierIds() {
+        return this.videoImageTypeIdentifierIds.toString();
+    }
+    
     JSONArray toJSONArray() {
         final JSONArray jsonArray = new JSONArray();
         int rank = this.rank;
-        for (final String s : this.videoIds) {
+        for (int i = 0; i < this.videoIds.size(); ++i) {
+            final String s = this.videoIds.get(i);
             final JSONObject jsonObject = new JSONObject();
             jsonObject.putOpt("video_id", (Object)s);
             jsonObject.putOpt("request_id", (Object)this.requestId);
@@ -115,14 +128,20 @@ public class PresentationEvent
             jsonObject.putOpt("location", (Object)this.location);
             jsonObject.putOpt("time", (Object)this.time);
             jsonObject.putOpt("is_hero", (Object)this.isHero);
-            jsonArray.put((Object)jsonObject);
+            if (this.videoImageTypeIdentifierIds != null && this.videoImageTypeIdentifierIds.size() > i) {
+                final String s2 = this.videoImageTypeIdentifierIds.get(i);
+                if (StringUtils.isNotEmpty(s2)) {
+                    jsonObject.putOpt("image_key", (Object)s2);
+                }
+            }
             ++rank;
+            jsonArray.put((Object)jsonObject);
         }
         return jsonArray;
     }
     
     @Override
     public String toString() {
-        return "PresentationEvent [videoIds=" + this.videoIds + ", requestId=" + this.requestId + ", trackId=" + this.trackId + ", row=" + this.row + ", rank=" + this.rank + ", location=" + this.location + ", time=" + this.time + ", isHero=" + this.isHero + "]";
+        return "PresentationEvent [videoIds=" + this.videoIds + ", videoImageTypeIdentifierIds=" + this.videoImageTypeIdentifierIds + ", requestId=" + this.requestId + ", trackId=" + this.trackId + ", row=" + this.row + ", rank=" + this.rank + ", location=" + this.location + ", time=" + this.time + ", isHero=" + this.isHero + "]";
     }
 }

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.kubrick.details;
 
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 
@@ -22,6 +22,6 @@ public class KubrickDetailActionBar extends NetflixActionBar
     }
     
     public void setWidth() {
-        this.toolbar.getLayoutParams().width = KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity());
+        this.toolbar.getLayoutParams().width = BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity());
     }
 }

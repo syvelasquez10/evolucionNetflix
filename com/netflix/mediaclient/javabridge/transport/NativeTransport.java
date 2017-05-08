@@ -104,6 +104,10 @@ public class NativeTransport implements Transport
         native_enableHDPlayback();
     }
     
+    public static String[] getDnsList() {
+        return native_getDnsList();
+    }
+    
     public static String[] getSupportedVideoProfiles() {
         return native_getSupportedProfiles();
     }
@@ -151,6 +155,8 @@ public class NativeTransport implements Transport
     private static final synchronized native void native_enableHDPlayback();
     
     private static final synchronized native void native_enable_crash_handler();
+    
+    private static final synchronized native String[] native_getDnsList();
     
     private static final synchronized native String[] native_getSupportedProfiles();
     
@@ -363,15 +369,12 @@ public class NativeTransport implements Transport
             try {
                 // iftrue(Label_0090:, !string.startsWith("nrdp"))
                 while (true) {
-                    while (true) {
-                        this.native_setProperty(string, s, s2);
-                        return;
-                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue;
-                        Label_0090: {
-                            string = "nrdp." + string;
-                        }
-                        continue;
+                    this.native_setProperty(string, s, s2);
+                    return;
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
+                    Label_0090: {
+                        string = "nrdp." + string;
                     }
                     continue;
                 }

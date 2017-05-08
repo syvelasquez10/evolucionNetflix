@@ -65,7 +65,8 @@ import android.os.SystemClock;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -74,6 +75,7 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import java.util.Iterator;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
@@ -88,7 +90,7 @@ import org.json.JSONObject;
 import android.os.Parcelable;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -101,6 +103,7 @@ import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
+import java.util.ArrayList;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
 import com.netflix.mediaclient.service.player.subtitles.SafeSubtitleManager;
 import android.view.ViewGroup;
@@ -154,7 +157,7 @@ class PlayerFragment$FetchVideoDetailsForPlaybackCallback extends LoggingManager
         }
         if (status.isError() || videoDetails == null) {
             Log.w("PlayerFragment", "Error loading video details for video playback");
-            Toast.makeText((Context)this.this$0.getActivity(), 2131165543, 1).show();
+            Toast.makeText((Context)this.this$0.getActivity(), 2131231078, 1).show();
             return;
         }
         if (Log.isLoggable()) {

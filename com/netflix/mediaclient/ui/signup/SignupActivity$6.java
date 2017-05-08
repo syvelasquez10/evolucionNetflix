@@ -35,6 +35,7 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
+import com.netflix.mediaclient.util.LoginUtils;
 import android.content.IntentSender$SendIntentException;
 import android.app.Activity;
 import android.os.Build;
@@ -52,6 +53,7 @@ import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
+import android.content.Context;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import android.webkit.WebView;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
@@ -64,7 +66,6 @@ import android.annotation.SuppressLint;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.netflix.mediaclient.ui.login.AccountActivity;
-import android.content.Context;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -84,12 +85,12 @@ class SignupActivity$6 implements ManagerStatusListener
         if (Log.isLoggable()) {
             Log.d("SignupActivity", "ServiceManager ready: " + status.getStatusCode());
         }
-        if (this.this$0.isSignupDisabledDevice()) {
+        if (SignupActivity.isSignupDisabledDevice()) {
             return;
         }
         if (this.this$0.mPlayBillingInitDone) {
             ThreadUtils.assertOnMain();
-            this.this$0.setUpSignInView(serviceManager, this.this$0.canShowPlayBillingOption((Context)serviceManager.getActivity()));
+            this.this$0.setUpSignInView(serviceManager, this.this$0.canShowPlayBillingOption(serviceManager.getContext()));
             return;
         }
         Log.d("SignupActivity", "seviceMgr ready but waiting for playBilling setup to finish");

@@ -121,7 +121,7 @@ public class DataUtil
             Log.v("DataUtil", "Purging episode data for: " + id);
         }
         if (StringUtils.isEmpty(id)) {
-            LogUtils.logEmptySeasonId(serviceManager.getActivity(), s, seasonDetails);
+            LogUtils.logEmptySeasonId(serviceManager.getClientLogging(), s, seasonDetails);
             return;
         }
         serviceManager.getBrowse().invalidateCachedEpisodes(id, VideoType.SEASON);

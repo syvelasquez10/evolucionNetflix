@@ -74,6 +74,7 @@ class UserAgent$1 extends SimpleConfigurationAgentWebCallback
                 Log.d("nf_service_useragent", String.format("fail: signInData:%s, retry?:%b, trySignUp:%b", signInData, signInData.shouldRetrySignIn(), signInData.shouldTrySignUp()));
             }
             if (signInData != null && signInData.shouldTrySignUp()) {
+                this.this$0.getApplication().clearSignedInOnce();
                 this.this$0.notifyLoginComplete(StatusUtils.createStatus(StatusCode.USER_SIGNIN_FAILURE, "UserAgent: activateLoginViaDynecom fails", true, RootCause.clientFailure));
                 return;
             }
@@ -81,7 +82,7 @@ class UserAgent$1 extends SimpleConfigurationAgentWebCallback
         }
         else {
             try {
-                this.this$0.tokenActivate(new ActivationTokens(signInData.edgeFields.netflixId, signInData.edgeFields.secureNetflixId), this.val$userAgentCallback);
+                this.this$0.tokenActivate(new ActivationTokens(this.this$0.mDynecomNetflixId, this.this$0.mDynecomSecureNetflixId), this.val$userAgentCallback);
             }
             catch (JSONException ex) {
                 Log.e("nf_service_useragent", "error creating activationTokesn", (Throwable)ex);

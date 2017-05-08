@@ -363,12 +363,28 @@ public class KongInteractivePostPlayManager implements InteractivePostPlayManage
         return this.battleIntroScreen;
     }
     
+    int getBattleLoseTrackId() {
+        if (this.gearSelectionScreen == null) {
+            Log.d("KongInteractivePostPlayManager", "Gear selection screen is null. No track id available for battle lost video");
+            return -1;
+        }
+        return this.gearSelectionScreen.getBattleLoseTrackId();
+    }
+    
     int getBattleLoseVideoId() {
         return this.gearSelectionScreen.getBattleLostVideoId();
     }
     
     ImageView getBattleResultAvatar() {
         return this.battleResultAvatar;
+    }
+    
+    int getBattleWinTrackId() {
+        if (this.gearSelectionScreen == null) {
+            Log.d("KongInteractivePostPlayManager", "Gear selection screen is null. No track id available for battle won video");
+            return -1;
+        }
+        return this.gearSelectionScreen.getBattleWinTrackId();
     }
     
     int getBattleWinVideoId() {
@@ -447,14 +463,14 @@ public class KongInteractivePostPlayManager implements InteractivePostPlayManage
     }
     
     View inflateViews(final ViewGroup viewGroup) {
-        viewGroup.addView(this.kongPostplayContainer = ((LayoutInflater)this.getActivity().getSystemService("layout_inflater")).inflate(2130903199, viewGroup, false));
-        this.unlockingGearContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131624454);
-        this.powerUpContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131624469);
-        this.gear1Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131624464);
-        this.gear2Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131624465);
-        this.battleIntroContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131624459);
-        this.nextEpisodeContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131624455);
-        this.battleResultAvatar = (ImageView)this.kongPostplayContainer.findViewById(2131624468);
+        viewGroup.addView(this.kongPostplayContainer = ((LayoutInflater)this.getActivity().getSystemService("layout_inflater")).inflate(2130903223, viewGroup, false));
+        this.unlockingGearContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690052);
+        this.powerUpContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690066);
+        this.gear1Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690062);
+        this.gear2Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690063);
+        this.battleIntroContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690057);
+        this.nextEpisodeContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690053);
+        this.battleResultAvatar = (ImageView)this.kongPostplayContainer.findViewById(2131690065);
         this.bgScreen.initViews(this.kongPostplayContainer);
         this.unlockScreen.initViews((View)this.unlockingGearContainer);
         this.powerUpScreen.initViews((View)this.powerUpContainer);
@@ -852,14 +868,14 @@ public class KongInteractivePostPlayManager implements InteractivePostPlayManage
         this.unlockScreen.start();
     }
     
-    void startPlayback(final int n, final VideoType videoType, final boolean b) {
+    void startPlayback(final int n, int battleWinVideoId, final VideoType videoType, final boolean b) {
         if (this.getPlayerFragment() == null) {
             Log.e("KongInteractivePostPlayManager", "Player Fragment is null.");
             return;
         }
-        final PlayContextImp playContextImp = new PlayContextImp("iko_request_id", this.trackId, -1, -1);
+        final PlayContextImp playContextImp = new PlayContextImp("iko_request_id", battleWinVideoId, -1, -1);
         VideoDetails videoDetails = null;
-        final int battleWinVideoId = this.gearSelectionScreen.getBattleWinVideoId();
+        battleWinVideoId = this.gearSelectionScreen.getBattleWinVideoId();
         final int battleLostVideoId = this.gearSelectionScreen.getBattleLostVideoId();
         final int nextEpisodeVideoId = this.battleIntroScreen.getNextEpisodeVideoId();
         if (n == battleWinVideoId) {

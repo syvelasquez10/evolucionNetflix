@@ -61,6 +61,11 @@ public final class UserVolleyWebClient implements UserWebClient
     }
     
     @Override
+    public void fetchSurvey(final UserAgentWebCallback userAgentWebCallback) {
+        this.webclient.sendRequest(new FetchSurveyRequest(this.service.getApplicationContext(), userAgentWebCallback));
+    }
+    
+    @Override
     public void fetchUserData(final UserAgentWebCallback userAgentWebCallback) {
         this.webclient.sendRequest(new FetchUserDataRequest(this.service.getApplicationContext(), userAgentWebCallback));
     }
@@ -68,6 +73,11 @@ public final class UserVolleyWebClient implements UserWebClient
     @Override
     public final boolean isSynchronous() {
         return this.webclient.isSynchronous();
+    }
+    
+    @Override
+    public void markSurveysAsRead() {
+        this.webclient.sendRequest(new MarkSurveyReadRequest(this.service.getApplicationContext()));
     }
     
     @Override

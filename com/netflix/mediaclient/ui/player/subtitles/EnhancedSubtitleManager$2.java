@@ -40,6 +40,7 @@ import java.util.Map;
 import android.view.ViewTreeObserver$OnPreDrawListener;
 import java.util.concurrent.atomic.AtomicBoolean;
 import android.widget.LinearLayout;
+import android.graphics.Point;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.player.subtitles.text.TextSubtitleBlock;

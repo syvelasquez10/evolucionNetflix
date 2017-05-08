@@ -15,10 +15,11 @@ import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import java.nio.ByteBuffer;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.media.Language;
 import android.content.res.Configuration;
 import android.app.Activity;
 import android.view.ViewGroup$LayoutParams;
@@ -99,7 +100,7 @@ public class PlayScreen implements Screen
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
         final View view = mController.getView();
-        this.mSurface = (TappableSurfaceView)view.findViewById(2131624490);
+        this.mSurface = (TappableSurfaceView)view.findViewById(2131690087);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -108,21 +109,21 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)view.findViewById(2131624245);
-        this.mBackground = (RelativeLayout)view.findViewById(2131624244);
-        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131624493);
-        this.mBufferingOverlay = view.findViewById(2131624512);
-        this.mLoadingOverlay = view.findViewById(2131624494);
+        this.mFlipper = (ViewFlipper)view.findViewById(2131689832);
+        this.mBackground = (RelativeLayout)view.findViewById(2131689831);
+        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131690090);
+        this.mBufferingOverlay = view.findViewById(2131690109);
+        this.mLoadingOverlay = view.findViewById(2131690091);
         int n;
         if (mController.getNetflixActivity().isTablet()) {
-            n = 2131624509;
+            n = 2131690106;
         }
         else {
-            n = 2131624492;
+            n = 2131690089;
         }
         this.mBif = (ImageView)view.findViewById(n);
-        this.mTabletBifsLayout = view.findViewById(2131624508);
-        this.mQuickActions = view.findViewById(2131624501);
+        this.mTabletBifsLayout = view.findViewById(2131690105);
+        this.mQuickActions = view.findViewById(2131690098);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
         final Asset currentAsset = mController.getCurrentAsset();
@@ -174,6 +175,10 @@ public class PlayScreen implements Screen
         return playScreen2;
     }
     
+    private static boolean isBrowseValid(final NetflixFrag netflixFrag) {
+        return netflixFrag != null && netflixFrag.getServiceManager() != null && netflixFrag.getServiceManager().getBrowse() != null;
+    }
+    
     private boolean isCoppolaPortrait() {
         return this.mController.isCoppolaPlayback() && this.mController.isInPortrait();
     }
@@ -200,7 +205,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131558596);
+        final int color = this.mController.getResources().getColor(2131624150);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -217,7 +222,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131558596);
+        final int color = this.mController.getResources().getColor(2131624150);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -235,18 +240,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903202;
+            return 2130903226;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903206;
+            return 2130903230;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903207;
+            return 2130903231;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903203;
+        return 2130903227;
     }
     
     private void setToolbarVisibility(final boolean b) {
@@ -285,13 +290,13 @@ public class PlayScreen implements Screen
             autoResizeTextView.setGravity(119);
             final int dipToPixels = AndroidUtils.dipToPixels((Context)this.mController.getActivity(), 5);
             autoResizeTextView.setPadding(dipToPixels, dipToPixels, dipToPixels, dipToPixels);
-            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131165684, new Object[] { watermark.getIdentifier() }));
+            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231221, new Object[] { watermark.getIdentifier() }));
             float n;
             if (this.mController.getNetflixActivity().isTablet()) {
-                n = this.mController.getResources().getDimension(2131296663);
+                n = this.mController.getResources().getDimension(2131362247);
             }
             else {
-                n = this.mController.getResources().getDimension(2131296661);
+                n = this.mController.getResources().getDimension(2131362245);
             }
             SubtitleUtils.applyStyle(autoResizeTextView, watermark.getStyle((Context)this.mController.getActivity()), n);
             final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-2, -2);
@@ -470,6 +475,15 @@ public class PlayScreen implements Screen
         }
     }
     
+    public void hideTopBottomPanel() {
+        if (this.mBottomPanel != null) {
+            this.mBottomPanel.hide();
+        }
+        if (this.mTopPanel != null) {
+            this.mTopPanel.hide();
+        }
+    }
+    
     boolean inInterruptedOrPendingInterrupted() {
         synchronized (this) {
             return this.mState == PlayerUiState.Interrupter || this.mPendingState == PlayerUiState.Interrupter;
@@ -565,6 +579,36 @@ public class PlayScreen implements Screen
         }
         if (this.mPostPlayManager != null) {
             this.mPostPlayManager.onConfigurationChanged(configuration);
+        }
+    }
+    
+    public void onLanguageUpdated(final Language language) {
+        if (this.mDecorator != null) {
+            this.mDecorator.onLanguageUpdated(language);
+        }
+    }
+    
+    void onPause() {
+        if (this.mDecorator != null) {
+            this.mDecorator.onPause();
+        }
+    }
+    
+    void onResume() {
+        if (this.mDecorator != null) {
+            this.mDecorator.onResume();
+        }
+    }
+    
+    void onStart() {
+        if (this.mDecorator != null) {
+            this.mDecorator.onStart();
+        }
+    }
+    
+    void onStop() {
+        if (this.mDecorator != null) {
+            this.mDecorator.onStop();
         }
     }
     
@@ -726,7 +770,7 @@ public class PlayScreen implements Screen
         if (this.mDecorator != null) {
             this.mDecorator.updatePlaybackStatus(mediaImage);
         }
-        if (!CoppolaUtils.isCoppolaContext((Context)this.getController())) {
+        if (!Coppola1Utils.isCoppolaContext((Context)this.getController())) {
             this.mBottomPanel.setMediaImage(mediaImage);
         }
     }

@@ -17,7 +17,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.content.Context;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import android.app.Activity;

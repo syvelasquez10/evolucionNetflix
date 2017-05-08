@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.mdx.events.MdxEventHandler;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -424,6 +425,9 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
         this.mState = mState;
         this.mPositionInSeconds = mPositionInSeconds;
         this.mVolume = mVolume;
+        if (BrowseExperience.shouldShowMemento((Context)this.mActivity)) {
+            RemotePlayer.SHOW_MINI_PLAYER_STATES.add("END_PLAYBACK");
+        }
         this.mCallback.updateUi(new RemotePlayer$RemoteTargetState(this, this.isPaused(), this.isStalled(), mPositionInSeconds, this.mDuration, mVolume, RemotePlayer.SHOW_MINI_PLAYER_STATES.contains(mState), null));
     }
     

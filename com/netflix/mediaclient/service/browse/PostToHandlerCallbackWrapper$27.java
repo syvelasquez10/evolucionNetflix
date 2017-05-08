@@ -4,13 +4,14 @@
 
 package com.netflix.mediaclient.service.browse;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -22,27 +23,28 @@ import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.model.branches.FalkorActorStill;
+import com.netflix.model.branches.MementoVideoSwatch;
+import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
 import android.os.Handler;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 
 class PostToHandlerCallbackWrapper$27 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ PostPlayVideosProvider val$postPlayVideosProvider;
     final /* synthetic */ Status val$res;
     
-    PostToHandlerCallbackWrapper$27(final PostToHandlerCallbackWrapper this$0, final PostPlayVideosProvider val$postPlayVideosProvider, final Status val$res) {
+    PostToHandlerCallbackWrapper$27(final PostToHandlerCallbackWrapper this$0, final Status val$res) {
         this.this$0 = this$0;
-        this.val$postPlayVideosProvider = val$postPlayVideosProvider;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
-        this.this$0.callback.onPostPlayVideosFetched(this.val$postPlayVideosProvider, this.val$res);
+        this.this$0.callback.onQueueRemove(this.val$res);
     }
 }

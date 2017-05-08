@@ -20,4 +20,8 @@ class AnimationUtils
         FAST_OUT_SLOW_IN_INTERPOLATOR = (Interpolator)new FastOutSlowInInterpolator();
         DECELERATE_INTERPOLATOR = (Interpolator)new DecelerateInterpolator();
     }
+    
+    static int lerp(final int n, final int n2, final float n3) {
+        return Math.round((n2 - n) * n3) + n;
+    }
 }

@@ -74,7 +74,7 @@ public class PresentationRequest
     private static void addToSlidingWindow(final LinkedList<PresentationEvent> list, final PresentationEvent presentationEvent, final int n) {
         if (list.size() >= n) {
             final PresentationEvent presentationEvent2 = list.removeFirst();
-            Log.d(PresentationRequest.TAG, String.format("t %d, row %d, rank %d,  %s - !Drop", presentationEvent2.getTime(), presentationEvent2.getRow(), presentationEvent2.getRank(), presentationEvent2.getVideoIds()));
+            Log.d(PresentationRequest.TAG, String.format("t %d, row %d, rank %d,  %s, %s - !Drop", presentationEvent2.getTime(), presentationEvent2.getRow(), presentationEvent2.getRank(), presentationEvent2.getVideoIds(), presentationEvent2.getVideoImageTypeIdentifierIds()));
         }
         list.add(presentationEvent);
     }
@@ -182,7 +182,7 @@ public class PresentationRequest
         if (this.events != null) {
             final JSONArray jsonArray = new JSONArray();
             for (final PresentationEvent presentationEvent : this.events) {
-                Log.d(PresentationRequest.TAG, String.format("t %d, row %d, rank %d, %s - sending", presentationEvent.getTime(), presentationEvent.getRow(), presentationEvent.getRank(), presentationEvent.getVideoIds()));
+                Log.d(PresentationRequest.TAG, String.format("t %d, row %d, rank %d, %s, %s - sending", presentationEvent.getTime(), presentationEvent.getRow(), presentationEvent.getRank(), presentationEvent.getVideoIds(), presentationEvent.getVideoImageTypeIdentifierIds()));
                 try {
                     final JSONArray jsonArray2 = presentationEvent.toJSONArray();
                     for (int i = 0; i < jsonArray2.length(); ++i) {

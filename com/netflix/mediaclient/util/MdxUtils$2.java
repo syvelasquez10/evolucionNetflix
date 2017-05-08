@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.util;
 
 import com.netflix.mediaclient.servicemgr.IMdx;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
+import com.netflix.mediaclient.ui.mdx.IMiniPlayerFrag;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
@@ -25,7 +25,7 @@ final class MdxUtils$2 implements DialogInterface$OnClickListener
     }
     
     public void onClick(final DialogInterface dialogInterface, final int n) {
-        final MdxMiniPlayerFrag mdxMiniPlayerFrag = this.val$activity.getMdxMiniPlayerFrag();
+        final IMiniPlayerFrag mdxMiniPlayerFrag = this.val$activity.getMdxMiniPlayerFrag();
         final IMdx mdx = this.val$activity.getServiceManager().getMdx();
         if (mdxMiniPlayerFrag != null && mdx != null) {
             if (mdxMiniPlayerFrag.getPlayer() != null && mdxMiniPlayerFrag.getPlayer().isPlaying()) {
@@ -40,7 +40,7 @@ final class MdxUtils$2 implements DialogInterface$OnClickListener
             }
             LocalBroadcastManager.getInstance((Context)this.val$activity).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.UPDATE_CAPABILITIES_BADGES"));
         }
-        if (CoppolaUtils.isCoppolaContext((Context)this.val$activity)) {
+        if (Coppola1Utils.isCoppolaContext((Context)this.val$activity)) {
             Log.d("MdxUtils", "For Coppola - delegating MDX disconnect icon click to PlayerFragment");
             ((CoppolaDetailsActivity)this.val$activity).handleMDXIconClick();
         }

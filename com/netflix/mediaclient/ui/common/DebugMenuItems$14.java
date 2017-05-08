@@ -4,19 +4,21 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.os.Handler;
-import android.os.Debug;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
+import android.support.v4.app.ActivityCompat;
+import com.netflix.mediaclient.util.PermissionUtils;
+import android.os.Handler;
 import com.netflix.mediaclient.ui.home.HomeActivity;
-import android.view.Menu;
-import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.service.NetflixService;
-import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
+import android.view.Menu;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.Context;
+import android.widget.Toast;
+import com.netflix.mediaclient.Log;
+import android.os.Debug;
 
-class DebugMenuItems$14 implements MenuItem$OnMenuItemClickListener
+class DebugMenuItems$14 implements Runnable
 {
     final /* synthetic */ DebugMenuItems this$0;
     
@@ -24,9 +26,12 @@ class DebugMenuItems$14 implements MenuItem$OnMenuItemClickListener
         this.this$0 = this$0;
     }
     
-    public boolean onMenuItemClick(final MenuItem menuItem) {
-        NetflixService.toggleFetchErrorsEnabled();
-        this.this$0.activity.showFetchErrorsToast();
-        return true;
+    @Override
+    public void run() {
+        Debug.stopMethodTracing();
+        Log.i(this.this$0.logTag, "**********************************************************************");
+        Log.i(this.this$0.logTag, "Trace complete.  Get with: adb pull /sdcard/nflx.trace");
+        Log.i(this.this$0.logTag, "**********************************************************************");
+        Toast.makeText((Context)this.this$0.activity, (CharSequence)"Trace: /sdcard/nflx.trace", 1).show();
     }
 }

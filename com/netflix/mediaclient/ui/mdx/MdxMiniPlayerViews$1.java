@@ -9,19 +9,18 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.animation.TimeInterpolator;
-import com.netflix.mediaclient.util.gfx.AnimationUtils$HideViewOnAnimatorEnd;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.Arrays;
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.content.res.Resources;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import java.util.ArrayList;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.gfx.AnimationUtils$HideViewOnAnimatorEnd;
 import java.util.Iterator;
 import android.animation.Animator$AnimatorListener;
-import android.view.LayoutInflater;
-import android.content.res.Resources;
-import java.util.ArrayList;
 import java.util.Collection;
-import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -60,7 +59,7 @@ class MdxMiniPlayerViews$1 implements SnappableSeekBar$OnSnappableSeekBarChangeL
         this.this$0.callbacks.onProgressChanged(seekBar, n, b);
         if (b && TimeUtils.convertNsToMs(System.nanoTime() - this.lastProgressChangeTime) >= -1L) {
             this.lastProgressChangeTime = System.nanoTime();
-            if (ServiceManagerUtils.isMdxAgentAvailable(this.this$0.callbacks.getManager())) {
+            if (this.this$0.bifImage != null && ServiceManagerUtils.isMdxAgentAvailable(this.this$0.callbacks.getManager())) {
                 BifManager$Utils.showBifInView(this.this$0.callbacks.getMdx().getBifFrame(n * 1000), this.this$0.bifImage);
             }
             this.this$0.updateTimeViews(n);
@@ -71,9 +70,18 @@ class MdxMiniPlayerViews$1 implements SnappableSeekBar$OnSnappableSeekBarChangeL
     public void onStartTrackingTouch(final SeekBar seekBar) {
         Log.v("MdxMiniPlayerViews", "onStartTrackingTouch");
         this.this$0.callbacks.onStartTrackingTouch(seekBar);
-        this.this$0.currentTime.setVisibility(4);
-        this.this$0.fadeOutAndHide(this.this$0.artwork);
-        this.this$0.fadeInAndShow(this.this$0.bifImage, this.this$0.bifSeekTime);
+        if (this.this$0.currentTime != null) {
+            this.this$0.currentTime.setVisibility(4);
+        }
+        if (this.this$0.artwork != null) {
+            this.this$0.fadeOutAndHide(this.this$0.artwork);
+        }
+        if (this.this$0.bifImage != null) {
+            this.this$0.fadeInAndShow(this.this$0.bifImage);
+        }
+        if (this.this$0.bifSeekTime != null) {
+            this.this$0.fadeInAndShow(this.this$0.bifSeekTime);
+        }
         this.this$0.updateViewsForSeekBarUsage(true);
     }
     

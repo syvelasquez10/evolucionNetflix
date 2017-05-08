@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.service.logging.apm.model.UIModalViewImpressionEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIModalViewChangedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
@@ -12,6 +13,7 @@ import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
+import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
@@ -22,6 +24,8 @@ import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEv
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.SharedContextSessionEndedEvent;
+import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
+import com.netflix.mediaclient.service.logging.perf.PerfSession;
 import com.netflix.mediaclient.service.logging.apm.model.UIDataRequestSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIAssetRequestSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.AppSessionEndedEvent;

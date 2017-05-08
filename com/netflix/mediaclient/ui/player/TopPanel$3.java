@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import android.view.MenuItem$OnMenuItemClickListener;

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.browse;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
@@ -22,27 +21,34 @@ import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.model.branches.FalkorActorStill;
+import com.netflix.model.branches.MementoVideoSwatch;
+import com.netflix.model.branches.FalkorPerson;
 import android.os.Handler;
-import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
-import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.util.ThreadUtils;
 import java.util.List;
+import com.netflix.mediaclient.android.app.Status;
 
 class PostToHandlerCallbackWrapper$7 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ List val$episodeList;
     final /* synthetic */ Status val$res;
+    final /* synthetic */ List val$videoList;
     
-    PostToHandlerCallbackWrapper$7(final PostToHandlerCallbackWrapper this$0, final List val$episodeList, final Status val$res) {
+    PostToHandlerCallbackWrapper$7(final PostToHandlerCallbackWrapper this$0, final List val$videoList, final Status val$res) {
         this.this$0 = this$0;
-        this.val$episodeList = val$episodeList;
+        this.val$videoList = val$videoList;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
-        this.this$0.callback.onEpisodesFetched(this.val$episodeList, this.val$res);
+        ThreadUtils.assertOnMain();
+        this.this$0.callback.onVideosFetched(this.val$videoList, this.val$res);
     }
 }

@@ -10,6 +10,7 @@ import com.netflix.model.leafs.social.IrisNotificationSummary;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
+import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -23,6 +24,8 @@ public interface IBrowseInterface
     void endBrowsePlaySession(final long p0, final int p1, final int p2, final int p3);
     
     void expiringContent(final String p0, final int p1, final int p2, final ExpiringContentAction p3);
+    
+    void fetchActorDetailsAndRelatedForTitle(final String p0, final int p1, final int p2);
     
     void fetchCWVideos(final int p0, final int p1, final int p2, final int p3);
     
@@ -38,7 +41,7 @@ public interface IBrowseInterface
     
     void fetchIQVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final int p4, final int p5);
     
-    void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final int p2, final int p3);
+    void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final int p3, final int p4);
     
     void fetchKidsCharacterDetails(final String p0, final int p1, final int p2);
     
@@ -49,6 +52,10 @@ public interface IBrowseInterface
     void fetchMovieDetails(final String p0, final String p1, final int p2, final int p3);
     
     void fetchNotifications(final int p0, final int p1, final int p2, final int p3);
+    
+    void fetchPersonDetail(final String p0, final int p1, final int p2, final String p3);
+    
+    void fetchPersonRelated(final String p0, final int p1, final int p2);
     
     void fetchPostPlayVideos(final String p0, final VideoType p1, final int p2, final int p3);
     
@@ -67,6 +74,8 @@ public interface IBrowseInterface
     void fetchSimilarVideosForPerson(final String p0, final int p1, final int p2, final int p3, final String p4);
     
     void fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final int p2, final int p3, final String p4);
+    
+    void fetchTask(final CachedModelProxy$CmpTaskDetails p0, final int p1, final int p2);
     
     void fetchVideoSummary(final String p0, final int p1, final int p2);
     

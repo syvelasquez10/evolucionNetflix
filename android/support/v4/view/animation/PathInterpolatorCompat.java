@@ -1,0 +1,18 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package android.support.v4.view.animation;
+
+import android.os.Build$VERSION;
+import android.view.animation.Interpolator;
+
+public class PathInterpolatorCompat
+{
+    public static Interpolator create(final float n, final float n2, final float n3, final float n4) {
+        if (Build$VERSION.SDK_INT >= 21) {
+            return PathInterpolatorCompatApi21.create(n, n2, n3, n4);
+        }
+        return PathInterpolatorCompatBase.create(n, n2, n3, n4);
+    }
+}

@@ -4,9 +4,9 @@
 
 package com.crittercism.app;
 
-import crittercism.android.az;
+import com.crittercism.internal.ax;
 
 public abstract class Transaction
 {
-    public az a;
+    public ax a;
 }

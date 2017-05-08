@@ -15,7 +15,9 @@ import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 public class BillboardAssets implements JsonPopulator
 {
     private static final String TAG = "Assets";
+    private BillboardAwardsHeadline awardsHeadline;
     private BillboardBackground background;
+    private BillboardBackgroundPortrait backgroundPortrait;
     private BillboardDateBadge dateBadge;
     private BillboardLogo logo;
     
@@ -23,8 +25,16 @@ public class BillboardAssets implements JsonPopulator
         this.populate(jsonElement);
     }
     
+    public BillboardAwardsHeadline getAwardsHeadline() {
+        return this.awardsHeadline;
+    }
+    
     public BillboardBackground getBackground() {
         return this.background;
+    }
+    
+    public BillboardBackgroundPortrait getBackgroundPortrait() {
+        return this.backgroundPortrait;
     }
     
     public BillboardDateBadge getDateBadge() {
@@ -45,26 +55,40 @@ public class BillboardAssets implements JsonPopulator
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0130: {
+            Label_0146: {
                 switch (s.hashCode()) {
                     case 3327403: {
                         if (s.equals("logo")) {
                             n = 0;
-                            break Label_0130;
+                            break Label_0146;
                         }
                         break;
                     }
                     case -1332194002: {
                         if (s.equals("background")) {
                             n = 1;
-                            break Label_0130;
+                            break Label_0146;
+                        }
+                        break;
+                    }
+                    case 621897449: {
+                        if (s.equals("backgroundPortrait")) {
+                            n = 2;
+                            break Label_0146;
                         }
                         break;
                     }
                     case -276211563: {
                         if (s.equals("dateBadge")) {
-                            n = 2;
-                            break Label_0130;
+                            n = 3;
+                            break Label_0146;
+                        }
+                        break;
+                    }
+                    case 1961536938: {
+                        if (s.equals("awardsHeadline")) {
+                            n = 4;
+                            break Label_0146;
                         }
                         break;
                     }
@@ -84,7 +108,15 @@ public class BillboardAssets implements JsonPopulator
                     continue;
                 }
                 case 2: {
+                    this.backgroundPortrait = new BillboardBackgroundPortrait(jsonElement2);
+                    continue;
+                }
+                case 3: {
                     this.dateBadge = new BillboardDateBadge(jsonElement2);
+                    continue;
+                }
+                case 4: {
+                    this.awardsHeadline = new BillboardAwardsHeadline(jsonElement2);
                     continue;
                 }
             }

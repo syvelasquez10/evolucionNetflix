@@ -87,30 +87,30 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void createUI() {
-        this.setContentView(2130903229);
+        this.setContentView(2130903256);
         this.setupActionBar();
         this.findViews();
         this.setupLoadingWrapper();
         this.setupFragments(this.savedInstanceState);
         if (BrowseExperience.showKidsExperience()) {
-            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131558457));
-            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131558608));
+            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131624002));
+            this.leWrapper.getErrorMessageTextView().setBackgroundColor(this.getResources().getColor(2131624162));
             ((ViewGroup)this.leWrapper.getErrorMessageTextView().getParent()).setBackgroundColor(-1);
             ViewUtils.removeShadow(this.leWrapper.getErrorMessageTextView());
         }
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131624625);
-        this.loadingWrapper = this.findViewById(2131624623);
-        (this.mVoiceSearchBtn = this.findViewById(2131624624)).setOnClickListener((View$OnClickListener)new SearchActivity$1(this));
+        this.fragGroup = (ViewGroup)this.findViewById(2131690255);
+        this.loadingWrapper = this.findViewById(2131690253);
+        (this.mVoiceSearchBtn = this.findViewById(2131690254)).setOnClickListener((View$OnClickListener)new SearchActivity$1(this));
     }
     
     private int getSearchHintPlaceholderStringId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2131165633;
+            return 2131231170;
         }
-        return 2131165731;
+        return 2131231274;
     }
     
     private void handleKeyboardVisibility() {
@@ -246,7 +246,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             this.resultsFrag = SearchResultsFrag.create();
-            this.getFragmentManager().beginTransaction().add(2131624625, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131690255, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -258,7 +258,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131165579, false, false);
+        this.leWrapper.showErrorView(2131231115, false, false);
         this.fragGroup.setVisibility(4);
         this.setVoiceSearchVisibility(false);
         this.setSearchProgressVisibility(false);
@@ -323,9 +323,9 @@ public class SearchActivity extends NetflixActivity
     
     protected int getInitMessageStringId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2131165633;
+            return 2131231170;
         }
-        return 2131165730;
+        return 2131231273;
     }
     
     @Override
@@ -357,7 +357,7 @@ public class SearchActivity extends NetflixActivity
             SearchUtils.setSearchExperience(SearchUtils$SearchExperience.PHONE);
         }
         if (BrowseExperience.showKidsExperience()) {
-            this.setTheme(2131362176);
+            this.setTheme(2131427719);
         }
         this.createUI();
         if (savedInstanceState != null) {
@@ -400,7 +400,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131165459, true, false);
+        this.leWrapper.showErrorView(2131231004, true, false);
         this.fragGroup.setVisibility(4);
         this.setVoiceSearchVisibility(false);
         this.setSearchProgressVisibility(false);

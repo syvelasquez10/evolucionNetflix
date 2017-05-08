@@ -14,6 +14,7 @@ public class KongInteractivePostPlayModel$KongCollectionItems
     String result;
     KongInteractivePostPlayModel$KongNameString strings;
     final /* synthetic */ KongInteractivePostPlayModel this$0;
+    int trackId;
     int videoId;
     
     public KongInteractivePostPlayModel$KongCollectionItems(final KongInteractivePostPlayModel this$0) {
@@ -76,6 +77,10 @@ public class KongInteractivePostPlayModel$KongCollectionItems
             return null;
         }
         return this.audio.getVo();
+    }
+    
+    public int getTrackId() {
+        return this.trackId;
     }
     
     public int getVideoId() {

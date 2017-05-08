@@ -6,6 +6,8 @@ package com.netflix.mediaclient.ui.kids;
 
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper$BarkerBars;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import android.view.ViewConfiguration;
@@ -34,6 +36,9 @@ public class KidsUtils
     }
     
     public static int getDetailsPageContentWidth(final Context context) {
+        if (BarkerHelper.isInTest(context)) {
+            return new BarkerHelper$BarkerBars(context).getModalWidth();
+        }
         if (DeviceUtils.getScreenWidthInDPs(context) >= 1024) {
             return (int)(Math.max(DeviceUtils.getScreenHeightInPixels(context), DeviceUtils.getScreenWidthInPixels(context)) * 0.8f);
         }

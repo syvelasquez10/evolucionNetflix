@@ -82,26 +82,26 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
     }
     
     private void findViews() {
-        this.heroImg = (TopCropImageView)this.findViewById(2131624289);
-        this.title = (TextView)this.findViewById(2131624292);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131624257);
-        this.rating = (NetflixRatingBar)this.findViewById(2131624169);
-        this.year = (TextView)this.findViewById(2131624276);
-        this.certification = (TextView)this.findViewById(2131624277);
-        this.durationInfo = (TextView)this.findViewById(2131624278);
-        this.hdIcon = this.findViewById(2131624279);
-        this.synopsis = (TextView)this.findViewById(2131624294);
-        this.infoGroup = this.findViewById(2131624291);
-        this.shadow = this.findViewById(2131624290);
+        this.heroImg = (TopCropImageView)this.findViewById(2131689873);
+        this.title = (TextView)this.findViewById(2131689876);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131689649);
+        this.rating = (NetflixRatingBar)this.findViewById(2131689612);
+        this.year = (TextView)this.findViewById(2131689613);
+        this.certification = (TextView)this.findViewById(2131689614);
+        this.durationInfo = (TextView)this.findViewById(2131689615);
+        this.hdIcon = this.findViewById(2131689616);
+        this.synopsis = (TextView)this.findViewById(2131689878);
+        this.infoGroup = this.findViewById(2131689875);
+        this.shadow = this.findViewById(2131689874);
     }
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837925);
-        ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelOffset(2131296726));
+        this.setBackgroundResource(2130837937);
+        ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelOffset(2131362307));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903131, (ViewGroup)this);
+        netflixActivity.getLayoutInflater().inflate(2130903147, (ViewGroup)this);
         this.findViews();
         this.heroImg.setCropPointYOffsetPx(0);
         ((RelativeLayout$LayoutParams)this.heroImg.getLayoutParams()).height = (int)(DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) * 0.5625f);
@@ -162,7 +162,7 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
         else {
             final int runtime = kubrickVideo.getRuntime();
             if (runtime > 0) {
-                this.durationInfo.setText((CharSequence)resources.getString(2131165586, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
+                this.durationInfo.setText((CharSequence)resources.getString(2131231123, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
                 this.durationInfo.setVisibility(0);
                 return;
             }

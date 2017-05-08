@@ -12,8 +12,8 @@ import java.util.Set;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.netflix.falkor.Func;
-import com.netflix.falkor.Ref;
 import com.netflix.model.leafs.ListOfMoviesSummary;
+import com.netflix.falkor.Ref;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.falkor.BranchMap;
 
@@ -21,6 +21,7 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
 {
     private static final String TAG = "FalkorEvidenceList";
     private UnsummarizedList<FalkorBillboardData> billboardData;
+    private UnsummarizedList<UnsummarizedList<Ref>> discoveryData;
     private ListOfMoviesSummary summary;
     private UnsummarizedList<Ref> videoEvidence;
     
@@ -46,6 +47,9 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
             }
             case "summary": {
                 return this.summary;
+            }
+            case "discoveryEvidence": {
+                return this.discoveryData;
             }
             case "videoEvidence": {
                 return this.videoEvidence;
@@ -78,6 +82,9 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
         }
         if (this.billboardData != null) {
             keys.add("billboardData");
+        }
+        if (this.discoveryData != null) {
+            keys.add("discoveryEvidence");
         }
         return keys;
     }
@@ -123,6 +130,9 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
             }
             case "summary": {
                 return this.summary = new ListOfMoviesSummary();
+            }
+            case "discoveryEvidence": {
+                return this.discoveryData = new UnsummarizedList<UnsummarizedList<Ref>>(Falkor$Creator.UnsummarizedListOfRef);
             }
             case "videoEvidence": {
                 return this.videoEvidence = new UnsummarizedList<Ref>(Falkor$Creator.Ref);
@@ -192,6 +202,9 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
             }
             case "billboardData": {
                 this.billboardData = (UnsummarizedList<FalkorBillboardData>)o;
+            }
+            case "discoveryEvidence": {
+                this.discoveryData = (UnsummarizedList<UnsummarizedList<Ref>>)o;
             }
         }
     }

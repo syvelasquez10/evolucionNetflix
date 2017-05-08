@@ -12,7 +12,6 @@ public enum IconFontGlyph
     EVIDENCE_TALENT('\ue739'), 
     EVIDENCE_TV_RATINGS('\ue733'), 
     NETFLIX_LOGO('\ue600'), 
-    NETFLIX_N_ICON('\ue602'), 
     PLAY_W_RING('\ue647');
     
     private final Character unicodeChar;

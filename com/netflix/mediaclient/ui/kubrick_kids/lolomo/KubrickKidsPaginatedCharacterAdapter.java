@@ -27,12 +27,12 @@ public class KubrickKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
     
     @Override
     protected int computeNumItemsPerPage() {
-        return MathUtils.divideIntsWithRounding(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW), this.getActivity().getResources().getDimensionPixelSize(2131296388) + this.getActivity().getResources().getDimensionPixelSize(2131296387));
+        return MathUtils.divideIntsWithRounding(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW), this.getActivity().getResources().getDimensionPixelSize(2131361950) + this.getActivity().getResources().getDimensionPixelSize(2131361949));
     }
     
     @Override
     public int getRowHeightInPx() {
-        return this.getActivity().getResources().getDimensionPixelSize(2131296603) + this.getActivity().getResources().getDimensionPixelSize(2131296602) + this.getActivity().getResources().getDimensionPixelSize(2131296388);
+        return this.getActivity().getResources().getDimensionPixelSize(2131362190) + this.getActivity().getResources().getDimensionPixelSize(2131362189) + this.getActivity().getResources().getDimensionPixelSize(2131361950);
     }
     
     @Override
@@ -40,8 +40,8 @@ public class KubrickKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
         KubrickKidsCharacterViewGroup kubrickKidsCharacterViewGroup;
         if ((kubrickKidsCharacterViewGroup = ((ObjectRecycler<KubrickKidsCharacterViewGroup>)objectRecycler$ViewRecycler).pop(KubrickKidsCharacterViewGroup.class)) == null) {
             kubrickKidsCharacterViewGroup = new KubrickKidsCharacterViewGroup((Context)this.getActivity());
-            ViewUtils.setPaddingTop((View)kubrickKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131296603));
-            ViewUtils.setPaddingBottom((View)kubrickKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131296602));
+            ViewUtils.setPaddingTop((View)kubrickKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131362190));
+            ViewUtils.setPaddingBottom((View)kubrickKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131362189));
             kubrickKidsCharacterViewGroup.init(n);
         }
         ((VideoViewGroup<Video, V>)kubrickKidsCharacterViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);

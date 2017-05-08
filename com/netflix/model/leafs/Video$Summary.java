@@ -17,22 +17,27 @@ import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 public class Video$Summary implements JsonPopulator, Video
 {
     private static final String TAG = "Summary";
+    public String boxartImageTypeIdentifier;
     public String boxartUrl;
     public VideoType enumType;
     public VideoType errorType;
-    public boolean hasWatched;
     public String horzDispSmallUrl;
     public String horzDispUrl;
     public String id;
     public boolean isEpisode;
-    public boolean isNSRE;
     public boolean isOriginal;
     public boolean isPreRelease;
+    public String stillImageUrl;
     public String storyImgDispUrl;
     public String title;
     public String tvCardUrl;
     public String type;
     public int videoYear;
+    
+    @Override
+    public String getBoxartImageTypeIdentifier() {
+        return this.boxartImageTypeIdentifier;
+    }
     
     @Override
     public String getBoxshotUrl() {
@@ -82,18 +87,8 @@ public class Video$Summary implements JsonPopulator, Video
         return this.enumType;
     }
     
-    @Override
-    public boolean hasWatched() {
-        return this.hasWatched;
-    }
-    
     public boolean isEpisode() {
         return this.isEpisode;
-    }
-    
-    @Override
-    public boolean isNSRE() {
-        return this.isNSRE;
     }
     
     @Override
@@ -132,92 +127,92 @@ public class Video$Summary implements JsonPopulator, Video
                         }
                         break;
                     }
+                    case 1490782694: {
+                        if (s.equals("boxartImageTypeIdentifier")) {
+                            n = 2;
+                            break Label_0226;
+                        }
+                        break;
+                    }
                     case 3575610: {
                         if (s.equals("type")) {
-                            n = 2;
+                            n = 3;
                             break Label_0226;
                         }
                         break;
                     }
                     case 110371416: {
                         if (s.equals("title")) {
-                            n = 3;
+                            n = 4;
                             break Label_0226;
                         }
                         break;
                     }
                     case -2124216975: {
                         if (s.equals("isEpisode")) {
-                            n = 4;
+                            n = 5;
                             break Label_0226;
                         }
                         break;
                     }
                     case 329552226: {
                         if (s.equals("errorType")) {
-                            n = 5;
+                            n = 6;
                             break Label_0226;
                         }
                         break;
                     }
                     case -1794520227: {
                         if (s.equals("tvCardUrl")) {
-                            n = 6;
+                            n = 7;
                             break Label_0226;
                         }
                         break;
                     }
                     case -1217996834: {
                         if (s.equals("horzDispUrl")) {
-                            n = 7;
+                            n = 8;
                             break Label_0226;
                         }
                         break;
                     }
                     case 1882776025: {
                         if (s.equals("horzDispSmallUrl")) {
-                            n = 8;
+                            n = 9;
                             break Label_0226;
                         }
                         break;
                     }
                     case 1251932671: {
                         if (s.equals("storyImgDispUrl")) {
-                            n = 9;
+                            n = 10;
                             break Label_0226;
                         }
                         break;
                     }
                     case 1333091160: {
                         if (s.equals("videoYear")) {
-                            n = 10;
+                            n = 11;
                             break Label_0226;
                         }
                         break;
                     }
                     case 585773339: {
                         if (s.equals("isOriginal")) {
-                            n = 11;
-                            break Label_0226;
-                        }
-                        break;
-                    }
-                    case -1180295454: {
-                        if (s.equals("isNSRE")) {
                             n = 12;
-                            break Label_0226;
-                        }
-                        break;
-                    }
-                    case -1136616012: {
-                        if (s.equals("hasWatched")) {
-                            n = 13;
                             break Label_0226;
                         }
                         break;
                     }
                     case 135683246: {
                         if (s.equals("isPreRelease")) {
+                            n = 13;
+                            break Label_0226;
+                        }
+                        break;
+                    }
+                    case 530612188: {
+                        if (s.equals("stillImageUrl")) {
                             n = 14;
                             break Label_0226;
                         }
@@ -239,55 +234,55 @@ public class Video$Summary implements JsonPopulator, Video
                     continue;
                 }
                 case 2: {
-                    this.type = jsonElement2.getAsString();
+                    this.boxartImageTypeIdentifier = jsonElement2.getAsString();
                     continue;
                 }
                 case 3: {
-                    this.title = jsonElement2.getAsString();
+                    this.type = jsonElement2.getAsString();
                     continue;
                 }
                 case 4: {
-                    this.isEpisode = entry.getValue().getAsBoolean();
+                    this.title = jsonElement2.getAsString();
                     continue;
                 }
                 case 5: {
-                    this.errorType = VideoType.create(jsonElement2.getAsString());
+                    this.isEpisode = entry.getValue().getAsBoolean();
                     continue;
                 }
                 case 6: {
-                    this.tvCardUrl = jsonElement2.getAsString();
+                    this.errorType = VideoType.create(jsonElement2.getAsString());
                     continue;
                 }
                 case 7: {
-                    this.horzDispUrl = jsonElement2.getAsString();
+                    this.tvCardUrl = jsonElement2.getAsString();
                     continue;
                 }
                 case 8: {
-                    this.horzDispSmallUrl = jsonElement2.getAsString();
+                    this.horzDispUrl = jsonElement2.getAsString();
                     continue;
                 }
                 case 9: {
-                    this.storyImgDispUrl = jsonElement2.getAsString();
+                    this.horzDispSmallUrl = jsonElement2.getAsString();
                     continue;
                 }
                 case 10: {
-                    this.videoYear = entry.getValue().getAsInt();
+                    this.storyImgDispUrl = jsonElement2.getAsString();
                     continue;
                 }
                 case 11: {
-                    this.isOriginal = entry.getValue().getAsBoolean();
+                    this.videoYear = entry.getValue().getAsInt();
                     continue;
                 }
                 case 12: {
-                    this.isNSRE = entry.getValue().getAsBoolean();
+                    this.isOriginal = entry.getValue().getAsBoolean();
                     continue;
                 }
                 case 13: {
-                    this.hasWatched = entry.getValue().getAsBoolean();
+                    this.isPreRelease = entry.getValue().getAsBoolean();
                     continue;
                 }
                 case 14: {
-                    this.isPreRelease = entry.getValue().getAsBoolean();
+                    this.stillImageUrl = jsonElement2.getAsString();
                     continue;
                 }
             }

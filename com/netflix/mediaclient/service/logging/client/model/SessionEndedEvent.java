@@ -46,10 +46,19 @@ public abstract class SessionEndedEvent extends SessionEvent
         return this.duration;
     }
     
+    public void setDuration(final long duration) {
+        this.duration = duration;
+    }
+    
     @Override
     public JSONObject toJSONObject() {
         final JSONObject jsonObject = super.toJSONObject();
         jsonObject.put("duration", this.duration);
         return jsonObject;
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString() + " <duration=" + this.duration + ">";
     }
 }

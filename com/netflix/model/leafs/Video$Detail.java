@@ -23,6 +23,7 @@ public class Video$Detail implements JsonPopulator
     public String advisoryDescription;
     public int advisoryDisplayDuration;
     public String advisoryRating;
+    public int autoPlayMaxCount;
     public String baseUrl;
     public String baseUrlBig;
     public String bifUrl;
@@ -38,16 +39,16 @@ public class Video$Detail implements JsonPopulator
     public boolean hasWatched;
     public String hiResHorzUrl;
     public String horzDispUrl;
-    public String interestingSmallUrl;
-    public String interestingUrl;
     public boolean is3DAvailable;
     public boolean is5dot1Available;
     public boolean isAgeProtected;
     public boolean isAutoPlayEnabled;
     public boolean isAvailableToStream;
     public boolean isDolbyVisionAvailable;
+    public boolean isExemptFromInterrupterLimit;
     public boolean isHdAvailable;
     public boolean isHdr10Avaiable;
+    public boolean isNSRE;
     public boolean isNextPlayableEpisode;
     public boolean isOriginal;
     public boolean isPinProtected;
@@ -67,11 +68,13 @@ public class Video$Detail implements JsonPopulator
     public String supplementalMessage;
     public String synopsis;
     public String synopsisNarrative;
+    public String titleCroppedUrl;
     public String titleUrl;
     public String tvCardUrl;
     public int year;
     
     public Video$Detail() {
+        this.autoPlayMaxCount = -1;
         this.episodeBadges = new ArrayList<String>(3);
     }
     
@@ -85,362 +88,376 @@ public class Video$Detail implements JsonPopulator
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0514: {
+            Label_0530: {
                 switch (s.hashCode()) {
                     case 3704893: {
                         if (s.equals("year")) {
                             n = 0;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 1828656532: {
                         if (s.equals("synopsis")) {
                             n = 1;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 1522889671: {
                         if (s.equals("copyright")) {
                             n = 2;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -496641730: {
                         if (s.equals("synopsisNarrative")) {
                             n = 3;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 651215103: {
                         if (s.equals("quality")) {
                             n = 4;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -962584985: {
                         if (s.equals("directors")) {
                             n = 5;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1422944994: {
                         if (s.equals("actors")) {
                             n = 6;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1249499312: {
                         if (s.equals("genres")) {
                             n = 7;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -644524870: {
                         if (s.equals("certification")) {
                             n = 8;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 38526579: {
                         if (s.equals("maturityLevel")) {
                             n = 9;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -668327396: {
                         if (s.equals("expirationTime")) {
                             n = 10;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 417758403: {
                         if (s.equals("supplementalMessage")) {
                             n = 11;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 585773339: {
                         if (s.equals("isOriginal")) {
                             n = 12;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 135683246: {
                         if (s.equals("isPreRelease")) {
                             n = 13;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -144454054: {
                         if (s.equals("hasTrailers")) {
                             n = 14;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 113933357: {
                         if (s.equals("isSupplementalVideo")) {
                             n = 15;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1217996834: {
                         if (s.equals("horzDispUrl")) {
                             n = 16;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 1097494779: {
                         if (s.equals("restUrl")) {
                             n = 17;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1389216784: {
                         if (s.equals("bifUrl")) {
                             n = 18;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -332625698: {
                         if (s.equals("baseUrl")) {
                             n = 19;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -762550462: {
                         if (s.equals("baseUrlBig")) {
                             n = 20;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1794520227: {
                         if (s.equals("tvCardUrl")) {
                             n = 21;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 1062174849: {
                         if (s.equals("hiResHorzUrl")) {
                             n = 22;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 398159229: {
                         if (s.equals("mdxVertUrl")) {
                             n = 23;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1551264767: {
                         if (s.equals("storyImgUrl")) {
                             n = 24;
-                            break Label_0514;
-                        }
-                        break;
-                    }
-                    case -23645737: {
-                        if (s.equals("interestingUrl")) {
-                            n = 25;
-                            break Label_0514;
-                        }
-                        break;
-                    }
-                    case -1354835072: {
-                        if (s.equals("interestingSmallUrl")) {
-                            n = 26;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 1590765524: {
                         if (s.equals("episodeCount")) {
-                            n = 27;
-                            break Label_0514;
+                            n = 25;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -885502996: {
                         if (s.equals("seasonCount")) {
-                            n = 28;
-                            break Label_0514;
+                            n = 26;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 1550962648: {
                         if (s.equals("runtime")) {
-                            n = 29;
-                            break Label_0514;
+                            n = 27;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1606289880: {
                         if (s.equals("endtime")) {
-                            n = 30;
-                            break Label_0514;
+                            n = 28;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -602057255: {
                         if (s.equals("logicalStart")) {
-                            n = 31;
-                            break Label_0514;
+                            n = 29;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -515828317: {
                         if (s.equals("isHdAvailable")) {
-                            n = 32;
-                            break Label_0514;
+                            n = 30;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1944322078: {
                         if (s.equals("isUhdAvailable")) {
-                            n = 33;
-                            break Label_0514;
+                            n = 31;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 558909422: {
                         if (s.equals("is3DAvailable")) {
-                            n = 34;
-                            break Label_0514;
+                            n = 32;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -389852269: {
                         if (s.equals("isDolbyVisionAvailable")) {
-                            n = 35;
-                            break Label_0514;
+                            n = 33;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1302288478: {
                         if (s.equals("isHdr10Avaiable")) {
-                            n = 36;
-                            break Label_0514;
+                            n = 34;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1410856650: {
                         if (s.equals("is5dot1Available")) {
-                            n = 37;
-                            break Label_0514;
+                            n = 35;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1077707340: {
                         if (s.equals("isAutoPlayEnabled")) {
+                            n = 36;
+                            break Label_0530;
+                        }
+                        break;
+                    }
+                    case 1709910622: {
+                        if (s.equals("isExemptFromInterrupterLimit")) {
+                            n = 37;
+                            break Label_0530;
+                        }
+                        break;
+                    }
+                    case 1135089838: {
+                        if (s.equals("autoPlayMaxCount")) {
                             n = 38;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 1426350736: {
                         if (s.equals("isNextPlayableEpisode")) {
                             n = 39;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 1494791097: {
                         if (s.equals("isAgeProtected")) {
                             n = 40;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1931492381: {
                         if (s.equals("isPinProtected")) {
                             n = 41;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 719120809: {
                         if (s.equals("isAvailableForED")) {
                             n = 42;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -263240971: {
                         if (s.equals("predictedRating")) {
                             n = 43;
-                            break Label_0514;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1870009353: {
                         if (s.equals("titleUrl")) {
                             n = 44;
-                            break Label_0514;
+                            break Label_0530;
+                        }
+                        break;
+                    }
+                    case 1440369896: {
+                        if (s.equals("titleCroppedUrl")) {
+                            n = 45;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 958662582: {
                         if (s.equals("advisoryRating")) {
-                            n = 45;
-                            break Label_0514;
+                            n = 46;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1940515453: {
                         if (s.equals("advisoryDescription")) {
-                            n = 46;
-                            break Label_0514;
+                            n = 47;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1478074755: {
                         if (s.equals("advisoryDisplayDuration")) {
-                            n = 47;
-                            break Label_0514;
+                            n = 48;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1865391343: {
                         if (s.equals("seasonNumLabel")) {
-                            n = 48;
-                            break Label_0514;
+                            n = 49;
+                            break Label_0530;
                         }
                         break;
                     }
                     case 2027019019: {
                         if (s.equals("episodeBadges")) {
-                            n = 49;
-                            break Label_0514;
+                            n = 50;
+                            break Label_0530;
                         }
                         break;
                     }
                     case -1136616012: {
                         if (s.equals("hasWatched")) {
-                            n = 50;
-                            break Label_0514;
+                            n = 51;
+                            break Label_0530;
+                        }
+                        break;
+                    }
+                    case -1180295454: {
+                        if (s.equals("isNSRE")) {
+                            n = 52;
+                            break Label_0530;
                         }
                         break;
                     }
@@ -558,65 +575,59 @@ public class Video$Detail implements JsonPopulator
                     continue;
                 }
                 case 25: {
-                    if (jsonElement2 != null && !jsonElement2.isJsonNull()) {
-                        this.interestingUrl = jsonElement2.getAsString();
-                        continue;
-                    }
-                    continue;
-                }
-                case 26: {
-                    if (jsonElement2 != null && !jsonElement2.isJsonNull()) {
-                        this.interestingSmallUrl = jsonElement2.getAsString();
-                        continue;
-                    }
-                    continue;
-                }
-                case 27: {
                     this.episodeCount = jsonElement2.getAsInt();
                     continue;
                 }
-                case 28: {
+                case 26: {
                     this.seasonCount = jsonElement2.getAsInt();
                     continue;
                 }
-                case 29: {
+                case 27: {
                     this.runtime = jsonElement2.getAsInt();
                     continue;
                 }
-                case 30: {
+                case 28: {
                     this.endtime = jsonElement2.getAsInt();
                     continue;
                 }
-                case 31: {
+                case 29: {
                     this.logicalStart = jsonElement2.getAsInt();
                     continue;
                 }
-                case 32: {
+                case 30: {
                     this.isHdAvailable = jsonElement2.getAsBoolean();
                     continue;
                 }
-                case 33: {
+                case 31: {
                     this.isUhdAvailable = jsonElement2.getAsBoolean();
                     continue;
                 }
-                case 34: {
+                case 32: {
                     this.is3DAvailable = jsonElement2.getAsBoolean();
                     continue;
                 }
-                case 35: {
+                case 33: {
                     this.isDolbyVisionAvailable = jsonElement2.getAsBoolean();
                     continue;
                 }
-                case 36: {
+                case 34: {
                     this.isHdr10Avaiable = jsonElement2.getAsBoolean();
                     continue;
                 }
-                case 37: {
+                case 35: {
                     this.is5dot1Available = jsonElement2.getAsBoolean();
                     continue;
                 }
-                case 38: {
+                case 36: {
                     this.isAutoPlayEnabled = jsonElement2.getAsBoolean();
+                    continue;
+                }
+                case 37: {
+                    this.isExemptFromInterrupterLimit = jsonElement2.getAsBoolean();
+                    continue;
+                }
+                case 38: {
+                    this.autoPlayMaxCount = jsonElement2.getAsInt();
                     continue;
                 }
                 case 39: {
@@ -644,30 +655,38 @@ public class Video$Detail implements JsonPopulator
                     continue;
                 }
                 case 45: {
-                    this.advisoryRating = jsonElement2.getAsString();
+                    this.titleCroppedUrl = jsonElement2.getAsString();
                     continue;
                 }
                 case 46: {
-                    this.advisoryDescription = jsonElement2.getAsString();
+                    this.advisoryRating = jsonElement2.getAsString();
                     continue;
                 }
                 case 47: {
-                    this.advisoryDisplayDuration = jsonElement2.getAsInt();
+                    this.advisoryDescription = jsonElement2.getAsString();
                     continue;
                 }
                 case 48: {
-                    this.seasonNumLabel = JsonUtils.getAsStringSafe(jsonElement2);
+                    this.advisoryDisplayDuration = jsonElement2.getAsInt();
                     continue;
                 }
                 case 49: {
+                    this.seasonNumLabel = JsonUtils.getAsStringSafe(jsonElement2);
+                    continue;
+                }
+                case 50: {
                     final JsonArray asJsonArray = jsonElement2.getAsJsonArray();
                     for (int i = 0; i < asJsonArray.size(); ++i) {
                         this.episodeBadges.add(asJsonArray.get(i).getAsString());
                     }
                     continue;
                 }
-                case 50: {
+                case 51: {
                     this.hasWatched = jsonElement2.getAsBoolean();
+                    continue;
+                }
+                case 52: {
+                    this.isNSRE = jsonElement2.getAsBoolean();
                     continue;
                 }
             }
@@ -676,6 +695,6 @@ public class Video$Detail implements JsonPopulator
     
     @Override
     public String toString() {
-        return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", copyright=" + this.copyright + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", maturityLevel=" + this.maturityLevel + ", expirationTime=" + this.expirationTime + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", hiResHorzUrl=" + this.hiResHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", interestingUrl=" + this.interestingUrl + ", interestingSmallUrl=" + this.interestingSmallUrl + ", titleUrl=" + this.titleUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", predictedRating=" + this.predictedRating + ", isHdAvailable=" + this.isHdAvailable + ", isUhdAvailable=" + this.isUhdAvailable + ", isDolbyVisionAvailable=" + this.isDolbyVisionAvailable + ", isHdr10Avaiable=" + this.isHdr10Avaiable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", isAgeProtected=" + this.isAgeProtected + ", isPinProtected=" + this.isPinProtected + ", isAvailableToStream=" + this.isAvailableToStream + ", runtime=" + this.runtime + ", endtime=" + this.endtime + ", logicalStart=" + this.logicalStart + ", advisoryRating=" + this.advisoryRating + ", advisoryDescription=" + this.advisoryDescription + ", advisoryDisplayDuration=" + this.advisoryDisplayDuration + "]";
+        return "Detail{year=" + this.year + ", synopsis='" + this.synopsis + '\'' + ", synopsisNarrative='" + this.synopsisNarrative + '\'' + ", quality='" + this.quality + '\'' + ", directors='" + this.directors + '\'' + ", actors='" + this.actors + '\'' + ", genres='" + this.genres + '\'' + ", certification='" + this.certification + '\'' + ", copyright='" + this.copyright + '\'' + ", horzDispUrl='" + this.horzDispUrl + '\'' + ", restUrl='" + this.restUrl + '\'' + ", bifUrl='" + this.bifUrl + '\'' + ", baseUrl='" + this.baseUrl + '\'' + ", baseUrlBig='" + this.baseUrlBig + '\'' + ", tvCardUrl='" + this.tvCardUrl + '\'' + ", hiResHorzUrl='" + this.hiResHorzUrl + '\'' + ", mdxVertUrl='" + this.mdxVertUrl + '\'' + ", storyImgUrl='" + this.storyImgUrl + '\'' + ", titleUrl='" + this.titleUrl + '\'' + ", titleCroppedUrl='" + this.titleCroppedUrl + '\'' + ", seasonNumLabel='" + this.seasonNumLabel + '\'' + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", predictedRating=" + this.predictedRating + ", maturityLevel=" + this.maturityLevel + ", expirationTime=" + this.expirationTime + ", supplementalMessage='" + this.supplementalMessage + '\'' + ", isOriginal=" + this.isOriginal + ", isPreRelease=" + this.isPreRelease + ", hasTrailers=" + this.hasTrailers + ", isSupplementalVideo=" + this.isSupplementalVideo + ", isNSRE=" + this.isNSRE + ", isHdAvailable=" + this.isHdAvailable + ", isUhdAvailable=" + this.isUhdAvailable + ", is3DAvailable=" + this.is3DAvailable + ", isDolbyVisionAvailable=" + this.isDolbyVisionAvailable + ", isHdr10Avaiable=" + this.isHdr10Avaiable + ", is5dot1Available=" + this.is5dot1Available + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isExemptFromInterrupterLimit=" + this.isExemptFromInterrupterLimit + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", isAgeProtected=" + this.isAgeProtected + ", isPinProtected=" + this.isPinProtected + ", hasWatched=" + this.hasWatched + ", advisoryRating='" + this.advisoryRating + '\'' + ", advisoryDescription='" + this.advisoryDescription + '\'' + ", advisoryDisplayDuration=" + this.advisoryDisplayDuration + ", autoPlayMaxCount=" + this.autoPlayMaxCount + ", episodeBadges=" + this.episodeBadges + ", isAvailableToStream=" + this.isAvailableToStream + ", runtime=" + this.runtime + ", endtime=" + this.endtime + ", logicalStart=" + this.logicalStart + '}';
     }
 }

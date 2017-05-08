@@ -5,7 +5,6 @@
 package android.support.design.widget;
 
 import android.annotation.TargetApi;
-import android.support.v4.view.ViewCompat;
 import android.view.View$MeasureSpec;
 import android.graphics.drawable.Drawable;
 import android.content.res.TypedArray;
@@ -65,7 +64,7 @@ public class FloatingActionButton extends ImageView
         else {
             this.mImpl = new FloatingActionButtonEclairMr1((View)this, floatingActionButton$1);
         }
-        sdk_INT = (int)this.getResources().getDimension(R$dimen.fab_content_size);
+        sdk_INT = (int)this.getResources().getDimension(R$dimen.design_fab_content_size);
         this.mContentPadding = (this.getSizeDimension() - sdk_INT) / 2;
         this.mImpl.setBackgroundDrawable(drawable, this.mBackgroundTint, this.mBackgroundTintMode, this.mRippleColor, this.mBorderWidth);
         this.mImpl.setElevation(dimension);
@@ -128,23 +127,16 @@ public class FloatingActionButton extends ImageView
     final int getSizeDimension() {
         switch (this.mSize) {
             default: {
-                return this.getResources().getDimensionPixelSize(R$dimen.fab_size_normal);
+                return this.getResources().getDimensionPixelSize(R$dimen.design_fab_size_normal);
             }
             case 1: {
-                return this.getResources().getDimensionPixelSize(R$dimen.fab_size_mini);
+                return this.getResources().getDimensionPixelSize(R$dimen.design_fab_size_mini);
             }
         }
     }
     
     public void hide() {
-        if (this.getVisibility() != 0) {
-            return;
-        }
-        if (ViewCompat.isLaidOut((View)this) && !this.isInEditMode()) {
-            this.mImpl.hide();
-            return;
-        }
-        this.setVisibility(8);
+        this.mImpl.hide();
     }
     
     @TargetApi(11)
@@ -165,12 +157,18 @@ public class FloatingActionButton extends ImageView
         }
     }
     
-    public void setBackgroundTintList(final ColorStateList backgroundTintList) {
-        this.mImpl.setBackgroundTintList(backgroundTintList);
+    public void setBackgroundTintList(final ColorStateList list) {
+        if (this.mBackgroundTint != list) {
+            this.mBackgroundTint = list;
+            this.mImpl.setBackgroundTintList(list);
+        }
     }
     
-    public void setBackgroundTintMode(final PorterDuff$Mode backgroundTintMode) {
-        this.mImpl.setBackgroundTintMode(backgroundTintMode);
+    public void setBackgroundTintMode(final PorterDuff$Mode porterDuff$Mode) {
+        if (this.mBackgroundTintMode != porterDuff$Mode) {
+            this.mBackgroundTintMode = porterDuff$Mode;
+            this.mImpl.setBackgroundTintMode(porterDuff$Mode);
+        }
     }
     
     public void setRippleColor(final int n) {
@@ -181,11 +179,6 @@ public class FloatingActionButton extends ImageView
     }
     
     public void show() {
-        if (this.getVisibility() != 0) {
-            this.setVisibility(0);
-            if (ViewCompat.isLaidOut((View)this)) {
-                this.mImpl.show();
-            }
-        }
+        this.mImpl.show();
     }
 }

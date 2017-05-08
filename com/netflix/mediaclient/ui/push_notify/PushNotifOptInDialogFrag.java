@@ -74,7 +74,7 @@ public class PushNotifOptInDialogFrag extends NetflixDialogFrag implements OptIn
         this.getDialog().getWindow().setBackgroundDrawable((Drawable)new ColorDrawable(0));
         final View viewById = this.getDialog().findViewById(this.getActivity().getResources().getIdentifier("android:id/titleDivider", (String)null, (String)null));
         if (viewById != null) {
-            viewById.setBackgroundColor(this.getResources().getColor(2131558596));
+            viewById.setBackgroundColor(this.getResources().getColor(2131624150));
         }
         inflate.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new PushNotifOptInDialogFrag$1(this, inflate));
         return inflate;

@@ -6,9 +6,14 @@ package com.netflix.mediaclient;
 
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Events;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -43,6 +48,7 @@ public class NetflixApplication extends Application
     private static final String TAG = "NetflixApplication";
     private static final String TAG_LOCALE = "nf_locale";
     private static final Gson gson;
+    private static NetflixApplication instance;
     private static boolean isDebugToastEnabled;
     private static boolean sAactivityVisible;
     private static boolean sEnableSmartLock;
@@ -82,6 +88,10 @@ public class NetflixApplication extends Application
     
     public static Intent createShowApplicationIntent(final Context context) {
         return new Intent(context, (Class)LaunchActivity.class).setAction("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER");
+    }
+    
+    public static Context getContext() {
+        return (Context)NetflixApplication.instance;
     }
     
     public static Gson getGson() {
@@ -162,7 +172,7 @@ public class NetflixApplication extends Application
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837777).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131165742, new Object[] { n })).setContentTitle(this.getString(2131165743, new Object[] { n })).setContentText(this.getString(2131165418, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837785).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131231286, new Object[] { n })).setContentTitle(this.getString(2131231287, new Object[] { n })).setContentText(this.getString(2131230963, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -180,6 +190,11 @@ public class NetflixApplication extends Application
     }
     
     public static void setEnableSmartLock(final boolean b) {
+    }
+    
+    public void clearSignedInOnce() {
+        this.mSignedUpOnce = false;
+        PreferenceUtils.putStringPref((Context)this, "useragent_userprofiles_data", null);
     }
     
     public NetflixActivity getCurrentActivity() {
@@ -215,6 +230,10 @@ public class NetflixApplication extends Application
     
     public void onCreate() {
         super.onCreate();
+        NetflixApplication.instance = this;
+        PerformanceProfiler.getInstance().logEvent(Events.LAUNCHER_INTENT_EVENT, null);
+        PerformanceProfiler.getInstance().startSession(Sessions.TTI, null);
+        PerformanceProfiler.getInstance().startSession(Sessions.ATTI, null);
         Log.d("NetflixApplication", "Application onCreate");
         Log.d("NetflixApplication", "Loading native libraries");
         this.loadAndVerifyNativeLibraries();

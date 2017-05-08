@@ -16,18 +16,19 @@ import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
 import com.netflix.mediaclient.service.NetflixService;
+import android.content.Context;
 import android.content.ServiceConnection;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -37,9 +38,13 @@ import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
+import com.netflix.model.branches.FalkorActorStill;
+import com.netflix.model.branches.MementoVideoSwatch;
+import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
@@ -94,6 +99,17 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             hashCode = -n;
         }
         return hashCode;
+    }
+    
+    @Override
+    public void onActorDetailsAndRelatedFetched(final int n, final List<FalkorPerson> list, final List<MementoVideoSwatch> list2, final Status status, final List<FalkorActorStill> list3) {
+        this.updateStatusRequestId(status, n);
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onShowDetailsAndSeasonsFetched requestId " + n);
+            return;
+        }
+        access$400.onActorDetailsAndRelatedFetched(list, list2, status, list3);
     }
     
     @Override
@@ -152,6 +168,21 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onCWVideosFetched(list, status);
+    }
+    
+    @Override
+    public void onDiscoveryVideosFetched(final int n, final List<Discovery> list, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onDiscoveryVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onDiscoveryVideosFetched requestedVideos=" + list);
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onDiscoveryVideosFetched requestId " + n);
+            return;
+        }
+        access$400.onDiscoveryVideosFetched(list, status);
     }
     
     @Override
@@ -372,6 +403,28 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onMovieDetailsFetched(movieDetails, status);
+    }
+    
+    @Override
+    public void onPersonDetailFetched(final int n, final FalkorPerson falkorPerson, final FalkorActorStill falkorActorStill, final Status status) {
+        this.updateStatusRequestId(status, n);
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onPersonDetailFetched requestId " + n);
+            return;
+        }
+        access$400.onPersonDetailFetched(falkorPerson, falkorActorStill, status);
+    }
+    
+    @Override
+    public void onPersonRelatedFetched(final int n, final FalkorPerson falkorPerson, final List<Video> list, final Status status) {
+        this.updateStatusRequestId(status, n);
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onPersonDetailFetched requestId " + n);
+            return;
+        }
+        access$400.onPersonRelatedFetched(falkorPerson, list, status);
     }
     
     @Override
@@ -597,6 +650,20 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onSimilarVideosFetched(searchVideoListProvider, status);
+    }
+    
+    @Override
+    public void onSurveyFetched(final int n, final Survey survey, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onSurveyFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onSurveyFetched requestId " + n);
+            return;
+        }
+        access$400.onSurveyFetched(survey, status);
     }
     
     @Override

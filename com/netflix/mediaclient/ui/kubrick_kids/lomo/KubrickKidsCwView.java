@@ -31,7 +31,7 @@ public class KubrickKidsCwView extends KubrickHighDensityCwView
     
     @Override
     protected int getLayoutId() {
-        return 2130903134;
+        return 2130903150;
     }
     
     @Override
@@ -47,7 +47,7 @@ public class KubrickKidsCwView extends KubrickHighDensityCwView
     protected void init() {
         super.init();
         this.img.setPressedStateHandlerEnabled(false);
-        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131624298);
+        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689881);
         if (this.infoIcon instanceof TextView) {
             ViewUtils.removeShadow((TextView)this.infoIcon);
         }

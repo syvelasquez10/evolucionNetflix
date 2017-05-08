@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
@@ -60,6 +64,7 @@ import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
+import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
@@ -144,6 +149,17 @@ class NetflixService$UserAgentClientCallback implements UserAgent$UserAgentCallb
         }
         Log.d("NetflixService", "Notified onProfilesListUpdateResult");
         netflixServiceCallback.onProfileListUpdateStatus(this.requestId, status);
+    }
+    
+    @Override
+    public void onSurveyFetched(final Survey survey, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("NetflixService", "No client callback found for onSurveyFetched");
+            return;
+        }
+        Log.d("NetflixService", "Notified onSurveyFetched");
+        netflixServiceCallback.onSurveyFetched(this.requestId, survey, status);
     }
     
     @Override

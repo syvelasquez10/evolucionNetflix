@@ -6,6 +6,7 @@ package android.support.design.widget;
 
 import android.animation.Animator$AnimatorListener;
 import android.animation.TimeInterpolator;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,5 +30,6 @@ class FloatingActionButtonHoneycombMr1$1 extends AnimatorListenerAdapter
     
     public void onAnimationStart(final Animator animator) {
         this.this$0.mIsHiding = true;
+        this.this$0.mView.setVisibility(0);
     }
 }

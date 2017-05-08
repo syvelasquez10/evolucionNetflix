@@ -14,7 +14,7 @@ public class Falkor$Leafs
     public static final String EVIDENCE = "evidence";
     public static final String HERO_IMGS = "heroImgs";
     public static final String INTERACTIVE_DETAILS = "details";
-    public static final String INTERACTIVE_PLAYBACK_MOMENTS = "moments";
+    public static final String INTERACTIVE_PLAYBACK_MOMENTS = "interactiveMoments";
     public static final String INTERACTIVE_POSTPLAY_DATA = "postplay";
     public static final String IN_QUEUE = "inQueue";
     public static final String KUBRICK = "kubrick";
@@ -23,4 +23,6 @@ public class Falkor$Leafs
     public static final String RATING = "rating";
     public static final String SEARCH_TITLE = "searchTitle";
     public static final String SUMMARY = "summary";
+    public static final String VERTICAL_STORY_ART = "vertStoryArt";
+    public static final String VIDEO_LIST_FOR_PERSON = "videoListForPerson";
 }

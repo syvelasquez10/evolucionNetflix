@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.lomo;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.UiLocation;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
@@ -138,7 +139,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
     
     protected abstract int computeNumVideosToFetchPerBatch(final int p0);
     
-    protected Activity getActivity() {
+    public Activity getActivity() {
         return this.activity;
     }
     
@@ -228,9 +229,18 @@ public abstract class BasePaginatedAdapter<T extends Video>
         }
         else {
             final ArrayList list = new ArrayList<String>(dataForPage.size());
+            final ArrayList list2 = new ArrayList<String>(dataForPage.size());
             for (final Video video : dataForPage) {
                 if (video != null && VideoType.isPresentationTrackingType(video.getType())) {
                     list.add(video.getId());
+                    String boxartImageTypeIdentifier;
+                    if (BrowseExperience.useLolomoBoxArt() && LoMoType.usesVerticalBoxArtType(basicLoMo.getType())) {
+                        boxartImageTypeIdentifier = video.getBoxartImageTypeIdentifier();
+                    }
+                    else {
+                        boxartImageTypeIdentifier = null;
+                    }
+                    list2.add(boxartImageTypeIdentifier);
                 }
             }
             if (list.size() != 0) {
@@ -243,9 +253,9 @@ public abstract class BasePaginatedAdapter<T extends Video>
                     uiLocation = UiLocation.HOME_LOLOMO;
                 }
                 if (Log.isLoggable()) {
-                    Log.v("nf_presentation", String.format("%s, %s, offset %d %s", basicLoMo.getTitle(), uiLocation, n, list));
+                    Log.v("nf_presentation", String.format("%s, %s, offset %d %s %s", basicLoMo.getTitle(), uiLocation, n, list, list2));
                 }
-                serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, (List<String>)list, n, uiLocation);
+                serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, (List<String>)list, (List<String>)list2, n, uiLocation);
                 return;
             }
             if (Log.isLoggable()) {

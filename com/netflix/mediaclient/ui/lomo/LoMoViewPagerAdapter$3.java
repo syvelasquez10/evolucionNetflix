@@ -8,16 +8,23 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.fragment.LoadingView;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
+import android.view.ViewParent;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
+import com.netflix.mediaclient.ui.lomo.discovery.PaginatedDiscoveryAdapter;
+import android.content.Context;
+import android.widget.FrameLayout;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
+import com.netflix.mediaclient.ui.lomo.discovery.ProgressiveDiscoveryAdapter;
 import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.ui.lomo.discovery.DiscoveryBackgroundAnimator;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.EnumMap;
 import android.support.v4.view.PagerAdapter;
@@ -69,6 +76,9 @@ class LoMoViewPagerAdapter$3 implements RowAdapterCallbacks
         }
         else {
             Log.d("LoMoViewPagerAdapter", "Current locale is LTR...");
+            if (this.this$0.state == LoMoViewPagerAdapter$Type.DISCOVERY) {
+                this.this$0.pager.setCurrentItem(0, true);
+            }
         }
         this.this$0.notifyDataSetChanged();
         this.this$0.pager.notifyDataSetChanged();

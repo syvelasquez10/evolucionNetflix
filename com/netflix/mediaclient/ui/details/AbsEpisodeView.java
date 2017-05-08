@@ -11,9 +11,9 @@ import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.StringUtils;
 import android.view.ViewGroup;
 import android.app.Activity;
+import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import android.widget.ProgressBar;
 import android.widget.ImageView;
@@ -45,6 +45,23 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         this.init();
     }
     
+    public static CharSequence createTitleText(final EpisodeDetails episodeDetails, final Context context) {
+        if (episodeDetails.isNSRE()) {
+            return episodeDetails.getTitle();
+        }
+        if (episodeDetails.isAvailableToStream()) {
+            return context.getString(2131231065, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        }
+        String s;
+        if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
+            s = context.getString(2131231119);
+        }
+        else {
+            s = episodeDetails.getAvailabilityDateMessage();
+        }
+        return context.getString(2131231065, new Object[] { episodeDetails.getEpisodeNumber(), s });
+    }
+    
     private void init() {
         this.isCheckable = true;
         ((Activity)this.getContext()).getLayoutInflater().inflate(this.resId, (ViewGroup)this);
@@ -56,29 +73,16 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
-        if (episodeDetails.isNSRE()) {
-            return episodeDetails.getTitle();
-        }
-        if (episodeDetails.isAvailableToStream()) {
-            return this.getResources().getString(2131165530, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
-        }
-        String s;
-        if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            s = this.getResources().getString(2131165583);
-        }
-        else {
-            s = episodeDetails.getAvailabilityDateMessage();
-        }
-        return this.getResources().getString(2131165530, new Object[] { episodeDetails.getEpisodeNumber(), s });
+        return createTitleText(episodeDetails, this.getContext());
     }
     
     protected void findViews() {
-        this.episodeBadge = (TextView)this.findViewById(2131624236);
-        this.title = (TextView)this.findViewById(2131624165);
-        this.synopsis = (TextView)this.findViewById(2131624166);
-        this.playButton = (ImageView)this.findViewById(2131624234);
-        this.progressBar = (ProgressBar)this.findViewById(2131624164);
-        this.episodeDate = (TextView)this.findViewById(2131624237);
+        this.episodeBadge = (TextView)this.findViewById(2131689626);
+        this.title = (TextView)this.findViewById(2131689627);
+        this.synopsis = (TextView)this.findViewById(2131689628);
+        this.playButton = (ImageView)this.findViewById(2131689621);
+        this.progressBar = (ProgressBar)this.findViewById(2131689623);
+        this.episodeDate = (TextView)this.findViewById(2131689629);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -152,18 +156,18 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         if (episodeDetails == null) {
             return;
         }
-        this.isNSRE = episodeDetails.isNSRE();
+        this.isNSRE = episodeDetails.episodeIsNSRE();
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165349), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
-        this.title.setText(this.createTitleText(episodeDetails));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131230886), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
+        this.title.setText(createTitleText(episodeDetails, this.getContext()));
         final TextView title = this.title;
         final Resources resources = this.getResources();
         int n;
         if (episodeDetails.isAvailableToStream()) {
-            n = 2131558547;
+            n = 2131624099;
         }
         else {
-            n = 2131558562;
+            n = 2131624114;
         }
         title.setTextColor(resources.getColor(n));
         this.title.setClickable(false);

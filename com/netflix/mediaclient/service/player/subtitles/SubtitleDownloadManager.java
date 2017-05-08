@@ -54,7 +54,7 @@ public class SubtitleDownloadManager implements SubtitleParser$DownloadFailedCal
         this.mCurrentSubtitleUrl = mData.pop();
         if (this.mCurrentSubtitleUrl != null) {
             if (Log.isLoggable()) {
-                Log.d("nf_subtitles", "Subtitles download started from URL " + this.mCurrentSubtitleUrl.getUrl() + ", content type " + this.mCurrentSubtitleUrl.getProfile().getNccpCode());
+                Log.d("nf_subtitles", "Subtitles download started from URL " + this.mCurrentSubtitleUrl.getDownloadUrl() + ", content type " + this.mCurrentSubtitleUrl.getProfile().getNccpCode());
             }
             (this.mParser = SubtitleParserFactory.createParser(this.mPlayer, this.mCurrentSubtitleUrl, this.mUser.getUserSubtitlePreferences(), this.mUser.getSubtitleDefaults(), this.mDisplayAspectRatio, this.mBookmark, this, this.mStartPositionForSubtitleQoeInMs)).load();
             return SubtitleDownloadManager$DownloadPolicy.downloading;

@@ -43,30 +43,30 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     private void updateAboutDevice() {
         String s;
         if ((s = AndroidManifestUtils.getVersion(this.activity.getApplicationContext())) == null) {
-            s = this.getString(2131165678);
+            s = this.getString(2131231215);
         }
         final int versionCode = AndroidManifestUtils.getVersionCode(this.activity.getApplicationContext());
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getString(2131165676)).append(": ").append(s);
+        sb.append(this.getString(2131231213)).append(": ").append(s);
         if (versionCode > 0) {
             sb.append(" (");
-            sb.append(this.getString(2131165677)).append(" ").append(versionCode).append("), ");
+            sb.append(this.getString(2131231214)).append(" ").append(versionCode).append("), ");
         }
-        sb.append(this.getString(2131165592)).append(": ").append(AndroidUtils.getAndroidVersion());
+        sb.append(this.getString(2131231129)).append(": ").append(AndroidUtils.getAndroidVersion());
         sb.append("\n");
-        sb.append(this.getString(2131165569)).append(": ").append(Build.MODEL);
+        sb.append(this.getString(2131231104)).append(": ").append(Build.MODEL);
         sb.append("\n");
         LocalizationUtils.addMarkerForRtLocale(sb, '\u200f');
-        sb.append(this.getString(2131165426)).append(": ").append(Build.DISPLAY);
+        sb.append(this.getString(2131230971)).append(": ").append(Build.DISPLAY);
         if (this.manager != null) {
             sb.append("\n");
             LocalizationUtils.addMarkerForRtLocale(sb, '\u200f');
-            sb.append(this.getString(2131165541)).append(": ");
+            sb.append(this.getString(2131231076)).append(": ");
             sb.append(this.manager.getESNProvider().getEsn());
         }
         this.findPreference((CharSequence)"ui.about.device").setSummary((CharSequence)sb.toString());
         if (this.manager != null) {
-            this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)(this.getString(2131165394) + ": " + this.manager.getUserEmail()));
+            this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)(this.getString(2131230940) + ": " + this.manager.getUserEmail()));
             this.findPreference((CharSequence)"ui.account").setSelectable(false);
         }
     }
@@ -74,8 +74,8 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.activity = this.getActivity();
-        this.addPreferencesFromResource(2131034112);
-        this.findPreference((CharSequence)this.getString(2131165812)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.addPreferencesFromResource(2131099648);
+        this.findPreference((CharSequence)this.getString(2131231367)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));

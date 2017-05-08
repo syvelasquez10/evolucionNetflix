@@ -51,7 +51,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public AdvancedImageView$ImageLoaderInfo getImageLoaderInfo() {
-        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131623948);
+        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131689487);
     }
     
     @Override
@@ -71,7 +71,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public void setImageLoaderInfo(final AdvancedImageView$ImageLoaderInfo advancedImageView$ImageLoaderInfo) {
-        this.setTag(2131623948, (Object)advancedImageView$ImageLoaderInfo);
+        this.setTag(2131689487, (Object)advancedImageView$ImageLoaderInfo);
     }
     
     public void setPressedStateHandlerEnabled(final boolean enabled) {

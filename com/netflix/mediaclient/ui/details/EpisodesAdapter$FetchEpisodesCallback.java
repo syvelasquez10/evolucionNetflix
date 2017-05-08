@@ -24,6 +24,8 @@ import android.widget.AdapterView$OnItemClickListener;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.Log;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.List;
@@ -47,7 +49,7 @@ public class EpisodesAdapter$FetchEpisodesCallback extends LoggingManagerCallbac
     @Override
     public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
         super.onEpisodesFetched(list, status);
-        if (this.this$0.activity.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
             return;
         }
         if (this.requestId != this.this$0.requestId) {

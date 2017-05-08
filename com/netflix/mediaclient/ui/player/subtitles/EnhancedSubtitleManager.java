@@ -43,15 +43,18 @@ import java.util.Map;
 import android.view.ViewTreeObserver$OnPreDrawListener;
 import java.util.concurrent.atomic.AtomicBoolean;
 import android.widget.LinearLayout;
+import android.graphics.Point;
 
 public class EnhancedSubtitleManager extends BaseSubtitleManager
 {
     private static final String DEFAULT_REGION_ID = "DEFAULT";
     private static final float SAFE_DISPLAY_AREA_MARGIN = 5.0f;
+    private Point mAspectRatio;
     private LinearLayout mDefaultRegion;
     private float mDefaultTextSize;
     private AtomicBoolean mDefaultsInitiated;
     final ViewTreeObserver$OnPreDrawListener mDoNotDraw;
+    private MeasureTranslator mMeasureTranslator;
     private Map<String, LinearLayout> mRegions;
     private RelativeLayout mSafeDisplayArea;
     private Map<String, List<TextView>> mVisibleBlocks;
@@ -63,10 +66,10 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         this.mDefaultsInitiated = new AtomicBoolean(false);
         this.mDoNotDraw = (ViewTreeObserver$OnPreDrawListener)new EnhancedSubtitleManager$1(this);
         if (playerFragment.getNetflixActivity().isTablet()) {
-            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131296662);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362246);
         }
         else {
-            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131296660);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362244);
         }
         this.mTransparent = playerFragment.getActivity().getResources().getColor(17170445);
     }
@@ -278,6 +281,22 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         return list2;
     }
     
+    private int getHorizontalOffsetForDisplayArea() {
+        final MeasureTranslator mMeasureTranslator = this.mMeasureTranslator;
+        if (mMeasureTranslator == null) {
+            return 0;
+        }
+        return mMeasureTranslator.getHorizontalOffset();
+    }
+    
+    private int getVerticalOffsetForDisplayArea() {
+        final MeasureTranslator mMeasureTranslator = this.mMeasureTranslator;
+        if (mMeasureTranslator == null) {
+            return 0;
+        }
+        return mMeasureTranslator.getVerticalOffset();
+    }
+    
     private SubtitleUtils$Margins moveRegionInsideVisibleDisplayArea(final SubtitleUtils$Margins subtitleUtils$Margins, int left, int right, final Rect rect) {
         final int n = 0;
         if (Log.isLoggable()) {
@@ -449,6 +468,20 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
                 linearLayout.setVisibility(4);
             }
         }
+    }
+    
+    private void setAspectRatioIfNeeded() {
+        final Point displayAspectRatioDimension = this.mPlayerFragment.getPlayer().getDisplayAspectRatioDimension();
+        if (Log.isLoggable()) {
+            Log.d("nf_subtitles_render", "AspectRatio dimensions: " + displayAspectRatioDimension);
+        }
+        if (this.mAspectRatio != null && this.mAspectRatio.equals((Object)displayAspectRatioDimension)) {
+            Log.d("nf_subtitles_render", "AspectRatio not changed");
+            return;
+        }
+        Log.d("nf_subtitles_render", "AspectRatio is changed, update");
+        this.mAspectRatio = displayAspectRatioDimension;
+        this.mMeasureTranslator = MeasureTranslator.createMeasureTranslator(displayAspectRatioDimension.x, displayAspectRatioDimension.y, (View)this.mDisplayArea);
     }
     
     private void setBackgroundColorToRegion(final LinearLayout linearLayout, final TextSubtitleBlock textSubtitleBlock) {
@@ -871,11 +904,11 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
                         if (Log.isLoggable()) {
                             Log.d("nf_subtitles_render", "Add bottom/top margin to display area on visible. Bottom margin " + displayAreaMarginBottom + ", top margin: " + displayAreaMarginTop);
                         }
-                        layoutParams.setMargins(0, displayAreaMarginTop, 0, displayAreaMarginBottom);
+                        layoutParams.setMargins(this.getHorizontalOffsetForDisplayArea(), displayAreaMarginTop, this.getHorizontalOffsetForDisplayArea(), displayAreaMarginBottom);
                     }
                     else {
                         Log.d("nf_subtitles_render", "Reset all margins to display area on not visible");
-                        layoutParams.setMargins(0, 0, 0, 0);
+                        layoutParams.setMargins(this.getHorizontalOffsetForDisplayArea(), this.getVerticalOffsetForDisplayArea(), this.getHorizontalOffsetForDisplayArea(), this.getVerticalOffsetForDisplayArea());
                     }
                     this.removeVisibleSubtitleBlocks(true);
                     this.mDisplayArea.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
@@ -918,6 +951,7 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
                     Log.d("nf_subtitles_render", "Initialization was ok, proceed with subtitles.");
                 }
                 this.removeAll(false);
+                this.setAspectRatioIfNeeded();
                 final int hashCode = subtitleScreen2.getParser().hashCode();
                 if (this.mSubtitleParserId != null && this.mSubtitleParserId == hashCode) {
                     if (Log.isLoggable()) {

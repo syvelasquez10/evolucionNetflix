@@ -18,6 +18,7 @@ import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.net.DnsManager;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentEncryptionInfo$ImageEncryptionInfo;
@@ -79,13 +80,13 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
             Log.w("nf_subtitles_imv2", "Segment is already downloaded");
             return;
         }
+        final String downloadUrl = this.mSubtitleData.getDownloadUrl();
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles_imv2", "Downloading segment " + segmentIndex + " from URL " + this.mSubtitleData.getUrl() + ", start position [b]: " + segmentIndex.getSegmentStartPosition() + ", size [b]: " + segmentIndex.getSegmentSize());
+            Log.d("nf_subtitles_imv2", "Downloading segment " + segmentIndex + " from URL " + downloadUrl + ", start position [b]: " + segmentIndex.getSegmentStartPosition() + ", size [b]: " + segmentIndex.getSegmentSize());
         }
-        final String url = this.mSubtitleData.getUrl();
         final String decryptionKey = this.mSubtitleData.getDecryptionKey();
         segmentIndex.downloadStarted();
-        this.mPlayer.getResourceFetcher().fetchResource(url, IClientLogging$AssetType.imageSubtitlesSegment, segmentIndex.getSegmentStartPosition(), segmentIndex.getSegmentSize(), new ImageV2SubtitleParser$3(this, segmentIndex, url, decryptionKey));
+        this.mPlayer.getResourceFetcher().fetchResource(downloadUrl, IClientLogging$AssetType.imageSubtitlesSegment, segmentIndex.getSegmentStartPosition(), segmentIndex.getSegmentSize(), new ImageV2SubtitleParser$3(this, segmentIndex, downloadUrl, decryptionKey));
     }
     
     private int getCurrentSegmentIndex() {
@@ -129,32 +130,33 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
     }
     
     private void handleDownloadMasterIndexContainer() {
-        if (this.mSubtitleData == null) {
+        if (this.mSubtitleData == null || this.mSubtitleData.getDownloadUrl() == null) {
             Log.e("nf_subtitles_imv2", "Subtitle data is null!");
             return;
         }
-        if (StringUtils.isEmpty(this.mSubtitleData.getUrl())) {
+        final String[] nameServers = DnsManager.getInstance().getNameServers();
+        if (StringUtils.isEmpty(this.mSubtitleData.getDownloadUrl())) {
             Log.e("nf_subtitles_imv2", "Subtitle URL is empty!");
-            this.onError("", IMedia$SubtitleFailure.badMasterIndex, null);
+            this.onError("", nameServers, IMedia$SubtitleFailure.badMasterIndex, null);
             return;
         }
         if (this.mSubtitleData.getMasterIndexSize() <= 0) {
             if (Log.isLoggable()) {
                 Log.e("nf_subtitles_imv2", "Subtitle master index size is wrong " + this.mSubtitleData.getMasterIndexSize());
             }
-            this.onError(this.mSubtitleData.getUrl(), IMedia$SubtitleFailure.badMasterIndex, null);
+            this.onError(this.mSubtitleData.getDownloadUrl(), nameServers, IMedia$SubtitleFailure.badMasterIndex, null);
             return;
         }
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_imv2", "Subtitle data " + this.mSubtitleData);
         }
-        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getUrl(), IClientLogging$AssetType.imageSubtitlesMasterIndex, this.mSubtitleData.getMasterIndexOffset(), this.mSubtitleData.getMasterIndexSize(), new ImageV2SubtitleParser$1(this));
+        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesMasterIndex, this.mSubtitleData.getMasterIndexOffset(), this.mSubtitleData.getMasterIndexSize(), new ImageV2SubtitleParser$1(this, nameServers));
     }
     
     private void handleDownloadSegmentIndexes() {
         Log.d("nf_subtitles_imv2", "Start to download segment indexes");
         final int segmentIndexesSize = this.mMasterIndexContainer.getMasterIndex().getSegmentIndexesSize();
-        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getUrl(), IClientLogging$AssetType.imageSubtitlesSegmentIndex, this.mMasterIndexContainer.getMasterIndex().getSegmentOffset(), segmentIndexesSize, new ImageV2SubtitleParser$2(this, segmentIndexesSize));
+        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesSegmentIndex, this.mMasterIndexContainer.getMasterIndex().getSegmentOffset(), segmentIndexesSize, new ImageV2SubtitleParser$2(this, segmentIndexesSize));
     }
     
     private boolean handleImport() {
@@ -421,7 +423,7 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                     }
                     catch (Throwable t) {
                         Log.e("nf_subtitles_imv2", "Failed to parse segment", t);
-                        this.onError(s, IMedia$SubtitleFailure.parsing, null);
+                        this.onError(s, DnsManager.getInstance().getNameServers(), IMedia$SubtitleFailure.parsing, null);
                         return;
                     }
                     ++n;
@@ -459,7 +461,8 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                 index = 0;
                 int n = 0;
                 int n2 = 1;
-            Label_0293_Outer:
+                ISCSegment iscSegment;
+                Block_9_Outer:Label_0293_Outer:
                 while (true) {
                     Label_0281: {
                         if (index >= segmentCount) {
@@ -467,7 +470,7 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                         }
                         while (true) {
                             try {
-                                final ISCSegment iscSegment = new ISCSegment(new BoxHeader(dataInputStream), n2, n, dataInputStream);
+                                iscSegment = new ISCSegment(new BoxHeader(dataInputStream), n2, n, dataInputStream);
                                 this.mSegmentIndexContainers[index] = iscSegment;
                                 n2 += iscSegment.getSegmentIndex().getDuration();
                                 n += iscSegment.getSegmentIndex().getSampleCount();
@@ -476,14 +479,19 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                                     Log.d("nf_subtitles_imv2", "Segment index " + index + " " + iscSegment);
                                 }
                                 ++index;
-                                continue Label_0293_Outer;
-                                Label_0311: {
-                                    Log.e("nf_subtitles_imv2", "Failed to parse segment index", t);
-                                }
-                                return b;
+                                continue Block_9_Outer;
+                                Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
+                                continue Label_0149_Outer;
                                 // iftrue(Label_0311:, !b)
-                                Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
-                                return b;
+                                while (true) {
+                                    Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
+                                    return b;
+                                    Label_0311: {
+                                        Log.e("nf_subtitles_imv2", "Failed to parse segment index", t);
+                                    }
+                                    return b;
+                                    continue Label_0293_Outer;
+                                }
                                 try {
                                     dataInputStream.close();
                                     ((InputStream)t).close();
@@ -491,8 +499,6 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                                 }
                                 catch (Throwable t2) {}
                                 continue;
-                                Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
-                                continue Label_0149_Outer;
                             }
                             catch (Throwable t) {
                                 b = false;

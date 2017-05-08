@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.browse;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
@@ -12,6 +11,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -23,18 +23,26 @@ import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.model.branches.FalkorActorStill;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.model.branches.MementoVideoSwatch;
+import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
 
 public interface BrowseAgentCallback
 {
+    void onActorDetailsAndRelatedFetched(final List<FalkorPerson> p0, final List<MementoVideoSwatch> p1, final Status p2, final List<FalkorActorStill> p3);
+    
     void onBBVideosFetched(final List<Billboard> p0, final Status p1);
     
     void onBrowsePlaySessionEnd(final boolean p0, final Status p1);
     
     void onCWVideosFetched(final List<CWVideo> p0, final Status p1);
+    
+    void onDiscoveryVideosFetched(final List<Discovery> p0, final Status p1);
     
     void onEpisodeDetailsFetched(final EpisodeDetails p0, final Status p1);
     
@@ -63,6 +71,10 @@ public interface BrowseAgentCallback
     void onMovieDetailsFetched(final MovieDetails p0, final Status p1);
     
     void onNotificationsListFetched(final IrisNotificationsList p0, final Status p1);
+    
+    void onPersonDetailFetched(final FalkorPerson p0, final FalkorActorStill p1, final Status p2);
+    
+    void onPersonRelatedFetched(final FalkorPerson p0, final List<Video> p1, final Status p2);
     
     void onPostPlayVideosFetched(final PostPlayVideosProvider p0, final Status p1);
     

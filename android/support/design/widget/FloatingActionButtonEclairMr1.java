@@ -55,10 +55,10 @@ class FloatingActionButtonEclairMr1 extends FloatingActionButtonImpl
     
     @Override
     void hide() {
-        if (this.mIsHiding) {
+        if (this.mIsHiding || this.mView.getVisibility() != 0) {
             return;
         }
-        final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(this.mView.getContext(), R$anim.fab_out);
+        final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(this.mView.getContext(), R$anim.design_fab_out);
         loadAnimation.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
         loadAnimation.setDuration(200L);
         loadAnimation.setAnimationListener((Animation$AnimationListener)new FloatingActionButtonEclairMr1$1(this));
@@ -77,7 +77,7 @@ class FloatingActionButtonEclairMr1 extends FloatingActionButtonImpl
     
     @Override
     void setBackgroundDrawable(final Drawable drawable, final ColorStateList list, final PorterDuff$Mode porterDuff$Mode, final int n, final int n2) {
-        DrawableCompat.setTintList(this.mShapeDrawable = DrawableCompat.wrap(drawable), list);
+        DrawableCompat.setTintList(this.mShapeDrawable = DrawableCompat.wrap(drawable.mutate()), list);
         if (porterDuff$Mode != null) {
             DrawableCompat.setTintMode(this.mShapeDrawable, porterDuff$Mode);
         }
@@ -139,9 +139,13 @@ class FloatingActionButtonEclairMr1 extends FloatingActionButtonImpl
     
     @Override
     void show() {
-        final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(this.mView.getContext(), R$anim.fab_in);
-        loadAnimation.setDuration(200L);
-        loadAnimation.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
-        this.mView.startAnimation(loadAnimation);
+        if (this.mView.getVisibility() != 0 || this.mIsHiding) {
+            this.mView.clearAnimation();
+            this.mView.setVisibility(0);
+            final Animation loadAnimation = android.view.animation.AnimationUtils.loadAnimation(this.mView.getContext(), R$anim.design_fab_in);
+            loadAnimation.setDuration(200L);
+            loadAnimation.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+            this.mView.startAnimation(loadAnimation);
+        }
     }
 }

@@ -249,15 +249,15 @@ public class CoordinatorLayout extends ViewGroup
         if (TextUtils.isEmpty((CharSequence)s)) {
             return null;
         }
-        Label_0141: {
+        Label_0147: {
             if (!s.startsWith(".")) {
-                break Label_0141;
+                break Label_0147;
             }
             String s2 = context.getPackageName() + s;
         Label_0070_Outer:
             while (true) {
                 while (true) {
-                    Label_0211: {
+                    Label_0217: {
                         try {
                             Map<String, Constructor<CoordinatorLayout$Behavior>> map = null;
                             Label_0041: {
@@ -269,16 +269,20 @@ public class CoordinatorLayout extends ViewGroup
                                 Constructor<?> constructor;
                                 if ((constructor = map.get(s2)) == null) {
                                     constructor = Class.forName(s2, true, context.getClassLoader()).getConstructor(CoordinatorLayout.CONSTRUCTOR_PARAMS);
+                                    constructor.setAccessible(true);
                                     map.put(s2, (Constructor<CoordinatorLayout$Behavior>)constructor);
                                 }
                                 return constructor.newInstance(context, set);
                             }
-                            break Label_0211;
-                            s2 = s;
-                            // iftrue(Label_0041:, s.indexOf(46) >= 0)
-                            s2 = CoordinatorLayout.WIDGET_PACKAGE_NAME + '.' + s;
-                            continue Label_0070_Outer;
+                            break Label_0217;
+                            while (true) {
+                                s2 = CoordinatorLayout.WIDGET_PACKAGE_NAME + '.' + s;
+                                continue Label_0070_Outer;
+                                s2 = s;
+                                continue;
+                            }
                         }
+                        // iftrue(Label_0041:, s.indexOf(46) >= 0)
                         catch (Exception ex) {
                             throw new RuntimeException("Could not inflate Behavior subclass " + s2, ex);
                         }
@@ -289,62 +293,70 @@ public class CoordinatorLayout extends ViewGroup
         }
     }
     
-    private boolean performIntercept(final MotionEvent motionEvent) {
-        boolean onInterceptTouchEvent = false;
-        int n = 0;
+    private boolean performIntercept(final MotionEvent motionEvent, final int n) {
+        boolean b = false;
+        int n2 = 0;
         MotionEvent obtain = null;
         final int actionMasked = MotionEventCompat.getActionMasked(motionEvent);
         final List<View> mTempList1 = this.mTempList1;
         this.getTopSortedChildren(mTempList1);
         while (true) {
-            boolean b;
-            MotionEvent motionEvent2;
-            for (int size = mTempList1.size(), i = 0; i < size; ++i, onInterceptTouchEvent = b, obtain = motionEvent2) {
+            for (int size = mTempList1.size(), i = 0; i < size; ++i) {
                 final View mBehaviorTouchView = mTempList1.get(i);
                 final CoordinatorLayout$LayoutParams coordinatorLayout$LayoutParams = (CoordinatorLayout$LayoutParams)mBehaviorTouchView.getLayoutParams();
                 final CoordinatorLayout$Behavior behavior = coordinatorLayout$LayoutParams.getBehavior();
-                if ((onInterceptTouchEvent || n != 0) && actionMasked != 0) {
+                if ((b || n2 != 0) && actionMasked != 0) {
                     if (behavior != null) {
-                        if (obtain != null) {
+                        if (obtain == null) {
                             final long uptimeMillis = SystemClock.uptimeMillis();
                             obtain = MotionEvent.obtain(uptimeMillis, uptimeMillis, 3, 0.0f, 0.0f, 0);
                         }
-                        behavior.onInterceptTouchEvent(this, mBehaviorTouchView, obtain);
-                        b = onInterceptTouchEvent;
-                        motionEvent2 = obtain;
-                    }
-                    else {
-                        motionEvent2 = obtain;
-                        b = onInterceptTouchEvent;
+                        switch (n) {
+                            case 0: {
+                                behavior.onInterceptTouchEvent(this, mBehaviorTouchView, obtain);
+                                break;
+                            }
+                            case 1: {
+                                behavior.onTouchEvent(this, mBehaviorTouchView, obtain);
+                                break;
+                            }
+                        }
                     }
                 }
                 else {
-                    if (!onInterceptTouchEvent && behavior != null) {
-                        onInterceptTouchEvent = behavior.onInterceptTouchEvent(this, mBehaviorTouchView, motionEvent);
-                        if (onInterceptTouchEvent) {
-                            this.mBehaviorTouchView = mBehaviorTouchView;
+                    boolean b2 = b;
+                    if (!b) {
+                        b2 = b;
+                        if (behavior != null) {
+                            switch (n) {
+                                case 0: {
+                                    b = behavior.onInterceptTouchEvent(this, mBehaviorTouchView, motionEvent);
+                                    break;
+                                }
+                                case 1: {
+                                    b = behavior.onTouchEvent(this, mBehaviorTouchView, motionEvent);
+                                    break;
+                                }
+                            }
+                            b2 = b;
+                            if (b) {
+                                this.mBehaviorTouchView = mBehaviorTouchView;
+                                b2 = b;
+                            }
                         }
                     }
+                    b = b2;
                     final boolean didBlockInteraction = coordinatorLayout$LayoutParams.didBlockInteraction();
                     final boolean blockingInteractionBelow = coordinatorLayout$LayoutParams.isBlockingInteractionBelow(this, mBehaviorTouchView);
-                    boolean b2;
                     if (blockingInteractionBelow && !didBlockInteraction) {
-                        b2 = true;
+                        n2 = 1;
                     }
                     else {
-                        b2 = false;
+                        n2 = 0;
                     }
-                    n = (b2 ? 1 : 0);
-                    motionEvent2 = obtain;
-                    b = onInterceptTouchEvent;
-                    if (blockingInteractionBelow) {
-                        n = (b2 ? 1 : 0);
-                        motionEvent2 = obtain;
-                        b = onInterceptTouchEvent;
-                        if (!b2) {
-                            mTempList1.clear();
-                            return onInterceptTouchEvent;
-                        }
+                    if (blockingInteractionBelow && n2 == 0) {
+                        mTempList1.clear();
+                        return b;
                     }
                 }
             }
@@ -457,6 +469,26 @@ public class CoordinatorLayout extends ViewGroup
             if (behavior != null && behavior.layoutDependsOn(this, child, view)) {
                 behavior.onDependentViewRemoved(this, child, view);
             }
+        }
+    }
+    
+    public void dispatchDependentViewsChanged(final View view) {
+        final int size = this.mDependencySortedChildren.size();
+        int i = 0;
+        boolean b = false;
+        while (i < size) {
+            final View view2 = this.mDependencySortedChildren.get(i);
+            if (view2 == view) {
+                b = true;
+            }
+            else if (b) {
+                final CoordinatorLayout$LayoutParams coordinatorLayout$LayoutParams = (CoordinatorLayout$LayoutParams)view2.getLayoutParams();
+                final CoordinatorLayout$Behavior behavior = coordinatorLayout$LayoutParams.getBehavior();
+                if (behavior != null && coordinatorLayout$LayoutParams.dependsOn(this, view2, view)) {
+                    behavior.onDependentViewChanged(this, view2, view);
+                }
+            }
+            ++i;
         }
     }
     
@@ -769,6 +801,9 @@ public class CoordinatorLayout extends ViewGroup
             }
             this.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this.mOnPreDrawListener);
         }
+        if (this.mLastInsets == null && ViewCompat.getFitsSystemWindows((View)this)) {
+            ViewCompat.requestApplyInsets((View)this);
+        }
         this.mIsAttachedToWindow = true;
     }
     
@@ -806,7 +841,7 @@ public class CoordinatorLayout extends ViewGroup
         if (actionMasked == 0) {
             this.resetTouchBehaviors();
         }
-        final boolean performIntercept = this.performIntercept(motionEvent);
+        final boolean performIntercept = this.performIntercept(motionEvent, 0);
         if (false) {
             throw new NullPointerException();
         }
@@ -1143,39 +1178,34 @@ public class CoordinatorLayout extends ViewGroup
     }
     
     public boolean onTouchEvent(MotionEvent obtain) {
-        final boolean b = false;
         final MotionEvent motionEvent = null;
         final int actionMasked = MotionEventCompat.getActionMasked(obtain);
-        int n = 0;
-        Label_0066: {
-            int performIntercept;
+        int performIntercept = 0;
+        boolean b = false;
+        Label_0060: {
             if (this.mBehaviorTouchView == null) {
-                performIntercept = (this.performIntercept(obtain) ? 1 : 0);
+                performIntercept = (this.performIntercept(obtain, 1) ? 1 : 0);
                 if (performIntercept == 0) {
-                    n = performIntercept;
-                    break Label_0066;
+                    b = false;
+                    break Label_0060;
                 }
             }
             else {
                 performIntercept = 0;
             }
             final CoordinatorLayout$Behavior behavior = ((CoordinatorLayout$LayoutParams)this.mBehaviorTouchView.getLayoutParams()).getBehavior();
-            n = performIntercept;
-            if (behavior != null) {
-                behavior.onTouchEvent(this, this.mBehaviorTouchView, obtain);
-                n = performIntercept;
-            }
+            b = (behavior != null && behavior.onTouchEvent(this, this.mBehaviorTouchView, obtain));
         }
         boolean b2;
         if (this.mBehaviorTouchView == null) {
-            b2 = (false | super.onTouchEvent(obtain));
+            b2 = (b | super.onTouchEvent(obtain));
             obtain = motionEvent;
         }
         else {
             obtain = motionEvent;
             b2 = b;
-            if (n != 0) {
-                if (false) {
+            if (performIntercept != 0) {
+                if (!false) {
                     final long uptimeMillis = SystemClock.uptimeMillis();
                     obtain = MotionEvent.obtain(uptimeMillis, uptimeMillis, 3, 0.0f, 0.0f, 0);
                 }

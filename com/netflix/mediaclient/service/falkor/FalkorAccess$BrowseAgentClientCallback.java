@@ -10,11 +10,11 @@ import com.netflix.model.leafs.social.IrisNotificationSummary;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.falkor.ModelProxy;
+import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
 import com.netflix.mediaclient.service.NetflixService$ClientCallbacks;
 import com.netflix.mediaclient.servicemgr.IBrowseInterface;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
@@ -22,6 +22,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -33,12 +34,16 @@ import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
+import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.model.branches.MementoVideoSwatch;
+import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 
@@ -52,6 +57,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
         this.this$0 = this$0;
         this.clientId = clientId;
         this.requestId = requestId;
+    }
+    
+    @Override
+    public void onActorDetailsAndRelatedFetched(final List<FalkorPerson> list, final List<MementoVideoSwatch> list2, final Status status, final List<FalkorActorStill> list3) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onActorDetailsAndRelatedFetched");
+            return;
+        }
+        netflixServiceCallback.onActorDetailsAndRelatedFetched(this.requestId, list, list2, status, list3);
     }
     
     @Override
@@ -81,6 +96,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onCWVideosFetched(this.requestId, list, status);
+    }
+    
+    @Override
+    public void onDiscoveryVideosFetched(final List<Discovery> list, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onDiscoveryVideosFetched");
+            return;
+        }
+        netflixServiceCallback.onDiscoveryVideosFetched(this.requestId, list, status);
     }
     
     @Override
@@ -218,6 +243,26 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onIrisNotificationsListFetched(this.requestId, list, status);
+    }
+    
+    @Override
+    public void onPersonDetailFetched(final FalkorPerson falkorPerson, final FalkorActorStill falkorActorStill, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onActorDetailsAndRelatedFetched");
+            return;
+        }
+        netflixServiceCallback.onPersonDetailFetched(this.requestId, falkorPerson, falkorActorStill, status);
+    }
+    
+    @Override
+    public void onPersonRelatedFetched(final FalkorPerson falkorPerson, final List<Video> list, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onPersonRelatedFetched");
+            return;
+        }
+        netflixServiceCallback.onPersonRelatedFetched(this.requestId, falkorPerson, list, status);
     }
     
     @Override

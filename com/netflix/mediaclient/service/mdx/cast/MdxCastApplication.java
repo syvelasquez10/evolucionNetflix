@@ -166,8 +166,8 @@ public class MdxCastApplication extends Cast$Listener implements Cast$MessageRec
                 this.mApiClient.disconnect();
             }
         }
-        catch (IOException ex) {}
-        catch (IllegalStateException ex2) {
+        catch (IllegalStateException ex) {}
+        catch (IOException ex2) {
             goto Label_0053;
         }
     }

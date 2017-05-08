@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import com.netflix.mediaclient.android.widget.InternalURLSpan;
 import android.text.style.URLSpan;
 import android.text.Spannable;
-import java.util.Locale;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
 import java.io.FileInputStream;
@@ -32,6 +31,7 @@ import java.util.Collection;
 import android.text.style.StyleSpan;
 import android.text.SpannableStringBuilder;
 import android.content.Context;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public final class StringUtils
@@ -64,11 +64,20 @@ public final class StringUtils
     }
     
     public static String capitalizeFirstLetter(final String s) {
-        if (isEmpty(s)) {
-            return s;
+        return capitalizeFirstLetter(s, null);
+    }
+    
+    public static String capitalizeFirstLetter(String upperCase, final Locale locale) {
+        if (isEmpty(upperCase)) {
+            return upperCase;
         }
-        final char[] charArray = s.toCharArray();
-        final StringBuilder append = new StringBuilder().append(Character.toUpperCase(charArray[0]));
+        Locale default1;
+        if ((default1 = locale) == null) {
+            default1 = Locale.getDefault();
+        }
+        final char[] charArray = upperCase.toCharArray();
+        upperCase = upperCase.toUpperCase(default1);
+        final StringBuilder append = new StringBuilder().append(upperCase.charAt(0));
         for (int i = 1; i < charArray.length; ++i) {
             append.append(charArray[i]);
         }
@@ -183,7 +192,7 @@ public final class StringUtils
             sb.append("   ");
         }
         if (n2 > 0) {
-            sb.append(LocalizationUtils.forceLayoutDirectionIfNeeded(resources.getString(2131165586, new Object[] { TimeUtils.convertSecondsToMinutes(n2) })));
+            sb.append(LocalizationUtils.forceLayoutDirectionIfNeeded(resources.getString(2131231123, new Object[] { TimeUtils.convertSecondsToMinutes(n2) })));
         }
         return sb.toString();
     }

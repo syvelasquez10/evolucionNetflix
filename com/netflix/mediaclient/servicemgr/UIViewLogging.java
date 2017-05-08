@@ -11,7 +11,7 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 
 public interface UIViewLogging
 {
-    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_START", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_ENDED", "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_CMD_START", "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_CMD_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_STARTED", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_IMPRESSION_START", "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_IMPRESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_NOTIFICATION_IMPRESSION_START", "com.netflix.mediaclient.intent.action.LOG_NOTIFICATION_IMPRESSION_ENDED" };
+    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_START", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_ENDED", "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_CMD_START", "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_CMD_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_STARTED", "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_IMPRESSION_START", "com.netflix.mediaclient.intent.action.LOG_LEFT_PANEL_VIEW_IMPRESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_NOTIFICATION_IMPRESSION_START", "com.netflix.mediaclient.intent.action.LOG_NOTIFICATION_IMPRESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_IKO_NOTIFICATION_IMPRESSION_START", "com.netflix.mediaclient.intent.action.LOG_IKO_NOTIFICATION_IMPRESSION_ENDED" };
     public static final String COMMAND_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_ENDED";
     public static final String COMMAND_START = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_START";
     public static final String EXTRA_CMD = "cmd";
@@ -25,6 +25,8 @@ public interface UIViewLogging
     public static final String EXTRA_TRACK_ID = "trackId";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_VIEW = "view";
+    public static final String IKO_NOTIFICATION_IMPRESSION_ENDED = "com.netflix.mediaclient.intent.action.LOG_IKO_NOTIFICATION_IMPRESSION_ENDED";
+    public static final String IKO_NOTIFICATION_IMPRESSION_START = "com.netflix.mediaclient.intent.action.LOG_IKO_NOTIFICATION_IMPRESSION_START";
     public static final String IMPRESSION = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION";
     public static final String IMPRESSION_SESSION_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_ENDED";
     public static final String IMPRESSION_SESSION_STARTED = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_STARTED";

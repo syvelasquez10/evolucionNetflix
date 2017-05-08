@@ -105,7 +105,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
             Log.d("FalkorVolleyWebClientRequest", "request duration time (ms): " + durationTimeMs + ", class: " + this.getClass());
         }
         if (this.mContext != null) {
-            Log.d("FalkorVolleyWebClientRequest", "Report data request sucess");
+            Log.d("FalkorVolleyWebClientRequest", "Report data request success");
             final HttpResponse httpResponse = new HttpResponse();
             httpResponse.setResponseTime((int)durationTimeMs);
             httpResponse.setParseTime((int)this.mParseTimeInMs);

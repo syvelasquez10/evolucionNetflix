@@ -30,19 +30,21 @@ public class EogLandingPage
     private AdvancedImageView mImage2;
     private EndOfGrandfatheringActivity mOwner;
     private TextView mPlans;
+    private LinearLayout mSeeOtherPlansHeader;
     private TextView mSkip;
     private LinearLayout mSkipNowButton;
     private TextView mTitle;
     
     EogLandingPage(final EndOfGrandfatheringActivity mOwner) {
         this.mOwner = mOwner;
-        this.mTitle = (TextView)mOwner.findViewById(2131624197);
-        this.mBody = (TextView)mOwner.findViewById(2131624198);
-        this.mContinue = (TextView)mOwner.findViewById(2131624200);
-        this.mPlans = (TextView)mOwner.findViewById(2131624202);
-        this.mSkip = (TextView)mOwner.findViewById(2131624203);
-        this.mAccount = (TextView)mOwner.findViewById(2131624204);
-        this.mSkipNowButton = (LinearLayout)mOwner.findViewById(2131624193);
+        this.mTitle = (TextView)mOwner.findViewById(2131689787);
+        this.mBody = (TextView)mOwner.findViewById(2131689788);
+        this.mContinue = (TextView)mOwner.findViewById(2131689790);
+        this.mPlans = (TextView)mOwner.findViewById(2131689792);
+        this.mSkip = (TextView)mOwner.findViewById(2131689793);
+        this.mAccount = (TextView)mOwner.findViewById(2131689794);
+        this.mSkipNowButton = (LinearLayout)mOwner.findViewById(2131689783);
+        this.mSeeOtherPlansHeader = (LinearLayout)mOwner.findViewById(2131689791);
     }
     
     public static SpannableString buildAccountString(final NetflixActivity netflixActivity, final EogAlert eogAlert) {
@@ -71,14 +73,17 @@ public class EogLandingPage
                 this.mSkipNowButton.setVisibility(8);
             }
             if (EogUtils.shouldUseLayoutWithImages(eogAlert)) {
-                this.mImage1 = (AdvancedImageView)this.mOwner.findViewById(2131624194);
-                this.mImage2 = (AdvancedImageView)this.mOwner.findViewById(2131624195);
+                this.mImage1 = (AdvancedImageView)this.mOwner.findViewById(2131689784);
+                this.mImage2 = (AdvancedImageView)this.mOwner.findViewById(2131689785);
                 if (StringUtils.isNotEmpty(eogAlert.urlImage1) && this.mImage1 != null) {
                     NetflixActivity.getImageLoader((Context)this.mOwner).showImg(this.mImage1, eogAlert.urlImage1, IClientLogging$AssetType.boxArt, "", BrowseExperience.getImageLoaderConfig(), true);
                 }
                 if (StringUtils.isNotEmpty(eogAlert.urlImage2) && this.mImage2 != null) {
                     NetflixActivity.getImageLoader((Context)this.mOwner).showImg(this.mImage2, eogAlert.urlImage2, IClientLogging$AssetType.boxArt, "", BrowseExperience.getImageLoaderConfig(), true);
                 }
+            }
+            if (!EogUtils.shouldShowOtherPlans(eogAlert)) {
+                this.mSeeOtherPlansHeader.setVisibility(8);
             }
         }
     }
@@ -95,15 +100,19 @@ public class EogLandingPage
                 }
                 return false;
             }
-            case 2131624201: {
-                this.mOwner.goToPlanPage();
+            case 2131689791: {
+                if (EogUtils.shouldShowOtherPlans(this.mOwner.getEogAlert())) {
+                    this.mOwner.goToPlanPage();
+                    return true;
+                }
+                Log.w("eog_landing", "showPlans view should be invisible..");
                 return true;
             }
-            case 2131624193: {
+            case 2131689783: {
                 this.mOwner.backPressed();
                 return true;
             }
-            case 2131624199: {
+            case 2131689789: {
                 this.mOwner.recordPlanSelection();
                 if (EndOfGrandfatheringActivity.shouldBlockUser(this.mOwner.getEogAlert().isBlocking)) {
                     this.mOwner.startActivity(HomeActivity.createStartIntent(this.mOwner));

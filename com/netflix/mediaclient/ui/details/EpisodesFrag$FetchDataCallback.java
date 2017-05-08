@@ -36,6 +36,7 @@ import android.os.Build$VERSION;
 import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
@@ -75,32 +76,34 @@ class EpisodesFrag$FetchDataCallback extends LoggingManagerCallback
         super.onShowDetailsAndSeasonsFetched(showDetails, list, status);
         if (this.requestId != this.this$0.requestId) {
             Log.v("EpisodesFrag", "Stale response - ignoring");
-            return;
         }
-        this.this$0.isLoading = false;
-        if (status.isError()) {
-            Log.w("EpisodesFrag", "Error status code fetching data - showing errors view");
-            this.this$0.showErrorView();
-            return;
+        else {
+            this.this$0.isLoading = false;
+            if (status.isError()) {
+                Log.w("EpisodesFrag", "Error status code fetching data - showing errors view");
+                this.this$0.showErrorView();
+                return;
+            }
+            if (showDetails == null) {
+                Log.w("EpisodesFrag", "No details in response!");
+                this.this$0.showErrorView();
+                return;
+            }
+            if (!showDetails.isPreRelease() && !this.this$0.hasSeasons(list)) {
+                Log.w("EpisodesFrag", "No seasons in response!");
+                this.this$0.showErrorView();
+                return;
+            }
+            this.this$0.updateShowDetails(showDetails);
+            if (this.this$0.hasSeasons(list)) {
+                this.this$0.updateSeasonData(list);
+                return;
+            }
+            if (!this.this$0.isListVisible()) {
+                Log.v("EpisodesFrag", "Showing recycler view");
+                AnimationUtils.showView((View)this.this$0.recyclerView, true);
+                this.this$0.leWrapper.hide(false);
+            }
         }
-        if (showDetails == null) {
-            Log.w("EpisodesFrag", "No details in response!");
-            this.this$0.showErrorView();
-            return;
-        }
-        if (!showDetails.isPreRelease() && !this.this$0.hasSeasons(list)) {
-            Log.w("EpisodesFrag", "No seasons in response!");
-            this.this$0.showErrorView();
-            return;
-        }
-        if (this.this$0.hasSeasons(list)) {
-            this.this$0.updateSeasonData(list);
-        }
-        else if (!this.this$0.isListVisible()) {
-            Log.v("EpisodesFrag", "Showing recycler view");
-            AnimationUtils.showView((View)this.this$0.recyclerView, true);
-            this.this$0.leWrapper.hide(false);
-        }
-        this.this$0.updateShowDetails(showDetails);
     }
 }

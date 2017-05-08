@@ -78,6 +78,8 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     private DeviceAccount mCurrentUserAccount;
     private UserProfile mCurrentUserProfile;
     private EventListener mDeactivateListener;
+    private String mDynecomNetflixId;
+    private String mDynecomSecureNetflixId;
     private List<UserProfile> mListOfUserProfiles;
     private UserAgent$UserAgentCallback mLoginCallback;
     private UserAgent$UserAgentCallback mLogoutCallback;
@@ -163,7 +165,9 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     private String extractToken(final String s, final String s2) {
-        Log.d("nf_service_useragent", "Extracting token: " + s);
+        if (Log.isLoggable()) {
+            Log.d("nf_service_useragent", "Extracting token: " + s);
+        }
         if (s2 != null) {
             final int index = s2.indexOf(s, 0);
             if (index >= 0) {
@@ -183,7 +187,9 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             Log.e("nf_service_useragent", "Token not found, autologin is not possible");
             return;
         }
-        Log.d("nf_service_useragent", "Execute autologin with token: " + stringExtra);
+        if (Log.isLoggable()) {
+            Log.d("nf_service_useragent", "Execute autologin with token: " + stringExtra);
+        }
         if (this.mUser != null) {
             Log.e("nf_service_useragent", "User is already logged in, autologin is NOT possible!");
             return;
@@ -462,6 +468,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.launchWebTask(new UserAgent$FetchProfileDataTask(this, s, null));
     }
     
+    public void fetchSurvey(final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
+        this.launchTask(new UserAgent$FetchSurveyTask(this, userAgent$UserAgentCallback));
+    }
+    
     public String getAccountOwnerToken() {
         if (this.mUser == null) {
             return null;
@@ -480,16 +490,18 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         }
         final UserLocale userLocale = new UserLocale(this.mCurrentUserProfile.getLanguagesList().get(0));
         final UserLocale currentAppLocale = this.userLocaleRepository.getCurrentAppLocale();
-        final String raw = userLocale.getRaw();
-        final String raw2 = currentAppLocale.getRaw();
-        String s;
-        if (currentAppLocale.equalsByLanguage(userLocale)) {
-            s = userLocale.getRaw();
+        if (Log.isLoggable()) {
+            final String raw = userLocale.getRaw();
+            final String raw2 = currentAppLocale.getRaw();
+            String s;
+            if (currentAppLocale.equalsByLanguage(userLocale)) {
+                s = userLocale.getRaw();
+            }
+            else {
+                s = currentAppLocale.getRaw();
+            }
+            Log.d("nf_service_useragent", String.format("nf_loc userPref:%s appLocaleRaw:%s - picking %s", raw, raw2, s));
         }
-        else {
-            s = currentAppLocale.getRaw();
-        }
-        Log.d("nf_service_useragent", String.format("nf_loc userPref:%s appLocaleRaw:%s - picking %s", raw, raw2, s));
         if (currentAppLocale.equalsByLanguage(userLocale)) {
             return userLocale.getRaw();
         }
@@ -668,7 +680,9 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             Log.d("nf_service_useragent", "isCurrentProfileIQEnabled is null");
             return false;
         }
-        Log.d("nf_service_useragent", String.format("isCurrentProfileIQEnabled %s called: %b ", this.mCurrentUserProfile.getFirstName(), this.mCurrentUserProfile.isIQEnabled()));
+        if (Log.isLoggable()) {
+            Log.d("nf_service_useragent", String.format("isCurrentProfileIQEnabled %s called: %b ", this.mCurrentUserProfile.getFirstName(), this.mCurrentUserProfile.isIQEnabled()));
+        }
         return this.mCurrentUserProfile.isIQEnabled();
     }
     
@@ -752,6 +766,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
         }
         this.mUserAgentStateManager.signoutAcc();
+    }
+    
+    public void markSurveysAsRead() {
+        this.launchTask(new UserAgent$MarkSurveysAsReadTask(this));
     }
     
     @Override
@@ -877,11 +895,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     @Override
-    public boolean updateUserCredentials(final String s, final String s2) {
+    public boolean updateUserCredentials(final String mDynecomNetflixId, final String mDynecomSecureNetflixId) {
         if (!this.isUserLoggedIn()) {
+            this.mDynecomNetflixId = mDynecomNetflixId;
+            this.mDynecomSecureNetflixId = mDynecomSecureNetflixId;
             return false;
         }
-        this.mCurrentUserAccount = this.mUserAgentStateManager.updateAccountTokens(s, s2);
+        this.mCurrentUserAccount = this.mUserAgentStateManager.updateAccountTokens(mDynecomNetflixId, mDynecomSecureNetflixId);
         return true;
     }
     

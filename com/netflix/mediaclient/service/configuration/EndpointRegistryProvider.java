@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
+import com.netflix.mediaclient.util.Coppola2Utils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.user.UserLocaleRepository;
@@ -21,7 +22,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/4.5/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/4.8.1/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
@@ -50,6 +51,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PARAM_IS_DEVICE_LOCALE_IN_APP = "lackLocale";
     private static final String PARAM_KUBRICK_KIDS_EXPERIENCE = "kk";
     private static final String PARAM_LANGUAGES = "languages";
+    private static final String PARAM_LOLOMO_TEST_TYPE = "ltType";
     private static final String PARAM_MANUFACTURER = "mnf";
     private static final String PARAM_MODEL_ID = "mId";
     private static final String PARAM_PQL_PATH = "path";
@@ -161,6 +163,13 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         return "jpg";
     }
     
+    private String getLoLoMoABTestPreference() {
+        if (Coppola2Utils.isCoppolaDiscovery(this.mContext)) {
+            return "c2";
+        }
+        return null;
+    }
+    
     @Override
     public String getApiUrlFull(final ApiEndpointRegistry$ResponsePathFormat apiEndpointRegistry$ResponsePathFormat) {
         if (StringUtils.isNotEmpty(this.mCachedEndpointUrl)) {
@@ -174,16 +183,23 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/4.5/api");
+        sb.append("/android/4.8.1/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");
         sb.append(this.buildUrlParam("res", this.mImageResolutionClass.urlParamValue));
         sb.append(this.buildUrlParam("imgpref", this.getImagePreference()));
         sb.append(this.buildUrlParam("ffbc", this.mDeviceModel.getFormFactor()));
-        this.mCachedEndpointUrl = sb.toString();
-        if (Log.isLoggable()) {
-            Log.v("EndpointRegistryProvider", "Set mCachedEndpointUrl to: " + this.mCachedEndpointUrl);
+        sb.append(this.buildUrlParam("appVersion", UriUtil.urlEncodeParam(this.mDeviceModel.getAppVersion())));
+        final String loLoMoABTestPreference = this.getLoLoMoABTestPreference();
+        if (loLoMoABTestPreference != null) {
+            sb.append(this.buildUrlParam("ltType", loLoMoABTestPreference));
+        }
+        if (this.mUserAgent != null && this.mUserAgent.getCurrentProfile() != null) {
+            this.mCachedEndpointUrl = sb.toString();
+            if (Log.isLoggable()) {
+                Log.v("EndpointRegistryProvider", "Set mCachedEndpointUrl to: " + this.mCachedEndpointUrl);
+            }
         }
         return this.addDynamicParams(sb, apiEndpointRegistry$ResponsePathFormat);
     }

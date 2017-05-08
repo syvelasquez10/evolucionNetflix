@@ -908,6 +908,19 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
     }
     
     @Override
+    public FragmentTransaction replace(final int n, final Fragment fragment) {
+        return this.replace(n, fragment, null);
+    }
+    
+    public FragmentTransaction replace(final int n, final Fragment fragment, final String s) {
+        if (n == 0) {
+            throw new IllegalArgumentException("Must use non-zero containerViewId");
+        }
+        this.doAddOp(n, fragment, s, 2);
+        return this;
+    }
+    
+    @Override
     public void run() {
         if (FragmentManagerImpl.DEBUG) {
             Log.v("FragmentManager", "Run: " + this);
@@ -1052,6 +1065,19 @@ final class BackStackRecord extends FragmentTransaction implements Runnable
         if (this.mAddToBackStack) {
             this.mManager.addBackStackState(this);
         }
+    }
+    
+    @Override
+    public FragmentTransaction setCustomAnimations(final int n, final int n2) {
+        return this.setCustomAnimations(n, n2, 0, 0);
+    }
+    
+    public FragmentTransaction setCustomAnimations(final int mEnterAnim, final int mExitAnim, final int mPopEnterAnim, final int mPopExitAnim) {
+        this.mEnterAnim = mEnterAnim;
+        this.mExitAnim = mExitAnim;
+        this.mPopEnterAnim = mPopEnterAnim;
+        this.mPopExitAnim = mPopExitAnim;
+        return this;
     }
     
     @Override

@@ -37,16 +37,16 @@ class CallNotificationManager
     
     private Notification createNotification(final boolean usesChronometer) {
         final long currentTimeMillis = System.currentTimeMillis();
-        final String string = this.mContext.getString(2131165504);
-        final String string2 = this.mContext.getString(2131165505);
+        final String string = this.mContext.getString(2131231037);
+        final String string2 = this.mContext.getString(2131231038);
         String contentText;
         if (usesChronometer) {
-            contentText = this.mContext.getString(2131165506);
+            contentText = this.mContext.getString(2131231039);
         }
         else {
-            contentText = this.mContext.getString(2131165507);
+            contentText = this.mContext.getString(2131231040);
         }
-        final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837767).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837666, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(currentTimeMillis).setUsesChronometer(usesChronometer).build();
+        final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837774).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837674, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(currentTimeMillis).setUsesChronometer(usesChronometer).build();
         build.flags |= 0x40;
         this.mNotificationManager.notify(20, build);
         return build;
@@ -61,7 +61,7 @@ class CallNotificationManager
     }
     
     private Bitmap getLargeIcon() {
-        return BitmapFactory.decodeResource(this.mContext.getResources(), 2130837721);
+        return BitmapFactory.decodeResource(this.mContext.getResources(), 2130837728);
     }
     
     public static IntentFilter getNotificationIntentFilter() {

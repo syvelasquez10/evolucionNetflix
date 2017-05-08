@@ -293,12 +293,12 @@ final class CastPrefetchMessage
         //  -----  -----  -----  -----  --------------------------------------------------
         //  121    144    155    208    Lorg/json/JSONException;
         //  216    231    297    330    Lorg/json/JSONException;
-        //  276    283    548    552    Ljava/security/NoSuchAlgorithmException;
-        //  276    283    330    331    Ljavax/crypto/NoSuchPaddingException;
-        //  348    374    544    548    Ljava/security/InvalidKeyException;
-        //  348    374    466    467    Ljava/security/InvalidAlgorithmParameterException;
-        //  348    374    536    540    Ljavax/crypto/IllegalBlockSizeException;
-        //  348    374    540    544    Ljavax/crypto/BadPaddingException;
+        //  276    283    330    331    Ljava/security/NoSuchAlgorithmException;
+        //  276    283    548    552    Ljavax/crypto/NoSuchPaddingException;
+        //  348    374    540    544    Ljava/security/InvalidKeyException;
+        //  348    374    536    540    Ljava/security/InvalidAlgorithmParameterException;
+        //  348    374    544    548    Ljavax/crypto/IllegalBlockSizeException;
+        //  348    374    466    467    Ljavax/crypto/BadPaddingException;
         //  348    374    499    532    Ljava/io/IOException;
         //  392    432    433    434    Lorg/json/JSONException;
         //  392    432    532    536    Ljava/io/IOException;

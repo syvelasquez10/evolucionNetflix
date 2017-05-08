@@ -11,7 +11,7 @@ import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils$LoMoWidthType;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
@@ -85,7 +85,7 @@ public class KubrickPaginatedCwGalleryAdapter extends BasePaginatedAdapter<CWVid
     
     @Override
     public int getRowHeightInPx() {
-        final LoMoUtils$LoMoWidthType cwGalleryWidthType = KubrickUtils.getCwGalleryWidthType(this.activity);
+        final LoMoUtils$LoMoWidthType cwGalleryWidthType = BarkerUtils.getCwGalleryWidthType(this.activity);
         final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true, cwGalleryWidthType) / this.numItemsPerPage * 0.5625f) * 4;
         if (Log.isLoggable()) {
             Log.v("KubrickPaginatedCwGalleryAdapter", "Computed view height: " + n + " (px), widthType: " + cwGalleryWidthType);

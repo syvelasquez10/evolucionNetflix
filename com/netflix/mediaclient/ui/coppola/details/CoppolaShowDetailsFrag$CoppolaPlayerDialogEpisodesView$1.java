@@ -4,15 +4,16 @@
 
 package com.netflix.mediaclient.ui.coppola.details;
 
+import com.netflix.mediaclient.ui.details.AbsEpisodeView;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.widget.PressedStateHandler$DelayedOnClickListener;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.TextView;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView;
+import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView;
 import android.annotation.TargetApi;
 import android.view.View;
 import android.view.View$OnClickListener;

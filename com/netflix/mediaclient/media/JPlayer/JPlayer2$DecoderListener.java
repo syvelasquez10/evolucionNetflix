@@ -74,7 +74,10 @@ public class JPlayer2$DecoderListener implements MediaDecoderBase$EventListener
     @Override
     public void onError(final boolean b, final int n, final String s) {
         synchronized (this) {
-            this.this$0.nativeNotifyError(n, s);
+            if (!this.this$0.mErrorReported) {
+                this.this$0.nativeNotifyError(n, s);
+                this.this$0.mErrorReported = true;
+            }
         }
     }
     

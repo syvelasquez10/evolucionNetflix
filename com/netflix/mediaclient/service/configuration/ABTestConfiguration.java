@@ -29,11 +29,46 @@ public class ABTestConfiguration
         PreferenceUtils.putStringPref(this.mContext, "abTestConfig", null);
     }
     
+    public ABTestConfig$Cell getBrandLoveSurveyConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getBrandLoveSurveyConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getBrandLoveSurveyConfig().getCell();
+    }
+    
+    public ABTestConfig$Cell getCWProgressBarConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getCWProgressBarConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getCWProgressBarConfig().getCell();
+    }
+    
     public ABTestConfig$Cell getCoppola1TestCell() {
         if (this.mABTestConfigData == null || this.mABTestConfigData.getCoppola1ABTestConfig() == null) {
             return ABTestConfig$Cell.CELL_ONE;
         }
         return this.mABTestConfigData.getCoppola1ABTestConfig().getCell();
+    }
+    
+    public ABTestConfig$Cell getCoppola2TestCell() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getCoppola2ABTestConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getCoppola2ABTestConfig().getCell();
+    }
+    
+    public ABTestConfig$Cell getDisplayPageRefreshConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getDisplayPageRefreshConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getDisplayPageRefreshConfig().getCell();
+    }
+    
+    public ABTestConfig$Cell getMementoConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getMementoConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getMementoConfig().getCell();
     }
     
     public ABTestConfig$Cell getMotionBBTestConfig() {

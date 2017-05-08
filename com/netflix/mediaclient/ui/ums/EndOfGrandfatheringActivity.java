@@ -75,27 +75,27 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
             if (DeviceUtils.isTabletByContext(this.getApplicationContext())) {
                 if (!DeviceUtils.isPortrait(this.getApplicationContext()) || !EogUtils.isSmallSizeTablet(this.getApplicationContext())) {
                     Log.d("eog", "use tablet landing page");
-                    return 2130903104;
+                    return 2130903118;
                 }
                 Log.d("eog", "returning phone layout for cell5 tablet bcoz size too small");
             }
-            return 2130903100;
+            return 2130903114;
         }
         if (DeviceUtils.isTabletByContext(this.getApplicationContext())) {
-            return 2130903103;
+            return 2130903117;
         }
-        return 2130903099;
+        return 2130903113;
     }
     
     private int getPlanPageLayoutToUse() {
         if (!DeviceUtils.isTabletByContext(this.getApplicationContext())) {
-            return 2130903102;
+            return 2130903116;
         }
         if (DeviceUtils.isPortrait(this.getApplicationContext()) && EogUtils.isSmallSizeTablet(this.getApplicationContext())) {
-            return 2130903106;
+            return 2130903120;
         }
         Log.d("eog", "use tablet plan page");
-        return 2130903105;
+        return 2130903119;
     }
     
     private void init(final ServiceManager mServiceManager, final Status status) {
@@ -113,8 +113,8 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
             mCurrentPlanIndex = this.getCurrentPlanIndexOfUser();
         }
         this.mCurrentPlanIndex = mCurrentPlanIndex;
-        this.setContentView(2130903096);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131624191);
+        this.setContentView(2130903110);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131689781);
         this.addViewsToFlipper();
         this.mLandingPage = new EogLandingPage(this);
         this.mPlanPage = new EogPlanPage(this);

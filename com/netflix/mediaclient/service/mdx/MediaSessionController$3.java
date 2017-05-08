@@ -36,10 +36,10 @@ class MediaSessionController$3 extends VolumeProvider
             Log.i("nf_media_session_controller", "onAdjustVolume: " + n);
         }
         if (n == 1) {
-            MediaSessionController.access$412(this.this$0, 10);
+            this.this$0.mVolume += 10;
         }
         else if (n == -1) {
-            MediaSessionController.access$420(this.this$0, 10);
+            this.this$0.mVolume -= 10;
         }
         else {
             if (Log.isLoggable()) {

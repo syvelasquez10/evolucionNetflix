@@ -55,7 +55,7 @@ class FloatingActionButtonLollipop extends FloatingActionButtonHoneycombMr1
     
     @Override
     void setBackgroundDrawable(Drawable mShapeDrawable, final ColorStateList list, final PorterDuff$Mode porterDuff$Mode, final int n, final int n2) {
-        DrawableCompat.setTintList(this.mShapeDrawable = DrawableCompat.wrap(mShapeDrawable), list);
+        DrawableCompat.setTintList(this.mShapeDrawable = DrawableCompat.wrap(mShapeDrawable.mutate()), list);
         if (porterDuff$Mode != null) {
             DrawableCompat.setTintMode(this.mShapeDrawable, porterDuff$Mode);
         }

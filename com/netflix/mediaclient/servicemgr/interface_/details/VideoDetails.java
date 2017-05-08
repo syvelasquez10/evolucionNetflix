@@ -49,6 +49,8 @@ public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
     
     String getSynopsis();
     
+    String getTitleCroppedImgUrl();
+    
     String getTitleImgUrl();
     
     String getTvCardUrl();

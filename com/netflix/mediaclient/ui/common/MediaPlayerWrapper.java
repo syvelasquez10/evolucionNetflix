@@ -68,19 +68,6 @@ public class MediaPlayerWrapper implements MediaPlayer$OnCompletionListener, Med
         this.volume = volume;
     }
     
-    private void releaseMediaPlayer() {
-        if (this.mediaPlayer != null) {
-            if (this.mediaPlayer.isPlaying()) {
-                this.stopPlayback();
-            }
-            this.mediaPlayer.reset();
-            this.playerState = 0;
-            this.mediaPlayer.release();
-            this.playerState = 8;
-            this.mediaPlayer = null;
-        }
-    }
-    
     private void releaseResources(final SurfaceTexture surfaceTexture) {
         this.releaseMediaPlayer();
         this.releaseSurface(surfaceTexture);
@@ -135,6 +122,10 @@ public class MediaPlayerWrapper implements MediaPlayer$OnCompletionListener, Med
         if (this.mediaPlayer != null) {
             this.mediaPlayer.setVolume(this.volume, this.volume);
         }
+    }
+    
+    public void clearCallbacks() {
+        this.callbacks = null;
     }
     
     public void delayedStartPlayback(final int n) {
@@ -395,12 +386,12 @@ public class MediaPlayerWrapper implements MediaPlayer$OnCompletionListener, Med
         //  Try           Handler
         //  Start  End    Start  End    Type                             
         //  -----  -----  -----  -----  ---------------------------------
-        //  54     105    183    190    Ljava/io/IOException;
-        //  54     105    214    224    Ljava/lang/IllegalStateException;
-        //  105    117    203    210    Ljava/io/IOException;
-        //  105    117    224    231    Ljava/lang/IllegalStateException;
-        //  117    121    210    214    Ljava/io/IOException;
-        //  117    121    231    235    Ljava/lang/IllegalStateException;
+        //  54     105    214    224    Ljava/io/IOException;
+        //  54     105    183    190    Ljava/lang/IllegalStateException;
+        //  105    117    224    231    Ljava/io/IOException;
+        //  105    117    203    210    Ljava/lang/IllegalStateException;
+        //  117    121    231    235    Ljava/io/IOException;
+        //  117    121    210    214    Ljava/lang/IllegalStateException;
         // 
         // The error that occurred was:
         // 
@@ -454,6 +445,19 @@ public class MediaPlayerWrapper implements MediaPlayer$OnCompletionListener, Med
             this.seekPosition = this.mediaPlayer.getCurrentPosition();
             this.mediaPlayer.pause();
             this.playerState = 6;
+        }
+    }
+    
+    public void releaseMediaPlayer() {
+        if (this.mediaPlayer != null) {
+            if (this.mediaPlayer.isPlaying()) {
+                this.stopPlayback();
+            }
+            this.mediaPlayer.reset();
+            this.playerState = 0;
+            this.mediaPlayer.release();
+            this.playerState = 8;
+            this.mediaPlayer = null;
         }
     }
     

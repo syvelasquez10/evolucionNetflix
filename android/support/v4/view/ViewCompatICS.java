@@ -20,4 +20,8 @@ class ViewCompatICS
     public static void setAccessibilityDelegate(final View view, final Object o) {
         view.setAccessibilityDelegate((View$AccessibilityDelegate)o);
     }
+    
+    public static void setFitsSystemWindows(final View view, final boolean fitsSystemWindows) {
+        view.setFitsSystemWindows(fitsSystemWindows);
+    }
 }

@@ -28,7 +28,6 @@ public class FloatingActionButton$Behavior extends CoordinatorLayout$Behavior<Fl
 {
     private static final boolean SNACKBAR_BEHAVIOR_ENABLED;
     private Rect mTmpRect;
-    private float mTranslationY;
     
     static {
         SNACKBAR_BEHAVIOR_ENABLED = (Build$VERSION.SDK_INT >= 11);
@@ -73,14 +72,10 @@ public class FloatingActionButton$Behavior extends CoordinatorLayout$Behavior<Fl
     }
     
     private void updateFabTranslationForSnackbar(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton, final View view) {
-        if (floatingActionButton.getVisibility() == 0) {
-            final float fabTranslationYForSnackbar = this.getFabTranslationYForSnackbar(coordinatorLayout, floatingActionButton);
-            if (fabTranslationYForSnackbar != this.mTranslationY) {
-                ViewCompat.animate((View)floatingActionButton).cancel();
-                ViewCompat.setTranslationY((View)floatingActionButton, fabTranslationYForSnackbar);
-                this.mTranslationY = fabTranslationYForSnackbar;
-            }
+        if (floatingActionButton.getVisibility() != 0) {
+            return;
         }
+        ViewCompat.setTranslationY((View)floatingActionButton, this.getFabTranslationYForSnackbar(coordinatorLayout, floatingActionButton));
     }
     
     private boolean updateFabVisibility(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final FloatingActionButton floatingActionButton) {
@@ -119,8 +114,8 @@ public class FloatingActionButton$Behavior extends CoordinatorLayout$Behavior<Fl
     
     @Override
     public void onDependentViewRemoved(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton, final View view) {
-        if (view instanceof Snackbar$SnackbarLayout) {
-            ViewCompat.animate((View)floatingActionButton).translationY(0.0f).setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR).setListener(null);
+        if (view instanceof Snackbar$SnackbarLayout && ViewCompat.getTranslationY((View)floatingActionButton) != 0.0f) {
+            ViewCompat.animate((View)floatingActionButton).translationY(0.0f).scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR).setListener(null);
         }
     }
     

@@ -34,13 +34,13 @@ import android.widget.RelativeLayout;
 public class KubrickHighDensityCwView extends RelativeLayout implements VideoViewGroup$IVideoView<CWVideo>
 {
     private static final String TAG = "KubrickHighDensityCwView";
-    private VideoDetailsClickListener clicker;
+    protected VideoDetailsClickListener clicker;
     protected AdvancedImageView img;
     protected View infoIcon;
     private View infoViewGroup;
-    private PlayContext playContext;
-    private View playView;
-    private ProgressBar progress;
+    protected PlayContext playContext;
+    protected View playView;
+    protected ProgressBar progress;
     private TextView subtitle;
     private TextView title;
     
@@ -60,7 +60,7 @@ public class KubrickHighDensityCwView extends RelativeLayout implements VideoVie
     }
     
     protected int getLayoutId() {
-        return 2130903132;
+        return 2130903148;
     }
     
     public PlayContext getPlayContext() {
@@ -83,17 +83,17 @@ public class KubrickHighDensityCwView extends RelativeLayout implements VideoVie
     
     protected void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837925);
+        this.setBackgroundResource(2130837937);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.getLayoutId(), (ViewGroup)this);
-        this.playView = this.findViewById(2131624297);
-        this.infoViewGroup = this.findViewById(2131624295);
-        this.title = (TextView)this.findViewById(2131624151);
-        this.subtitle = (TextView)this.findViewById(2131624296);
-        this.img = (AdvancedImageView)this.findViewById(2131624149);
-        this.progress = (ProgressBar)this.findViewById(2131624153);
-        this.infoIcon = this.findViewById(2131624152);
+        this.playView = this.findViewById(2131689847);
+        this.infoViewGroup = this.findViewById(2131689879);
+        this.title = (TextView)this.findViewById(2131689739);
+        this.subtitle = (TextView)this.findViewById(2131689880);
+        this.img = (AdvancedImageView)this.findViewById(2131689736);
+        this.progress = (ProgressBar)this.findViewById(2131689738);
+        this.infoIcon = this.findViewById(2131689740);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -107,14 +107,14 @@ public class KubrickHighDensityCwView extends RelativeLayout implements VideoVie
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131165354), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131230891), cwVideo.getTitle());
         this.playView.setContentDescription((CharSequence)format);
         this.title.setText((CharSequence)cwVideo.getTitle());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.subtitle.setText((CharSequence)this.getContext().getString(2131165528, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber(), cwVideo.getCurrentEpisodeTitle() }));
+            this.subtitle.setText((CharSequence)this.getContext().getString(2131231063, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber(), cwVideo.getCurrentEpisodeTitle() }));
         }
         else {
-            this.subtitle.setText((CharSequence)this.getResources().getString(2131165586, new Object[] { TimeUtils.convertSecondsToMinutes(cwVideo.getRuntime()) }));
+            this.subtitle.setText((CharSequence)this.getResources().getString(2131231123, new Object[] { TimeUtils.convertSecondsToMinutes(cwVideo.getRuntime()) }));
         }
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
@@ -136,7 +136,7 @@ public class KubrickHighDensityCwView extends RelativeLayout implements VideoVie
         }
         this.progress.setProgress(progress);
         this.getPressableView().setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.getPressableStateHandler(), (View$OnClickListener)new KubrickHighDensityCwView$1(this, cwVideo)));
-        this.infoViewGroup.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165512), cwVideo.getTitle()));
+        this.infoViewGroup.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231045), cwVideo.getTitle()));
         this.clicker.update(this.infoViewGroup, cwVideo, this.img.getPressedStateHandler());
     }
 }

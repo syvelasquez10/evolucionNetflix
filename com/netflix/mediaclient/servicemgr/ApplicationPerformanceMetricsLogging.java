@@ -9,10 +9,12 @@ import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.service.logging.client.model.Event;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
+import com.netflix.mediaclient.service.logging.perf.PerfSession;
 import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -20,7 +22,7 @@ import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 
 public interface ApplicationPerformanceMetricsLogging
 {
-    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_DISPLAYED", "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_REMOVED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_LOCAL_SETTINGS_BW" };
+    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_DISPLAYED", "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_REMOVED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_IMPRESSION", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_LOCAL_SETTINGS_BW" };
     public static final String ASSET_REQUEST_ENDED = "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED";
     public static final String ASSET_REQUEST_STARTED = "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED";
     public static final String DATA_REQUEST_ENDED = "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED";
@@ -45,6 +47,7 @@ public interface ApplicationPerformanceMetricsLogging
     public static final String SHARED_CONTEXT_SESSION_ENDED = "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED";
     public static final String SHARED_CONTEXT_SESSION_STARTED = "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED";
     public static final String UI_MODAL_VIEW_CHANGED = "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED";
+    public static final String UI_MODAL_VIEW_IMPRESSION_EVENT = "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_IMPRESSION";
     
     void endAllActiveSessions();
     
@@ -53,6 +56,8 @@ public interface ApplicationPerformanceMetricsLogging
     void endAssetRequestSession(final String p0, final IClientLogging$CompletionReason p1, final HttpResponse p2, final Error p3);
     
     void endDataRequestSession(final String p0, final List<FalkorPathResult> p1, final IClientLogging$CompletionReason p2, final HttpResponse p3, final Error p4);
+    
+    void endPerformanceSession(final PerfSession p0);
     
     void endSharedContextSession();
     
@@ -76,6 +81,8 @@ public interface ApplicationPerformanceMetricsLogging
     
     void preappDeleteWidget(final String p0, final long p1);
     
+    void reportPerformanceEvent(final Event p0);
+    
     void setDataContext(final DataContext p0);
     
     void startApplicationSession(final boolean p0);
@@ -83,6 +90,8 @@ public interface ApplicationPerformanceMetricsLogging
     String startAssetRequestSession(final String p0, final IClientLogging$AssetType p1);
     
     boolean startDataRequestSession(final String p0, final String p1);
+    
+    void startPerformanceSession(final PerfSession p0);
     
     void startSharedContextSession(final String p0);
     
@@ -101,4 +110,6 @@ public interface ApplicationPerformanceMetricsLogging
     void uiViewChanged(final boolean p0, final IClientLogging$ModalView p1);
     
     void uiViewChanged(final boolean p0, final IClientLogging$ModalView p1, final long p2);
+    
+    void uiViewImpressionEvent(final boolean p0, final IClientLogging$ModalView p1);
 }

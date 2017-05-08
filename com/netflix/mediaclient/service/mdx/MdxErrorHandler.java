@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
@@ -34,13 +36,13 @@ public class MdxErrorHandler
     private AlertDialog$Builder getDialogBuilder(final int n, final String s) {
         switch (n) {
             default: {
-                return new AlertDialog$Builder((Context)this.activity, 2131361916).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165588, (DialogInterface$OnClickListener)null);
+                return new AlertDialog$Builder((Context)this.activity, 2131427452).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231125, (DialogInterface$OnClickListener)null);
             }
             case 100: {
-                return new AlertDialog$Builder((Context)this.activity, 2131361916).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165588, (DialogInterface$OnClickListener)null).setNegativeButton(2131165523, this.kblaunch_16001);
+                return new AlertDialog$Builder((Context)this.activity, 2131427452).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231125, (DialogInterface$OnClickListener)null).setNegativeButton(2131231058, this.kblaunch_16001);
             }
             case 105: {
-                return new AlertDialog$Builder((Context)this.activity, 2131361916).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165588, (DialogInterface$OnClickListener)null).setNegativeButton(2131165523, this.kblaunch_16003);
+                return new AlertDialog$Builder((Context)this.activity, 2131427452).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231125, (DialogInterface$OnClickListener)null).setNegativeButton(2131231058, this.kblaunch_16003);
             }
         }
     }
@@ -58,22 +60,22 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131165563);
+                return this.activity.getString(2131231098);
             }
             case 104: {
-                return this.activity.getString(2131165561);
+                return this.activity.getString(2131231096);
             }
             case 105: {
-                return this.activity.getString(2131165562);
+                return this.activity.getString(2131231097);
             }
             case 200: {
-                return this.activity.getString(2131165564);
+                return this.activity.getString(2131231099);
             }
             case 106: {
-                return String.format(this.activity.getString(2131165560), s);
+                return String.format(this.activity.getString(2131231095), s);
             }
             case 201: {
-                return this.activity.getString(2131165565);
+                return this.activity.getString(2131231100);
             }
         }
     }
@@ -130,7 +132,7 @@ public class MdxErrorHandler
         if (Log.isLoggable()) {
             Log.d(this.tag, "Error received. Code: " + n + ", message: " + s);
         }
-        if (this.activity.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.activity)) {
             return;
         }
         if (n >= 100 && n < 200) {

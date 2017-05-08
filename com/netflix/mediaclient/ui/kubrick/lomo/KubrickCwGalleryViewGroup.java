@@ -11,7 +11,7 @@ import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import java.util.List;
 import android.view.View;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v7.widget.RecyclerView$Adapter;
 import android.support.v7.widget.RecyclerView$LayoutManager;
@@ -31,14 +31,14 @@ public class KubrickCwGalleryViewGroup extends RecyclerView
     
     public KubrickCwGalleryViewGroup(final Context context, final int n) {
         super(context);
-        this.setId(2131623958);
+        this.setId(2131689499);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         final KubrickCwGalleryViewGroup$1 layoutManager = new KubrickCwGalleryViewGroup$1(this, context, 2, 0, false);
         layoutManager.setSpanSizeLookup(new KubrickCwGalleryViewGroup$2(this));
         this.setLayoutManager(layoutManager);
         this.setAdapter(this.adapter = new KubrickCwGalleryViewGroup$GridAdapter(this, n));
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        LoMoUtils.applyContentOverlapPadding(netflixActivity, (View)this, KubrickUtils.getCwGalleryWidthType(netflixActivity));
+        LoMoUtils.applyContentOverlapPadding(netflixActivity, (View)this, BarkerUtils.getCwGalleryWidthType(netflixActivity));
     }
     
     public void updateDataThenViews(final List<CWVideo> list, final int n, final int page, final int n2, final Trackable trackable) {

@@ -14,7 +14,7 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import android.app.Activity;
 import android.media.AudioManager;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewGroup;
 import android.database.ContentObserver;

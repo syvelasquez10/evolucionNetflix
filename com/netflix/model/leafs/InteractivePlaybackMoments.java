@@ -7,6 +7,7 @@ package com.netflix.model.leafs;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
+import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel;
 import com.netflix.mediaclient.ui.iko.kong.model.KongInteractiveMomentsModel;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
@@ -27,8 +28,13 @@ public class InteractivePlaybackMoments implements JsonPopulator
     public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
         this.data = FalkorParseUtils.getGson().fromJson(jsonElement, InteractiveMomentsModel.class);
-        if (this.data != null && StringUtils.isNotEmpty(this.data.getType()) && "kong".equalsIgnoreCase(this.data.getType())) {
-            this.data = FalkorParseUtils.getGson().fromJson(jsonElement, KongInteractiveMomentsModel.class);
+        if (this.data != null && StringUtils.isNotEmpty(this.data.getType())) {
+            if ("kong".equalsIgnoreCase(this.data.getType())) {
+                this.data = FalkorParseUtils.getGson().fromJson(jsonElement, KongInteractiveMomentsModel.class);
+            }
+            else if ("wordparty".equalsIgnoreCase(this.data.getType())) {
+                this.data = FalkorParseUtils.getGson().fromJson(jsonElement, WPInteractiveMomentsModel.class);
+            }
         }
         if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("InteractivePlaybackMoments", "Populating with: " + asJsonObject);

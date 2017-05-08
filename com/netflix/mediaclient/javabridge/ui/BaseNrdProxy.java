@@ -22,6 +22,7 @@ public abstract class BaseNrdProxy implements NrdProxy
     protected static final String NAME = "name";
     public static final String NAME_BGD = "background";
     public static final String NAME_IMC = "IMediaControl";
+    public static final String NAME_NETWORK = "INetwork";
     public static final String NAME_OBJECT_SYNC_COMPLETE = "ObjectSyncComplete";
     protected static final String OBJECT = "object";
     protected static final String TYPE = "type";

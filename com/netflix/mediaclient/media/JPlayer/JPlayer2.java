@@ -29,6 +29,7 @@ public class JPlayer2
     private MediaCrypto mCrypto;
     private JPlayer2$DecoderListener mDecoderListener;
     private boolean mDolbyDigitalPlusDecoderPresent;
+    private boolean mErrorReported;
     private VideoResolutionRange mMaxVideoRes;
     private long mNativePlayer;
     private volatile int mState;
@@ -38,6 +39,7 @@ public class JPlayer2
     public JPlayer2(final Surface mSurface) {
         this.mState = -1;
         this.mDolbyDigitalPlusDecoderPresent = DolbyDigitalHelper.isEAC3supported();
+        this.mErrorReported = false;
         this.mDecoderListener = new JPlayer2$DecoderListener(this);
         this.mSurface = mSurface;
     }

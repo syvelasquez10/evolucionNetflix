@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
+import com.netflix.model.survey.Survey;
 import java.util.Set;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
@@ -32,6 +33,8 @@ public interface UserAgentWebCallback
     void onProfileDataFetched(final UserProfile p0, final Status p1);
     
     void onRecommendationsSent(final Set<FriendForRecommendation> p0, final Status p1);
+    
+    void onSurveyFetched(final Survey p0, final Status p1);
     
     void onUserDataFetched(final User p0, final Status p1);
     

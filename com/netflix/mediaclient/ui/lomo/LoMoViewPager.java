@@ -4,8 +4,10 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import android.view.ViewParent;
 import android.view.ViewGroup$LayoutParams;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import android.widget.LinearLayout$LayoutParams;
+import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
@@ -125,6 +127,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         if (this.pageIndicator != null) {
             this.pageIndicator.setCurrentItem(currentItem);
         }
+        this.adapter.currentPageSwitched(currentItem);
     }
     
     private boolean restoreState(final BasicLoMo basicLoMo) {
@@ -158,19 +161,24 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     private void setPagesToOverlap(final boolean b, final LoMoType loMoType, final LoMoViewPagerAdapter$Type loMoViewPagerAdapter$Type) {
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         final LoMoUtils$LoMoWidthType standard = LoMoUtils$LoMoWidthType.STANDARD;
-        LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType;
-        if (loMoViewPagerAdapter$Type == LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN && BrowseExperience.shouldShowLargePeakForKidsTopTen()) {
-            loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW;
-        }
-        else if (BrowseExperience.showKidsExperience() && loMoType == LoMoType.CHARACTERS) {
-            loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW;
-        }
-        else {
-            loMoUtils$LoMoWidthType = standard;
-            if (BrowseExperience.isKubrick()) {
+        LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType = null;
+        Label_0031: {
+            if (loMoViewPagerAdapter$Type == LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN && BrowseExperience.shouldShowLargePeakForKidsTopTen()) {
+                loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW;
+            }
+            else if (BrowseExperience.showKidsExperience() && loMoType == LoMoType.CHARACTERS) {
+                loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW;
+            }
+            else {
+                if (!BrowseExperience.isKubrick()) {
+                    loMoUtils$LoMoWidthType = standard;
+                    if (!BrowseExperience.isDisplayPageRefresh()) {
+                        break Label_0031;
+                    }
+                }
                 loMoUtils$LoMoWidthType = standard;
                 if (loMoType == LoMoType.CONTINUE_WATCHING) {
-                    loMoUtils$LoMoWidthType = KubrickUtils.getCwGalleryWidthType(netflixActivity);
+                    loMoUtils$LoMoWidthType = BarkerUtils.getCwGalleryWidthType(netflixActivity);
                 }
             }
         }
@@ -193,17 +201,31 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     
     private void updatePageIndicatorVisibility() {
         boolean b = true;
-        int visibility = 0;
-        if (!this.adapter.isShowingBillboard() || this.adapter.getCount() <= 1) {
+        final int n = 0;
+        final boolean b2 = this.adapter.isShowingBillboard() && this.adapter.getCount() > 1;
+        final boolean shouldShowArtworkOnly = BillboardView.shouldShowArtworkOnly(this.getActivity());
+        if (this.adapter.getState() != LoMoViewPagerAdapter$Type.DISCOVERY) {
             b = false;
         }
         if (Log.isLoggable()) {
-            Log.v("LoMoViewPager", "hasBillboardData: " + b);
+            Log.v("LoMoViewPager", "hasBillboardData: " + b2 + "; isCoppolaDiscovery: " + b);
         }
         if (this.pageIndicator != null) {
+            if (shouldShowArtworkOnly && b2) {
+                this.pageIndicator.measure(0, 0);
+                final LinearLayout$LayoutParams layoutParams = new LinearLayout$LayoutParams(-1, -2);
+                layoutParams.topMargin = this.pageIndicator.getMeasuredHeight() * -2 - PaginatedBillboardAdapter.getPortraitBillboardPhoneOffset(this.getActivity());
+                this.pageIndicator.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+            }
             final CirclePageIndicator pageIndicator = this.pageIndicator;
-            if (!b) {
-                visibility = 8;
+            int visibility = n;
+            if (!b2) {
+                if (b) {
+                    visibility = n;
+                }
+                else {
+                    visibility = 8;
+                }
             }
             pageIndicator.setVisibility(visibility);
         }
@@ -211,6 +233,10 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     
     public void destroy() {
         this.adapter.destroy();
+    }
+    
+    public ViewParent getParentFrameLayout() {
+        return this.getParent().getParent();
     }
     
     public void invalidateCwCache() {
@@ -249,6 +275,12 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     public boolean onInterceptTouchEvent(final MotionEvent motionEvent) {
         this.handleTouchEvent(motionEvent);
         return super.onInterceptTouchEvent(motionEvent);
+    }
+    
+    @Override
+    protected void onPageScrolled(final int n, final float n2, final int n3) {
+        super.onPageScrolled(n, n2, n3);
+        this.adapter.onPageScrolled(n, n2, n3);
     }
     
     @Override

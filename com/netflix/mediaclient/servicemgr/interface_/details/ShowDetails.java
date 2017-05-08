@@ -4,10 +4,9 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 
-public interface ShowDetails extends EvidenceDetails, VideoDetails
+public interface ShowDetails extends EvidenceDetails, Similarable, VideoDetails
 {
     String getCreators();
     
@@ -32,12 +31,4 @@ public interface ShowDetails extends EvidenceDetails, VideoDetails
     int getNumOfSeasons();
     
     String getNumSeasonsLabel();
-    
-    List<Video> getSimilars();
-    
-    int getSimilarsListPos();
-    
-    String getSimilarsRequestId();
-    
-    int getSimilarsTrackId();
 }

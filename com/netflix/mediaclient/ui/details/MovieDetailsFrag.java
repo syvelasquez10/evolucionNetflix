@@ -17,12 +17,12 @@ import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -38,7 +38,7 @@ import android.support.v7.widget.GridLayoutManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 
-public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
+public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayoutManager
 {
     private static final String EXTRA_LAYOUT_MANAGER_STATE = "layout_manager_state";
     protected static final String EXTRA_VIDEO_ID = "video_id";
@@ -49,7 +49,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     protected boolean isLoading;
     private Parcelable layoutManagerSavedState;
     protected int numColumns;
-    private DetailsPageParallaxScrollListener parallaxScroller;
+    protected DetailsPageParallaxScrollListener parallaxScroller;
     protected RecyclerView recyclerView;
     protected long requestId;
     protected String videoId;
@@ -112,14 +112,19 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     
     @Override
     protected int getLayoutId() {
-        return 2130903228;
+        return 2130903255;
     }
     
+    @Override
     public RecyclerView$LayoutManager getLayoutManager() {
         if (this.recyclerView == null) {
             return null;
         }
         return this.recyclerView.getLayoutManager();
+    }
+    
+    protected int getNumColumns() {
+        return LomoConfig.computeStandardNumVideosPerPage(this.getNetflixActivity(), false);
     }
     
     @Override
@@ -152,7 +157,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
         this.findViews(onCreateView);
-        this.numColumns = this.retrieveNumColumns();
+        this.numColumns = this.getNumColumns();
         this.initDetailsViewGroup(onCreateView);
         if (bundle != null) {
             final Parcelable parcelable = bundle.getParcelable("layout_manager_state");
@@ -193,14 +198,11 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.fetchMovieData();
     }
     
-    protected int retrieveNumColumns() {
-        return LomoConfig.computeStandardNumVideosPerPage(this.getNetflixActivity(), false);
-    }
-    
     public void scrollTop() {
         this.recyclerView.post((Runnable)new MovieDetailsFrag$1(this));
     }
     
+    @Override
     public void setLayoutManagerSavedState(final Parcelable layoutManagerSavedState) {
         this.layoutManagerSavedState = layoutManagerSavedState;
     }
@@ -215,7 +217,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
                 Log.v("MovieDetailsFrag", "Attaching parallax scroll listener to recyclerView");
-                this.parallaxScroller = new DetailsPageParallaxScrollListener(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131558591), 0, null);
+                this.parallaxScroller = DetailsPageParallaxScrollListener.createDefault(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, null);
                 this.recyclerView.setOnScrollListener(this.parallaxScroller);
             }
         }
@@ -240,7 +242,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296497), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362064), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {

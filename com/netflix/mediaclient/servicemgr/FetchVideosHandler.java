@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import java.util.Iterator;
@@ -66,6 +67,12 @@ public class FetchVideosHandler<T extends Video> extends LoggingManagerCallback
     @Override
     public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
         super.onCWVideosFetched(list, status);
+        this.handleResponse(list, status);
+    }
+    
+    @Override
+    public void onDiscoveryVideosFetched(final List<Discovery> list, final Status status) {
+        super.onDiscoveryVideosFetched(list, status);
         this.handleResponse(list, status);
     }
     

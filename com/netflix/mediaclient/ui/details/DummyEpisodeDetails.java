@@ -28,6 +28,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public boolean episodeIsNSRE() {
+        return false;
+    }
+    
+    @Override
     public String getActors() {
         return null;
     }
@@ -60,6 +65,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     @Override
     public int getBookmarkPosition() {
         return new Random().nextInt(100);
+    }
+    
+    @Override
+    public String getBoxartImageTypeIdentifier() {
+        return null;
     }
     
     @Override
@@ -230,6 +240,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     @Override
     public String getTitle() {
         return "Episode " + this.epNumber;
+    }
+    
+    @Override
+    public String getTitleCroppedImgUrl() {
+        return null;
     }
     
     @Override

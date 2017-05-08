@@ -32,6 +32,16 @@ class ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl extends ViewP
     }
     
     @Override
+    public void scaleX(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.scaleX(view, n);
+    }
+    
+    @Override
+    public void scaleY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.scaleY(view, n);
+    }
+    
+    @Override
     public void setDuration(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final long n) {
         ViewPropertyAnimatorCompatICS.setDuration(view, n);
     }

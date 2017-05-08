@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.service.logging.uiaction.model.UpgradeStreamsEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.SurveyEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.SurveyQuestionEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SubmitPaymentEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.StartPlayEndedEvent;
 import com.netflix.mediaclient.service.logging.android.model.ShareSheetEndedEvent;
@@ -18,6 +20,8 @@ import com.netflix.mediaclient.service.logging.uiaction.model.PostPlayEndedEvent
 import com.netflix.mediaclient.service.logging.uiaction.model.NewLolomoEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.NavigationEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.LoginEndedEvent;
+import com.netflix.mediaclient.service.logging.iko.model.IkoMomentEndedEvent;
+import com.netflix.mediaclient.service.logging.iko.model.IkoModeEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.EditProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.DeleteProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.ChangeValueEndedEvent;
@@ -48,6 +52,8 @@ import java.util.Collection;
 import java.util.Arrays;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.logging.uiaction.UpgradeStreamsSession;
+import com.netflix.mediaclient.service.logging.uiaction.SurveySession;
+import com.netflix.mediaclient.service.logging.uiaction.SurveyQuestionSession;
 import com.netflix.mediaclient.service.logging.uiaction.SubmitPaymentSession;
 import com.netflix.mediaclient.service.logging.uiaction.StartPlaySession;
 import com.netflix.mediaclient.service.logging.android.ShareSheetSession;
@@ -63,6 +69,8 @@ import com.netflix.mediaclient.service.logging.uiaction.PostPlaySession;
 import com.netflix.mediaclient.service.logging.uiaction.NewLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
 import com.netflix.mediaclient.service.logging.uiaction.LoginSession;
+import com.netflix.mediaclient.service.logging.iko.IkoMomentSession;
+import com.netflix.mediaclient.service.logging.iko.IkoModeSession;
 import com.netflix.mediaclient.service.logging.uiaction.EditProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.DeleteProfileSession;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
@@ -86,6 +94,8 @@ final class UserActionLoggingImpl implements UserActionLogging
     private DeleteProfileSession mDeleteProfileSession;
     private EditProfileSession mEditProfileSession;
     private EventHandler mEventHandler;
+    private IkoModeSession mIkoModeSession;
+    private IkoMomentSession mIkoMomentSession;
     private LoginSession mLoginSession;
     private NavigationSession mNavigationSession;
     private NewLolomoSession mNewLolomoSession;
@@ -100,6 +110,8 @@ final class UserActionLoggingImpl implements UserActionLogging
     private ShareSheetSession mShareSheetSession;
     private StartPlaySession mStartPlaySession;
     private SubmitPaymentSession mSubmitPaymentSession;
+    private SurveyQuestionSession mSurveyQuestionSession;
+    private SurveySession mSurveySession;
     private UpgradeStreamsSession mUpgradeStreamsSession;
     private ServiceAgent$UserAgentInterface mUserAgent;
     
@@ -394,6 +406,91 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
         this.startEditProfileSession(value, value2);
+    }
+    
+    private void handleIkoModeEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        while (true) {
+            try {
+                final UIError instance = UIError.createInstance(stringExtra2);
+                if (StringUtils.isNotEmpty(stringExtra)) {
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                }
+                this.endIkoModeSession(value, instance);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                final UIError instance = null;
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleIkoModeStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startIkoModeSession(value, value2);
+    }
+    
+    private void handleIkoMomentEnded(final Intent intent) {
+    Label_0031_Outer:
+        while (true) {
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            while (true) {
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra);
+                        if (StringUtils.isNotEmpty((String)s)) {
+                            s = IClientLogging$CompletionReason.valueOf((String)s);
+                            this.endIkoMomentSession((IClientLogging$CompletionReason)s, instance, intent.getStringExtra("momentId"), intent.getStringExtra("momentType"), intent.getIntExtra("expectedVideoOffset", 0), intent.getStringExtra("ikoMomentState"));
+                            return;
+                        }
+                    }
+                    catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                        final UIError instance = null;
+                        continue Label_0031_Outer;
+                    }
+                    break;
+                }
+                s = null;
+                continue;
+            }
+        }
+    }
+    
+    private void handleIkoMomentStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startIkoMomentSession(value, value2);
     }
     
     private void handleLoginEnded(final Intent intent) {
@@ -1191,6 +1288,87 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.startSubmitPaymentSession(value, value2);
     }
     
+    private void handleSurveyEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        final String stringExtra3 = intent.getStringExtra("surveyType");
+        while (true) {
+            try {
+                final UIError instance = UIError.createInstance(stringExtra2);
+                if (StringUtils.isNotEmpty(stringExtra)) {
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                }
+                this.endSurveySession(value, instance, stringExtra3);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                final UIError instance = null;
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleSurveyQuestionEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        final String stringExtra3 = intent.getStringExtra("question");
+        final String stringExtra4 = intent.getStringExtra("response");
+        while (true) {
+            try {
+                final UIError instance = UIError.createInstance(stringExtra2);
+                if (StringUtils.isNotEmpty(stringExtra)) {
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                }
+                this.endSurveyQuestionSession(value, instance, stringExtra3, stringExtra4);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                final UIError instance = null;
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleSurveyQuestionStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startSurveyQuestionSession(value, value2);
+    }
+    
+    private void handleSurveyStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startSurveySession(value, value2);
+    }
+    
     private void handleUpgradeStreamsEnded(final Intent intent) {
         IClientLogging$CompletionReason value = null;
         final String stringExtra = intent.getStringExtra("reason");
@@ -1343,6 +1521,10 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.endShareSheetSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
             this.endPostPlaySession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null, false, false, null, null, 0);
             this.endPreAppWidgetActionSession(IClientLogging$CompletionReason.canceled, null);
+            this.endSurveySession(IClientLogging$CompletionReason.canceled, null, null);
+            this.endSurveyQuestionSession(IClientLogging$CompletionReason.canceled, null, "", null);
+            this.endIkoModeSession(IClientLogging$CompletionReason.canceled, null);
+            this.endIkoMomentSession(IClientLogging$CompletionReason.canceled, null, null, null, 0, null);
             final HashSet<Long> set = new HashSet<Long>(this.mSearchSessions.size());
             set.addAll((Collection<?>)this.mSearchSessions.keySet());
             final Iterator<Object> iterator = set.iterator();
@@ -1409,6 +1591,44 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEditProfileSession = null;
         Log.d("nf_log", "Edit profile session end event posted.");
         Log.d("nf_log", "Edit profile session end done.");
+    }
+    
+    @Override
+    public void endIkoModeSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
+        if (this.mIkoModeSession == null) {
+            return;
+        }
+        Log.d("nf_log", "IkoMode session ended");
+        final IkoModeEndedEvent endedEvent = this.mIkoModeSession.createEndedEvent(clientLogging$CompletionReason, uiError);
+        if (endedEvent == null) {
+            Log.d("nf_log", "IkoMode session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mIkoModeSession.getView());
+        this.mEventHandler.removeSession(this.mIkoModeSession);
+        Log.d("nf_log", "IkoMode session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mIkoModeSession = null;
+        Log.d("nf_log", "IkoMode session end event posted.");
+    }
+    
+    @Override
+    public void endIkoMomentSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final String s, final String s2, final int n, final String s3) {
+        if (this.mIkoMomentSession == null) {
+            return;
+        }
+        Log.d("nf_log", "IkoMoment session ended");
+        final IkoMomentEndedEvent endedEvent = this.mIkoMomentSession.createEndedEvent(clientLogging$CompletionReason, uiError, s, s2, n, s3);
+        if (endedEvent == null) {
+            Log.d("nf_log", "IkoMoment session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mIkoMomentSession.getView());
+        this.mEventHandler.removeSession(this.mIkoMomentSession);
+        Log.d("nf_log", "IkoMoment session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mIkoMomentSession = null;
+        Log.d("nf_log", "IkoMoment session end event posted.");
     }
     
     @Override
@@ -1686,6 +1906,44 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void endSurveyQuestionSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final String s, final String s2) {
+        if (this.mSurveyQuestionSession == null) {
+            return;
+        }
+        Log.d("nf_log", "SurveyQuestionSession session ended");
+        final SurveyQuestionEndedEvent endedEvent = this.mSurveyQuestionSession.createEndedEvent(clientLogging$CompletionReason, uiError, s, s2);
+        if (endedEvent == null) {
+            Log.d("nf_log", "SurveyQuestionSession session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mSurveyQuestionSession.getView());
+        this.mEventHandler.removeSession(this.mSurveyQuestionSession);
+        Log.d("nf_log", "SurveyQuestionSession session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mSurveyQuestionSession = null;
+        Log.d("nf_log", "SurveyQuestionSession session end event posted.");
+    }
+    
+    @Override
+    public void endSurveySession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final String s) {
+        if (this.mSurveySession == null) {
+            return;
+        }
+        Log.d("nf_log", "SurveySession session ended");
+        final SurveyEndedEvent endedEvent = this.mSurveySession.createEndedEvent(clientLogging$CompletionReason, uiError, s);
+        if (endedEvent == null) {
+            Log.d("nf_log", "SurveySession session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mSurveySession.getView());
+        this.mEventHandler.removeSession(this.mSurveySession);
+        Log.d("nf_log", "SurveySession session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mSurveySession = null;
+        Log.d("nf_log", "SurveySession session end event posted.");
+    }
+    
+    @Override
     public void endUpgradeStreamsSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final UserActionLogging$Streams userActionLogging$Streams) {
         if (this.mUpgradeStreamsSession == null) {
             return;
@@ -1715,6 +1973,26 @@ final class UserActionLoggingImpl implements UserActionLogging
         if ("com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_ENDED".equals(action)) {
             Log.d("nf_log", "ADD_TO_PLAYLIST_ENDED");
             this.handleAddToPlaylistEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SURVEY_START".equals(action)) {
+            Log.d("nf_log", "SURVEY_START");
+            this.handleSurveyStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SURVEY_ENDED".equals(action)) {
+            Log.d("nf_log", "SURVEY_ENDED");
+            this.handleSurveyEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SURVEY_QUESTION_START".equals(action)) {
+            Log.d("nf_log", "SURVEY_QUESTION_START");
+            this.handleSurveyQuestionStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SURVEY_QUESTION_ENDED".equals(action)) {
+            Log.d("nf_log", "SURVEY_QUESTION_ENDED");
+            this.handleSurveyQuestionEnded(intent);
             return true;
         }
         if ("com.netflix.mediaclient.intent.action.LOG_UIA_CHANGE_VALUE_START".equals(action)) {
@@ -1915,6 +2193,26 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handlePostPlayEnded(intent);
             return true;
         }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_IKO_MODE_START".equals(action)) {
+            Log.d("nf_log", "IKO_MODE_START");
+            this.handleIkoModeStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_IKO_MODE_ENDED".equals(action)) {
+            Log.d("nf_log", "IKO_MODE_ENDED");
+            this.handleIkoModeEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_IKO_MOMENT_START".equals(action)) {
+            Log.d("nf_log", "IKO_MOMENT_START");
+            this.handleIkoMomentStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_IKO_MOMENT_ENDED".equals(action)) {
+            Log.d("nf_log", "IKO_MOMENT_ENDED");
+            this.handleIkoMomentEnded(intent);
+            return true;
+        }
         if (Log.isLoggable()) {
             Log.d("nf_log", "We do not support action " + action);
         }
@@ -2002,6 +2300,32 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mEditProfileSession);
         this.mEditProfileSession = mEditProfileSession;
         Log.d("nf_log", "Edit profile session start done.");
+    }
+    
+    @Override
+    public void startIkoModeSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mIkoModeSession != null) {
+            Log.e("nf_log", "IkoMode session already started!");
+            return;
+        }
+        Log.d("nf_log", "IkoMode session starting...");
+        final IkoModeSession mIkoModeSession = new IkoModeSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(mIkoModeSession);
+        this.mIkoModeSession = mIkoModeSession;
+        Log.d("nf_log", "IkoMode session start done.");
+    }
+    
+    @Override
+    public void startIkoMomentSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mIkoMomentSession != null) {
+            Log.e("nf_log", "IkoMoment session already started!");
+            return;
+        }
+        Log.d("nf_log", "IkoMoment session starting...");
+        final IkoMomentSession mIkoMomentSession = new IkoMomentSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(mIkoMomentSession);
+        this.mIkoMomentSession = mIkoMomentSession;
+        Log.d("nf_log", "IkoMoment session start done.");
     }
     
     @Override
@@ -2181,6 +2505,32 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mSubmitPaymentSession);
         this.mSubmitPaymentSession = mSubmitPaymentSession;
         Log.d("nf_log", "SubmitPayment session start done.");
+    }
+    
+    @Override
+    public void startSurveyQuestionSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mSurveyQuestionSession != null) {
+            Log.e("nf_log", "SurveyQuestionSession session already started!");
+            return;
+        }
+        Log.d("nf_log", "SurveyQuestionSession session starting...");
+        final SurveyQuestionSession mSurveyQuestionSession = new SurveyQuestionSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(mSurveyQuestionSession);
+        this.mSurveyQuestionSession = mSurveyQuestionSession;
+        Log.d("nf_log", "SurveyQuestionSession session start done.");
+    }
+    
+    @Override
+    public void startSurveySession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mSurveySession != null) {
+            Log.e("nf_log", "SurveySession session already started!");
+            return;
+        }
+        Log.d("nf_log", "SurveySession session starting...");
+        final SurveySession mSurveySession = new SurveySession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(mSurveySession);
+        this.mSurveySession = mSurveySession;
+        Log.d("nf_log", "SurveySession session start done.");
     }
     
     @Override

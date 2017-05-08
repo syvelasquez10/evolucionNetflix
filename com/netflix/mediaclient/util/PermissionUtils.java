@@ -9,6 +9,9 @@ import android.content.Context;
 
 public final class PermissionUtils
 {
+    public static final int REQUEST_PERMISSION_TO_DUMP_CACHE = 145;
+    public static final int REQUEST_PERMISSION_TO_PERF_DUMP = 232;
+    
     public static boolean shouldRequestPermission(final Context context, final String s) {
         return ContextCompat.checkSelfPermission(context, s) != 0;
     }

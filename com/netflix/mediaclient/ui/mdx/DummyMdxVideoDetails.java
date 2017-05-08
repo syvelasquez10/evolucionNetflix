@@ -13,6 +13,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 class DummyMdxVideoDetails implements EpisodeDetails
 {
     @Override
+    public boolean episodeIsNSRE() {
+        return false;
+    }
+    
+    @Override
     public String getActors() {
         return null;
     }
@@ -45,6 +50,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     @Override
     public int getBookmarkPosition() {
         return 0;
+    }
+    
+    @Override
+    public String getBoxartImageTypeIdentifier() {
+        return null;
     }
     
     @Override
@@ -215,6 +225,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     @Override
     public String getTitle() {
         return "Dummy MDX Title, Super Extra-Long Version";
+    }
+    
+    @Override
+    public String getTitleCroppedImgUrl() {
+        return null;
     }
     
     @Override

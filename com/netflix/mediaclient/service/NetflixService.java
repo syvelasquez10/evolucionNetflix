@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
@@ -68,6 +72,7 @@ import android.app.Service;
 
 public final class NetflixService extends Service implements INetflixService
 {
+    public static final String ACTION_CLOSE_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_CLOSE_MINI_PLAYER";
     public static final String ACTION_EXPAND_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER";
     private static final String ACTION_REFRESH_WIDGET_CONTENT_ALARM_INTENT = "com.netflix.mediaclient.service.ACTION_REFRESH_WIDGET_CONTENT";
     private static final String ACTION_SHOW_MDX_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER";
@@ -382,6 +387,10 @@ public final class NetflixService extends Service implements INetflixService
         this.mResourceFetcher.fetchResource(s, clientLogging$AssetType, n, n2, new NetflixService$ResourceFetcherClientCallback(this, n3, n4));
     }
     
+    public void fetchSurvey(final int n, final int n2) {
+        this.mUserAgent.fetchSurvey(new NetflixService$UserAgentClientCallback(this, n, n2));
+    }
+    
     public String getAccountOwnerToken() {
         return this.mUserAgent.getAccountOwnerToken();
     }
@@ -543,6 +552,10 @@ public final class NetflixService extends Service implements INetflixService
         this.mUserAgent.logoutUser(new NetflixService$UserAgentClientCallback(this, n, n2));
     }
     
+    public void markSurveysAsRead() {
+        this.mUserAgent.markSurveysAsRead();
+    }
+    
     public IBinder onBind(final Intent intent) {
         Log.d("NetflixService", "NetflixService is onBind");
         this.cancelPendingSelfStop();
@@ -551,6 +564,7 @@ public final class NetflixService extends Service implements INetflixService
     
     public void onCreate() {
         Log.i("NetflixService", "NetflixService.onCreate.");
+        PerformanceProfiler.getInstance().startSession(Sessions.NETFLIX_SERVICE_LOADED, null);
         super.onCreate();
         NetflixService.isCreated = true;
         this.handler = new Handler();
@@ -622,6 +636,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public int onStartCommand(final Intent intent, final int n, final int n2) {
+        PerformanceProfiler.getInstance().logEvent(Events.NETFLIX_SERVICE_STARTED_COMMAND, null);
         if (intent != null) {
             if (this.mInitComplete) {
                 this.doStartCommand(intent, n, n2);

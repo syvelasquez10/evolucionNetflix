@@ -18,7 +18,6 @@ import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.os.Parcelable;
 import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.widget.GridView;

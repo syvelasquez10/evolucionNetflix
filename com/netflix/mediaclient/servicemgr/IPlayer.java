@@ -11,6 +11,7 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
+import android.graphics.Point;
 import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.media.AudioSource;
@@ -47,6 +48,8 @@ public interface IPlayer
     int getCurrentProgress();
     
     Subtitle getCurrentSubtitleTrack();
+    
+    Point getDisplayAspectRatioDimension();
     
     int getDuration();
     

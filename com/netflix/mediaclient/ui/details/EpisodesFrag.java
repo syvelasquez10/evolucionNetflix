@@ -38,6 +38,7 @@ import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
@@ -60,12 +61,12 @@ import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
 public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Callback, ManagerStatusListener, DetailsActivity$Reloader, ServiceManagerProvider, VideoDetailsViewGroup$VideoDetailsViewGroupProvider, MdxMiniPlayerFrag$MdxMiniPlayerDialog
 {
-    private static final String EXTRA_EPISODE_ID = "extra_episode_id";
+    protected static final String EXTRA_EPISODE_ID = "extra_episode_id";
     private static final String EXTRA_EPISODE_INDEX = "extra_episode_index";
     private static final String EXTRA_FORCE_SHOW_SEASONS_SELECTOR = "extra_show_episodes_selector";
     private static final String EXTRA_SEASON_INDEX = "extra_season_index";
     protected static final String EXTRA_SHOW_DETAILS = "extra_show_details";
-    private static final String EXTRA_SHOW_ID = "extra_show_id";
+    protected static final String EXTRA_SHOW_ID = "extra_show_id";
     private static final String TAG = "EpisodesFrag";
     private AddToListData$StateListener addToListWrapper;
     private SeasonDetails currSeasonDetails;
@@ -79,7 +80,6 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     protected boolean isLoading;
     private boolean isShowDAB;
     protected LoadingAndErrorWrapper leWrapper;
-    protected int numColumns;
     protected RecyclerView recyclerView;
     protected long requestId;
     private int restoredEpisodeIndex;
@@ -96,7 +96,6 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.restoredEpisodeIndex = -1;
         this.currSeasonIndex = -1;
         this.isLoading = true;
-        this.numColumns = 1;
         this.isShowDAB = false;
         this.viewCreatorEpisodes = new EpisodesFrag$1(this);
         this.episodeRefreshReceiver = new EpisodesFrag$7(this);
@@ -146,13 +145,13 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     public static NetflixDialogFrag create(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131361916);
+        episodesFrag.setStyle(1, 2131427452);
         return applyCreateArgs(episodesFrag, s, s2, b, false);
     }
     
     public static NetflixDialogFrag createEpisodes(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131361916);
+        episodesFrag.setStyle(1, 2131427452);
         return applyCreateArgs(episodesFrag, s, s2, b, true);
     }
     
@@ -172,6 +171,10 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             Log.v("EpisodesFrag", "Show is 'Day After Broadcast' (DAB), invalidating episode cache");
             DataUtil.invalidateCachedEpisodes(this.getServiceManager(), this.getShowId(), this.currSeasonDetails);
         }
+    }
+    
+    private boolean isCoppolaExperience() {
+        return this.getActivity() instanceof CoppolaDetailsActivity;
     }
     
     private void notifyDataLoadingComplete() {
@@ -225,8 +228,8 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.spinner = spinner;
         this.setupSeasonsSpinnerAdapter();
         this.setupSeasonsSpinnerListener();
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131558596);
-        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131296704)));
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131624150);
+        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131362289)));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 8388627));
         return this.spinnerViewGroup;
     }
@@ -261,6 +264,10 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         return this.recyclerView;
     }
     
+    protected SeasonsSpinner getSeasonSpinner() {
+        return this.spinner;
+    }
+    
     public String getShowId() {
         return this.showId;
     }
@@ -271,7 +278,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected int getlayoutId() {
-        return 2130903228;
+        return 2130903255;
     }
     
     protected void initDetailsViewGroup() {
@@ -439,9 +446,9 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(this.spinner, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131558591), 0, null);
-                this.recyclerView.setOnScrollListener(onScrollListener);
-                return onScrollListener;
+                final DetailsPageParallaxScrollListener default1 = DetailsPageParallaxScrollListener.createDefault(this.spinner, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, null);
+                this.recyclerView.setOnScrollListener(default1);
+                return default1;
             }
         }
         return null;
@@ -478,7 +485,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130837920);
+        adapter.setItemBackgroundColor(2130837932);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
@@ -534,13 +541,19 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             this.restoredEpisodeIndex = -1;
         }
         if (this.selectedEpisodeIndex == -1 && this.episodesAdapter != null && this.showDetails != null) {
-            final String currentEpisodeId = this.showDetails.getCurrentEpisodeId();
+            String s;
+            if (this.isCoppolaExperience()) {
+                s = this.episodeId;
+            }
+            else {
+                s = this.showDetails.getCurrentEpisodeId();
+            }
             if (Log.isLoggable()) {
-                Log.v("EpisodesFrag", "currEpisodeId: " + currentEpisodeId + ", adapter count: " + this.episodesAdapter.getItemCount());
+                Log.v("EpisodesFrag", "currEpisodeId: " + s + ", adapter count: " + this.episodesAdapter.getItemCount());
             }
             for (int i = 0; i < this.episodesAdapter.getItemCount(); ++i) {
                 final Video item = this.episodesAdapter.getItem(i);
-                if (item != null && StringUtils.safeEquals(item.getId(), currentEpisodeId)) {
+                if (item != null && StringUtils.safeEquals(item.getId(), s)) {
                     if (Log.isLoggable()) {
                         Log.v("EpisodesFrag", "found selected episode, index: " + i);
                     }

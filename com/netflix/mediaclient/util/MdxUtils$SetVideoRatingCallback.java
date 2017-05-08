@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import android.content.Context;
 import android.widget.Toast;
 import com.netflix.mediaclient.Log;
+import android.app.Activity;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -31,18 +32,18 @@ public class MdxUtils$SetVideoRatingCallback extends LoggingManagerCallback
     @Override
     public void onVideoRatingSet(final UserRating userRating, final Status status) {
         super.onVideoRatingSet(userRating, status);
-        if (this.activity.destroyed()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.activity)) {
             return;
         }
         if (status.isError()) {
             Log.w("MdxUtils", "onVideoRatingSet: Invalid status code - failed");
-            Toast.makeText((Context)this.activity, 2131165538, 1).show();
+            Toast.makeText((Context)this.activity, 2131231073, 1).show();
             Log.d("MdxUtils", "Report rate action ended");
-            UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.activity.getString(2131165538), ActionOnUIError.displayedError), null, (int)this.rating);
+            UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.activity.getString(2131231073), ActionOnUIError.displayedError), null, (int)this.rating);
             return;
         }
         Log.v("MdxUtils", "onVideoRatingSet: Rating has been updated to: " + userRating.getUserRating());
-        Toast.makeText((Context)this.activity, 2131165624, 1).show();
+        Toast.makeText((Context)this.activity, 2131231161, 1).show();
         UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.success, null, null, (int)this.rating);
     }
 }

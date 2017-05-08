@@ -33,7 +33,7 @@ abstract class FloatingActionButtonImpl
     Drawable createBorderDrawable(final int n, final ColorStateList list) {
         final Resources resources = this.mView.getResources();
         final CircularBorderDrawable circularDrawable = this.newCircularDrawable();
-        circularDrawable.setGradientColors(resources.getColor(R$color.fab_stroke_top_outer_color), resources.getColor(R$color.fab_stroke_top_inner_color), resources.getColor(R$color.fab_stroke_end_inner_color), resources.getColor(R$color.fab_stroke_end_outer_color));
+        circularDrawable.setGradientColors(resources.getColor(R$color.design_fab_stroke_top_outer_color), resources.getColor(R$color.design_fab_stroke_top_inner_color), resources.getColor(R$color.design_fab_stroke_end_inner_color), resources.getColor(R$color.design_fab_stroke_end_outer_color));
         circularDrawable.setBorderWidth(n);
         circularDrawable.setTintColor(list.getDefaultColor());
         return circularDrawable;

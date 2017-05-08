@@ -11,6 +11,7 @@ public class KongInteractivePostPlayModel$KongNextEpisode
     KongInteractivePostPlayModel$KongNextEpisodeImage images;
     final /* synthetic */ KongInteractivePostPlayModel this$0;
     String title;
+    int trackId;
     int videoId;
     
     public KongInteractivePostPlayModel$KongNextEpisode(final KongInteractivePostPlayModel this$0) {
@@ -27,6 +28,10 @@ public class KongInteractivePostPlayModel$KongNextEpisode
     
     public String getTitle() {
         return this.title;
+    }
+    
+    public int getTrackId() {
+        return this.trackId;
     }
     
     public int getVideoId() {

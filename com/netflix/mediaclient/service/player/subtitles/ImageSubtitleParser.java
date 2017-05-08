@@ -17,6 +17,7 @@ import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.net.DnsManager;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.Log;
@@ -62,10 +63,10 @@ public class ImageSubtitleParser extends BaseImageSubtitleParser implements Imag
             return;
         }
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Downloading segment " + segmentIndex + " from URL " + this.mSubtitleData.getUrl() + ", start position [b]: " + segmentIndex.getSegmentStartPosition() + ", size [b]: " + segmentIndex.getSegmentSize());
+            Log.d("nf_subtitles", "Downloading segment " + segmentIndex + " from URL " + this.mSubtitleData.getDownloadUrl() + ", start position [b]: " + segmentIndex.getSegmentStartPosition() + ", size [b]: " + segmentIndex.getSegmentSize());
         }
         segmentIndex.downloadStarted();
-        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getUrl(), IClientLogging$AssetType.imageSubtitlesSegment, segmentIndex.getSegmentStartPosition(), segmentIndex.getSegmentSize(), new ImageSubtitleParser$3(this, segmentIndex));
+        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesSegment, segmentIndex.getSegmentStartPosition(), segmentIndex.getSegmentSize(), new ImageSubtitleParser$3(this, segmentIndex));
     }
     
     private int getCurrentSegmentIndex() {
@@ -109,32 +110,33 @@ public class ImageSubtitleParser extends BaseImageSubtitleParser implements Imag
     }
     
     private void handleDownloadMasterIndex() {
-        if (this.mSubtitleData == null) {
+        if (this.mSubtitleData == null || this.mSubtitleData.getDownloadUrl() == null) {
             Log.e("nf_subtitles", "Subtitle data is null!");
             return;
         }
-        if (StringUtils.isEmpty(this.mSubtitleData.getUrl())) {
+        final String[] nameServers = DnsManager.getInstance().getNameServers();
+        if (StringUtils.isEmpty(this.mSubtitleData.getDownloadUrl())) {
             Log.e("nf_subtitles", "Subtitle URL is empty!");
-            this.onError("", IMedia$SubtitleFailure.badMasterIndex, null);
+            this.onError("", nameServers, IMedia$SubtitleFailure.badMasterIndex, null);
             return;
         }
         if (this.mSubtitleData.getMasterIndexSize() <= 0) {
             if (Log.isLoggable()) {
                 Log.e("nf_subtitles", "Subtitle master index size is wrong " + this.mSubtitleData.getMasterIndexSize());
             }
-            this.onError(this.mSubtitleData.getUrl(), IMedia$SubtitleFailure.badMasterIndex, null);
+            this.onError(this.mSubtitleData.getDownloadUrl(), nameServers, IMedia$SubtitleFailure.badMasterIndex, null);
             return;
         }
         if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Subtitle data " + this.mSubtitleData);
         }
-        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getUrl(), IClientLogging$AssetType.imageSubtitlesMasterIndex, this.mSubtitleData.getMasterIndexOffset(), this.mSubtitleData.getMasterIndexSize(), new ImageSubtitleParser$1(this));
+        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesMasterIndex, this.mSubtitleData.getMasterIndexOffset(), this.mSubtitleData.getMasterIndexSize(), new ImageSubtitleParser$1(this, nameServers));
     }
     
     private void handleDownloadSegmentIndexes() {
         Log.d("nf_subtitles", "Start to download segment indexes");
         final int segmentIndexesSize = this.mMasterIndex.getSegmentIndexesSize();
-        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getUrl(), IClientLogging$AssetType.imageSubtitlesSegmentIndex, this.mMasterIndex.getStartOffset(), segmentIndexesSize, new ImageSubtitleParser$2(this, segmentIndexesSize));
+        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesSegmentIndex, this.mMasterIndex.getStartOffset(), segmentIndexesSize, new ImageSubtitleParser$2(this, segmentIndexesSize));
     }
     
     private boolean handleImport() {

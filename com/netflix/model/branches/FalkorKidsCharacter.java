@@ -180,12 +180,29 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public int getAutoPlayMaxCount() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        if (watchNextDetails == null) {
+            return -1;
+        }
+        return watchNextDetails.autoPlayMaxCount;
+    }
+    
+    @Override
     public String getBifUrl() {
         final Video$Detail watchNextDetails = this.getWatchNextDetails();
         if (watchNextDetails == null) {
             return null;
         }
         return watchNextDetails.bifUrl;
+    }
+    
+    @Override
+    public String getBoxartImageTypeIdentifier() {
+        if (this.kidsSummary == null) {
+            return null;
+        }
+        return this.kidsSummary.getBoxartImageTypeIdentifier();
     }
     
     @Override
@@ -546,7 +563,6 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
         return this.getWatchNextSquareUrl();
     }
     
-    @Override
     public boolean hasWatched() {
         final Video$Detail watchNextDetails = this.getWatchNextDetails();
         return watchNextDetails != null && watchNextDetails.hasWatched;
@@ -573,6 +589,12 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     public boolean isAvailableToStream() {
         final Playable playable = this.getPlayable();
         return playable != null && playable.isAvailableToStream();
+    }
+    
+    @Override
+    public boolean isExemptFromInterrupterLimit() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        return watchNextDetails != null && watchNextDetails.isExemptFromInterrupterLimit;
     }
     
     @Override

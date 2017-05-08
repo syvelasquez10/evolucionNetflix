@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.servicemgr;
 
 import java.util.HashMap;
-import android.content.Context;
 import android.widget.Toast;
 import com.netflix.mediaclient.android.app.Status;
 import android.widget.TextView;
@@ -46,6 +45,10 @@ public class AddToMyListWrapper
             return new KubrickTextViewWrapper(this, netflixActivity, textView, textView2, s, videoType, n, b);
         }
         return new TextViewWrapper(this, netflixActivity, textView, s, videoType, n, b);
+    }
+    
+    public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n) {
+        return new KubrickTextViewWrapper(this, netflixActivity, textView, null, s, videoType, n, false);
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n, final boolean b) {
@@ -109,12 +112,12 @@ public class AddToMyListWrapper
             if (b2) {
                 int n;
                 if (b) {
-                    n = 2131165534;
+                    n = 2131231069;
                 }
                 else {
-                    n = 2131165537;
+                    n = 2131231072;
                 }
-                Toast.makeText((Context)this.serviceMan.getActivity(), n, 1).show();
+                Toast.makeText(this.serviceMan.getContext(), n, 1).show();
             }
         }
     }

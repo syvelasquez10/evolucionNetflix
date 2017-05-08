@@ -29,7 +29,9 @@ public class ImpressionSession extends BaseUIViewSession
         final ImpressionSessionEndedEvent impressionSessionEndedEvent = new ImpressionSessionEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mOriginatingRequestGuid, b, error);
         impressionSessionEndedEvent.setCategory(this.getCategory());
         impressionSessionEndedEvent.setSessionId(this.mId);
-        impressionSessionEndedEvent.setModel(this.mModel);
+        if (this.mModel != null) {
+            impressionSessionEndedEvent.setModel(this.mModel);
+        }
         return impressionSessionEndedEvent;
     }
     

@@ -20,6 +20,14 @@ public interface InteractiveMomentsManager
     
     void onMomentsFetched(final InteractivePlaybackMoments p0);
     
+    void onPause();
+    
+    void onResume();
+    
+    void onStart();
+    
+    void onStop();
+    
     void onVideoDetailsFetched(final VideoDetails p0);
     
     void playerOverlayVisibility(final boolean p0);

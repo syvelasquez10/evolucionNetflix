@@ -4,16 +4,21 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.mediaclient.util.IrisUtils;
-import com.netflix.mediaclient.service.pushnotification.MessageData;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.IrisUtils;
+import com.netflix.mediaclient.service.pushnotification.MessageData;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import com.netflix.mediaclient.util.Coppola1Utils;
+import com.netflix.mediaclient.util.Coppola2Utils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.Asset;
@@ -161,6 +166,13 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.expiringContent(s, browseAgentCallback, expiringContentAction);
     }
     
+    public void fetchActorDetailsAndRelatedForTitle(final String s, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchActorDetailsAndRelatedForTitle(s, browseAgentCallback);
+    }
+    
     @Override
     public void fetchBillboards(final int n, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
@@ -259,11 +271,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     @Override
-    public void fetchInteractiveVideoMoments(final VideoType videoType, final String s, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchInteractiveVideoMoments(final VideoType videoType, final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchInteractiveVideoMoments(videoType, s, browseAgentCallback);
+        this.cmp.fetchInteractiveVideoMoments(videoType, s, s2, browseAgentCallback);
     }
     
     public void fetchKidsCharacterDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
@@ -309,6 +321,20 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.fetchNotifications(n, n2, false, browseAgentCallback);
+    }
+    
+    public void fetchPersonDetail(final String s, final BrowseAgentCallback browseAgentCallback, final String s2) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchPersonDetail(s, browseAgentCallback, s2);
+    }
+    
+    public void fetchPersonRelated(final String s, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchPersonRelated(s, browseAgentCallback);
     }
     
     @Override
@@ -380,6 +406,13 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.fetchSimilarVideos(Falkor$SimilarRequestType.QUERY_SUGGESTION, s, n, s2, browseAgentCallback);
+    }
+    
+    public void fetchTask(final CachedModelProxy$CmpTaskDetails cachedModelProxy$CmpTaskDetails, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchTask(cachedModelProxy$CmpTaskDetails, browseAgentCallback);
     }
     
     @Override
@@ -456,6 +489,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
+        PerformanceProfiler.getInstance().startSession(Sessions.LOLOMO_PREFETCH, null);
         this.cmp.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, b3, new FalkorAgent$3(this, browseAgentCallback));
     }
     
@@ -472,8 +506,18 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (this.cmp.doesCwExist()) {
             this.cmp.refreshCw();
         }
-        else if (!CoppolaUtils.isCoppolaExperience(this.getContext()) || !b) {
+        else if ((Coppola2Utils.isCoppolaWithoutNormalCW(this.getContext()) && this.cmp.doesDiscoveryRowExist()) || (Coppola1Utils.isCoppolaExperience(this.getContext()) && b)) {
+            Log.v("FalkorAgent", "This is a special use case for Coppola - no need to refresh the whole LoLoMo");
+        }
+        else {
             this.refreshLolomo();
+        }
+        if (Coppola2Utils.isCoppolaDiscovery(this.getContext())) {
+            if (ConnectivityUtils.isConnectedOrConnecting(this.getContext())) {
+                this.cmp.refreshDiscoveryRow();
+                return;
+            }
+            Log.w("FalkorAgent", "No connectivity - no need to refresh Discovery row");
         }
     }
     
@@ -484,15 +528,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.refreshIq();
     }
     
-    public void refreshLolomo() {
-        if (Log.isLoggable()) {
-            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
-        }
-        this.flushCaches();
-        ServiceManager.sendHomeRefreshBrodcast((Context)this.getService());
-    }
-    
-    public void refreshSocialNotifications(final boolean b, final boolean b2, final MessageData messageData) {
+    public void refreshIrisNotifications(final boolean b, final boolean b2, final MessageData messageData) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
@@ -500,6 +536,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (this.getService() != null && this.getService().getCurrentProfile() != null) {
             this.rescheduleNotificationsRefresh();
         }
+    }
+    
+    public void refreshLolomo() {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.flushCaches();
+        ServiceManager.sendHomeRefreshBrodcast((Context)this.getService());
     }
     
     public void removeFromQueue(final String s, final VideoType videoType, final String s2, final BrowseAgentCallback browseAgentCallback) {

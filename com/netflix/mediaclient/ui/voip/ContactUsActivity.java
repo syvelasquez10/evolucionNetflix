@@ -147,7 +147,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     
     private void displayConfirmationDialog() {
         this.mVerificationDialogDisplayed = true;
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, this.getString(2131165464), this.getString(2131165463), new ContactUsActivity$2(this), this.getString(2131165462), new ContactUsActivity$3(this)), null));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, this.getString(2131231009), this.getString(2131231008), new ContactUsActivity$2(this), this.getString(2131231007), new ContactUsActivity$3(this)), null));
     }
     
     private void doStartDial() {
@@ -205,12 +205,12 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     }
     
     private void initUI(final boolean b) {
-        this.setContentView(2130903073);
+        this.setContentView(2130903079);
         this.getSupportActionBar().hide();
-        this.mFlipper = (ViewFlipper)this.findViewById(2131624091);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131689678);
         this.mLandingPage = new LandingPageScreen(this);
         this.mDialerScreen = new DialerScreen(this);
-        this.mDialButton = this.findViewById(2131624139);
+        this.mDialButton = this.findViewById(2131689726);
         if (b || this.mVoip.isEnabled()) {
             if (Log.isLoggable()) {
                 Log.d("VoipActivity", "VOIP is enabled, show dial button on landing page! This is force enabled: " + b);
@@ -255,7 +255,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     private void requestAudioPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO")) {
             Log.i("VoipActivity", "Displaying audio permission rationale to provide additional context.");
-            Snackbar.make(this.mLandingPage.getFab(), 2131165365, -2).setAction(2131165588, (View$OnClickListener)new ContactUsActivity$4(this)).show();
+            Snackbar.make(this.mLandingPage.getFab(), 2131230902, -2).setAction(2131231125, (View$OnClickListener)new ContactUsActivity$4(this)).show();
             return;
         }
         ActivityCompat.requestPermissions(this, ContactUsActivity.PERMISSIONS_AUDIO, 0);
@@ -266,18 +266,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     }
     
     private boolean shouldDisplayCallConfirmationDialog() {
-        boolean shouldDisplayVoipDialConfirmationDialog;
-        if (this.mServiceManager == null || this.mServiceManager.getConfiguration() == null) {
-            shouldDisplayVoipDialConfirmationDialog = false;
-        }
-        else {
-            final boolean b = shouldDisplayVoipDialConfirmationDialog = this.mServiceManager.getConfiguration().shouldDisplayVoipDialConfirmationDialog();
-            if (Log.isLoggable()) {
-                Log.d("VoipActivity", "Displaying confirmation dialog: " + b);
-                return b;
-            }
-        }
-        return shouldDisplayVoipDialConfirmationDialog;
+        return true;
     }
     
     private void verifyBeforeDial() {
@@ -454,7 +443,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
             return;
         }
         Log.i("VoipActivity", "Audio permission was NOT granted.");
-        Snackbar.make(this.mLandingPage.getFab(), 2131165364, -1).show();
+        Snackbar.make(this.mLandingPage.getFab(), 2131230901, -1).show();
     }
     
     @Override

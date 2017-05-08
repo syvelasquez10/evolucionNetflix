@@ -279,7 +279,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                             Log.d(WidevineDrmManager.TAG, "MediaDrm provide key update failed or restore keys failed. Unregister device, logout user, and kill app process after error is displayed.");
                             runnable = new WidevineDrmManager$3(this);
                         }
-                        this.mErrorHandler.addError(new WidevineErrorDescriptor(this.mContext, statusCode, runnable, 2131165525));
+                        this.mErrorHandler.addError(new WidevineErrorDescriptor(this.mContext, statusCode, runnable, 2131231060));
                         return;
                     }
                     finally {
@@ -379,25 +379,32 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
     }
     
-    byte[] decrypt(byte[] unpadPerPKCS5Padding, final byte[] array) {
+    byte[] decrypt(final byte[] array, final byte[] array2) {
         final MediaDrm$CryptoSession mediaDrmCryptoSession = this.findMediaDrmCryptoSession();
+        byte[] unpadPerPKCS5Padding;
         if (mediaDrmCryptoSession == null) {
             Log.w(WidevineDrmManager.TAG, "decrypt - session NOT found!");
-            return new byte[0];
+            unpadPerPKCS5Padding = new byte[0];
         }
-        if (this.nccpCryptoFactoryCryptoSession.kceKeyId == null) {
-            Log.w(WidevineDrmManager.TAG, "decrypt - kce is null!");
-            return new byte[0];
+        else {
+            if (this.nccpCryptoFactoryCryptoSession.kceKeyId == null) {
+                Log.w(WidevineDrmManager.TAG, "decrypt - kce is null!");
+                return new byte[0];
+            }
+            try {
+                final byte[] array3 = unpadPerPKCS5Padding = CryptoUtils.unpadPerPKCS5Padding(mediaDrmCryptoSession.decrypt(this.nccpCryptoFactoryCryptoSession.kceKeyId, array, array2), 16);
+                if (Log.isLoggable()) {
+                    Log.d(WidevineDrmManager.TAG, "decrypt input size " + array.length + ", iv size " + array2.length + ", output size " + array3.length);
+                    return array3;
+                }
+            }
+            catch (Throwable t) {
+                Log.e(WidevineDrmManager.TAG, "Failed to decrypt ", t);
+                this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_DECRYPT, t);
+                return new byte[0];
+            }
         }
-        try {
-            unpadPerPKCS5Padding = CryptoUtils.unpadPerPKCS5Padding(mediaDrmCryptoSession.decrypt(this.nccpCryptoFactoryCryptoSession.kceKeyId, unpadPerPKCS5Padding, array), 16);
-            return unpadPerPKCS5Padding;
-        }
-        catch (Throwable t) {
-            Log.e(WidevineDrmManager.TAG, "Failed to decrypt ", t);
-            this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_DECRYPT, t);
-            return new byte[0];
-        }
+        return unpadPerPKCS5Padding;
     }
     
     public void destroy() {
@@ -412,26 +419,32 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
     }
     
-    byte[] encrypt(byte[] array, final byte[] array2) {
+    byte[] encrypt(final byte[] array, final byte[] array2) {
         final MediaDrm$CryptoSession mediaDrmCryptoSession = this.findMediaDrmCryptoSession();
+        byte[] encrypt;
         if (mediaDrmCryptoSession == null) {
             Log.w(WidevineDrmManager.TAG, "encrypt - session NOT found!");
-            return new byte[0];
+            encrypt = new byte[0];
         }
-        if (this.nccpCryptoFactoryCryptoSession.kceKeyId == null) {
-            Log.w(WidevineDrmManager.TAG, "encrypt - kce is null!");
-            return new byte[0];
+        else {
+            if (this.nccpCryptoFactoryCryptoSession.kceKeyId == null) {
+                Log.w(WidevineDrmManager.TAG, "encrypt - kce is null!");
+                return new byte[0];
+            }
+            try {
+                final byte[] array3 = encrypt = mediaDrmCryptoSession.encrypt(this.nccpCryptoFactoryCryptoSession.kceKeyId, CryptoUtils.padPerPKCS5Padding(array, 16), array2);
+                if (Log.isLoggable()) {
+                    Log.d(WidevineDrmManager.TAG, "encrypt input size " + array.length + ", iv size " + array2.length + ", output size " + array3.length);
+                    return array3;
+                }
+            }
+            catch (Throwable t) {
+                Log.e(WidevineDrmManager.TAG, "Failed to encrypt ", t);
+                this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_ENCRYPT, t);
+                return new byte[0];
+            }
         }
-        try {
-            array = CryptoUtils.padPerPKCS5Padding(array, 16);
-            array = mediaDrmCryptoSession.encrypt(this.nccpCryptoFactoryCryptoSession.kceKeyId, array, array2);
-            return array;
-        }
-        catch (Throwable t) {
-            Log.e(WidevineDrmManager.TAG, "Failed to encrypt ", t);
-            this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_ENCRYPT, t);
-            return new byte[0];
-        }
+        return encrypt;
     }
     
     public byte[] getDeviceId() {
@@ -546,31 +559,38 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
     }
     
-    byte[] sign(byte[] sign) {
+    byte[] sign(final byte[] array) {
         final MediaDrm$CryptoSession mediaDrmCryptoSession = this.findMediaDrmCryptoSession();
+        byte[] sign;
         if (mediaDrmCryptoSession == null) {
             Log.w(WidevineDrmManager.TAG, "sign - session NOT found!");
-            return new byte[0];
+            sign = new byte[0];
         }
-        if (this.nccpCryptoFactoryCryptoSession.kchKeyId == null) {
-            Log.w(WidevineDrmManager.TAG, "sign - kch is null!");
-            return new byte[0];
+        else {
+            if (this.nccpCryptoFactoryCryptoSession.kchKeyId == null) {
+                Log.w(WidevineDrmManager.TAG, "sign - kch is null!");
+                return new byte[0];
+            }
+            try {
+                final byte[] array2 = sign = mediaDrmCryptoSession.sign(this.nccpCryptoFactoryCryptoSession.kchKeyId, array);
+                if (Log.isLoggable()) {
+                    Log.d(WidevineDrmManager.TAG, "sign input size " + array.length + ", output size " + array2.length);
+                    return array2;
+                }
+            }
+            catch (Throwable t) {
+                Log.e(WidevineDrmManager.TAG, "Failed to sign message ", t);
+                this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_SIGN, t);
+                return new byte[0];
+            }
         }
-        try {
-            sign = mediaDrmCryptoSession.sign(this.nccpCryptoFactoryCryptoSession.kchKeyId, sign);
-            return sign;
-        }
-        catch (Throwable t) {
-            Log.e(WidevineDrmManager.TAG, "Failed to sign message ", t);
-            this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_SIGN, t);
-            return new byte[0];
-        }
+        return sign;
     }
     
     boolean updateNccpSessionKeyResponse(final byte[] array, final byte[] array2, final byte[] array3, final String s) {
-    Label_0042_Outer:
         while (true) {
             boolean b = false;
+        Label_0057_Outer:
             while (true) {
                 while (true) {
                     final byte[] array4;
@@ -580,6 +600,8 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.d(WidevineDrmManager.TAG, "Update key response for account " + s);
                             }
                             break Label_0189;
+                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
+                            return b;
                             try {
                                 final byte[] pendingSessionId = this.nccpCryptoFactoryCryptoSession.pendingSessionId;
                                 if (pendingSessionId != null) {
@@ -602,16 +624,14 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
                             return b;
-                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
-                            return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {
-                        continue Label_0042_Outer;
+                        continue;
                     }
                     break;
                 }
-                continue;
+                continue Label_0057_Outer;
             }
         }
     }

@@ -29,15 +29,16 @@ public final class UriUtil
         }
         final int playableBookmarkPosition = cwVideo.getPlayableBookmarkPosition();
         if (StringUtils.isEmpty(s)) {
-            return cwVideo.getInterestingUrl();
+            return null;
         }
-        if (playableBookmarkPosition < cwVideo.getLogicalStart() + 10) {
+        int n;
+        if ((n = playableBookmarkPosition) < cwVideo.getLogicalStart() + 10) {
             if (Log.isLoggable()) {
-                Log.v("UriUtils", String.format("%s bookmark < threshold(%d) logicalStart %d, using interesting url %s ", cwVideo.getId(), 10, cwVideo.getLogicalStart(), cwVideo.getInterestingUrl()));
+                Log.v("UriUtils", String.format("%s bookmark < threshold(%d) logicalStart %d ", cwVideo.getId(), 10, cwVideo.getLogicalStart()));
             }
-            return cwVideo.getInterestingUrl();
+            n = playableBookmarkPosition + 10;
         }
-        final String value = String.valueOf(playableBookmarkPosition / 10);
+        final String value = String.valueOf(n / 10);
         final StringBuilder append = new StringBuilder(s).append("/00000");
         append.replace(append.length() - value.length(), append.length(), value);
         append.append(".jpg");

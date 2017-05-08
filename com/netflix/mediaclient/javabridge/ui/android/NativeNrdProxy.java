@@ -18,6 +18,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
 {
     private final String TAG;
     private NrdpObject media;
+    private NrdpObject network;
     private NrdpObject nrdp;
     private Map<String, NrdpObject> objMap;
     
@@ -33,7 +34,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
         final NativeRegistration nativeRegistration = new NativeRegistration(bridge);
         final NativeLog nativeLog = new NativeLog(bridge);
         final NativeMdx nativeMdx = new NativeMdx(bridge);
-        final NativeNetworkDiagnosis nativeNetworkDiagnosis = new NativeNetworkDiagnosis(bridge);
+        this.network = new NativeNetworkDiagnosis(bridge);
         this.objMap.put(this.nrdp.getPath(), this.nrdp);
         this.objMap.put(this.media.getPath(), this.media);
         this.objMap.put(nativeDevice.getPath(), nativeDevice);
@@ -41,7 +42,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
         this.objMap.put(nativeRegistration.getPath(), nativeRegistration);
         this.objMap.put(nativeMdx.getPath(), nativeMdx);
         this.objMap.put(nativeLog.getPath(), nativeLog);
-        this.objMap.put(nativeNetworkDiagnosis.getPath(), nativeNetworkDiagnosis);
+        this.objMap.put(this.network.getPath(), this.network);
     }
     
     private String getKey(final String s) {
@@ -68,6 +69,10 @@ public final class NativeNrdProxy extends BaseNrdProxy
             if ("IMediaControl".equalsIgnoreCase(string)) {
                 Log.d("native_nrd_proxy", "handleName:: IMC event, pass to Media proxy");
                 return this.media.processUpdate(jsonObject);
+            }
+            if ("INetwork".equalsIgnoreCase(string)) {
+                Log.d("native_nrd_proxy", "handleName:: networking event, pass to !!! proxy");
+                return this.network.processUpdate(jsonObject);
             }
             if ("background".equalsIgnoreCase(string)) {
                 Log.d("native_nrd_proxy", "handleName:: background event, pass to Media proxy");

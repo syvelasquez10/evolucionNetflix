@@ -9,6 +9,7 @@ public enum LoMoViewPagerAdapter$Type
     BILLBOARD, 
     CHARACTER, 
     CW, 
+    DISCOVERY, 
     ERROR, 
     IQ, 
     KUBRICK_HERO, 

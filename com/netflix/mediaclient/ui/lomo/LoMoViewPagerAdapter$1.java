@@ -14,6 +14,7 @@ final class LoMoViewPagerAdapter$1 extends EnumMap<LoMoType, LoMoViewPagerAdapte
         this.put(LoMoType.BILLBOARD, LoMoViewPagerAdapter$Type.BILLBOARD);
         this.put(LoMoType.CHARACTERS, LoMoViewPagerAdapter$Type.CHARACTER);
         this.put(LoMoType.CONTINUE_WATCHING, LoMoViewPagerAdapter$Type.CW);
+        this.put(LoMoType.DISCOVERY_ROW, LoMoViewPagerAdapter$Type.DISCOVERY);
         this.put(LoMoType.INSTANT_QUEUE, LoMoViewPagerAdapter$Type.IQ);
         this.put(LoMoType.FLAT_GENRE, LoMoViewPagerAdapter$Type.STANDARD);
         this.put(LoMoType.SOCIAL_FRIEND, LoMoViewPagerAdapter$Type.STANDARD);

@@ -249,6 +249,10 @@ public final class DrmManagerRegistry
         return false;
     }
     
+    public static boolean isWidevineInstanceL3() {
+        return DrmManagerRegistry.widevineInstanceL3;
+    }
+    
     private static boolean isWidevineLevel1Supported() {
         return "L1".equalsIgnoreCase(DrmManagerRegistry.mMaxSecurityLevel);
     }

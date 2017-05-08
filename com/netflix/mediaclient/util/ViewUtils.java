@@ -9,6 +9,7 @@ import java.util.Collection;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.MenuItem;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import android.view.View$OnTouchListener;
 import android.view.ViewGroup;
 import android.view.View$OnLongClickListener;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -124,7 +125,7 @@ public class ViewUtils
     
     public static View createActionBarDummyView(final NetflixActivity netflixActivity) {
         final View view = new View((Context)netflixActivity);
-        view.setId(2131623938);
+        view.setId(2131689474);
         view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, netflixActivity.getActionBarHeight()));
         return view;
     }
@@ -161,7 +162,7 @@ public class ViewUtils
     }
     
     public static int getDefaultActionBarHeight(final Context context) {
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130772189 });
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130772195 });
         final int n = (int)obtainStyledAttributes.getDimension(0, 0.0f);
         obtainStyledAttributes.recycle();
         return n;
@@ -495,6 +496,12 @@ public class ViewUtils
             for (int i = 0; i < viewGroup.getChildCount(); ++i) {
                 setLongTapListenersRecursivelyToShowContentDescriptionToast(viewGroup.getChildAt(i));
             }
+        }
+    }
+    
+    public static void setOnTouchListeners(final View$OnTouchListener onTouchListener, final View... array) {
+        for (int length = array.length, i = 0; i < length; ++i) {
+            array[i].setOnTouchListener(onTouchListener);
         }
     }
     

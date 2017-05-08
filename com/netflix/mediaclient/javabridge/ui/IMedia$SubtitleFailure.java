@@ -7,6 +7,7 @@ package com.netflix.mediaclient.javabridge.ui;
 public enum IMedia$SubtitleFailure
 {
     badMasterIndex, 
+    dnsResolution, 
     download, 
     parsing, 
     parsingCachedMasterIndex;

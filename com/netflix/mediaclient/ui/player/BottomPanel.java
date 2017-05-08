@@ -61,16 +61,16 @@ public final class BottomPanel extends PlayerSection
     
     private void init(final PlayScreen$Listeners playScreen$Listeners) {
         final View view = this.playerFragment.getView();
-        this.durationLabel = (TextView)view.findViewById(2131624506);
-        this.bottomPanel = view.findViewById(2131624502);
-        this.bottomGradient = view.findViewById(2131624498);
-        this.timeline = (TimelineSeekBar)view.findViewById(2131624505);
+        this.durationLabel = (TextView)view.findViewById(2131690103);
+        this.bottomPanel = view.findViewById(2131690099);
+        this.bottomGradient = view.findViewById(2131690095);
+        this.timeline = (TimelineSeekBar)view.findViewById(2131690102);
         this.videoPositionListener = playScreen$Listeners.videoPositionListener;
         this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.playerFragment.getNetflixActivity(), this.playerFragment.getUiResources().timelineThumbOffsetInDip));
-        (this.media = (ImageButton)view.findViewById(2131624503)).setOnClickListener(playScreen$Listeners.playPauseListener);
-        (this.skipBack = (ImageButton)view.findViewById(2131624504)).setOnClickListener(playScreen$Listeners.skipBackListener);
-        (this.zoom = (ImageButton)view.findViewById(2131624507)).setOnClickListener(playScreen$Listeners.zoomListener);
-        this.extraSeekbarHandler = view.findViewById(2131624514);
+        (this.media = (ImageButton)view.findViewById(2131690100)).setOnClickListener(playScreen$Listeners.playPauseListener);
+        (this.skipBack = (ImageButton)view.findViewById(2131690101)).setOnClickListener(playScreen$Listeners.skipBackListener);
+        (this.zoom = (ImageButton)view.findViewById(2131690104)).setOnClickListener(playScreen$Listeners.zoomListener);
+        this.extraSeekbarHandler = view.findViewById(2131690111);
         this.currentTime = CurrentTime.newInstance(this.playerFragment);
     }
     
@@ -99,10 +99,10 @@ public final class BottomPanel extends PlayerSection
         }
         int n;
         if (enabled) {
-            n = 2131558608;
+            n = 2131624162;
         }
         else {
-            n = 2131558471;
+            n = 2131624025;
         }
         this.durationLabel.setTextColor(this.playerFragment.getResources().getColor(n));
     }
@@ -210,9 +210,13 @@ public final class BottomPanel extends PlayerSection
                 this.durationLabel.setText((CharSequence)this.formatter.getStringForMs(n2 - n));
             }
             this.currentTimeProgress = n;
-            n2 = n;
             if (this.bottomPanel.getAlpha() > 0.0f) {
                 this.currentTime.updateCurrentTime();
+                return n;
+            }
+            n2 = n;
+            if (Log.isLoggable()) {
+                Log.d("screen", "setProgress: bottomPanel is not visible, aborting");
                 return n;
             }
         }

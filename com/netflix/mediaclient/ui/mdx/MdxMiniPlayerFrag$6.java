@@ -7,10 +7,12 @@ package com.netflix.mediaclient.ui.mdx;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
+import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -21,7 +23,6 @@ import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.Fragment;
@@ -35,9 +36,6 @@ import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallba
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.os.Handler;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
-import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
-import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.Log;
@@ -47,7 +45,7 @@ import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 
-class MdxMiniPlayerFrag$6 implements MdxMiniPlayerViews$MdxMiniPlayerViewCallbacks
+class MdxMiniPlayerFrag$6 implements IMdxMiniPlayerViewCallbacks
 {
     private long startTrackingTouchTime;
     final /* synthetic */ MdxMiniPlayerFrag this$0;
@@ -68,7 +66,10 @@ class MdxMiniPlayerFrag$6 implements MdxMiniPlayerViews$MdxMiniPlayerViewCallbac
     
     @Override
     public IMdx getMdx() {
-        return this.this$0.getServiceManager().getMdx();
+        if (this.this$0.getServiceManager() != null) {
+            return this.this$0.getServiceManager().getMdx();
+        }
+        return null;
     }
     
     @Override

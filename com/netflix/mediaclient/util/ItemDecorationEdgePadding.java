@@ -11,11 +11,11 @@ import android.view.View;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 
-public final class ItemDecorationEdgePadding extends RecyclerView$ItemDecoration
+public class ItemDecorationEdgePadding extends RecyclerView$ItemDecoration
 {
-    private int edgePaddingMuliplier;
-    private int numColumns;
-    private int padding;
+    protected int edgePaddingMuliplier;
+    protected int numColumns;
+    protected int padding;
     
     public ItemDecorationEdgePadding(final int padding, final int numColumns, final int edgePaddingMuliplier) {
         this.padding = padding;

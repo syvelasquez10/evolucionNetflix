@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.util.log;
 
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.service.logging.client.model.Event;
+import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.service.logging.JsonSerializer;
 import android.content.Intent;
@@ -17,12 +19,22 @@ import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.service.logging.perf.PerfSession;
 
 public final class ApmLogUtils extends ConsolidatedLoggingUtils
 {
+    public static void endPerformanceSession(final PerfSession perfSession, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
+        if (applicationPerformanceMetricsLogging == null) {
+            Log.e("nf_log", "APM is unavailable");
+        }
+        else if (perfSession != null) {
+            applicationPerformanceMetricsLogging.endPerformanceSession(perfSession);
+        }
+    }
+    
     public static void reportAssetRequest(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
         if (applicationPerformanceMetricsLogging == null) {
             Log.e("nf_log", "APM is unavailable, can not report asset request result");
@@ -98,6 +110,15 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
+    public static void reportPerformanceEvent(final DiscreteEvent discreteEvent, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
+        if (applicationPerformanceMetricsLogging == null) {
+            Log.e("nf_log", "APM is unavailable, can not report request result");
+        }
+        else if (discreteEvent != null) {
+            applicationPerformanceMetricsLogging.reportPerformanceEvent(discreteEvent);
+        }
+    }
+    
     public static void reportPreappAddWidget(final Context context, final String s, final long n) {
         if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
             return;
@@ -135,6 +156,24 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
             intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
             intent.putExtra("view", clientLogging$ModalView.name());
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
+    }
+    
+    public static void reportUiModalViewImpressionEvent(final Context context, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(clientLogging$ModalView, "View can not be null!")) {
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_IMPRESSION");
+            intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+            intent.putExtra("view", clientLogging$ModalView.name());
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
+    }
+    
+    public static void startPerformanceSession(final PerfSession perfSession, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
+        if (applicationPerformanceMetricsLogging == null) {
+            Log.e("nf_log", "APM is unavailable");
+        }
+        else if (perfSession != null) {
+            applicationPerformanceMetricsLogging.startPerformanceSession(perfSession);
         }
     }
 }

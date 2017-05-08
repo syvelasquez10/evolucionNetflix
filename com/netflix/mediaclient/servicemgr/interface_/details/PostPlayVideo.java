@@ -6,9 +6,13 @@ package com.netflix.mediaclient.servicemgr.interface_.details;
 
 import java.util.List;
 
-public interface PostPlayVideo extends InterestingVideoDetails
+public interface PostPlayVideo extends VideoDetails
 {
     List<String> getEpisodeBadges();
+    
+    String getInterestingSmallUrl();
+    
+    String getInterestingUrl();
     
     String getNarrative();
 }

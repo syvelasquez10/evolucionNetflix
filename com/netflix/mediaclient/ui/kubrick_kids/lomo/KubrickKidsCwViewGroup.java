@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.lomo;
 
+import com.netflix.mediaclient.util.CWTestUtil;
 import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHighDensityCwView;
 import android.view.View;
 import android.content.Context;
@@ -16,7 +17,10 @@ public class KubrickKidsCwViewGroup extends KubrickHighDensityCwViewGroup
     }
     
     @Override
-    protected KubrickKidsCwView createChildView(final Context context) {
+    protected KubrickHighDensityCwView createChildView(final Context context) {
+        if (CWTestUtil.isInTest(context)) {
+            return new KubrickKidsCwTestView(context);
+        }
         return new KubrickKidsCwView(context);
     }
 }

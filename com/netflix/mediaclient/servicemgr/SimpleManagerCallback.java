@@ -4,14 +4,15 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -24,14 +25,22 @@ import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
-import java.util.List;
+import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.model.branches.MementoVideoSwatch;
+import com.netflix.model.branches.FalkorPerson;
+import java.util.List;
 
 public abstract class SimpleManagerCallback implements ManagerCallback
 {
+    @Override
+    public void onActorDetailsAndRelatedFetched(final List<FalkorPerson> list, final List<MementoVideoSwatch> list2, final Status status, final List<FalkorActorStill> list3) {
+    }
+    
     @Override
     public void onAutoLoginTokenCreated(final String s, final Status status) {
     }
@@ -50,6 +59,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     
     @Override
     public void onConnectWithFacebookComplete(final Status status) {
+    }
+    
+    @Override
+    public void onDiscoveryVideosFetched(final List<Discovery> list, final Status status) {
     }
     
     @Override
@@ -117,6 +130,14 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onPersonDetailFetched(final FalkorPerson falkorPerson, final FalkorActorStill falkorActorStill, final Status status) {
+    }
+    
+    @Override
+    public void onPersonRelatedFetched(final FalkorPerson falkorPerson, final List<Video> list, final Status status) {
+    }
+    
+    @Override
     public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
     }
     
@@ -174,6 +195,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     
     @Override
     public void onSocialNotificationWasThanked(final Status status) {
+    }
+    
+    @Override
+    public void onSurveyFetched(final Survey survey, final Status status) {
     }
     
     @Override

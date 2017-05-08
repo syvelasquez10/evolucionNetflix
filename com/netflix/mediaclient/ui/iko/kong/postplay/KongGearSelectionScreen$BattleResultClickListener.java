@@ -54,7 +54,6 @@ class KongGearSelectionScreen$BattleResultClickListener implements View$OnClickL
         this.this$0.postPlayManager.removeHandlerCallbacksAndMessages();
         if (this.this$0.gearItemsList != null && this.index < this.this$0.gearItemsList.size()) {
             final int videoId = this.this$0.gearItemsList.get(this.index).getVideoId();
-            final KongInteractivePostPlayManager postPlayManager = this.this$0.postPlayManager;
             int n;
             if (videoId == this.this$0.battleWinVideoId) {
                 n = this.this$0.battleWinVideoId;
@@ -62,7 +61,14 @@ class KongGearSelectionScreen$BattleResultClickListener implements View$OnClickL
             else {
                 n = this.this$0.battleLoseVideoId;
             }
-            postPlayManager.startPlayback(n, VideoType.MOVIE, b);
+            int n2;
+            if (videoId == this.this$0.battleWinVideoId) {
+                n2 = this.this$0.battleWinTrackId;
+            }
+            else {
+                n2 = this.this$0.battleLoseTrackId;
+            }
+            this.this$0.postPlayManager.startPlayback(n, n2, VideoType.MOVIE, b);
         }
     }
 }

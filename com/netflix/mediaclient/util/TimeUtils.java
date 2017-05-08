@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.util;
 
+import android.content.Context;
+
 public class TimeUtils
 {
     public static final int DAYS_PER_MONTH = 30;
@@ -45,5 +47,14 @@ public class TimeUtils
     
     public static int convertSecondsToMinutes(final int n) {
         return (int)(n / 60.0f + 0.5f);
+    }
+    
+    public static String getFormattedTime(int n, final Context context) {
+        final int n2 = n / 3600;
+        n = (n - n2 * 3600) / 60;
+        if (n2 > 0) {
+            return context.getResources().getString(2131231122, new Object[] { n2, n });
+        }
+        return context.getResources().getString(2131231123, new Object[] { n });
     }
 }

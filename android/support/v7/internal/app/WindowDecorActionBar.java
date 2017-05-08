@@ -581,6 +581,11 @@ public class WindowDecorActionBar extends ActionBar implements ActionBarOverlayL
     }
     
     @Override
+    public void setLogo(final Drawable logo) {
+        this.mDecorToolbar.setLogo(logo);
+    }
+    
+    @Override
     public void setShowHideAnimationEnabled(final boolean mShowHideAnimationEnabled) {
         this.mShowHideAnimationEnabled = mShowHideAnimationEnabled;
         if (!mShowHideAnimationEnabled && this.mCurrentShowAnim != null) {

@@ -30,6 +30,11 @@ class DummyMdxVideoDetails$1 implements Playable
     }
     
     @Override
+    public int getAutoPlayMaxCount() {
+        return -1;
+    }
+    
+    @Override
     public int getEndtime() {
         return 0;
     }
@@ -111,6 +116,11 @@ class DummyMdxVideoDetails$1 implements Playable
     
     @Override
     public boolean isAvailableToStream() {
+        return false;
+    }
+    
+    @Override
+    public boolean isExemptFromInterrupterLimit() {
         return false;
     }
     

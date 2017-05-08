@@ -26,7 +26,7 @@ class ResourceFetcher$1 implements Response$ErrorListener
     public void onErrorResponse(final VolleyError volleyError) {
         Log.e("nf_service_resourcefetcher", "RawFileDownloadRequest failed: ", volleyError);
         if (this.val$realCallback != null) {
-            this.val$realCallback.onResourceFetched(this.val$resourceUrl, null, new NetworkErrorStatus(volleyError));
+            this.val$realCallback.onResourceRawFetched(this.val$resourceUrl, null, new NetworkErrorStatus(volleyError));
         }
     }
 }

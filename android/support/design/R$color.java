@@ -6,11 +6,11 @@ package android.support.design;
 
 public final class R$color
 {
-    public static final int fab_stroke_end_inner_color = 2131558480;
-    public static final int fab_stroke_end_outer_color = 2131558481;
-    public static final int fab_stroke_top_inner_color = 2131558482;
-    public static final int fab_stroke_top_outer_color = 2131558483;
-    public static final int shadow_end_color = 2131558572;
-    public static final int shadow_mid_color = 2131558573;
-    public static final int shadow_start_color = 2131558574;
+    public static final int design_fab_shadow_end_color = 2131624012;
+    public static final int design_fab_shadow_mid_color = 2131624013;
+    public static final int design_fab_shadow_start_color = 2131624014;
+    public static final int design_fab_stroke_end_inner_color = 2131624015;
+    public static final int design_fab_stroke_end_outer_color = 2131624016;
+    public static final int design_fab_stroke_top_inner_color = 2131624017;
+    public static final int design_fab_stroke_top_outer_color = 2131624018;
 }

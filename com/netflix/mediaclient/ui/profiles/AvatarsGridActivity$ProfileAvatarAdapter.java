@@ -19,7 +19,6 @@ import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import android.os.Parcelable;
 import android.content.Intent;
-import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.widget.GridView;
@@ -83,14 +82,14 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903070, viewGroup, false);
-            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131624067), (ImageView)inflate.findViewById(2131624068)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903071, viewGroup, false);
+            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131689609), (ImageView)inflate.findViewById(2131689610)));
         }
         final AvatarsGridActivity$ViewHolder avatarsGridActivity$ViewHolder = (AvatarsGridActivity$ViewHolder)inflate.getTag();
         final String item = this.getItem(n);
         if (this.this$0.mSelectedIconPos == n) {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(0);
-            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837901);
+            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837913);
         }
         else {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(8);
@@ -108,8 +107,8 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         final int width = this.this$0.mGridView.getWidth();
         if (width > 0) {
             final Resources resources = this.this$0.getResources();
-            final float dimension = resources.getDimension(2131296695);
-            final float n = resources.getDimension(2131296694) + dimension;
+            final float dimension = resources.getDimension(2131362279);
+            final float n = resources.getDimension(2131362278) + dimension;
             final int numColumns = (int)(width / n);
             this.this$0.mGridView.setNumColumns(numColumns);
             this.adjustGridViewPaddings(width, numColumns, n, dimension);

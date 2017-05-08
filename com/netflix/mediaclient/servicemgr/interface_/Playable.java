@@ -12,6 +12,8 @@ public interface Playable
     
     String getAdvisoryRating();
     
+    int getAutoPlayMaxCount();
+    
     int getEndtime();
     
     int getEpisodeNumber();
@@ -45,6 +47,8 @@ public interface Playable
     boolean isAutoPlayEnabled();
     
     boolean isAvailableToStream();
+    
+    boolean isExemptFromInterrupterLimit();
     
     boolean isNSRE();
     

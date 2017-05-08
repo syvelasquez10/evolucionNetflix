@@ -51,6 +51,10 @@ public class PlayContextImp implements PlayContext
         this.videoPos = videoPos;
     }
     
+    public PlayContextImp cloneWithNewTrackId(final int n) {
+        return new PlayContextImp(this.getRequestId(), n, this.getListPos(), this.getVideoPos());
+    }
+    
     public int describeContents() {
         return 0;
     }

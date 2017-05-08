@@ -72,6 +72,22 @@ public class ViewPropertyAnimatorCompat
         return 0L;
     }
     
+    public ViewPropertyAnimatorCompat scaleX(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.scaleX(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat scaleY(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.scaleY(this, view, n);
+        }
+        return this;
+    }
+    
     public ViewPropertyAnimatorCompat setDuration(final long n) {
         final View view = this.mView.get();
         if (view != null) {

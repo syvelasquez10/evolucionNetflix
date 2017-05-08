@@ -825,6 +825,21 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         return null;
     }
     
+    public Fragment findFragmentByWho(final String s) {
+        if (this.mActive != null && s != null) {
+            for (int i = this.mActive.size() - 1; i >= 0; --i) {
+                final Fragment fragment = this.mActive.get(i);
+                if (fragment != null) {
+                    final Fragment fragmentByWho = fragment.findFragmentByWho(s);
+                    if (fragmentByWho != null) {
+                        return fragmentByWho;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
     public void freeBackStackIndex(final int n) {
         synchronized (this) {
             this.mBackStackIndices.set(n, null);

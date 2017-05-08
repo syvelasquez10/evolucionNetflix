@@ -79,6 +79,7 @@ public class KongBattleIntroScreen extends KongBaseScreen
     private String nextEpisodeImageUrl;
     private TextView nextEpisodeTitle;
     private String nextEpisodeTitleString;
+    private int nextEpisodeTrackId;
     private int nextEpisodeVideoId;
     private ImageView opponentAvatar;
     private String opponentAvatarImageUrl;
@@ -233,10 +234,10 @@ public class KongBattleIntroScreen extends KongBaseScreen
             }
         }
         else {
-            this.battleIntroContainer = (ViewGroup)view.findViewById(2131624459);
-            this.nextEpisodeContainer = (ViewGroup)view.findViewById(2131624455);
+            this.battleIntroContainer = (ViewGroup)view.findViewById(2131690057);
+            this.nextEpisodeContainer = (ViewGroup)view.findViewById(2131690053);
             final NetflixActivity activity = this.postPlayManager.getActivity();
-            this.battleCardWidth = activity.getResources().getDimensionPixelSize(2131296355);
+            this.battleCardWidth = activity.getResources().getDimensionPixelSize(2131361919);
             this.battleCardHeight = this.battleCardWidth / DeviceUtils.getScreenAspectRatio((Context)activity);
             final float n = DeviceUtils.getScreenWidthInPixels((Context)activity);
             final float n2 = DeviceUtils.getScreenHeightInPixels((Context)activity);
@@ -244,8 +245,8 @@ public class KongBattleIntroScreen extends KongBaseScreen
             this.scaleDownWidth = this.battleCardWidth / n;
             this.scaleDownHeight = this.battleCardHeight / (n3 * 1.0f);
             if (this.nextEpisodeVideoId > 0) {
-                this.backButtonWidth = activity.getResources().getDimensionPixelSize(2131296368);
-                this.battleEpisodeSpacing = activity.getResources().getDimensionPixelSize(2131296354);
+                this.backButtonWidth = activity.getResources().getDimensionPixelSize(2131361932);
+                this.battleEpisodeSpacing = activity.getResources().getDimensionPixelSize(2131361918);
                 final float n4 = this.battleCardWidth / 2.0f;
                 int n5;
                 if (n / 2.0f <= this.backButtonWidth + n4 + this.battleEpisodeSpacing) {
@@ -259,32 +260,32 @@ public class KongBattleIntroScreen extends KongBaseScreen
                 }
             }
             if (this.battleIntroContainer != null) {
-                this.battleTitle = (TextView)this.battleIntroContainer.findViewById(2131624462);
-                this.battleCountdownTimer = (TextView)this.battleIntroContainer.findViewById(2131624463);
-                this.battleIntroCompoundView = (PressAnimationFrameLayout)this.battleIntroContainer.findViewById(2131624460);
-                this.battleIntroPlaceholderView = this.battleIntroContainer.findViewById(2131624461);
+                this.battleTitle = (TextView)this.battleIntroContainer.findViewById(2131690060);
+                this.battleCountdownTimer = (TextView)this.battleIntroContainer.findViewById(2131690061);
+                this.battleIntroCompoundView = (PressAnimationFrameLayout)this.battleIntroContainer.findViewById(2131690058);
+                this.battleIntroPlaceholderView = this.battleIntroContainer.findViewById(2131690059);
                 this.battleIntroPlaceholderView.getLayoutParams().height = (int)this.battleCardHeight;
                 if (this.battleIntroCompoundView != null) {
-                    this.leftGate = (ImageView)this.battleIntroCompoundView.findViewById(2131624268);
-                    this.rightGate = (ImageView)this.battleIntroCompoundView.findViewById(2131624267);
-                    this.versusHex = (ImageView)this.battleIntroCompoundView.findViewById(2131624271);
-                    this.versusHexSword = (ImageView)this.battleIntroCompoundView.findViewById(2131624272);
-                    this.kongAvatar = (ImageView)this.battleIntroCompoundView.findViewById(2131624270);
-                    this.opponentAvatar = (ImageView)this.battleIntroCompoundView.findViewById(2131624269);
+                    this.leftGate = (ImageView)this.battleIntroCompoundView.findViewById(2131689858);
+                    this.rightGate = (ImageView)this.battleIntroCompoundView.findViewById(2131689857);
+                    this.versusHex = (ImageView)this.battleIntroCompoundView.findViewById(2131689861);
+                    this.versusHexSword = (ImageView)this.battleIntroCompoundView.findViewById(2131689862);
+                    this.kongAvatar = (ImageView)this.battleIntroCompoundView.findViewById(2131689860);
+                    this.opponentAvatar = (ImageView)this.battleIntroCompoundView.findViewById(2131689859);
                     this.leftGateWidth = DeviceUtils.getScreenWidthInPixels((Context)activity);
                     this.rightGateWidth = this.leftGateWidth;
-                    this.battleCard = (ImageView)this.battleIntroCompoundView.findViewById(2131624273);
-                    this.battleCardComposite = this.battleIntroCompoundView.findViewById(2131624265);
+                    this.battleCard = (ImageView)this.battleIntroCompoundView.findViewById(2131689863);
+                    this.battleCardComposite = this.battleIntroCompoundView.findViewById(2131689855);
                     this.battleIntroCompoundView.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.battleIntroCompoundView.getPressedStateHandler(), this.gearSelectionClickListener));
                     this.battleCountdownTimer.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.battleIntroCompoundView.getPressedStateHandler(), this.gearSelectionClickListener));
                 }
             }
             if (this.nextEpisodeContainer != null) {
-                this.nextEpisode = (AdvancedImageView)this.nextEpisodeContainer.findViewById(2131624456);
+                this.nextEpisode = (AdvancedImageView)this.nextEpisodeContainer.findViewById(2131690054);
                 this.nextEpisode.getLayoutParams().height = (int)this.battleCardHeight;
                 this.nextEpisode.setScaleType(ImageView$ScaleType.CENTER_CROP);
-                this.nextEpisodeTitle = (TextView)this.nextEpisodeContainer.findViewById(2131624457);
-                this.nextEpisodeCountdownTimer = (TextView)this.nextEpisodeContainer.findViewById(2131624458);
+                this.nextEpisodeTitle = (TextView)this.nextEpisodeContainer.findViewById(2131690055);
+                this.nextEpisodeCountdownTimer = (TextView)this.nextEpisodeContainer.findViewById(2131690056);
                 this.nextEpisode.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.nextEpisode.getPressedStateHandler(), this.nextEpisodeClickListener));
                 this.nextEpisodeCountdownTimer.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.nextEpisode.getPressedStateHandler(), this.nextEpisodeClickListener));
             }
@@ -310,6 +311,7 @@ public class KongBattleIntroScreen extends KongBaseScreen
             this.dropShadowImageUrl = kongInteractivePostPlayModel.getCardDropshadowImageUrl();
             this.nextEpisodeImageUrl = kongInteractivePostPlayModel.getNextEpisodeImageUrl();
             this.nextEpisodeVideoId = kongInteractivePostPlayModel.getNextEpisodeVideoId();
+            this.nextEpisodeTrackId = kongInteractivePostPlayModel.getNextEpisodeTrackId();
             this.nextEpisodeTitleString = kongInteractivePostPlayModel.getNextEpisodeString();
             this.timerString = kongInteractivePostPlayModel.getAutoPlayString();
             this.battleOptInHeaderString = kongInteractivePostPlayModel.getBattleOptInHeaderString();

@@ -30,19 +30,21 @@ class PresentationTrackingManager$1 implements Runnable
     final /* synthetic */ Trackable val$trackable;
     final /* synthetic */ UiLocation val$uiLocation;
     final /* synthetic */ List val$videoIds;
+    final /* synthetic */ List val$videoImageTypeIdentifierIds;
     final /* synthetic */ int val$videoPos;
     
-    PresentationTrackingManager$1(final PresentationTrackingManager this$0, final Trackable val$trackable, final List val$videoIds, final int val$videoPos, final UiLocation val$uiLocation) {
+    PresentationTrackingManager$1(final PresentationTrackingManager this$0, final Trackable val$trackable, final List val$videoIds, final List val$videoImageTypeIdentifierIds, final int val$videoPos, final UiLocation val$uiLocation) {
         this.this$0 = this$0;
         this.val$trackable = val$trackable;
         this.val$videoIds = val$videoIds;
+        this.val$videoImageTypeIdentifierIds = val$videoImageTypeIdentifierIds;
         this.val$videoPos = val$videoPos;
         this.val$uiLocation = val$uiLocation;
     }
     
     @Override
     public void run() {
-        final PresentationEvent presentationEvent = new PresentationEvent(this.val$trackable, this.val$videoIds, this.val$videoPos, this.val$uiLocation);
+        final PresentationEvent presentationEvent = new PresentationEvent(this.val$trackable, this.val$videoIds, this.val$videoImageTypeIdentifierIds, this.val$videoPos, this.val$uiLocation);
         if (Log.isLoggable()) {
             Log.d("nf_presentation", "PresentationEvent received " + presentationEvent);
         }

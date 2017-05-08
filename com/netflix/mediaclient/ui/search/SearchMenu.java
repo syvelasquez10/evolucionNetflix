@@ -12,11 +12,11 @@ public class SearchMenu
     public static void addSearchNavigation(final NetflixActivity netflixActivity, final Menu menu, final boolean b) {
         int icon;
         if (b) {
-            icon = 2130837753;
+            icon = 2130837760;
         }
         else {
-            icon = 2130837752;
+            icon = 2130837759;
         }
-        menu.add(0, 2131623936, 0, 2131165729).setIcon(icon).setIntent(SearchActivity.create(netflixActivity)).setShowAsAction(1);
+        menu.add(0, 2131689472, 0, 2131231272).setIcon(icon).setIntent(SearchActivity.create(netflixActivity)).setShowAsAction(1);
     }
 }
