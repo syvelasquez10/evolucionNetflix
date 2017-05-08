@@ -10,7 +10,6 @@ import com.netflix.mediaclient.Log;
 import android.view.ViewPropertyAnimator;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.animation.GridLayoutAnimationController;
 import android.view.animation.LayoutAnimationController;
@@ -49,8 +48,8 @@ public class AnimationUtils
         view.setVisibility(8);
     }
     
-    public static boolean isTransitionAnimationSupported(final Context context) {
-        return AndroidUtils.getAndroidVersion() >= 21 && DeviceUtils.isNotTabletByContext(context);
+    public static boolean isTransitionAnimationSupported() {
+        return AndroidUtils.getAndroidVersion() >= 21;
     }
     
     public static void setImageBitmapWithPropertyFade(final ImageView imageView, final Bitmap imageBitmap) {

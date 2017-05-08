@@ -14,9 +14,12 @@ import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import java.util.Iterator;
@@ -29,11 +32,11 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import org.json.JSONException;
 import org.json.JSONTokener;
 import org.json.JSONArray;
@@ -82,6 +85,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     private EventListener mDeactivateListener;
     private String mDynecomNetflixId;
     private String mDynecomSecureNetflixId;
+    private boolean mIsNonMemberPlayback;
     private List<UserProfile> mListOfUserProfiles;
     private UserAgent$UserAgentCallback mLoginCallback;
     private UserAgent$UserAgentCallback mLogoutCallback;
@@ -97,8 +101,8 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     public UserAgent() {
         this.localeSupportStatus = CommonStatus.OK;
-        this.commonProfilesUpdateCallback = new UserAgent$4(this);
-        this.configDataCallback = new UserAgent$5(this);
+        this.commonProfilesUpdateCallback = new UserAgent$5(this);
+        this.configDataCallback = new UserAgent$6(this);
     }
     
     private List<UserProfile> buildListOfUserProfiles(final String s) {
@@ -129,6 +133,26 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         return list;
     }
     
+    private NrmConfigData buildNewNrmConfigData() {
+        final NrmConfigData nrmConfigData = new NrmConfigData();
+        nrmConfigData.isUserBound = true;
+        final NrmConfigData nrmConfigData2 = this.getConfigurationAgent().getNrmConfigData();
+        if (nrmConfigData2 == null) {
+            nrmConfigData.netflixId = this.mDynecomNetflixId;
+            nrmConfigData.secureNetflixId = this.mDynecomSecureNetflixId;
+        }
+        else {
+            if (StringUtils.isNotEmpty(this.mDynecomNetflixId) && !StringUtils.safeEquals(this.mDynecomNetflixId, nrmConfigData2.netflixId)) {
+                nrmConfigData.netflixId = this.mDynecomNetflixId;
+            }
+            if (StringUtils.isNotEmpty(this.mDynecomSecureNetflixId) && !StringUtils.safeEquals(this.mDynecomSecureNetflixId, nrmConfigData2.secureNetflixId)) {
+                nrmConfigData.secureNetflixId = this.mDynecomSecureNetflixId;
+                return nrmConfigData;
+            }
+        }
+        return nrmConfigData;
+    }
+    
     private void checkCurrentProfileTypeWasChanged(final UserProfile userProfile) {
         if (!this.mCurrentUserProfile.getProfileType().equals(userProfile.getProfileType())) {
             Log.i("nf_service_useragent", "Current profile type changed - sending REFRESH_HOME intent");
@@ -139,10 +163,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
                 this.getContext().startActivity(ProfileSelectionActivity.createStartIntentSingleTop(this.getContext()));
             }
         }
-    }
-    
-    private void clearNonMemberInfoFromPref(final Context context) {
-        PreferenceUtils.removePref(context, "nrm_netflix_id");
     }
     
     private void doLoginComplete() {
@@ -202,7 +222,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             return;
         }
         SignInLogUtils.reportSignInRequestSessionStarted(this.getContext(), SignInLogging$SignInType.autologin);
-        this.mUserWebClient.autoLogin(stringExtra, new UserAgent$7(this));
+        this.mUserWebClient.autoLogin(stringExtra, new UserAgent$8(this));
     }
     
     private void handleCreateAutoLoginToken(final Intent intent) {
@@ -304,20 +324,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         return user;
     }
     
-    private void recordNrmInfo() {
-        if (!this.isAccountDataAvailable()) {
-            final String stringPref = PreferenceUtils.getStringPref(this.getContext(), "nrm_netflix_id", "");
-            if (!StringUtils.isNotEmpty(stringPref)) {
-                Log.d("nf_service_useragent", "nrmNetflixId is null - skip reporting");
-                return;
-            }
-            if (Log.isLoggable()) {
-                Log.d("nf_service_useragent", String.format("nrmNetflixId: %s", stringPref));
-            }
-            this.launchWebTask(new UserAgent$RecordNonMemberInfo(this, stringPref));
-        }
-    }
-    
     private void registerAccountErrorReceiver() {
         LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(this.mAccountErrorReceiver, new IntentFilter("com.netflix.mediaclient.intent.action.DELETED_PROFILE"));
     }
@@ -329,6 +335,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     private void setUserPreferredLanguages(final String[] array) {
         this.userLocaleRepository.setPreferredLanguages(StringUtils.joinArray(array));
         this.getNrdController().setDeviceLocale(this.userLocaleRepository.getCurrentAppLocale().getLocale());
+    }
+    
+    private void transferUserCookiesIntoNrmConfig() {
+        this.getConfigurationAgent().persistNrmConfigData(this.buildNewNrmConfigData());
     }
     
     private void unregisterAccountErrorReceiver() {
@@ -373,6 +383,20 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     public void addWebUserProfile(final String s, final boolean b, final String s2, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
         Log.d("nf_service_useragent", "addWebUserProfile");
         this.launchWebTask(new UserAgent$AddWebUserProfilesTask(this, s, b, s2, userAgent$UserAgentCallback));
+    }
+    
+    public void consumeUmaAlert() {
+        if (this.mUser != null) {
+            final UmaAlert userMessageAlert = this.getUserMessageAlert();
+            if (userMessageAlert != null) {
+                if (Log.isLoggable()) {
+                    Log.d("nf_service_useragent", "UMA marked as consumed");
+                }
+                userMessageAlert.setConsumed(true);
+                this.persistUser(this.mUser);
+                LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(new Intent("RefreshUserMessageRequest.ACTION_UMA_MESSAGE_CONSUMED"));
+            }
+        }
     }
     
     public void createAutoLoginToken(final long n, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
@@ -473,7 +497,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     public void fetchAccountData() {
         Log.d("nf_service_useragent", "fetch account level config data");
         this.getConfigurationAgent().fetchAccountConfigData(this.configDataCallback);
-        this.recordNrmInfo();
     }
     
     public void fetchAvailableAvatarsList(final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
@@ -613,7 +636,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     @Override
     public String getNetflixIdName() {
-        return "NetflixId";
+        return WebApiCommand.getNetflixIdName();
     }
     
     @Override
@@ -635,7 +658,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     @Override
     public String getSecureNetflixIdName() {
-        return "SecureNetflixId";
+        return WebApiCommand.getSecureNetflixIdName();
     }
     
     @Override
@@ -646,6 +669,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     @Override
     public UserCredentialRegistry getUserCredentialRegistry() {
         return this;
+    }
+    
+    public UmaAlert getUserMessageAlert() {
+        if (!KidsUtils.isKidsProfile(this.getCurrentProfile()) && this.mUser != null) {
+            return this.mUser.getUmaAlert();
+        }
+        return null;
     }
     
     @Override
@@ -702,6 +732,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             Log.d("nf_service_useragent", String.format("isCurrentProfileIQEnabled %s called: %b ", this.mCurrentUserProfile.getFirstName(), this.mCurrentUserProfile.isIQEnabled()));
         }
         return this.mCurrentUserProfile.isIQEnabled();
+    }
+    
+    public boolean isNonMemberPlayback() {
+        return this.mIsNonMemberPlayback;
     }
     
     @Override
@@ -767,7 +801,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.mLogoutCallback = mLogoutCallback;
         this.getService().getClientLogging().onUserLogout();
         ((VoipAuthorizationTokensUpdater)this.getService().getVoip()).removeUserAuthorizationTokens();
-        this.clearNonMemberInfoFromPref(this.getContext());
         if (!this.isUserLoggedIn()) {
             this.notifyLogoutComplete(StatusCode.OK);
             return;
@@ -863,6 +896,16 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         }
     }
     
+    public void refreshUserMessage() {
+        final User mUser = this.mUser;
+        if (mUser != null) {
+            if (Log.isLoggable()) {
+                Log.d("nf_service_useragent", "UMA refreshing from server...");
+            }
+            this.launchWebTask(new UserAgent$4(this, mUser));
+        }
+    }
+    
     public void removeWebUserProfile(final String s, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
         Log.d("nf_service_useragent", "removeWebUserProfile");
         this.launchWebTask(new UserAgent$RemoveWebUserProfilesTask(this, s, userAgent$UserAgentCallback));
@@ -881,6 +924,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         if (this.userLocaleRepository != null) {
             this.userLocaleRepository.setApplicationLanguage(new UserLocale(s));
         }
+    }
+    
+    public void setNonMemberPlayback(final boolean mIsNonMemberPlayback) {
+        this.mIsNonMemberPlayback = mIsNonMemberPlayback;
     }
     
     @Override
@@ -921,6 +968,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     @Override
     public boolean updateUserCredentials(final String mDynecomNetflixId, final String mDynecomSecureNetflixId) {
         if (!this.isUserLoggedIn()) {
+            Log.d("nf_service_useragent", "got cookies from dynecom");
             this.mDynecomNetflixId = mDynecomNetflixId;
             this.mDynecomSecureNetflixId = mDynecomSecureNetflixId;
             return false;

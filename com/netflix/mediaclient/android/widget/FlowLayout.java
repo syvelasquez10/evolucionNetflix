@@ -4,9 +4,11 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import android.content.res.TypedArray;
 import android.view.View$MeasureSpec;
 import android.view.View;
 import android.view.ViewGroup$LayoutParams;
+import com.netflix.mediaclient.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.ViewGroup;
@@ -14,10 +16,21 @@ import android.view.ViewGroup;
 public class FlowLayout extends ViewGroup
 {
     private int mHorizontalSpacing;
+    private int mMaxWidth;
     private int mVerticalSpacing;
     
-    public FlowLayout(final Context context, final AttributeSet set) {
-        super(context, set);
+    public FlowLayout(Context obtainStyledAttributes, final AttributeSet set) {
+        super(obtainStyledAttributes, set);
+        this.mMaxWidth = 0;
+        obtainStyledAttributes = (Context)obtainStyledAttributes.obtainStyledAttributes(set, R$styleable.FlowLayout);
+        try {
+            this.mHorizontalSpacing = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(0, 0);
+            this.mVerticalSpacing = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(1, 0);
+            this.mMaxWidth = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(2, this.mMaxWidth);
+        }
+        finally {
+            ((TypedArray)obtainStyledAttributes).recycle();
+        }
     }
     
     protected boolean checkLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
@@ -47,54 +60,76 @@ public class FlowLayout extends ViewGroup
     }
     
     protected void onMeasure(final int n, final int n2) {
-        final int size = View$MeasureSpec.getSize(n);
-        final int paddingRight = this.getPaddingRight();
-        boolean b;
-        if (View$MeasureSpec.getMode(n) != 0) {
-            b = true;
-        }
-        else {
-            b = false;
+        final int n3 = View$MeasureSpec.getSize(n) - this.getPaddingRight() - this.getPaddingLeft();
+        final int mode = View$MeasureSpec.getMode(n);
+        final int layoutDirection = this.getLayoutDirection();
+        final boolean b = mode != 0;
+        int min = n3;
+        if (this.mMaxWidth > 0) {
+            min = Math.min(n3, this.mMaxWidth);
         }
         int paddingTop = this.getPaddingTop();
-        int x = this.getPaddingLeft();
-        boolean b2 = false;
-        int n3 = 0;
+        int paddingLeft = this.getPaddingLeft();
         final int childCount = this.getChildCount();
-        boolean breakLine = false;
+        int i = 0;
+        int n4 = 0;
+        int n5 = 0;
+        int n6 = 0;
         int max = 0;
-        int max2 = 0;
-        int measuredWidth;
-        for (int i = 0; i < childCount; ++i, x += measuredWidth + n3) {
+        while (i < childCount) {
             final View child = this.getChildAt(i);
-            this.measureChild(child, n, n2);
-            final FlowLayout$LayoutParams flowLayout$LayoutParams = (FlowLayout$LayoutParams)child.getLayoutParams();
-            n3 = this.mHorizontalSpacing;
-            if (flowLayout$LayoutParams.horizontalSpacing >= 0) {
-                n3 = flowLayout$LayoutParams.horizontalSpacing;
+            if (child.getVisibility() != 8) {
+                this.measureChild(child, n, n2);
+                final FlowLayout$LayoutParams flowLayout$LayoutParams = (FlowLayout$LayoutParams)child.getLayoutParams();
+                n4 = this.mHorizontalSpacing;
+                if (flowLayout$LayoutParams.horizontalSpacing >= 0) {
+                    n4 = flowLayout$LayoutParams.horizontalSpacing;
+                }
+                int paddingLeft2;
+                int n7;
+                int n8;
+                if (b && child.getMeasuredWidth() + paddingLeft > min) {
+                    final int mVerticalSpacing = this.mVerticalSpacing;
+                    max = Math.max(max, paddingLeft - n4);
+                    paddingLeft2 = this.getPaddingLeft();
+                    final boolean b2 = true;
+                    paddingTop += n6 + mVerticalSpacing;
+                    n7 = 0;
+                    n8 = (b2 ? 1 : 0);
+                }
+                else {
+                    final int n9 = n6;
+                    n8 = 0;
+                    paddingLeft2 = paddingLeft;
+                    n7 = n9;
+                }
+                if (layoutDirection == 1) {
+                    flowLayout$LayoutParams.x = min - paddingLeft2 - child.getMeasuredWidth();
+                }
+                else {
+                    flowLayout$LayoutParams.x = paddingLeft2;
+                }
+                flowLayout$LayoutParams.y = paddingTop;
+                final int n10 = paddingLeft2 + (child.getMeasuredWidth() + n4);
+                final int max2 = Math.max(n7, child.getMeasuredHeight());
+                n5 = n8;
+                n6 = max2;
+                paddingLeft = n10;
             }
-            if (b && (breakLine || child.getMeasuredWidth() + x > size - paddingRight)) {
-                paddingTop += this.mVerticalSpacing + max;
-                max = 0;
-                max2 = Math.max(max2, x - n3);
-                x = this.getPaddingLeft();
-                b2 = true;
-            }
-            else {
-                b2 = false;
-            }
-            flowLayout$LayoutParams.x = x;
-            flowLayout$LayoutParams.y = paddingTop;
-            measuredWidth = child.getMeasuredWidth();
-            max = Math.max(max, child.getMeasuredHeight());
-            breakLine = flowLayout$LayoutParams.breakLine;
+            ++i;
         }
-        int n4 = paddingTop;
-        int max3 = max2;
-        if (!b2) {
-            n4 = paddingTop + max;
-            max3 = Math.max(max2, x - n3);
+        int max3 = max;
+        if (n5 == 0) {
+            max3 = Math.max(max, paddingLeft - n4);
         }
-        this.setMeasuredDimension(resolveSize(this.getPaddingRight() + max3, n), resolveSize(this.getPaddingBottom() + n4, n2));
+        final int n11 = max3 + this.getPaddingRight();
+        final int paddingBottom = this.getPaddingBottom();
+        if (layoutDirection == 1 && this.getLayoutParams().width == -2 && min != n11) {
+            for (int j = 0; j < childCount; ++j) {
+                final FlowLayout$LayoutParams flowLayout$LayoutParams2 = (FlowLayout$LayoutParams)this.getChildAt(j).getLayoutParams();
+                flowLayout$LayoutParams2.x -= min - n11;
+            }
+        }
+        this.setMeasuredDimension(resolveSize(n11, n), resolveSize(paddingTop + (paddingBottom + n6), n2));
     }
 }

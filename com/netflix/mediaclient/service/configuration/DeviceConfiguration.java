@@ -219,6 +219,13 @@ public class DeviceConfiguration
         return hashMap;
     }
     
+    private void updateAppBootUrlSuffix(final NetflixPreference netflixPreference, String s) {
+        if (s == null) {
+            s = "";
+        }
+        netflixPreference.putStringPref("device_config_appBootUrlSuffix", s);
+    }
+    
     private void updateAudioFormat(final NetflixPreference netflixPreference, final int mAudioFormat) {
         netflixPreference.putIntPref("supported_audio_format", mAudioFormat);
         this.mAudioFormat = mAudioFormat;
@@ -491,7 +498,6 @@ public class DeviceConfiguration
         final NetflixPreference netflixPreference = new NetflixPreference(this.mContext);
         this.mDeviceRepository.update(netflixPreference, deviceConfigData.getDeviceCategory());
         this.mImagePrefRepository.update(netflixPreference, deviceConfigData.getImagePref());
-        this.mSignUpConfig.update(netflixPreference, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout());
         this.updateDisableWebsocketFlag(netflixPreference, deviceConfigData.getWebsocketDisabled());
         this.updateDisableMdxFlag(netflixPreference, deviceConfigData.getMdxDisabled());
         this.updateWidevineL1Flag(netflixPreference, deviceConfigData.isWidevineL1Enabled());
@@ -541,6 +547,8 @@ public class DeviceConfiguration
         this.updateDeviceLocaleSupportAlert(netflixPreference, deviceConfigData.shouldAlertForMissingLocale(), deviceConfigData.getAlertMsgForLocaleSupport());
         this.mSubtitleDownloadRetryPolicy = SubtitleDownloadRetryPolicy.saveToPreferences(netflixPreference, deviceConfigData.getSubtitleDownloadRetryPolicy());
         this.mVoipConfiguration = VoipConfiguration.saveToPreferences(netflixPreference, deviceConfigData.getVoipConfiguration());
+        this.updateAppBootUrlSuffix(netflixPreference, deviceConfigData.getAppBootUrlSuffix());
+        this.mSignUpConfig.update(netflixPreference, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout(), deviceConfigData.getAppBootUrlSuffix());
         this.mIsPlayBillingDisabled = deviceConfigData.isPlayBillingDisabled();
         netflixPreference.putBooleanPref("disable_playbilling", deviceConfigData.isPlayBillingDisabled());
         this.mIgnorePreloadForPlayBilling = deviceConfigData.toIgnorePrelaodForPlayBilling();

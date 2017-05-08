@@ -16,7 +16,7 @@ public abstract class RecyclerView$ItemDecoration
     }
     
     public void getItemOffsets(final Rect rect, final View view, final RecyclerView recyclerView, final RecyclerView$State recyclerView$State) {
-        this.getItemOffsets(rect, ((RecyclerView$LayoutParams)view.getLayoutParams()).getViewPosition(), recyclerView);
+        this.getItemOffsets(rect, ((RecyclerView$LayoutParams)view.getLayoutParams()).getViewLayoutPosition(), recyclerView);
     }
     
     @Deprecated

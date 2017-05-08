@@ -10,13 +10,12 @@ import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.ViewGroup;
-import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -26,7 +25,7 @@ import android.content.Context;
 import android.widget.TextView;
 import android.widget.ProgressBar;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import android.widget.ImageView;
+import android.view.View;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -38,7 +37,7 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
     private static final String TAG = "CwView";
     protected VideoDetailsClickListener clicker;
     protected AdvancedImageView img;
-    protected ImageView info;
+    protected View info;
     protected PlayContext playContext;
     protected ProgressBar progress;
     protected TextView title;
@@ -84,25 +83,37 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
     public void hide() {
         NetflixActivity.getImageLoader(this.getContext()).clear(this.img);
         this.setVisibility(4);
-        this.clicker.remove((View)this.info);
+        this.clicker.remove(this.info);
     }
     
     protected void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837936);
+        this.setBackgroundResource(2130837933);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.getLayoutId(), (ViewGroup)this);
         LocalizationUtils.setLayoutDirection((View)this);
-        this.title = (TextView)this.findViewById(2131689740);
-        this.img = (AdvancedImageView)this.findViewById(2131689737);
-        this.progress = (ProgressBar)this.findViewById(2131689739);
-        this.info = (ImageView)this.findViewById(2131689741);
+        this.title = (TextView)this.findViewById(2131689737);
+        this.img = (AdvancedImageView)this.findViewById(2131689734);
+        this.progress = (ProgressBar)this.findViewById(2131689736);
+        this.info = this.findViewById(2131689738);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
     public void setInfoViewId(final int id) {
         this.info.setId(id);
+    }
+    
+    public void setTitle(final CWVideo cwVideo) {
+        if (!VideoType.SHOW.equals(cwVideo.getType())) {
+            this.setTitle(cwVideo.getTitle());
+            return;
+        }
+        if (cwVideo.isNSRE()) {
+            this.setTitle(this.getContext().getString(2131231047, new Object[] { this.getText(cwVideo.getTitle()), this.getText(cwVideo.getCurrentEpisodeTitle()) }));
+            return;
+        }
+        this.setTitle(this.getContext().getString(2131231046, new Object[] { this.getText(cwVideo.getTitle()), cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
     }
     
     protected void setTitle(final CharSequence charSequence) {
@@ -116,26 +127,16 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         this.title.setText(string);
     }
     
-    public void update(final CWVideo cwVideo, final Trackable trackable, int progress, final boolean b, final boolean b2) {
+    public void update(final CWVideo title, final Trackable trackable, int progress, final boolean b, final boolean b2) {
         if (Log.isLoggable()) {
-            Log.v("CwView", "Updating for video: " + cwVideo.toString());
+            Log.v("CwView", "Updating for video: " + title.toString());
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131230893), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131230893), title.getTitle());
         this.setContentDescription((CharSequence)format);
-        if (VideoType.SHOW.equals(cwVideo.getType())) {
-            if (cwVideo.isNSRE()) {
-                this.setTitle(this.getContext().getString(2131231045, new Object[] { this.getText(cwVideo.getTitle()), this.getText(cwVideo.getCurrentEpisodeTitle()) }));
-            }
-            else {
-                this.setTitle(this.getContext().getString(2131231044, new Object[] { this.getText(cwVideo.getTitle()), cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
-            }
-        }
-        else {
-            this.setTitle(cwVideo.getTitle());
-        }
-        final String imageUrl = this.getImageUrl(cwVideo, b2);
+        this.setTitle(title);
+        final String imageUrl = this.getImageUrl(title, b2);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
         final IClientLogging$AssetType bif = IClientLogging$AssetType.bif;
@@ -147,16 +148,16 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
             progress = 0;
         }
         imageLoader.showImg(img, imageUrl, bif, format, imageLoaderConfig, true, progress);
-        if (cwVideo.getRuntime() > 0) {
-            progress = cwVideo.getPlayableBookmarkPosition() * 100 / cwVideo.getRuntime();
+        if (title.getRuntime() > 0) {
+            progress = title.getPlayableBookmarkPosition() * 100 / title.getRuntime();
         }
         else {
             progress = 0;
         }
         this.progress.setProgress(progress);
-        ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(((NetflixActivity)this.getContext()).getServiceManager(), cwVideo, this.playContext);
-        this.setOnClickListener((View$OnClickListener)new CwView$1(this, cwVideo));
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231046), cwVideo.getTitle()));
-        this.clicker.update((View)this.info, cwVideo, this.img.getPressedStateHandler());
+        ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(((NetflixActivity)this.getContext()).getServiceManager(), title, this.playContext);
+        this.setOnClickListener((View$OnClickListener)new CwView$1(this, title));
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231048), title.getTitle()));
+        this.clicker.update(this.info, title, this.img.getPressedStateHandler());
     }
 }

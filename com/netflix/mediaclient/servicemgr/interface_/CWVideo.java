@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr.interface_;
 
-public interface CWVideo extends Playable, Video
+public interface CWVideo extends CleanBoxart, Playable, Video
 {
     String createModifiedBigStillUrl();
     

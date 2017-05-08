@@ -7,6 +7,7 @@ package com.netflix.mediaclient.partner.playbilling;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.util.StringUtils;
+import android.annotation.TargetApi;
 import java.util.Iterator;
 import java.util.Collection;
 import org.json.JSONArray;
@@ -41,6 +42,11 @@ public class PlayBilling
     public static final int IABHELPER_ERROR_BASE = -1000;
     public static final String ITEM_TYPE_INAPP = "inapp";
     public static final String ITEM_TYPE_SUBS = "subs";
+    private static final int NFLX_CODE_PLAY_PURCHASE_RESPONSE_NULL = 102;
+    private static final int NFLX_CODE_PLAY_RESPONSE_NULL = 101;
+    private static final int NFLX_CODE_REQUEST_NULL = 100;
+    private static final String NFLX_KEY_EXCEPTION_IN = "exceptionIn";
+    private static final String NFLX_KEY_EXCEPTION_MSG = "exceptionString";
     private static final String NFLX_KEY_RAW_RESPONSE = "rawData";
     public static final boolean PLAY_BILLING_ENABLED_IN_CODE = true;
     public static final String RESPONSE_BUY_INTENT = "BUY_INTENT";
@@ -55,6 +61,7 @@ public class PlayBilling
     private static final List RESPONSE_LIST_PARAMS;
     private static final List RESPONSE_LIST_STRING_PARAMS;
     private static final String TAG = "playBilling";
+    private int LENGTH_OF_EXCEPTION_LOG;
     volatile boolean mAsyncInProgress;
     String mAsyncOperation;
     Context mContext;
@@ -83,6 +90,7 @@ public class PlayBilling
         this.mSubscriptionUpdateSupported = false;
         this.mAsyncInProgress = false;
         this.mAsyncOperation = "";
+        this.LENGTH_OF_EXCEPTION_LOG = 2000;
         this.mContext = context.getApplicationContext();
         this.mHandler = mHandler;
         Log.d("playBilling", "IAB helper created.");
@@ -132,13 +140,15 @@ public class PlayBilling
         }
     }
     
+    @TargetApi(19)
     private JSONObject getJsonObjFromBundle(final Bundle bundle) {
+        Bundle bundleForError = bundle;
         if (bundle == null) {
             Log.d("playBilling", "bundle is null");
-            return null;
+            bundleForError = this.getBundleForError(101);
         }
         final JSONObject jsonObject = new JSONObject();
-        final Iterator<String> iterator = (Iterator<String>)bundle.keySet().iterator();
+        final Iterator iterator = bundleForError.keySet().iterator();
         String string;
         String s;
         Object value = null;
@@ -147,73 +157,73 @@ public class PlayBilling
         JSONArray jsonArray;
         Iterator<String> iterator2;
         JSONObject sanitizePurchaseData;
-        Label_0105_Outer:Label_0176_Outer:
+        Label_0112_Outer:Label_0183_Outer:
         while (true) {
             while (true) {
-                Label_0376: {
+                Label_0383: {
                     if (!iterator.hasNext()) {
                         while (true) {
                             try {
-                                jsonObject.put("rawData", (Object)this.getBase64EncodedString(bundle.toString()));
+                                jsonObject.put("rawData", (Object)this.getBase64EncodedString(bundleForError.toString()));
                                 string = jsonObject.toString();
                                 if (Log.isLoggable()) {
-                                    Log.d("playBilling", "raw Bundle - " + bundle);
+                                    Log.d("playBilling", "raw Bundle - " + bundleForError);
                                     Log.d("playBilling", "result fromBundle - " + string);
                                 }
                                 return jsonObject;
                             }
                             catch (JSONException ex) {
                                 Log.e("playBilling", "error adding raw message", (Throwable)ex);
-                                continue Label_0105_Outer;
+                                continue Label_0112_Outer;
                             }
                             break;
                         }
-                        break Label_0376;
+                        break Label_0383;
                     }
                     s = iterator.next();
-                Label_0176:
+                Label_0183:
                     while (true) {
                         while (true) {
-                            Label_0229: {
-                                Label_0162: {
+                            Label_0236: {
+                                Label_0169: {
                                     try {
-                                        value = bundle.get(s);
+                                        value = bundleForError.get(s);
                                         if (PlayBilling.RESPONSE_LIST_PARAMS.contains(s)) {
-                                            stringArrayList = bundle.getStringArrayList(s);
+                                            stringArrayList = bundleForError.getStringArrayList(s);
                                             if (!PlayBilling.RESPONSE_LIST_STRING_PARAMS.contains(s)) {
-                                                break Label_0162;
+                                                break Label_0169;
                                             }
                                             value = new JSONArray((Collection)stringArrayList);
                                         }
                                         wrap = JSONObject.wrap(value);
                                         if (wrap == null) {
-                                            break Label_0229;
+                                            break Label_0236;
                                         }
                                         jsonObject.put(s, wrap);
                                     }
                                     catch (JSONException ex2) {
                                         if (!Log.isLoggable()) {
-                                            continue Label_0105_Outer;
+                                            continue Label_0112_Outer;
                                         }
                                         Log.d("playBilling", "failed in converting bundle. e:" + ex2);
                                     }
-                                    continue Label_0105_Outer;
+                                    continue Label_0112_Outer;
                                 }
                                 jsonArray = new JSONArray();
                                 iterator2 = stringArrayList.iterator();
-                                break Label_0176;
+                                break Label_0183;
                             }
                             if (Log.isLoggable()) {
                                 Log.d("playBilling", String.format("wrapping failed for key: %s, obj: %s", s, value));
                             }
                             if (value != null) {
                                 jsonObject.put(s, (Object)value.toString());
-                                continue Label_0105_Outer;
+                                continue Label_0112_Outer;
                             }
-                            continue Label_0105_Outer;
+                            continue Label_0112_Outer;
                             if (!iterator2.hasNext()) {
                                 value = jsonArray;
-                                continue Label_0176_Outer;
+                                continue Label_0183_Outer;
                             }
                             break;
                         }
@@ -222,12 +232,30 @@ public class PlayBilling
                             sanitizePurchaseData = this.sanitizePurchaseData(sanitizePurchaseData);
                         }
                         jsonArray.put((Object)sanitizePurchaseData);
-                        continue Label_0176;
+                        continue Label_0183;
                     }
                 }
                 continue;
             }
         }
+    }
+    
+    private String getMessageFromException(final Exception ex) {
+        String string;
+        if (ex != null) {
+            string = ex.toString();
+        }
+        else {
+            string = "";
+        }
+        String substring = string;
+        if (StringUtils.isNotEmpty(string)) {
+            substring = string;
+            if (string.length() > this.LENGTH_OF_EXCEPTION_LOG) {
+                substring = string.substring(0, this.LENGTH_OF_EXCEPTION_LOG);
+            }
+        }
+        return substring;
     }
     
     private JSONObject getPurchaseHistoryFromPlayBilling(final String s) {
@@ -240,7 +268,7 @@ public class PlayBilling
         }
         catch (Exception ex) {
             Log.d("playBilling", "getPurchaseHistoryFromPlayBilling failed", ex);
-            final Bundle bundle = this.getErrorBundle();
+            final Bundle bundle = this.getBundleForException("getPurchaseHistoryFromPlayBilling", this.getMessageFromException(ex));
             return this.getJsonObjFromBundle(bundle);
         }
     }
@@ -255,7 +283,7 @@ public class PlayBilling
         }
         catch (Exception ex) {
             Log.d("playBilling", "getPurchasesFromPlayBilling failed", ex);
-            final Bundle bundle = this.getErrorBundle();
+            final Bundle bundle = this.getBundleForException("getPurchasesFromPlayBilling", this.getMessageFromException(ex));
             return this.getJsonObjFromBundle(bundle);
         }
     }
@@ -286,7 +314,7 @@ public class PlayBilling
             if (Log.isLoggable()) {
                 Log.e("playBilling", "bad skus: " + list);
             }
-            return null;
+            return this.getJsonObjFromBundle(this.getBundleForError(100));
         }
         final Bundle bundle = new Bundle();
         bundle.putStringArrayList("ITEM_ID_LIST", (ArrayList)list);
@@ -297,11 +325,12 @@ public class PlayBilling
         }
         catch (Exception ex) {
             Log.d("playBilling", "getSkuDetailsFromPlayBilling failed", ex);
-            final Bundle bundle2 = this.getErrorBundle();
+            final Bundle bundle2 = this.getBundleForException("getSkuDetailsFromPlayBilling", this.getMessageFromException(ex));
             return this.getJsonObjFromBundle(bundle2);
         }
     }
     
+    @TargetApi(19)
     private JSONObject initiatePurchasePlayBilling(final NetflixActivity netflixActivity, final String s, final String s2, int responseCodeFromBundle, final String s3, final int mRequestCode) {
         if (Log.isLoggable()) {
             Log.d("playBilling", String.format("initiatePurchase sku:%s, payload:%s, trialPeriod:%d, accountId:%s", s, s2, responseCodeFromBundle, s3));
@@ -328,7 +357,7 @@ public class PlayBilling
         }
         catch (Exception ex) {
             Log.d("playBilling", "getPurchasesFromPlayBilling failed", ex);
-            return this.getJsonObjFromBundle(this.getErrorBundle());
+            return this.getJsonObjFromBundle(this.getBundleForException("initiatePurchasePlayBilling", this.getMessageFromException(ex)));
         }
     }
     
@@ -423,10 +452,17 @@ public class PlayBilling
         Log.d("playBilling", "Starting async operation: " + mAsyncOperation);
     }
     
-    Bundle getErrorBundle() {
+    Bundle getBundleForError(final int n) {
         final Bundle bundle = new Bundle();
-        bundle.putInt("RESPONSE_CODE", 5);
+        bundle.putInt("RESPONSE_CODE", n);
         return bundle;
+    }
+    
+    Bundle getBundleForException(final String s, final String s2) {
+        final Bundle bundleForError = this.getBundleForError(5);
+        bundleForError.putString("exceptionIn", s);
+        bundleForError.putString("exceptionString", s2);
+        return bundleForError;
     }
     
     public void getPurchaseHistory(final String s, final PlayBillingCallback playBillingCallback) {
@@ -488,7 +524,7 @@ public class PlayBilling
         this.flagEndAsync();
         if (intent == null) {
             Log.e("playBilling", "Null data in IAB activity result.");
-            mPurchaseListener.onResult(this.getJsonObjFromBundle(this.getErrorBundle()));
+            mPurchaseListener.onResult(this.getJsonObjFromBundle(this.getBundleForError(102)));
             return;
         }
         final String stringExtra = intent.getStringExtra("INAPP_PURCHASE_DATA");
@@ -499,9 +535,9 @@ public class PlayBilling
             Log.d("playBilling", String.format("handleActivityResult purchaseData:%s, dataSignature:%s", stringExtra, stringExtra2));
         }
         intent = (Intent)new JSONObject();
-        Label_0224: {
+        Label_0226: {
             if (n != -1) {
-                break Label_0224;
+                break Label_0226;
             }
             intExtra = n2;
             while (true) {

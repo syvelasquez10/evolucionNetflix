@@ -17,14 +17,16 @@ import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
+import android.transition.Transition$TransitionListener;
+import android.transition.Transition;
 import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
+import com.netflix.mediaclient.ui.mdx.MementoMovieDetailsActivity;
 import android.support.v7.widget.RecyclerView$LayoutManager;
-import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
@@ -32,6 +34,7 @@ import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import android.view.View;
 import android.support.v7.widget.RecyclerView;
 import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
@@ -52,6 +55,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     protected DetailsPageParallaxScrollListener parallaxScroller;
     protected RecyclerView recyclerView;
     protected long requestId;
+    private View rootContainer;
     protected String videoId;
     
     public MovieDetailsFrag() {
@@ -86,7 +90,13 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         this.recyclerView.getLayoutManager().onRestoreInstanceState(this.layoutManagerSavedState);
         this.layoutManagerSavedState = null;
         Log.v("MovieDetailsFrag", "Posting message to reset parallax views");
-        this.recyclerView.post((Runnable)new MovieDetailsFrag$6(this));
+        this.recyclerView.post((Runnable)new MovieDetailsFrag$7(this));
+    }
+    
+    private void setBackgroundResource(final int backgroundResource) {
+        if (this.rootContainer != null) {
+            this.rootContainer.setBackgroundResource(backgroundResource);
+        }
     }
     
     protected void fetchMovieData() {
@@ -103,16 +113,17 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     protected void findViews(final View view) {
         this.recyclerView = (RecyclerView)this.primaryView;
+        this.rootContainer = view.findViewById(2131689869);
     }
     
     @Override
     protected VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final MovieDetails movieDetails) {
-        return new MovieDetailsFrag$5(this, movieDetails);
+        return new MovieDetailsFrag$6(this, movieDetails);
     }
     
     @Override
     protected int getLayoutId() {
-        return 2130903250;
+        return 2130903257;
     }
     
     @Override
@@ -124,6 +135,9 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     protected int getNumColumns() {
+        if (this.getActivity() instanceof MementoMovieDetailsActivity) {
+            return 4;
+        }
         return LomoConfig.computeStandardNumVideosPerPage(this.getNetflixActivity(), false);
     }
     
@@ -202,6 +216,14 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         this.recyclerView.post((Runnable)new MovieDetailsFrag$1(this));
     }
     
+    public void setExitTransition(final Transition exitTransition) {
+        super.setExitTransition(exitTransition);
+        this.setBackgroundResource(2131624168);
+        if (exitTransition != null) {
+            exitTransition.addListener((Transition$TransitionListener)new MovieDetailsFrag$3(this));
+        }
+    }
+    
     @Override
     public void setLayoutManagerSavedState(final Parcelable layoutManagerSavedState) {
         this.layoutManagerSavedState = layoutManagerSavedState;
@@ -235,18 +257,18 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     protected void setupRecyclerViewAdapter() {
-        this.adapter = new SimilarItemsGridViewAdapter(true, this.numColumns, new MovieDetailsFrag$3(this));
+        this.adapter = new SimilarItemsGridViewAdapter(true, this.numColumns, new MovieDetailsFrag$4(this));
         this.addCopyrightAsFooter();
         this.adapter.addHeaderView((View)this.detailsViewGroup);
         this.recyclerView.setAdapter(this.adapter);
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362067), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362066), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {
-        (this.gridLayoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns)).setSpanSizeLookup(new MovieDetailsFrag$4(this));
+        (this.gridLayoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns)).setSpanSizeLookup(new MovieDetailsFrag$5(this));
         this.recyclerView.setLayoutManager(this.gridLayoutManager);
     }
     

@@ -86,10 +86,10 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.titleView = (TextView)this.findViewById(2131689653);
-        this.gridView = (StaticGridView)this.findViewById(2131690263);
-        this.loadingWrapper = this.findViewById(2131690247);
-        this.content = (LoggingScrollView)this.findViewById(2131690248);
+        this.titleView = (TextView)this.findViewById(2131689654);
+        this.gridView = (StaticGridView)this.findViewById(2131690270);
+        this.loadingWrapper = this.findViewById(2131690254);
+        this.content = (LoggingScrollView)this.findViewById(2131690255);
     }
     
     private String getTitleForType(final SearchQueryDetailsActivity$SearchQueryDetailsType searchQueryDetailsActivity$SearchQueryDetailsType, final String s) {
@@ -97,7 +97,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
             return s;
         }
         if (searchQueryDetailsActivity$SearchQueryDetailsType == SearchQueryDetailsActivity$SearchQueryDetailsType.SEARCH_SUGGESTION) {
-            return this.getString(2131231213, new Object[] { s });
+            return this.getString(2131231219, new Object[] { s });
         }
         throw new IllegalStateException("Bad type");
     }
@@ -144,7 +144,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     }
     
     private void setupViews() {
-        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131362220);
+        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131362222);
         this.content.setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
         this.content.setVisibility(4);
         this.titleView.setText((CharSequence)this.getTitleForType(this.type, this.title));
@@ -209,7 +209,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setupMetaData();
-        this.setContentView(2130903252);
+        this.setContentView(2130903259);
         this.findViews();
         this.setupLoading();
         this.setupViews();

@@ -155,9 +155,8 @@ public abstract class LinearSmoothScroller extends RecyclerView$SmoothScroller
         final PointF computeScrollVectorForPosition = this.computeScrollVectorForPosition(this.getTargetPosition());
         if (computeScrollVectorForPosition == null || (computeScrollVectorForPosition.x == 0.0f && computeScrollVectorForPosition.y == 0.0f)) {
             Log.e("LinearSmoothScroller", "To support smooth scrolling, you should override \nLayoutManager#computeScrollVectorForPosition.\nFalling back to instant scroll");
-            final int targetPosition = this.getTargetPosition();
+            recyclerView$SmoothScroller$Action.jumpTo(this.getTargetPosition());
             this.stop();
-            this.instantScrollToPosition(targetPosition);
             return;
         }
         this.normalize(computeScrollVectorForPosition);

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 
@@ -25,9 +26,11 @@ public interface ServiceAgent$BrowseAgentInterface
     
     void fetchNonMemberVideos(final int p0, final boolean p1, final BrowseAgentCallback p2);
     
-    void fetchPostPlayVideos(final String p0, final VideoType p1, final BrowseAgentCallback p2);
+    void fetchPostPlayVideos(final String p0, final VideoType p1, final PostPlayRequestContext p2, final BrowseAgentCallback p3);
     
     void fetchRecommendedList(final int p0, final int p1, final boolean p2, final BrowseAgentCallback p3);
     
     void fetchVideoSummary(final String p0, final BrowseAgentCallback p1);
+    
+    void logPostPlayImpression(final String p0, final VideoType p1, final String p2, final BrowseAgentCallback p3);
 }

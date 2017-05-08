@@ -30,7 +30,7 @@ public class LoMoUtils
     }
     
     public static int getLomoFragImageOffsetLeftPx(final NetflixActivity netflixActivity) {
-        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131362221);
+        return getLomoFragOffsetLeftPx(netflixActivity) + netflixActivity.getResources().getDimensionPixelOffset(2131362223);
     }
     
     public static int getLomoFragOffsetLeftPx(final Activity activity) {
@@ -46,20 +46,20 @@ public class LoMoUtils
                 return LomoConfig.getLomoFragOffsetRightPx(netflixActivity);
             }
             case 1: {
-                return netflixActivity.getResources().getDimensionPixelOffset(2131361953);
+                return netflixActivity.getResources().getDimensionPixelOffset(2131361950);
             }
             case 2: {
                 int n;
                 if (DeviceUtils.isLandscape((Context)netflixActivity)) {
-                    n = 2131362203;
+                    n = 2131362205;
                 }
                 else {
-                    n = 2131362209;
+                    n = 2131362211;
                 }
                 return netflixActivity.getResources().getDimensionPixelOffset(n);
             }
             case 3: {
-                return netflixActivity.getResources().getDimensionPixelOffset(2131362171);
+                return netflixActivity.getResources().getDimensionPixelOffset(2131362173);
             }
         }
     }
@@ -98,7 +98,7 @@ public class LoMoUtils
             return;
         }
         if (list.size() > 0 && list.get(0).equalsIgnoreCase(LoMoUtils$SupportedBadge.NEW.toString())) {
-            textView.setText((CharSequence)textView.getResources().getString(2131231065));
+            textView.setText((CharSequence)textView.getResources().getString(2131231068));
             textView.setVisibility(0);
             return;
         }

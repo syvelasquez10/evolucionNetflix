@@ -16,6 +16,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import android.content.res.Resources;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -71,24 +72,24 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     }
     
     private Drawable getBackroundResource(final View view) {
-        switch (this.this$0.kidsColor) {
+        switch (this.this$0.kidsColorId) {
             default: {
-                return view.getResources().getDrawable(2130837818);
+                return view.getResources().getDrawable(2130837815);
             }
-            case 2131624055: {
-                return view.getResources().getDrawable(2130837822);
-            }
-            case 2131624048: {
-                return view.getResources().getDrawable(2130837817);
-            }
-            case 2131624050: {
+            case 2131624058: {
                 return view.getResources().getDrawable(2130837819);
             }
-            case 2131624052: {
-                return view.getResources().getDrawable(2130837821);
-            }
             case 2131624051: {
-                return view.getResources().getDrawable(2130837820);
+                return view.getResources().getDrawable(2130837814);
+            }
+            case 2131624053: {
+                return view.getResources().getDrawable(2130837816);
+            }
+            case 2131624055: {
+                return view.getResources().getDrawable(2130837818);
+            }
+            case 2131624054: {
+                return view.getResources().getDrawable(2130837817);
             }
         }
     }
@@ -96,7 +97,7 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     @Override
     protected void setInitialToolbarColor() {
         super.setInitialToolbarColor();
-        final View viewById = this.recyclerView.getRootView().findViewById(2131689585);
+        final View viewById = this.recyclerView.getRootView().findViewById(2131689586);
         if (viewById != null) {
             Api16Util.setBackgroundDrawableCompat(viewById, this.getBackroundResource(viewById));
         }

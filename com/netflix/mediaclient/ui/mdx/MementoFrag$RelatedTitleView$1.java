@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import android.support.design.widget.TabLayout$OnTabSelectedListener;
+import com.viewpagerindicator.android.osp.ViewPager$PageTransformer;
 import android.support.v4.view.PagerAdapter;
 import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -57,7 +58,7 @@ class MementoFrag$RelatedTitleView$1 implements View$OnClickListener
             if (this.this$1.this$0.leWrapper != null) {
                 this.this$1.this$0.leWrapper.showLoadingView(true);
             }
-            miniPlayerControlsFrag.fetchRelatedCollection((String)this.val$moreInfo.getTag(2131689495), (String)this.val$moreInfo.getTag(2131689496));
+            miniPlayerControlsFrag.fetchRelatedCollection((String)this.val$moreInfo.getTag(2131689496), (String)this.val$moreInfo.getTag(2131689497));
             if (this.this$1.this$0.isActivityValid()) {
                 UIViewLogUtils.reportUIViewCommand((Context)this.this$1.this$0.getActivity(), UIViewLogging$UIViewCommandName.mementoRelatedMore, IClientLogging$ModalView.memento, this.this$1.this$0.getNetflixActivity().getDataContext());
             }

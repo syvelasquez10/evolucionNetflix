@@ -16,6 +16,6 @@ class PostPlayForMDX$2 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.handleInfoButtonPress();
+        this.this$0.handleStop();
     }
 }

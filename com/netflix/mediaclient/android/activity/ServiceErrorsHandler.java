@@ -42,14 +42,14 @@ public class ServiceErrorsHandler
         final UpdateDialog$Builder updateDialog$Builder = new UpdateDialog$Builder((Context)activity);
         updateDialog$Builder.setTitle("");
         if (!b) {
-            updateDialog$Builder.setMessage(2131230965);
+            updateDialog$Builder.setMessage(2131230967);
             updateDialog$Builder.setCancelable(false);
-            updateDialog$Builder.setNegativeButton(2131230991, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
+            updateDialog$Builder.setNegativeButton(2131230993, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
         }
         else {
-            updateDialog$Builder.setMessage(2131231095);
+            updateDialog$Builder.setMessage(2131231097);
         }
-        updateDialog$Builder.setPositiveButton(2131231126, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
+        updateDialog$Builder.setPositiveButton(2131231128, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
         updateDialog$Builder.show();
         return true;
     }
@@ -59,7 +59,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
         switch (ServiceErrorsHandler$7.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
-                provideDialog(activity, activity.getString(2131231238) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131231244) + " (" + statusCode.getValue() + ")");
                 return true;
             }
             case 1: {
@@ -86,34 +86,38 @@ public class ServiceErrorsHandler
                 return handleAppUpdateNeeded(activity, true);
             }
             case 5: {
-                provideDialog(activity, activity.getString(2131231203));
+                provideDialog(activity, activity.getString(2131231209));
                 return true;
             }
             case 6:
             case 7: {
-                provideDialog(activity, activity.getString(2131231060));
+                provideDialog(activity, activity.getString(2131231062));
                 return true;
             }
-            case 8:
+            case 8: {
+                provideDialog(activity, activity.getString(2131231064));
+                return true;
+            }
             case 9:
-            case 10: {
-                provideDialog(activity, activity.getString(2131231229) + " (" + statusCode.getValue() + ")");
+            case 10:
+            case 11: {
+                provideDialog(activity, activity.getString(2131231235) + " (" + statusCode.getValue() + ")");
                 return true;
             }
-            case 11: {
+            case 12: {
                 Log.e("ServiceErrorsHandler", "Configuration can not be downloaded on first app start!");
-                provideDialogWithHelpButton(activity, activity.getString(2131231238) + " (" + statusCode.getValue() + ")");
+                provideDialogWithHelpButton(activity, activity.getString(2131231244) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }
     }
     
     private static void provideDialog(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131231126, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131231128, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
     }
     
     private static void provideDialogWithHelpButton(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131231126, (DialogInterface$OnClickListener)new ServiceErrorsHandler$5(activity)).setNegativeButton(2131231086, (DialogInterface$OnClickListener)new ServiceErrorsHandler$4(activity)).show();
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage((CharSequence)message).setPositiveButton(2131231128, (DialogInterface$OnClickListener)new ServiceErrorsHandler$5(activity)).setNegativeButton(2131231088, (DialogInterface$OnClickListener)new ServiceErrorsHandler$4(activity)).show();
     }
     
     private static boolean provideUnSupportedLanguageDialog(final Activity activity, final String s) {

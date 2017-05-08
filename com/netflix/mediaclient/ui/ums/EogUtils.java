@@ -22,7 +22,7 @@ public final class EogUtils
     private static final String TAG = "eog_utils";
     
     public static boolean isPlanOnlyCell(final EogAlert eogAlert) {
-        return eogAlert.abTestCell == 4;
+        return eogAlert.abTestCell() == 4;
     }
     
     public static boolean isSmallSizeTablet(final Context context) {
@@ -38,7 +38,7 @@ public final class EogUtils
     public static boolean shouldGoToLandingPage(final int n, final EogAlert eogAlert) {
         final boolean b = n == 1 && !isPlanOnlyCell(eogAlert);
         if (Log.isLoggable()) {
-            Log.d("eog_utils", String.format("shouldGoToLandingPage: %b, currentPage:%d, testCell:%d", b, n, eogAlert.abTestCell));
+            Log.d("eog_utils", String.format("shouldGoToLandingPage: %b, currentPage:%d, testCell:%d", b, n, eogAlert.abTestCell()));
         }
         return b;
     }
@@ -46,7 +46,7 @@ public final class EogUtils
     public static boolean shouldGoToPlanPage(final int n, final EogAlert eogAlert) {
         final boolean b = n > 0 || isPlanOnlyCell(eogAlert);
         if (Log.isLoggable()) {
-            Log.d("eog_utils", String.format("shouldGoToPlanPage: %b, currentPage:%d, testCell:%d", b, n, eogAlert.abTestCell));
+            Log.d("eog_utils", String.format("shouldGoToPlanPage: %b, currentPage:%d, testCell:%d", b, n, eogAlert.abTestCell()));
         }
         return b;
     }
@@ -60,10 +60,10 @@ public final class EogUtils
     }
     
     public static boolean shouldShowOtherPlans(final EogAlert eogAlert) {
-        return StringUtils.isNotEmpty(eogAlert.seeOtherPlansText);
+        return StringUtils.isNotEmpty(eogAlert.seeOtherPlansText());
     }
     
     public static boolean shouldUseLayoutWithImages(final EogAlert eogAlert) {
-        return eogAlert.abTestCell == 5;
+        return eogAlert.abTestCell() == 5;
     }
 }

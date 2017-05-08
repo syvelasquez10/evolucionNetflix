@@ -10,5 +10,7 @@ public enum PostPlayFactory$PostPlayType
     EpisodesForPhone, 
     EpisodesForTablet, 
     RecommendationForPhone, 
-    RecommendationForTablet;
+    RecommendationForTablet, 
+    SignupForPhone, 
+    SignupForTablet;
 }

@@ -56,7 +56,7 @@ public class KubrickLolomoUtils
     }
     
     public static BaseLoLoMoAdapter$RowHolder createHolder(final NetflixActivity netflixActivity, final View view, final LinearLayout linearLayout, final TextView textView, final BaseLoLoMoAdapter$LoMoRowContent baseLoLoMoAdapter$LoMoRowContent, final View view2) {
-        return new KubrickLolomoUtils$KubrickRowHolder(netflixActivity, (View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, view.findViewById(2131689893));
+        return new KubrickLolomoUtils$KubrickRowHolder(netflixActivity, (View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, view.findViewById(2131689891));
     }
     
     public static boolean isDuplicateRow(final BasicLoMo basicLoMo) {
@@ -116,7 +116,7 @@ public class KubrickLolomoUtils
         }
         int dimensionPixelSize = b ? 1 : 0;
         if (n != 0) {
-            dimensionPixelSize = baseLoLoMoAdapter$RowHolder.contentGroup.getResources().getDimensionPixelSize(2131362205);
+            dimensionPixelSize = baseLoLoMoAdapter$RowHolder.contentGroup.getResources().getDimensionPixelSize(2131362207);
         }
         ViewUtils.setPaddingTop(baseLoLoMoAdapter$RowHolder.contentGroup, dimensionPixelSize);
     }

@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.text.TextWatcher;
 import android.view.View$OnClickListener;
 import android.content.Intent;
-import java.util.Iterator;
 import android.widget.Toast;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
@@ -37,6 +36,7 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
+import java.util.Iterator;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -64,7 +64,16 @@ class ProfileDetailsActivity$AvatarsFetchedCallback extends SimpleManagerCallbac
         }
         if (status.isSucces() && list != null) {
             if (!this.this$0.mDataWasInitialized || !list.contains(this.this$0.mCurrentAvatar)) {
-                this.this$0.mDefaultAvatar = list.get(list.size() - 1);
+                this.this$0.mDefaultAvatar = null;
+                for (final AvatarInfo avatarInfo : list) {
+                    if (avatarInfo.isInDefaultSet()) {
+                        this.this$0.mDefaultAvatar = avatarInfo;
+                        break;
+                    }
+                }
+                if (this.this$0.mDefaultAvatar == null) {
+                    this.this$0.mDefaultAvatar = list.get(list.size() - 1);
+                }
                 this.this$0.mCurrentAvatar = this.this$0.mDefaultAvatar;
             }
             this.this$0.updateUI();

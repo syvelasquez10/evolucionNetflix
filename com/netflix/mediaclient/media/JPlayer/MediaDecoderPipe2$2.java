@@ -65,49 +65,53 @@ class MediaDecoderPipe2$2 extends Handler
                             continue;
                         }
                         if (dequeueOutputBuffer == -2) {
-                            final MediaFormat outputFormat = this.this$0.mDecoder.getOutputFormat();
-                            if (Log.isLoggable()) {
-                                Log.d(this.this$0.mTag, "OUTPUT_FORMAT_CHANGED " + outputFormat);
+                            try {
+                                final MediaFormat outputFormat = this.this$0.mDecoder.getOutputFormat();
+                                if (Log.isLoggable()) {
+                                    Log.d(this.this$0.mTag, "OUTPUT_FORMAT_CHANGED " + outputFormat);
+                                    continue;
+                                }
+                                continue;
+                            }
+                            catch (Exception ex3) {
+                                Log.d(this.this$0.mTag, "OUTPUT_FORMAT_CHANGED, format unknown ");
                                 continue;
                             }
                             continue;
+                        }
+                        if (dequeueOutputBuffer < 0 || dequeueOutputBuffer >= this.this$0.mOutputBufferCnt) {
+                            Log.e(this.this$0.mTag, dequeueOutputBuffer + " is not valid");
+                            continue;
+                        }
+                        this.this$0.addToRenderer(dequeueOutputBuffer, mediaCodec$BufferInfo);
+                        if ((mediaCodec$BufferInfo.flags & 0x4) != 0x0) {
+                            Log.d(this.this$0.mTag, "got decoder output BUFFER_FLAG_END_OF_STREAM");
+                        }
+                        if (this.frameDecoded <= 0L && Log.isLoggable()) {
+                            Log.d(this.this$0.mTag, "DequeueOutputBuffer " + dequeueOutputBuffer + " size= " + mediaCodec$BufferInfo.size + " @" + mediaCodec$BufferInfo.presentationTimeUs / 1000L + " ms");
+                        }
+                        if (this.this$0.mRefClock != null && mediaCodec$BufferInfo.presentationTimeUs / 1000L <= this.this$0.mRefClock.get() && Log.isLoggable()) {
+                            Log.d(this.this$0.mTag, "STAT:DEC output late " + this.frameDecoded + " at " + this.this$0.mRefClock.get() + " by " + (mediaCodec$BufferInfo.presentationTimeUs / 1000L - this.this$0.mRefClock.get()) + " ms");
+                        }
+                        ++this.frameDecoded;
+                        int n2;
+                        if (this.this$0.mIsAudio) {
+                            n2 = this.this$0.mOutputBufferCnt - 1;
                         }
                         else {
-                            if (dequeueOutputBuffer < 0 || dequeueOutputBuffer >= this.this$0.mOutputBufferCnt) {
-                                Log.e(this.this$0.mTag, dequeueOutputBuffer + " is not valid");
-                                continue;
-                            }
-                            this.this$0.addToRenderer(dequeueOutputBuffer, mediaCodec$BufferInfo);
-                            if ((mediaCodec$BufferInfo.flags & 0x4) != 0x0) {
-                                Log.d(this.this$0.mTag, "got decoder output BUFFER_FLAG_END_OF_STREAM");
-                            }
-                            if (this.frameDecoded <= 0L && Log.isLoggable()) {
-                                Log.d(this.this$0.mTag, "DequeueOutputBuffer " + dequeueOutputBuffer + " size= " + mediaCodec$BufferInfo.size + " @" + mediaCodec$BufferInfo.presentationTimeUs / 1000L + " ms");
-                            }
-                            if (this.this$0.mRefClock != null && mediaCodec$BufferInfo.presentationTimeUs / 1000L <= this.this$0.mRefClock.get() && Log.isLoggable()) {
-                                Log.d(this.this$0.mTag, "STAT:DEC output late " + this.frameDecoded + " at " + this.this$0.mRefClock.get() + " by " + (mediaCodec$BufferInfo.presentationTimeUs / 1000L - this.this$0.mRefClock.get()) + " ms");
-                            }
-                            ++this.frameDecoded;
-                            int n2;
-                            if (this.this$0.mIsAudio) {
-                                n2 = this.this$0.mOutputBufferCnt - 1;
-                            }
-                            else {
-                                n2 = 1;
-                            }
-                            if (n2 <= 0) {
-                                n = 1;
-                            }
-                            else if (n2 < 4) {
-                                n = n2;
-                            }
-                            if (this.frameDecoded == n && this.this$0.mEventListener != null) {
-                                this.this$0.mEventListener.onDecoderStarted(this.this$0.mIsAudio);
-                                continue;
-                            }
+                            n2 = 1;
+                        }
+                        if (n2 <= 0) {
+                            n = 1;
+                        }
+                        else if (n2 < 4) {
+                            n = n2;
+                        }
+                        if (this.frameDecoded == n && this.this$0.mEventListener != null) {
+                            this.this$0.mEventListener.onDecoderStarted(this.this$0.mIsAudio);
                             continue;
                         }
-                        break;
+                        continue;
                     }
                 }
                 break;

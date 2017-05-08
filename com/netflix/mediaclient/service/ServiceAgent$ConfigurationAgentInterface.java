@@ -120,8 +120,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     PreviewContentConfigData getPreviewContentConfiguration();
     
-    ABTestConfig$Cell getPushNotifOptInConfig();
-    
     int getRateLimitForGcmBrowseEvents();
     
     int getRateLimitForNListChangeEvents();
@@ -171,6 +169,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     boolean isPreviewContentEnabled();
     
     boolean isWidevineL1Enabled();
+    
+    void persistNrmConfigData(final NrmConfigData p0);
     
     boolean shouldAlertForMissingLocale();
     

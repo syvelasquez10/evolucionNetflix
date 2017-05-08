@@ -6,9 +6,10 @@ package android.support.v7.widget;
 
 import java.util.Iterator;
 import java.util.Collection;
+import android.support.v4.animation.AnimatorCompatHelper;
 import java.util.List;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.view.View;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.view.ViewCompat;
 import java.util.ArrayList;
@@ -42,9 +43,8 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
     }
     
     private void animateAddImpl(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        final View itemView = recyclerView$ViewHolder.itemView;
+        final ViewPropertyAnimatorCompat animate = ViewCompat.animate(recyclerView$ViewHolder.itemView);
         this.mAddAnimations.add(recyclerView$ViewHolder);
-        final ViewPropertyAnimatorCompat animate = ViewCompat.animate(itemView);
         animate.alpha(1.0f).setDuration(this.getAddDuration()).setListener(new DefaultItemAnimator$5(this, recyclerView$ViewHolder, animate)).start();
     }
     
@@ -63,15 +63,15 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
             itemView = newHolder.itemView;
         }
         if (itemView2 != null) {
-            this.mChangeAnimations.add(defaultItemAnimator$ChangeInfo.oldHolder);
             final ViewPropertyAnimatorCompat setDuration = ViewCompat.animate(itemView2).setDuration(this.getChangeDuration());
+            this.mChangeAnimations.add(defaultItemAnimator$ChangeInfo.oldHolder);
             setDuration.translationX(defaultItemAnimator$ChangeInfo.toX - defaultItemAnimator$ChangeInfo.fromX);
             setDuration.translationY(defaultItemAnimator$ChangeInfo.toY - defaultItemAnimator$ChangeInfo.fromY);
             setDuration.alpha(0.0f).setListener(new DefaultItemAnimator$7(this, defaultItemAnimator$ChangeInfo, setDuration)).start();
         }
         if (itemView != null) {
-            this.mChangeAnimations.add(defaultItemAnimator$ChangeInfo.newHolder);
             final ViewPropertyAnimatorCompat animate = ViewCompat.animate(itemView);
+            this.mChangeAnimations.add(defaultItemAnimator$ChangeInfo.newHolder);
             animate.translationX(0.0f).translationY(0.0f).setDuration(this.getChangeDuration()).alpha(1.0f).setListener(new DefaultItemAnimator$8(this, defaultItemAnimator$ChangeInfo, animate, itemView)).start();
         }
     }
@@ -86,15 +86,15 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         if (n2 != 0) {
             ViewCompat.animate(itemView).translationY(0.0f);
         }
-        this.mMoveAnimations.add(recyclerView$ViewHolder);
         final ViewPropertyAnimatorCompat animate = ViewCompat.animate(itemView);
+        this.mMoveAnimations.add(recyclerView$ViewHolder);
         animate.setDuration(this.getMoveDuration()).setListener(new DefaultItemAnimator$6(this, recyclerView$ViewHolder, n, n2, animate)).start();
     }
     
     private void animateRemoveImpl(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
         final ViewPropertyAnimatorCompat animate = ViewCompat.animate(recyclerView$ViewHolder.itemView);
-        animate.setDuration(this.getRemoveDuration()).alpha(0.0f).setListener(new DefaultItemAnimator$4(this, recyclerView$ViewHolder, animate)).start();
         this.mRemoveAnimations.add(recyclerView$ViewHolder);
+        animate.setDuration(this.getRemoveDuration()).alpha(0.0f).setListener(new DefaultItemAnimator$4(this, recyclerView$ViewHolder, animate)).start();
     }
     
     private void dispatchFinishedWhenDone() {
@@ -142,9 +142,14 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         return true;
     }
     
+    private void resetAnimation(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+        AnimatorCompatHelper.clearInterpolator(recyclerView$ViewHolder.itemView);
+        this.endAnimation(recyclerView$ViewHolder);
+    }
+    
     @Override
     public boolean animateAdd(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.endAnimation(recyclerView$ViewHolder);
+        this.resetAnimation(recyclerView$ViewHolder);
         ViewCompat.setAlpha(recyclerView$ViewHolder.itemView, 0.0f);
         this.mPendingAdditions.add(recyclerView$ViewHolder);
         return true;
@@ -155,14 +160,14 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         final float translationX = ViewCompat.getTranslationX(recyclerView$ViewHolder.itemView);
         final float translationY = ViewCompat.getTranslationY(recyclerView$ViewHolder.itemView);
         final float alpha = ViewCompat.getAlpha(recyclerView$ViewHolder.itemView);
-        this.endAnimation(recyclerView$ViewHolder);
+        this.resetAnimation(recyclerView$ViewHolder);
         final int n5 = (int)(n3 - n - translationX);
         final int n6 = (int)(n4 - n2 - translationY);
         ViewCompat.setTranslationX(recyclerView$ViewHolder.itemView, translationX);
         ViewCompat.setTranslationY(recyclerView$ViewHolder.itemView, translationY);
         ViewCompat.setAlpha(recyclerView$ViewHolder.itemView, alpha);
         if (recyclerView$ViewHolder2 != null && recyclerView$ViewHolder2.itemView != null) {
-            this.endAnimation(recyclerView$ViewHolder2);
+            this.resetAnimation(recyclerView$ViewHolder2);
             ViewCompat.setTranslationX(recyclerView$ViewHolder2.itemView, -n5);
             ViewCompat.setTranslationY(recyclerView$ViewHolder2.itemView, -n6);
             ViewCompat.setAlpha(recyclerView$ViewHolder2.itemView, 0.0f);
@@ -176,7 +181,7 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         final View itemView = recyclerView$ViewHolder.itemView;
         n += (int)ViewCompat.getTranslationX(recyclerView$ViewHolder.itemView);
         n2 += (int)ViewCompat.getTranslationY(recyclerView$ViewHolder.itemView);
-        this.endAnimation(recyclerView$ViewHolder);
+        this.resetAnimation(recyclerView$ViewHolder);
         final int n5 = n3 - n;
         final int n6 = n4 - n2;
         if (n5 == 0 && n6 == 0) {
@@ -195,7 +200,7 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
     
     @Override
     public boolean animateRemove(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.endAnimation(recyclerView$ViewHolder);
+        this.resetAnimation(recyclerView$ViewHolder);
         this.mPendingRemovals.add(recyclerView$ViewHolder);
         return true;
     }

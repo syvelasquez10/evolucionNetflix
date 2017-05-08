@@ -4,29 +4,42 @@
 
 package android.support.v7.widget;
 
-import android.util.SparseArray;
 import android.support.v4.view.ViewConfigurationCompat;
-import android.support.v4.view.AccessibilityDelegateCompat;
+import android.os.SystemClock;
 import android.support.v4.view.VelocityTrackerCompat;
-import android.os.Parcelable;
+import android.support.v4.os.TraceCompat;
 import android.view.ViewParent;
 import android.view.FocusFinder;
 import android.graphics.Canvas;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MotionEventCompat;
+import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.View$MeasureSpec;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import android.content.res.TypedArray;
+import android.support.v7.recyclerview.R$styleable;
 import android.view.ViewConfiguration;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.os.Build$VERSION;
 import android.view.VelocityTracker;
 import android.graphics.Rect;
+import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
+import android.support.v4.view.ScrollingView;
+import android.support.v4.view.NestedScrollingChild;
 import android.view.ViewGroup$LayoutParams;
 import android.util.Log;
+import android.support.v4.view.AccessibilityDelegateCompat;
 import android.view.ViewGroup;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
@@ -55,7 +68,7 @@ public final class RecyclerView$Recycler
     }
     
     private void attachAccessibilityDelegate(final View view) {
-        if (this.this$0.mAccessibilityManager != null && this.this$0.mAccessibilityManager.isEnabled()) {
+        if (this.this$0.isAccessibilityEnabled()) {
             if (ViewCompat.getImportantForAccessibility(view) == 0) {
                 ViewCompat.setImportantForAccessibility(view, 1);
             }
@@ -89,6 +102,13 @@ public final class RecyclerView$Recycler
         final int visibility = viewGroup.getVisibility();
         viewGroup.setVisibility(4);
         viewGroup.setVisibility(visibility);
+    }
+    
+    void addViewHolderToRecycledViewPool(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+        ViewCompat.setAccessibilityDelegate(recyclerView$ViewHolder.itemView, null);
+        this.dispatchViewRecycled(recyclerView$ViewHolder);
+        recyclerView$ViewHolder.mOwnerRecyclerView = null;
+        this.getRecycledViewPool().putRecycledView(recyclerView$ViewHolder);
     }
     
     public void clear() {
@@ -144,7 +164,7 @@ public final class RecyclerView$Recycler
             if (size != 0) {
                 for (int j = 0; j < size; ++j) {
                     final RecyclerView$ViewHolder recyclerView$ViewHolder = this.mChangedScrap.get(j);
-                    if (!recyclerView$ViewHolder.wasReturnedFromScrap() && recyclerView$ViewHolder.getPosition() == i) {
+                    if (!recyclerView$ViewHolder.wasReturnedFromScrap() && recyclerView$ViewHolder.getLayoutPosition() == i) {
                         recyclerView$ViewHolder.addFlags(32);
                         return recyclerView$ViewHolder;
                     }
@@ -223,7 +243,7 @@ public final class RecyclerView$Recycler
                     return recyclerView$ViewHolder2;
                 }
                 else if (!b) {
-                    this.tryToRecycleCachedViewAt(j);
+                    this.recycleCachedViewAt(j);
                 }
             }
         }
@@ -236,7 +256,7 @@ public final class RecyclerView$Recycler
         int j = 0;
         while (j < size) {
             final RecyclerView$ViewHolder recyclerView$ViewHolder = this.mAttachedScrap.get(j);
-            if (!recyclerView$ViewHolder.wasReturnedFromScrap() && recyclerView$ViewHolder.getPosition() == n && !recyclerView$ViewHolder.isInvalid() && (this.this$0.mState.mInPreLayout || !recyclerView$ViewHolder.isRemoved())) {
+            if (!recyclerView$ViewHolder.wasReturnedFromScrap() && recyclerView$ViewHolder.getLayoutPosition() == n && !recyclerView$ViewHolder.isInvalid() && (this.this$0.mState.mInPreLayout || !recyclerView$ViewHolder.isRemoved())) {
                 if (i != -1 && recyclerView$ViewHolder.getItemViewType() != i) {
                     Log.e("RecyclerView", "Scrap view for position " + n + " isn't dirty but has" + " wrong view type! (found " + recyclerView$ViewHolder.getItemViewType() + " but expected " + i + ")");
                     break;
@@ -258,7 +278,7 @@ public final class RecyclerView$Recycler
         RecyclerView$ViewHolder recyclerView$ViewHolder2;
         for (size2 = this.mCachedViews.size(), i = n2; i < size2; ++i) {
             recyclerView$ViewHolder2 = this.mCachedViews.get(i);
-            if (!recyclerView$ViewHolder2.isInvalid() && recyclerView$ViewHolder2.getPosition() == n) {
+            if (!recyclerView$ViewHolder2.isInvalid() && recyclerView$ViewHolder2.getLayoutPosition() == n) {
                 if (!b) {
                     this.mCachedViews.remove(i);
                 }
@@ -316,14 +336,14 @@ public final class RecyclerView$Recycler
                 }
             }
         }
-    Label_0606_Outer:
+    Label_0586_Outer:
         while (true) {
             RecyclerView$ViewHolder recyclerView$ViewHolder2 = recyclerView$ViewHolder;
             boolean b4 = b3;
             while (true) {
-                Label_0845: {
+                Label_0834: {
                     if (recyclerView$ViewHolder != null) {
-                        break Label_0845;
+                        break Label_0834;
                     }
                     final int positionOffset = this.this$0.mAdapterHelper.findPositionOffset(n);
                     if (positionOffset < 0 || positionOffset >= this.this$0.mAdapter.getItemCount()) {
@@ -361,7 +381,7 @@ public final class RecyclerView$Recycler
                     }
                     RecyclerView$ViewHolder recyclerView$ViewHolder5;
                     if ((recyclerView$ViewHolder5 = recyclerView$ViewHolder4) == null) {
-                        final RecyclerView$ViewHolder recycledView = this.getRecycledViewPool().getRecycledView(this.this$0.mAdapter.getItemViewType(positionOffset));
+                        final RecyclerView$ViewHolder recycledView = this.getRecycledViewPool().getRecycledView(itemViewType);
                         if ((recyclerView$ViewHolder5 = recycledView) != null) {
                             recycledView.resetInternal();
                             recyclerView$ViewHolder5 = recycledView;
@@ -374,16 +394,18 @@ public final class RecyclerView$Recycler
                     recyclerView$ViewHolder2 = recyclerView$ViewHolder5;
                     b4 = b5;
                     if (recyclerView$ViewHolder5 != null) {
-                        break Label_0845;
+                        break Label_0834;
                     }
-                    final RecyclerView$ViewHolder viewHolder = this.this$0.mAdapter.createViewHolder(this.this$0, this.this$0.mAdapter.getItemViewType(positionOffset));
+                    final RecyclerView$ViewHolder viewHolder = this.this$0.mAdapter.createViewHolder(this.this$0, itemViewType);
                     final boolean b6 = b5;
                     if (this.this$0.mState.isPreLayout() && viewHolder.isBound()) {
                         viewHolder.mPreLayoutPosition = n;
                         n = 0;
                     }
                     else if (!viewHolder.isBound() || viewHolder.needsUpdate() || viewHolder.isInvalid()) {
-                        this.this$0.mAdapter.bindViewHolder(viewHolder, this.this$0.mAdapterHelper.findPositionOffset(n));
+                        final int positionOffset2 = this.this$0.mAdapterHelper.findPositionOffset(n);
+                        viewHolder.mOwnerRecyclerView = this.this$0;
+                        this.this$0.mAdapter.bindViewHolder(viewHolder, positionOffset2);
                         this.attachAccessibilityDelegate(viewHolder.itemView);
                         if (this.this$0.mState.isPreLayout()) {
                             viewHolder.mPreLayoutPosition = n;
@@ -414,7 +436,7 @@ public final class RecyclerView$Recycler
                 final RecyclerView$ViewHolder viewHolder = recyclerView$ViewHolder2;
                 continue;
             }
-            continue Label_0606_Outer;
+            continue Label_0586_Outer;
         }
     }
     
@@ -433,22 +455,19 @@ public final class RecyclerView$Recycler
                 final RecyclerView$ViewHolder recyclerView$ViewHolder = this.mCachedViews.get(i);
                 if (recyclerView$ViewHolder != null) {
                     recyclerView$ViewHolder.addFlags(6);
+                    recyclerView$ViewHolder.addChangePayload(null);
                 }
             }
         }
         else {
-            for (int j = this.mCachedViews.size() - 1; j >= 0; --j) {
-                if (!this.tryToRecycleCachedViewAt(j)) {
-                    this.mCachedViews.get(j).addFlags(6);
-                }
-            }
+            this.recycleAndClearCachedViews();
         }
     }
     
     void offsetPositionRecordsForInsert(final int n, final int n2) {
         for (int size = this.mCachedViews.size(), i = 0; i < size; ++i) {
             final RecyclerView$ViewHolder recyclerView$ViewHolder = this.mCachedViews.get(i);
-            if (recyclerView$ViewHolder != null && recyclerView$ViewHolder.getPosition() >= n) {
+            if (recyclerView$ViewHolder != null && recyclerView$ViewHolder.getLayoutPosition() >= n) {
                 recyclerView$ViewHolder.offsetPosition(n2, true);
             }
         }
@@ -485,11 +504,12 @@ public final class RecyclerView$Recycler
         for (int i = this.mCachedViews.size() - 1; i >= 0; --i) {
             final RecyclerView$ViewHolder recyclerView$ViewHolder = this.mCachedViews.get(i);
             if (recyclerView$ViewHolder != null) {
-                if (recyclerView$ViewHolder.getPosition() >= n + n2) {
+                if (recyclerView$ViewHolder.getLayoutPosition() >= n + n2) {
                     recyclerView$ViewHolder.offsetPosition(-n2, b);
                 }
-                else if (recyclerView$ViewHolder.getPosition() >= n && !this.tryToRecycleCachedViewAt(i)) {
-                    recyclerView$ViewHolder.addFlags(4);
+                else if (recyclerView$ViewHolder.getLayoutPosition() >= n) {
+                    recyclerView$ViewHolder.addFlags(8);
+                    this.recycleCachedViewAt(i);
                 }
             }
         }
@@ -509,9 +529,14 @@ public final class RecyclerView$Recycler
     
     void recycleAndClearCachedViews() {
         for (int i = this.mCachedViews.size() - 1; i >= 0; --i) {
-            this.tryToRecycleCachedViewAt(i);
+            this.recycleCachedViewAt(i);
         }
         this.mCachedViews.clear();
+    }
+    
+    void recycleCachedViewAt(final int n) {
+        this.addViewHolderToRecycledViewPool(this.mCachedViews.get(n));
+        this.mCachedViews.remove(n);
     }
     
     public void recycleView(final View view) {
@@ -530,7 +555,7 @@ public final class RecyclerView$Recycler
     
     void recycleViewHolderInternal(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
         boolean b = true;
-        final boolean b2 = false;
+        boolean b2 = false;
         if (recyclerView$ViewHolder.isScrap() || recyclerView$ViewHolder.itemView.getParent() != null) {
             final StringBuilder append = new StringBuilder().append("Scrapped or attached views may not be recycled. isScrap:").append(recyclerView$ViewHolder.isScrap()).append(" isAttached:");
             if (recyclerView$ViewHolder.itemView.getParent() == null) {
@@ -544,35 +569,47 @@ public final class RecyclerView$Recycler
         if (recyclerView$ViewHolder.shouldIgnore()) {
             throw new IllegalArgumentException("Trying to recycle an ignored view holder. You should first call stopIgnoringView(view) before calling recycle.");
         }
-        if (recyclerView$ViewHolder.isRecyclable()) {
-            boolean b3 = b2;
-            Label_0256: {
-                if (!recyclerView$ViewHolder.isInvalid()) {
-                    if (!this.this$0.mState.mInPreLayout) {
-                        b3 = b2;
-                        if (recyclerView$ViewHolder.isRemoved()) {
-                            break Label_0256;
+        final boolean access$4100 = recyclerView$ViewHolder.doesTransientStatePreventRecycling();
+        boolean b3;
+        if (this.this$0.mAdapter != null && access$4100 && this.this$0.mAdapter.onFailedToRecycleView(recyclerView$ViewHolder)) {
+            b3 = true;
+        }
+        else {
+            b3 = false;
+        }
+        int n = 0;
+        Label_0249: {
+            if (b3 || recyclerView$ViewHolder.isRecyclable()) {
+                while (true) {
+                    Label_0287: {
+                        if (recyclerView$ViewHolder.hasAnyOfTheFlags(78)) {
+                            break Label_0287;
                         }
+                        final int size = this.mCachedViews.size();
+                        if (size == this.mViewCacheMax && size > 0) {
+                            this.recycleCachedViewAt(0);
+                        }
+                        if (size >= this.mViewCacheMax) {
+                            break Label_0287;
+                        }
+                        this.mCachedViews.add(recyclerView$ViewHolder);
+                        n = 1;
+                        if (n == 0) {
+                            this.addViewHolderToRecycledViewPool(recyclerView$ViewHolder);
+                            b2 = true;
+                        }
+                        break Label_0249;
                     }
-                    b3 = b2;
-                    if (!recyclerView$ViewHolder.isChanged()) {
-                        if (this.mCachedViews.size() == this.mViewCacheMax && !this.mCachedViews.isEmpty()) {
-                            for (int n = 0; n < this.mCachedViews.size() && !this.tryToRecycleCachedViewAt(n); ++n) {}
-                        }
-                        b3 = b2;
-                        if (this.mCachedViews.size() < this.mViewCacheMax) {
-                            this.mCachedViews.add(recyclerView$ViewHolder);
-                            b3 = true;
-                        }
-                    }
+                    n = 0;
+                    continue;
                 }
             }
-            if (!b3) {
-                this.getRecycledViewPool().putRecycledView(recyclerView$ViewHolder);
-                this.dispatchViewRecycled(recyclerView$ViewHolder);
-            }
+            n = 0;
         }
         this.this$0.mState.onViewRecycled(recyclerView$ViewHolder);
+        if (n == 0 && !b2 && access$4100) {
+            recyclerView$ViewHolder.mOwnerRecyclerView = null;
+        }
     }
     
     void scrapView(final View view) {
@@ -591,6 +628,15 @@ public final class RecyclerView$Recycler
         this.mAttachedScrap.add(childViewHolderInt);
     }
     
+    void setAdapterPositionsAsUnknown() {
+        for (int size = this.mCachedViews.size(), i = 0; i < size; ++i) {
+            final RecyclerView$ViewHolder recyclerView$ViewHolder = this.mCachedViews.get(i);
+            if (recyclerView$ViewHolder != null) {
+                recyclerView$ViewHolder.addFlags(512);
+            }
+        }
+    }
+    
     void setRecycledViewPool(final RecyclerView$RecycledViewPool mRecyclerPool) {
         if (this.mRecyclerPool != null) {
             this.mRecyclerPool.detach();
@@ -607,22 +653,8 @@ public final class RecyclerView$Recycler
     public void setViewCacheSize(final int mViewCacheMax) {
         this.mViewCacheMax = mViewCacheMax;
         for (int n = this.mCachedViews.size() - 1; n >= 0 && this.mCachedViews.size() > mViewCacheMax; --n) {
-            this.tryToRecycleCachedViewAt(n);
+            this.recycleCachedViewAt(n);
         }
-        while (this.mCachedViews.size() > mViewCacheMax) {
-            this.mCachedViews.remove(this.mCachedViews.size() - 1);
-        }
-    }
-    
-    boolean tryToRecycleCachedViewAt(final int n) {
-        final RecyclerView$ViewHolder recyclerView$ViewHolder = this.mCachedViews.get(n);
-        if (recyclerView$ViewHolder.isRecyclable()) {
-            this.getRecycledViewPool().putRecycledView(recyclerView$ViewHolder);
-            this.dispatchViewRecycled(recyclerView$ViewHolder);
-            this.mCachedViews.remove(n);
-            return true;
-        }
-        return false;
     }
     
     void unscrapView(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
@@ -652,12 +684,13 @@ public final class RecyclerView$Recycler
     }
     
     void viewRangeUpdate(final int n, final int n2) {
-        for (int size = this.mCachedViews.size(), i = 0; i < size; ++i) {
+        for (int i = this.mCachedViews.size() - 1; i >= 0; --i) {
             final RecyclerView$ViewHolder recyclerView$ViewHolder = this.mCachedViews.get(i);
             if (recyclerView$ViewHolder != null) {
-                final int position = recyclerView$ViewHolder.getPosition();
-                if (position >= n && position < n + n2) {
+                final int layoutPosition = recyclerView$ViewHolder.getLayoutPosition();
+                if (layoutPosition >= n && layoutPosition < n + n2) {
                     recyclerView$ViewHolder.addFlags(2);
+                    this.recycleCachedViewAt(i);
                 }
             }
         }

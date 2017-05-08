@@ -6,5 +6,5 @@ package android.support.design;
 
 public final class R$attr
 {
-    public static final int colorControlHighlight = 2130772259;
+    public static final int colorControlHighlight = 2130772274;
 }

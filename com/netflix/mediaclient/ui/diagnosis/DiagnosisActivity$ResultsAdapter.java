@@ -24,7 +24,7 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public DiagnosisActivity$ResultsAdapter(final DiagnosisActivity this$0, final Context context) {
         this.this$0 = this$0;
-        super(context, 2130903106, 2131689766);
+        super(context, 2130903106, 2131689764);
         this.context = context;
     }
     
@@ -45,19 +45,19 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public View getView(final int n, View inflate, final ViewGroup viewGroup) {
         inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903106, viewGroup, false);
-        final TextView textView = (TextView)inflate.findViewById(2131689768);
-        final TextView textView2 = (TextView)inflate.findViewById(2131689769);
-        final ImageView imageView = (ImageView)inflate.findViewById(2131689767);
-        imageView.setImageResource(2130837778);
+        final TextView textView = (TextView)inflate.findViewById(2131689766);
+        final TextView textView2 = (TextView)inflate.findViewById(2131689767);
+        final ImageView imageView = (ImageView)inflate.findViewById(2131689765);
+        imageView.setImageResource(2130837775);
         final UrlNetworkState urlNetworkState = this.this$0.mUrlList.get(n);
         this.setTitleText(textView, urlNetworkState.getUrl(), n);
         if (urlNetworkState.getStatus().equals(DiagnosisAgent$UrlStatus.COMPLETED)) {
             if (urlNetworkState.getResult() != 0) {
                 textView2.setText((CharSequence)("nw-" + urlNetworkState.getErrorGroup() + "-" + urlNetworkState.getErrorCode()));
-                imageView.setImageResource(2130837777);
+                imageView.setImageResource(2130837774);
                 return inflate;
             }
-            imageView.setImageResource(2130837778);
+            imageView.setImageResource(2130837775);
             textView2.setVisibility(4);
         }
         else {
@@ -78,9 +78,9 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public void setTitleText(final TextView textView, final String s, final int n) {
         if (s != null && s.contains("netflix")) {
-            textView.setText((CharSequence)this.context.getString(2131231111, new Object[] { n + 1 }));
+            textView.setText((CharSequence)this.context.getString(2131231113, new Object[] { n + 1 }));
             return;
         }
-        textView.setText(2131231089);
+        textView.setText(2131231091);
     }
 }

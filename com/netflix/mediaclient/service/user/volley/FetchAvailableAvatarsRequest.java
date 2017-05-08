@@ -24,6 +24,7 @@ import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientReq
 public class FetchAvailableAvatarsRequest extends FalkorVolleyWebClientRequest<List<AvatarInfo>>
 {
     private static final String AVATARS_FIELD = "availableAvatarsList";
+    private static final String IS_IN_DEFAULT_SET_FIELD = "isInDefaultSet";
     private static final String NAME_FIELD = "name";
     private static final String TAG = "nf_service_user_fetchavailableavatarsrequest";
     private static final String URL_FIELD = "url";
@@ -73,7 +74,7 @@ public class FetchAvailableAvatarsRequest extends FalkorVolleyWebClientRequest<L
             final Iterator<JsonElement> iterator = asJsonArray.iterator();
             while (iterator.hasNext()) {
                 final JsonObject asJsonObject = iterator.next().getAsJsonObject();
-                ((ArrayList<AvatarInfo>)s).add(new AvatarInfo(asJsonObject.getAsJsonPrimitive("name").getAsString(), asJsonObject.getAsJsonPrimitive("url").getAsString()));
+                ((ArrayList<AvatarInfo>)s).add(new AvatarInfo(asJsonObject.getAsJsonPrimitive("name").getAsString(), asJsonObject.getAsJsonPrimitive("url").getAsString(), asJsonObject.getAsJsonPrimitive("isInDefaultSet").getAsBoolean()));
             }
         }
         catch (Exception ex) {

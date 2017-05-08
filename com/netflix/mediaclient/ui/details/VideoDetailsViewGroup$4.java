@@ -35,7 +35,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.widget.Button;
+import com.netflix.mediaclient.android.widget.NetflixTextButton;
 import android.view.View;
 import java.util.EnumMap;
 import android.widget.LinearLayout;

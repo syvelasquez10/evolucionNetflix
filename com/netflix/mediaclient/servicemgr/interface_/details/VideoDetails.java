@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.servicemgr.interface_.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.model.leafs.advisory.Advisory;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
@@ -13,11 +15,7 @@ public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
 {
     String getActors();
     
-    String getAdvisoryDescription();
-    
-    int getAdvisoryDisplayDuration();
-    
-    String getAdvisoryRating();
+    List<Advisory> getAdvisories();
     
     String getBifUrl();
     

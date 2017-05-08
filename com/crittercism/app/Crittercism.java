@@ -23,6 +23,44 @@ public class Crittercism
         dw.b("Crittercism cannot be initialized", new NullPointerException(s + " was null"));
     }
     
+    private static void b(final String s) {
+        final ax c = ax.C();
+        if (c.g.a()) {
+            h("beginTransaction");
+            return;
+        }
+        if (!c.b) {
+            g("beginTransaction");
+            return;
+        }
+        c.c(s);
+    }
+    
+    public static void beginUserflow(final String s) {
+        try {
+            b(s);
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            dw.b(t);
+        }
+    }
+    
+    private static void c(final String s) {
+        final ax c = ax.C();
+        if (c.g.a()) {
+            h("endTransaction");
+            return;
+        }
+        if (!c.b) {
+            g("endTransaction");
+            return;
+        }
+        c.d(s);
+    }
+    
     public static boolean didCrashOnLastLoad() {
         try {
             final ax c = ax.C();
@@ -43,6 +81,18 @@ public class Crittercism
             dw.b(t);
         }
         return false;
+    }
+    
+    public static void endUserflow(final String s) {
+        try {
+            c(s);
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            dw.b(t);
+        }
     }
     
     private static void g(final String s) {
@@ -79,14 +129,13 @@ public class Crittercism
                     }
                     catch (ThreadDeath threadDeath) {
                         throw threadDeath;
-                        long nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
-                        dw.d("Crittercism finished initializing in " + nanoTime + "ms");
-                        return;
-                        nanoTime = System.nanoTime();
+                        long nanoTime = System.nanoTime();
                         c = ax.C();
                         // iftrue(Label_0142:, Build$VERSION.SDK_INT >= 14)
                         dw.b("Crittercism is not supported for Android API less than 14 (ICS).");
-                        continue;
+                        nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
+                        dw.d("Crittercism finished initializing in " + nanoTime + "ms");
+                        return;
                     }
                     catch (Throwable t2) {
                         dw.b(t2);

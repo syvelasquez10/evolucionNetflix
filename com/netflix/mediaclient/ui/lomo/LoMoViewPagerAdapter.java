@@ -357,7 +357,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             else {
                 type = loMo.getType();
             }
-            ErrorLoggingManager.logHandledException(append2.append(type).toString());
+            ErrorLoggingManager.logHandledException(append2.append(type).append(" LOLOMO_ID - ").append(this.serviceManager.getBrowse().getLolomoId()).toString());
         }
         this.currentAdapter.refreshData(loMo, listViewPos);
     }

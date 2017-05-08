@@ -23,6 +23,7 @@ import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import android.content.Intent;
 import android.content.Context;
+import com.google.gson.GsonBuilder;
 import com.netflix.mediaclient.android.app.UserInputManager;
 import com.netflix.mediaclient.util.l10n.UserLocale;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,7 +63,7 @@ public class NetflixApplication extends MultiDexApplication
     private boolean wasInBackground;
     
     static {
-        gson = new Gson();
+        gson = new GsonBuilder().registerTypeAdapterFactory(AutoValueAdapterFactory.create()).create();
         NetflixApplication.sEnableSmartLock = true;
         NetflixApplication.isDebugToastEnabled = false;
     }
@@ -169,7 +170,7 @@ public class NetflixApplication extends MultiDexApplication
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837784).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131231287, new Object[] { n })).setContentTitle(this.getString(2131231288, new Object[] { n })).setContentText(this.getString(2131230964, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837781).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131231293, new Object[] { n })).setContentTitle(this.getString(2131231294, new Object[] { n })).setContentText(this.getString(2131230966, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -296,7 +297,7 @@ public class NetflixApplication extends MultiDexApplication
         this.wasInBackground = false;
     }
     
-    public boolean wasInBackground(final boolean b) {
+    public boolean wasInBackground() {
         final boolean wasInBackground = this.wasInBackground;
         this.wasInBackground = false;
         return wasInBackground;

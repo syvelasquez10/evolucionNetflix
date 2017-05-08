@@ -43,6 +43,19 @@ class ChildHelper
         return n;
     }
     
+    private void hideViewInternal(final View view) {
+        this.mHiddenViews.add(view);
+        this.mCallback.onEnteredHiddenState(view);
+    }
+    
+    private boolean unhideViewInternal(final View view) {
+        if (this.mHiddenViews.remove(view)) {
+            this.mCallback.onLeftHiddenState(view);
+            return true;
+        }
+        return false;
+    }
+    
     void addView(final View view, int n, final boolean b) {
         if (n < 0) {
             n = this.mCallback.getChildCount();
@@ -50,11 +63,11 @@ class ChildHelper
         else {
             n = this.getOffset(n);
         }
-        this.mCallback.addView(view, n);
         this.mBucket.insert(n, b);
         if (b) {
-            this.mHiddenViews.add(view);
+            this.hideViewInternal(view);
         }
+        this.mCallback.addView(view, n);
     }
     
     void addView(final View view, final boolean b) {
@@ -68,24 +81,24 @@ class ChildHelper
         else {
             n = this.getOffset(n);
         }
-        this.mCallback.attachViewToParent(view, n, viewGroup$LayoutParams);
         this.mBucket.insert(n, b);
         if (b) {
-            this.mHiddenViews.add(view);
+            this.hideViewInternal(view);
         }
+        this.mCallback.attachViewToParent(view, n, viewGroup$LayoutParams);
     }
     
     void detachViewFromParent(int offset) {
         offset = this.getOffset(offset);
-        this.mCallback.detachViewFromParent(offset);
         this.mBucket.remove(offset);
+        this.mCallback.detachViewFromParent(offset);
     }
     
     View findHiddenNonRemovedView(final int n, final int n2) {
         for (int size = this.mHiddenViews.size(), i = 0; i < size; ++i) {
             final View view = this.mHiddenViews.get(i);
             final RecyclerView$ViewHolder childViewHolder = this.mCallback.getChildViewHolder(view);
-            if (childViewHolder.getPosition() == n && !childViewHolder.isInvalid() && (n2 == -1 || childViewHolder.getItemViewType() == n2)) {
+            if (childViewHolder.getLayoutPosition() == n && !childViewHolder.isInvalid() && (n2 == -1 || childViewHolder.getItemViewType() == n2)) {
                 return view;
             }
         }
@@ -115,7 +128,7 @@ class ChildHelper
             throw new IllegalArgumentException("view is not a child, cannot hide " + view);
         }
         this.mBucket.set(indexOfChild);
-        this.mHiddenViews.add(view);
+        this.hideViewInternal(view);
     }
     
     int indexOfChild(final View view) {
@@ -131,48 +144,50 @@ class ChildHelper
     }
     
     void removeAllViewsUnfiltered() {
-        this.mCallback.removeAllViews();
         this.mBucket.reset();
-        this.mHiddenViews.clear();
+        for (int i = this.mHiddenViews.size() - 1; i >= 0; --i) {
+            this.mCallback.onLeftHiddenState(this.mHiddenViews.get(i));
+            this.mHiddenViews.remove(i);
+        }
+        this.mCallback.removeAllViews();
     }
     
     void removeView(final View view) {
         final int indexOfChild = this.mCallback.indexOfChild(view);
-        if (indexOfChild >= 0) {
-            this.mCallback.removeViewAt(indexOfChild);
-            if (this.mBucket.remove(indexOfChild)) {
-                this.mHiddenViews.remove(view);
-            }
+        if (indexOfChild < 0) {
+            return;
         }
+        if (this.mBucket.remove(indexOfChild)) {
+            this.unhideViewInternal(view);
+        }
+        this.mCallback.removeViewAt(indexOfChild);
     }
     
     void removeViewAt(int offset) {
         offset = this.getOffset(offset);
         final View child = this.mCallback.getChildAt(offset);
-        if (child != null) {
-            this.mCallback.removeViewAt(offset);
-            if (this.mBucket.remove(offset)) {
-                this.mHiddenViews.remove(child);
-            }
+        if (child == null) {
+            return;
         }
+        if (this.mBucket.remove(offset)) {
+            this.unhideViewInternal(child);
+        }
+        this.mCallback.removeViewAt(offset);
     }
     
     boolean removeViewIfHidden(final View view) {
         final int indexOfChild = this.mCallback.indexOfChild(view);
         if (indexOfChild == -1) {
-            if (this.mHiddenViews.remove(view)) {}
+            if (this.unhideViewInternal(view)) {}
+            return true;
         }
-        else {
-            if (!this.mBucket.get(indexOfChild)) {
-                return false;
-            }
+        if (this.mBucket.get(indexOfChild)) {
             this.mBucket.remove(indexOfChild);
+            if (!this.unhideViewInternal(view)) {}
             this.mCallback.removeViewAt(indexOfChild);
-            if (!this.mHiddenViews.remove(view)) {
-                return true;
-            }
+            return true;
         }
-        return true;
+        return false;
     }
     
     @Override

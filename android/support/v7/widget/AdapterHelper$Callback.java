@@ -8,7 +8,7 @@ interface AdapterHelper$Callback
 {
     RecyclerView$ViewHolder findViewHolder(final int p0);
     
-    void markViewHoldersUpdated(final int p0, final int p1);
+    void markViewHoldersUpdated(final int p0, final int p1, final Object p2);
     
     void offsetPositionsForAdd(final int p0, final int p1);
     

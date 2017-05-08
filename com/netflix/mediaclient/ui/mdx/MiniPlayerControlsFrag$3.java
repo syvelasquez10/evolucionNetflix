@@ -13,6 +13,7 @@ import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.app.FragmentTransaction;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;

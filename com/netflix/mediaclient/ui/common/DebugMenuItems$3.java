@@ -15,8 +15,8 @@ import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Context;
-import com.netflix.mediaclient.service.NetflixService;
 import android.content.Intent;
+import com.netflix.mediaclient.ui.iris.notifications.NotificationsActivity;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -29,10 +29,7 @@ class DebugMenuItems$3 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.USER_CREATE_AUTOLOGIN_TOKEN");
-        intent.setClass((Context)this.this$0.activity, (Class)NetflixService.class);
-        intent.addCategory("com.netflix.mediaclient.intent.category.USER");
-        this.this$0.activity.startService(intent);
+        this.this$0.activity.startActivity(new Intent((Context)this.this$0.activity, (Class)NotificationsActivity.class));
         return true;
     }
 }

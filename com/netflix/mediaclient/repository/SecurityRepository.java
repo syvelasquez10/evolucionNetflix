@@ -23,7 +23,7 @@ public final class SecurityRepository
     private static final String BOOTLOADER_PARAMETER_SDK_VERSION = "sdk_version";
     private static final String BOOTLOADER_PARAMETER_SOFTWARE_VERSION = "sw_version";
     private static final String BOOTLOADER_PARAMETER_WEB_API_VERSION = "v";
-    private static final String BOOTLOADER_URL = "https://www.netflix.com/applanding/android";
+    private static final String BOOTLOADER_URL = "https://www.netflix.com";
     private static final String BOOTLOADER_WEB_API_VERSION = "2.0";
     private static final int CONSTANT_CRITTERCISM_APP_ID = 2;
     private static final int CONSTANT_DEVICE_ID_TOKEN = 1;
@@ -76,7 +76,7 @@ public final class SecurityRepository
     }
     
     public static String getBootloaderUrl() {
-        return "https://www.netflix.com/applanding/android";
+        return "https://www.netflix.com";
     }
     
     public static String getBootloaderWebApiVersion() {

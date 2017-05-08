@@ -29,12 +29,17 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
     private VideoType videoType;
     
     @Override
+    protected boolean allowTransitionAnimation() {
+        return false;
+    }
+    
+    @Override
     protected NetflixActionBar createActionBar() {
         final KubrickKidsDetailActionBar kubrickKidsDetailActionBar = new KubrickKidsDetailActionBar(this, this.hasUpAction());
         kubrickKidsDetailActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         kubrickKidsDetailActionBar.setTitle("");
         kubrickKidsDetailActionBar.setAlpha(0.0f);
-        final View viewById = this.findViewById(2131689585);
+        final View viewById = this.findViewById(2131689586);
         if (viewById != null) {
             viewById.setBackgroundColor(0);
         }
@@ -59,7 +64,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
                 return BarkerKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color", 2131624049));
+                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131624052));
             }
         }
     }

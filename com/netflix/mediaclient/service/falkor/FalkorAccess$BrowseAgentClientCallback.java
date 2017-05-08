@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.falkor;
 
+import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
@@ -11,6 +12,7 @@ import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
 import com.netflix.mediaclient.service.NetflixService$ClientCallbacks;
@@ -31,13 +33,12 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
-import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import com.netflix.model.branches.FalkorActorStill;
@@ -67,6 +68,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onActorDetailsAndRelatedFetched(this.requestId, list, list2, status, list3);
+    }
+    
+    @Override
+    public void onAdvisoriesFetched(final List<Advisory> list, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onAdvisoriesFetched");
+            return;
+        }
+        netflixServiceCallback.onAdvisoriesFetched(this.requestId, list, status);
     }
     
     @Override
@@ -126,16 +137,6 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onEpisodesFetched(this.requestId, list, status);
-    }
-    
-    @Override
-    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
-        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
-        if (netflixServiceCallback == null) {
-            Log.w("FalkorAccess", "No client callback found for onExpiringContentWarning");
-            return;
-        }
-        netflixServiceCallback.expiringContent(this.requestId, expiringContentWarning, status, expiringContentAction);
     }
     
     @Override
@@ -263,6 +264,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onPersonRelatedFetched(this.requestId, falkorPerson, list, status);
+    }
+    
+    @Override
+    public void onPostPlayImpressionLogged(final boolean b, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onPostPlayImpressionLogged");
+            return;
+        }
+        netflixServiceCallback.onPostPlayImpressionLogged(this.requestId, b, status);
     }
     
     @Override

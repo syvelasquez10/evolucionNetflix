@@ -12,6 +12,8 @@ public class DeviceConfigData
 {
     @SerializedName("alertMsgForLocaleSupport")
     private String alertMsgForLocaleSupport;
+    @SerializedName("appBootUrlSuffix")
+    private String appBootUrlSuffix;
     @SerializedName("audioFormats")
     private int audioFormats;
     @SerializedName("breadcrumb_logging_specification")
@@ -84,6 +86,10 @@ public class DeviceConfigData
     
     public String getAlertMsgForLocaleSupport() {
         return this.alertMsgForLocaleSupport;
+    }
+    
+    public String getAppBootUrlSuffix() {
+        return this.appBootUrlSuffix;
     }
     
     public String getAppMinVresion() {

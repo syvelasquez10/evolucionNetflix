@@ -9,6 +9,8 @@ import com.netflix.mediaclient.util.LaunchBrowser;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
+import android.net.Uri$Builder;
+import android.net.Uri;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class AccountHandler
@@ -17,6 +19,7 @@ public class AccountHandler
     public static final long AUTOLOGIN_TOKEN_EXPIRATION_IN_MS = 3600000L;
     public static final long AUTOLOGIN_TOKEN_TIMEOUT_IN_MS = 10000L;
     private static final String TAG = "AccountHandler";
+    public static final String TOKEN_PARAMETER_NAME = "nftoken";
     private boolean mCompleted;
     private NetflixActivity mContext;
     
@@ -25,9 +28,9 @@ public class AccountHandler
     }
     
     private static String createLink(final String s, final String s2) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(s).append("?nftoken=").append(s2);
-        return sb.toString();
+        final Uri$Builder buildUpon = Uri.parse(s).buildUpon();
+        buildUpon.appendQueryParameter("nftoken", s2);
+        return buildUpon.build().toString();
     }
     
     public void handle(final String s, final Status status) {

@@ -4,11 +4,8 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import android.animation.TimeInterpolator;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
-import com.netflix.mediaclient.ui.common.PlayContext;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -21,25 +18,26 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.IPlayer;
-import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.util.DeviceCategory;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
-import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
-import java.util.List;
-import android.view.animation.DecelerateInterpolator;
+import com.netflix.model.leafs.PostPlayExperience;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import com.netflix.model.leafs.InteractivePostplay;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import android.widget.LinearLayout;
 import com.netflix.mediaclient.ui.iko.InteractivePostPlayManager;
+import com.netflix.mediaclient.util.TimeUtils$CountdownTimer;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.iko.model.InteractivePostplayModel;
+import java.util.Iterator;
 import android.content.Context;
 import android.widget.Toast;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.iko.InteractivePostPlayFactory;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.model.leafs.PostPlayAction;
+import com.netflix.model.leafs.PostPlayItem;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
@@ -76,10 +74,42 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                 if (Log.isLoggable() && postPlayVideosProvider2 != null) {
                     Log.d("nf_postplay", "Postplay data retrieved " + postPlayVideosProvider2);
                 }
-                this.this$0.mPostPlayVideos = postPlayVideosProvider2.getPostPlayVideos();
-                this.this$0.mPostPlayDataExist = (this.this$0.mPostPlayVideos != null && this.this$0.mPostPlayVideos.size() > 0);
-                this.this$0.mPostPlayContexts = postPlayVideosProvider2.getPostPlayContexts();
+                this.this$0.mPostPlayExperience = postPlayVideosProvider2.getPostPlayExperienceData();
                 this.this$0.mInteractivePostPlay = postPlayVideosProvider2.getInteractivePostplay();
+                if (this.this$0.mPostPlayExperience.getAutoplay() && this.this$0.mPostPlayExperience.getAutoplaySeconds() > 0) {
+                    final PostPlayItem postPlayItem = this.this$0.mPostPlayExperience.getItems().get(this.this$0.mPostPlayExperience.getItemsInitialIndex());
+                    if (postPlayItem != null) {
+                        postPlayItem.setAutoPlay(true);
+                        postPlayItem.setAutoPlaySeconds(this.this$0.mPostPlayExperience.getAutoplaySeconds());
+                        postPlayItem.setNextEpisodeAutoPlay(this.this$0.mPostPlayExperience.getType().equals("nextEpisode"));
+                    }
+                    else {
+                        Log.e("nf_postplay", "Could not find autoplay item");
+                    }
+                }
+                int i = 0;
+                int n = 0;
+                while (i < this.this$0.mPostPlayExperience.getItems().size()) {
+                    final PostPlayItem postPlayItem2 = this.this$0.mPostPlayExperience.getItems().get(i);
+                    postPlayItem2.setExperienceType(this.this$0.mPostPlayExperience.getType());
+                    for (final PostPlayAction postPlayAction : postPlayItem2.getActions()) {
+                        postPlayAction.setItemIndex(i);
+                        postPlayAction.setRequestId(this.this$0.mPostPlayExperience.getRequestId());
+                        postPlayAction.setAncestorTitle(postPlayItem2.getAncestorTitle());
+                        if (postPlayAction.getVideoType() == null) {
+                            postPlayAction.setVideoType(postPlayItem2.getType());
+                        }
+                    }
+                    if (this.this$0.hasValidPlayAction(postPlayItem2)) {
+                        ++n;
+                    }
+                    ++i;
+                }
+                this.this$0.mPostPlayDataExist = (this.this$0.mPostPlayExperience != null);
+                if (n == 0) {
+                    Log.e("nf_postplay", "No playable items in post play response");
+                    this.this$0.mPostPlayDataExist = false;
+                }
                 if (this.this$0.mInteractivePostPlay != null) {
                     final InteractivePostplayModel data = this.this$0.mInteractivePostPlay.getData();
                     if (data == null || StringUtils.isEmpty(data.getType())) {

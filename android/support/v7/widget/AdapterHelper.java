@@ -50,7 +50,7 @@ class AdapterHelper implements OpReorderer$Callback
             int n4;
             if (this.mCallback.findViewHolder(i) != null || this.canFindInPreLayout(i)) {
                 if (n2 == 0) {
-                    this.dispatchAndUpdateViewHolders(this.obtainUpdateOp(1, positionStart, n3));
+                    this.dispatchAndUpdateViewHolders(this.obtainUpdateOp(1, positionStart, n3, null));
                     n4 = 1;
                 }
                 else {
@@ -61,7 +61,7 @@ class AdapterHelper implements OpReorderer$Callback
             else {
                 int n5;
                 if (n2 == 1) {
-                    this.postponeAndUpdateViewHolders(this.obtainUpdateOp(1, positionStart, n3));
+                    this.postponeAndUpdateViewHolders(this.obtainUpdateOp(1, positionStart, n3, null));
                     n5 = 1;
                 }
                 else {
@@ -92,7 +92,7 @@ class AdapterHelper implements OpReorderer$Callback
         AdapterHelper$UpdateOp obtainUpdateOp = adapterHelper$UpdateOp;
         if (n3 != adapterHelper$UpdateOp.itemCount) {
             this.recycleUpdateOp(adapterHelper$UpdateOp);
-            obtainUpdateOp = this.obtainUpdateOp(1, positionStart, n3);
+            obtainUpdateOp = this.obtainUpdateOp(1, positionStart, n3, null);
         }
         if (n2 == 0) {
             this.dispatchAndUpdateViewHolders(obtainUpdateOp);
@@ -115,7 +115,7 @@ class AdapterHelper implements OpReorderer$Callback
                 n3 = n2;
                 int n4 = positionStart;
                 if (n == 0) {
-                    this.dispatchAndUpdateViewHolders(this.obtainUpdateOp(2, positionStart, n2));
+                    this.dispatchAndUpdateViewHolders(this.obtainUpdateOp(2, positionStart, n2, adapterHelper$UpdateOp.payload));
                     n3 = 0;
                     n4 = i;
                 }
@@ -126,7 +126,7 @@ class AdapterHelper implements OpReorderer$Callback
                 n3 = n2;
                 int n6 = positionStart;
                 if (n == 1) {
-                    this.postponeAndUpdateViewHolders(this.obtainUpdateOp(2, positionStart, n2));
+                    this.postponeAndUpdateViewHolders(this.obtainUpdateOp(2, positionStart, n2, adapterHelper$UpdateOp.payload));
                     n3 = 0;
                     n6 = i;
                 }
@@ -140,8 +140,9 @@ class AdapterHelper implements OpReorderer$Callback
         }
         AdapterHelper$UpdateOp obtainUpdateOp = adapterHelper$UpdateOp;
         if (n2 != adapterHelper$UpdateOp.itemCount) {
+            final Object payload = adapterHelper$UpdateOp.payload;
             this.recycleUpdateOp(adapterHelper$UpdateOp);
-            obtainUpdateOp = this.obtainUpdateOp(2, positionStart, n2);
+            obtainUpdateOp = this.obtainUpdateOp(2, positionStart, n2, payload);
         }
         if (n == 0) {
             this.dispatchAndUpdateViewHolders(obtainUpdateOp);
@@ -220,7 +221,7 @@ class AdapterHelper implements OpReorderer$Callback
                 n4 = n2 + 1;
             }
             else {
-                final AdapterHelper$UpdateOp obtainUpdateOp2 = this.obtainUpdateOp(obtainUpdateOp.cmd, updatePositionWithPostponed, n2);
+                final AdapterHelper$UpdateOp obtainUpdateOp2 = this.obtainUpdateOp(obtainUpdateOp.cmd, updatePositionWithPostponed, n2, obtainUpdateOp.payload);
                 this.dispatchFirstPassAndUpdateViewHolders(obtainUpdateOp2, positionStart);
                 this.recycleUpdateOp(obtainUpdateOp2);
                 int n5 = positionStart;
@@ -233,9 +234,10 @@ class AdapterHelper implements OpReorderer$Callback
                 n4 = n6;
             }
         }
+        final Object payload = obtainUpdateOp.payload;
         this.recycleUpdateOp(obtainUpdateOp);
         if (n2 > 0) {
-            obtainUpdateOp = this.obtainUpdateOp(obtainUpdateOp.cmd, updatePositionWithPostponed, n2);
+            obtainUpdateOp = this.obtainUpdateOp(obtainUpdateOp.cmd, updatePositionWithPostponed, n2, payload);
             this.dispatchFirstPassAndUpdateViewHolders(obtainUpdateOp, positionStart);
             this.recycleUpdateOp(obtainUpdateOp);
         }
@@ -257,7 +259,7 @@ class AdapterHelper implements OpReorderer$Callback
                 this.mCallback.offsetPositionsForRemovingLaidOutOrNewView(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
             }
             case 2: {
-                this.mCallback.markViewHoldersUpdated(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
+                this.mCallback.markViewHoldersUpdated(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount, adapterHelper$UpdateOp.payload);
             }
         }
     }
@@ -349,6 +351,68 @@ class AdapterHelper implements OpReorderer$Callback
         return n;
     }
     
+    public int applyPendingUpdatesToPosition(int itemCount) {
+        final int size = this.mPendingUpdates.size();
+        int n = 0;
+        int n2 = itemCount;
+    Label_0078_Outer:
+        while (true) {
+            itemCount = n2;
+            if (n >= size) {
+                break;
+            }
+            final AdapterHelper$UpdateOp adapterHelper$UpdateOp = this.mPendingUpdates.get(n);
+            itemCount = n2;
+            while (true) {
+                switch (adapterHelper$UpdateOp.cmd) {
+                    default: {
+                        itemCount = n2;
+                    }
+                    case 2: {
+                        ++n;
+                        n2 = itemCount;
+                        continue Label_0078_Outer;
+                    }
+                    case 0: {
+                        itemCount = n2;
+                        if (adapterHelper$UpdateOp.positionStart <= n2) {
+                            itemCount = n2 + adapterHelper$UpdateOp.itemCount;
+                        }
+                        continue;
+                    }
+                    case 1: {
+                        itemCount = n2;
+                        if (adapterHelper$UpdateOp.positionStart > n2) {
+                            continue;
+                        }
+                        if (adapterHelper$UpdateOp.positionStart + adapterHelper$UpdateOp.itemCount > n2) {
+                            itemCount = -1;
+                            break Label_0078_Outer;
+                        }
+                        itemCount = n2 - adapterHelper$UpdateOp.itemCount;
+                        continue;
+                    }
+                    case 3: {
+                        if (adapterHelper$UpdateOp.positionStart == n2) {
+                            itemCount = adapterHelper$UpdateOp.itemCount;
+                            continue;
+                        }
+                        int n3;
+                        if (adapterHelper$UpdateOp.positionStart < (n3 = n2)) {
+                            n3 = n2 - 1;
+                        }
+                        if (adapterHelper$UpdateOp.itemCount <= (itemCount = n3)) {
+                            itemCount = n3 + 1;
+                        }
+                        continue;
+                    }
+                }
+                break;
+            }
+        }
+        return itemCount;
+    }
+    
     void consumePostponedUpdates() {
         for (int size = this.mPostponedList.size(), i = 0; i < size; ++i) {
             this.mCallback.onDispatchSecondPass(this.mPostponedList.get(i));
@@ -373,7 +437,7 @@ class AdapterHelper implements OpReorderer$Callback
                 }
                 case 2: {
                     this.mCallback.onDispatchSecondPass(adapterHelper$UpdateOp);
-                    this.mCallback.markViewHoldersUpdated(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
+                    this.mCallback.markViewHoldersUpdated(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount, adapterHelper$UpdateOp.payload);
                     break;
                 }
                 case 3: {
@@ -399,7 +463,7 @@ class AdapterHelper implements OpReorderer$Callback
                 this.mCallback.offsetPositionsForRemovingInvisible(n, adapterHelper$UpdateOp.itemCount);
             }
             case 2: {
-                this.mCallback.markViewHoldersUpdated(n, adapterHelper$UpdateOp.itemCount);
+                this.mCallback.markViewHoldersUpdated(n, adapterHelper$UpdateOp.itemCount, adapterHelper$UpdateOp.payload);
             }
         }
     }
@@ -458,24 +522,25 @@ class AdapterHelper implements OpReorderer$Callback
     }
     
     @Override
-    public AdapterHelper$UpdateOp obtainUpdateOp(final int cmd, final int positionStart, final int itemCount) {
+    public AdapterHelper$UpdateOp obtainUpdateOp(final int cmd, final int positionStart, final int itemCount, final Object payload) {
         final AdapterHelper$UpdateOp adapterHelper$UpdateOp = this.mUpdateOpPool.acquire();
         if (adapterHelper$UpdateOp == null) {
-            return new AdapterHelper$UpdateOp(cmd, positionStart, itemCount);
+            return new AdapterHelper$UpdateOp(cmd, positionStart, itemCount, payload);
         }
         adapterHelper$UpdateOp.cmd = cmd;
         adapterHelper$UpdateOp.positionStart = positionStart;
         adapterHelper$UpdateOp.itemCount = itemCount;
+        adapterHelper$UpdateOp.payload = payload;
         return adapterHelper$UpdateOp;
     }
     
-    boolean onItemRangeChanged(final int n, final int n2) {
-        this.mPendingUpdates.add(this.obtainUpdateOp(2, n, n2));
+    boolean onItemRangeChanged(final int n, final int n2, final Object o) {
+        this.mPendingUpdates.add(this.obtainUpdateOp(2, n, n2, o));
         return this.mPendingUpdates.size() == 1;
     }
     
     boolean onItemRangeInserted(final int n, final int n2) {
-        this.mPendingUpdates.add(this.obtainUpdateOp(0, n, n2));
+        this.mPendingUpdates.add(this.obtainUpdateOp(0, n, n2, null));
         return this.mPendingUpdates.size() == 1;
     }
     
@@ -487,7 +552,7 @@ class AdapterHelper implements OpReorderer$Callback
         if (n3 != 1) {
             throw new IllegalArgumentException("Moving more than 1 item is not supported yet");
         }
-        this.mPendingUpdates.add(this.obtainUpdateOp(3, n, n2));
+        this.mPendingUpdates.add(this.obtainUpdateOp(3, n, n2, null));
         if (this.mPendingUpdates.size() != 1) {
             b = false;
         }
@@ -495,7 +560,7 @@ class AdapterHelper implements OpReorderer$Callback
     }
     
     boolean onItemRangeRemoved(final int n, final int n2) {
-        this.mPendingUpdates.add(this.obtainUpdateOp(1, n, n2));
+        this.mPendingUpdates.add(this.obtainUpdateOp(1, n, n2, null));
         return this.mPendingUpdates.size() == 1;
     }
     
@@ -531,6 +596,7 @@ class AdapterHelper implements OpReorderer$Callback
     @Override
     public void recycleUpdateOp(final AdapterHelper$UpdateOp adapterHelper$UpdateOp) {
         if (!this.mDisableRecycler) {
+            adapterHelper$UpdateOp.payload = null;
             this.mUpdateOpPool.release(adapterHelper$UpdateOp);
         }
     }

@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.configuration.drm;
 
-import org.apache.http.client.HttpClient;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.params.HttpParams;
-import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.util.EntityUtils;
@@ -43,9 +43,10 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
         this.socketTimeout = socketTimeout;
     }
     
-    private byte[] postRequest(final String s, final byte[] array) {
+    protected byte[] doInBackground(final String... array) {
+        Object o = null;
         final DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
-        final HttpPost httpPost = new HttpPost(s + "&signedRequest=" + new String(array));
+        final HttpPost httpPost = new HttpPost(array[0] + "&signedRequest=" + new String(this.drmRequest));
         final HttpParams params = ((HttpClient)defaultHttpClient).getParams();
         HttpConnectionParams.setConnectionTimeout(params, this.connectionTimeout);
         HttpConnectionParams.setSoTimeout(params, this.socketTimeout);
@@ -56,45 +57,58 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
             httpPost.setHeader("Accept", "*/*");
             httpPost.setHeader("User-Agent", "Widevine CDM v1.0");
             httpPost.setHeader("Content-Type", "application/json");
-            final HttpResponse execute = ((HttpClient)defaultHttpClient).execute((HttpUriRequest)httpPost);
-            final int statusCode = execute.getStatusLine().getStatusCode();
-            if (statusCode == 200) {
-                return EntityUtils.toByteArray(execute.getEntity());
+            Object o2 = ((HttpClient)defaultHttpClient).execute((HttpUriRequest)httpPost);
+            final int statusCode = ((HttpResponse)o2).getStatusLine().getStatusCode();
+            Label_0254: {
+                if (statusCode != 200) {
+                    break Label_0254;
+                }
+                try {
+                    o2 = EntityUtils.toByteArray(((HttpResponse)o2).getEntity());
+                    if (o2 != null) {
+                        Log.d("nf_net", "response length=" + ((HttpResponse)o2).length);
+                        o = o2;
+                        if (this.callback != null) {
+                            this.callback.done((byte[])o2);
+                            o = o2;
+                        }
+                        Label_0251: {
+                            return (byte[])o;
+                        }
+                    }
+                    goto Label_0444;
+                    // iftrue(Label_0251:, this.callback == null)
+                    while (true) {
+                        this.callback.abort();
+                        return null;
+                        Label_0292: {
+                            continue;
+                        }
+                    }
+                    // iftrue(Label_0292:, !Log.isLoggable())
+                    // iftrue(Label_0331:, statusCode != 400)
+                Block_8:
+                    while (true) {
+                        break Block_8;
+                        continue;
+                    }
+                    Log.d("nf_net", "Server returned HTTP error code 400 (BAD REQUEST), assume Widevine plugun is NOT recognized: " + statusCode);
+                }
+                catch (ConnectTimeoutException ex) {}
+                catch (SocketTimeoutException ex2) {}
+                catch (IOException ex3) {}
+                catch (ClientProtocolException ex4) {}
             }
-            if (Log.isLoggable()) {
-                Log.d("nf_net", "Server returned HTTP error code " + statusCode);
-                return null;
-            }
         }
-        catch (ConnectTimeoutException ex) {
-            Log.e("nf_net", "Connection timeout", (Throwable)ex);
-            return null;
+        catch (ClientProtocolException ex5) {}
+        catch (IOException ex6) {}
+        catch (SocketTimeoutException o2) {
+            final int statusCode = 0;
+            goto Label_0379;
         }
-        catch (SocketTimeoutException ex2) {
-            Log.e("nf_net", "Socket timeout", ex2);
-            return null;
+        catch (ConnectTimeoutException o2) {
+            final int statusCode = 0;
+            goto Label_0312;
         }
-        catch (ClientProtocolException ex3) {
-            Log.e("nf_net", "Request protocol failed", (Throwable)ex3);
-            return null;
-        }
-        catch (IOException ex4) {
-            Log.e("nf_net", "Request IO failed ", ex4);
-        }
-        return null;
-    }
-    
-    protected byte[] doInBackground(final String... array) {
-        final byte[] postRequest = this.postRequest(array[0], this.drmRequest);
-        if (postRequest != null) {
-            Log.d("nf_net", "response length=" + postRequest.length);
-        }
-        else {
-            Log.e("nf_net", "Response is null!");
-        }
-        if (this.callback != null) {
-            this.callback.done(postRequest);
-        }
-        return postRequest;
     }
 }

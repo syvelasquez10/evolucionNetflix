@@ -14,23 +14,23 @@ public class VoipErrorDialogDescriptorFactory
     protected static final String TAG = "ErrorManager";
     
     private static ErrorDescriptor getHandle(final Context context, final String s, final String s2, final Runnable runnable) {
-        return new VoipErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, s2, context.getString(2131231169), new VoipErrorDialogDescriptorFactory$1(context), context.getString(2131230991), runnable));
+        return new VoipErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, s2, context.getString(2131231174), new VoipErrorDialogDescriptorFactory$1(context), context.getString(2131230993), runnable));
     }
     
     public static ErrorDescriptor getHandlerForCallFailed(final Context context, final Runnable runnable) {
-        return getHandle(context, context.getString(2131231012), context.getString(2131231011), runnable);
+        return getHandle(context, context.getString(2131231014), context.getString(2131231013), runnable);
     }
     
     public static ErrorDescriptor getHandlerForCallFailed(final Context context, String string, final int n) {
-        string = context.getString(2131231011);
-        return getHandle(context, context.getString(2131231012), string, null);
+        string = context.getString(2131231013);
+        return getHandle(context, context.getString(2131231014), string, null);
     }
     
     public static ErrorDescriptor getHandlerForEngineFailed(final Context context, final Runnable runnable) {
-        return getHandle(context, context.getString(2131231012), context.getString(2131231011), runnable);
+        return getHandle(context, context.getString(2131231014), context.getString(2131231013), runnable);
     }
     
     public static ErrorDescriptor getHandlerForNoLineAvailable(final Context context) {
-        return getHandle(context, context.getString(2131231012), context.getString(2131231011), null);
+        return getHandle(context, context.getString(2131231014), context.getString(2131231013), null);
     }
 }

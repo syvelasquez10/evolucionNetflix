@@ -39,7 +39,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.widget.Button;
+import com.netflix.mediaclient.android.widget.NetflixTextButton;
 import android.view.View;
 import java.util.EnumMap;
 import android.widget.LinearLayout;
@@ -50,7 +50,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     public static final String UPDATE_CAPABILITIES_BADGES = "com.netflix.mediaclient.intent.action.UPDATE_CAPABILITIES_BADGES";
     private static final EnumMap<VideoDetailsViewGroup$SupportedCapabilities, Integer> mCapabilityBadgesMap;
     private View actionBarDummyView;
-    private Button addToMyList;
+    private NetflixTextButton addToMyList;
     private ImageView backgroundImg;
     private int badgesPadding;
     private TextView basicInfo;
@@ -179,7 +179,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private void hideDetailsGapView() {
-        final View viewById = this.findViewById(2131690306);
+        final View viewById = this.findViewById(2131690320);
         if (viewById != null) {
             viewById.setVisibility(8);
         }
@@ -233,7 +233,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void alignViews() {
         if (Coppola1Utils.isCoppolaContext(this.getContext())) {
-            final View viewById = this.findViewById(2131689749);
+            final View viewById = this.findViewById(2131689747);
             if (viewById != null) {
                 ((LinearLayout$LayoutParams)viewById.getLayoutParams()).topMargin = 0;
             }
@@ -259,24 +259,24 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected void findViews() {
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131689612);
-        this.addToMyList = (Button)this.findViewById(2131689752);
-        this.basicInfo = (TextView)this.findViewById(2131689750);
-        this.episodeBadge = (TextView)this.findViewById(2131689907);
-        this.episodeTitle = (TextView)this.findViewById(2131689908);
-        this.supplemental = (TextView)this.findViewById(2131689643);
-        this.synopsis = (TextView)this.findViewById(2131689645);
-        this.starring = (TextView)this.findViewById(2131689909);
-        this.creators = (TextView)this.findViewById(2131689910);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131689636);
-        this.title = (TextView)this.findViewById(2131689650);
-        this.imgGroup = (ViewGroup)this.findViewById(2131689753);
-        this.backgroundImg = (ImageView)this.findViewById(2131689842);
-        this.relatedTitle = (TextView)this.findViewById(2131689653);
-        this.basicInfoBadges = (TextView)this.findViewById(2131689751);
-        this.footerViewGroup = (ViewGroup)this.findViewById(2131689652);
-        this.copyright = (ViewGroup)this.findViewById(2131690299);
-        this.play = this.findViewById(2131689651);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131689613);
+        this.addToMyList = (NetflixTextButton)this.findViewById(2131689750);
+        this.basicInfo = (TextView)this.findViewById(2131689748);
+        this.episodeBadge = (TextView)this.findViewById(2131689905);
+        this.episodeTitle = (TextView)this.findViewById(2131689906);
+        this.supplemental = (TextView)this.findViewById(2131689644);
+        this.synopsis = (TextView)this.findViewById(2131689646);
+        this.starring = (TextView)this.findViewById(2131689907);
+        this.creators = (TextView)this.findViewById(2131689908);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131689637);
+        this.title = (TextView)this.findViewById(2131689651);
+        this.imgGroup = (ViewGroup)this.findViewById(2131689751);
+        this.backgroundImg = (ImageView)this.findViewById(2131689840);
+        this.relatedTitle = (TextView)this.findViewById(2131689654);
+        this.basicInfoBadges = (TextView)this.findViewById(2131689749);
+        this.footerViewGroup = (ViewGroup)this.findViewById(2131689653);
+        this.copyright = (ViewGroup)this.findViewById(2131690313);
+        this.play = this.findViewById(2131689652);
         LocalizationUtils.setLayoutDirection((View)this.ratingBar);
         LocalizationUtils.setLayoutDirection((View)this.addToMyList);
         LocalizationUtils.setLayoutDirection((View)this.basicInfo);
@@ -315,7 +315,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         if (Coppola1Utils.isCoppolaContext(this.getContext())) {
             return 2130903092;
         }
-        return 2130903287;
+        return 2130903297;
     }
     
     public void hideRelatedTitle() {
@@ -480,7 +480,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         final String currentEpisodeTitle = showDetails.getCurrentEpisodeTitle();
         LoMoUtils.toggleEpisodeBadge(showDetails.getCurrentEpisodeBadges(), this.episodeBadge);
         if (currentEpisodeTitle != null) {
-            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231063, new Object[] { currentEpisodeTitle }));
+            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231066, new Object[] { currentEpisodeTitle }));
             this.supplemental.setText((CharSequence)showDetails.getSupplementalMessage());
             this.supplemental.setVisibility(0);
             this.starring.setVisibility(8);
@@ -495,7 +495,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231181, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231187, new Object[] { videoDetails.getTitle() }));
         }
     }
     

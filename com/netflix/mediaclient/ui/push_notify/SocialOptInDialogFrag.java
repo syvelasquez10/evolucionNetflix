@@ -47,10 +47,10 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
     public Dialog onCreateDialog(final Bundle bundle) {
         final Activity activity = this.getActivity();
         if (!(activity instanceof HomeActivity)) {
-            Log.e("social", "Activity is not OptInResponseHandler! This should not happen!");
+            Log.e("social", "Activity is not HomeActivity! This should not happen!");
             return null;
         }
         this.handler = (HomeActivity)activity;
-        return (Dialog)new AlertDialog$Builder((Context)this.getActivity(), 2131427451).setTitle(2131231197).setMessage(2131231188).setPositiveButton(2131231194, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$2(this)).setNegativeButton(2131231191, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$1(this)).create();
+        return (Dialog)new AlertDialog$Builder((Context)this.getActivity(), 2131427451).setTitle(2131231203).setMessage(2131231194).setPositiveButton(2131231200, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$2(this)).setNegativeButton(2131231197, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$1(this)).create();
     }
 }

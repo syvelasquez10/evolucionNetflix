@@ -278,24 +278,27 @@ public abstract class ConsolidatedLoggingUtils
                                         }
                                         break Label_0307;
                                         // iftrue(Label_0109:, !volleyError instanceof NetworkError)
+                                        // iftrue(Label_0258:, !volleyError instanceof ServerError)
                                         while (true) {
                                             while (true) {
-                                                error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                                error.setRootCause(RootCause.serverFailure);
                                                 break;
                                                 error.setRootCause(RootCause.tcpConnectionTimeout);
                                                 break;
-                                                Label_0275: {
-                                                    continue Block_11_Outer;
+                                                while (true) {
+                                                    error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                                    break;
+                                                    Label_0275: {
+                                                        continue;
+                                                    }
                                                 }
+                                                continue Block_11_Outer;
                                             }
-                                            error.setRootCause(RootCause.serverFailure);
-                                            break;
                                             Label_0258: {
                                                 continue;
                                             }
                                         }
                                     }
-                                    // iftrue(Label_0258:, !volleyError instanceof ServerError)
                                     // iftrue(Label_0275:, !volleyError instanceof TimeoutError)
                                     catch (Throwable t) {
                                         Log.e("nf_log", "Failed to add body response to JSON object", t);

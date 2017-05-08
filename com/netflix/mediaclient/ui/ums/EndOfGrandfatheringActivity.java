@@ -55,11 +55,11 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
     
     private int getCurrentPlanIndexOfUser() {
         final EogAlert eogAlert = this.getEogAlert();
-        if (eogAlert != null && !StringUtils.isEmpty(eogAlert.currentPlanId) && !eogAlert.currentPlanId.equals(eogAlert.sdPlanPlanId)) {
-            if (eogAlert.currentPlanId.equals(eogAlert.hdPlanPlanId)) {
+        if (eogAlert != null && !StringUtils.isEmpty(eogAlert.currentPlanId()) && !eogAlert.currentPlanId().equals(eogAlert.sdPlanPlanId())) {
+            if (eogAlert.currentPlanId().equals(eogAlert.hdPlanPlanId())) {
                 return 1;
             }
-            if (eogAlert.currentPlanId.equals(eogAlert.uhdPlanPlanId)) {
+            if (eogAlert.currentPlanId().equals(eogAlert.uhdPlanPlanId())) {
                 return 2;
             }
         }
@@ -114,7 +114,7 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
         }
         this.mCurrentPlanIndex = mCurrentPlanIndex;
         this.setContentView(2130903110);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131689782);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131689780);
         this.addViewsToFlipper();
         this.mLandingPage = new EogLandingPage(this);
         this.mPlanPage = new EogPlanPage(this);
@@ -126,7 +126,7 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
         else {
             this.reportUiViewChanged(IClientLogging$ModalView.eogPrompt);
         }
-        if (!shouldBlockUser(this.getEogAlert().isBlocking)) {
+        if (!shouldBlockUser(this.getEogAlert().isBlocking())) {
             this.markEogAlertAsDirty();
         }
     }
@@ -196,7 +196,7 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
             this.goToLandingPage();
             return true;
         }
-        if (shouldBlockUser(this.getEogAlert().isBlocking)) {
+        if (shouldBlockUser(this.getEogAlert().isBlocking())) {
             Log.d("eog", "finishing");
             this.finish();
             return true;
@@ -260,7 +260,7 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
     
     @Override
     public void performUpAction() {
-        if (!shouldBlockUser(this.getEogAlert().isBlocking)) {
+        if (!shouldBlockUser(this.getEogAlert().isBlocking())) {
             this.recordUmsImpression();
             super.performUpAction();
             return;
@@ -290,18 +290,18 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
                     break;
                 }
                 case 0: {
-                    s2 = eogAlert.sdPlanPlanId;
-                    s = eogAlert.sdPlanPlanTier;
+                    s2 = eogAlert.sdPlanPlanId();
+                    s = eogAlert.sdPlanPlanTier();
                     break;
                 }
                 case 1: {
-                    s2 = eogAlert.hdPlanPlanId;
-                    s = eogAlert.hdPlanPlanTier;
+                    s2 = eogAlert.hdPlanPlanId();
+                    s = eogAlert.hdPlanPlanTier();
                     break;
                 }
                 case 2: {
-                    s2 = eogAlert.uhdPlanPlanId;
-                    s = eogAlert.uhdPlanPlanTier;
+                    s2 = eogAlert.uhdPlanPlanId();
+                    s = eogAlert.uhdPlanPlanTier();
                     break;
                 }
             }
@@ -321,9 +321,9 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
             return;
         }
         if (Log.isLoggable()) {
-            Log.d("eog", String.format("recordEndOfGrandfatheringImpression msgName:%s, impressionType:%s, curPageIndex:%d", this.getEogAlert().messageName, this.getEogAlert().skipBtnImpressionType, this.mCurrentPageIndex));
+            Log.d("eog", String.format("recordUserMessageImpression msgName:%s, impressionType:%s, curPageIndex:%d", this.getEogAlert().messageName(), this.getEogAlert().skipBtnImpressionType(), this.mCurrentPageIndex));
         }
-        this.getServiceManager().recordEndOfGrandfatheringImpression(this.getEogAlert().messageName, this.getEogAlert().skipBtnImpressionType);
+        this.getServiceManager().recordUserMessageImpression(this.getEogAlert().messageName(), this.getEogAlert().skipBtnImpressionType());
     }
     
     public void setCurrentPlanIndex(final int mCurrentPlanIndex) {

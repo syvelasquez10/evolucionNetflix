@@ -16,6 +16,11 @@ public class BarkerShowDetailsActivity extends ShowDetailsActivity
     private static final String TAG = "BarkerShowDetailsActivity";
     
     @Override
+    protected boolean allowTransitionAnimation() {
+        return false;
+    }
+    
+    @Override
     protected NetflixActionBar createActionBar() {
         final KubrickDetailActionBar kubrickDetailActionBar = new KubrickDetailActionBar(this, this.hasUpAction());
         kubrickDetailActionBar.setAlpha(0.0f);

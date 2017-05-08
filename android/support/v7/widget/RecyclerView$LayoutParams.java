@@ -52,8 +52,8 @@ public class RecyclerView$LayoutParams extends ViewGroup$MarginLayoutParams
         this.mPendingInvalidate = false;
     }
     
-    public int getViewPosition() {
-        return this.mViewHolder.getPosition();
+    public int getViewLayoutPosition() {
+        return this.mViewHolder.getLayoutPosition();
     }
     
     public boolean isItemChanged() {

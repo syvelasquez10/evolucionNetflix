@@ -4,19 +4,20 @@
 
 package com.netflix.mediaclient.ui.search;
 
+import android.view.MenuItem;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class SearchMenu
 {
-    public static void addSearchNavigation(final NetflixActivity netflixActivity, final Menu menu, final boolean b) {
+    public static MenuItem addSearchNavigation(final NetflixActivity netflixActivity, final Menu menu, final boolean b) {
         int icon;
         if (b) {
-            icon = 2130837759;
+            icon = 2130837756;
         }
         else {
-            icon = 2130837758;
+            icon = 2130837755;
         }
-        menu.add(0, 2131689472, 0, 2131231273).setIcon(icon).setIntent(SearchActivity.create(netflixActivity)).setShowAsAction(1);
+        return menu.add(0, 2131689472, 0, 2131231279).setIcon(icon).setIntent(SearchActivity.create(netflixActivity)).setShowAsActionFlags(1);
     }
 }

@@ -55,9 +55,9 @@ class ConcurentStreamUpgradeErrorDescriptor extends ActionId3ErrorDescriptor
                     break Label_0199;
                 }
             }
-            string = playerFragment.getString(2131230998);
+            string = playerFragment.getString(2131231000);
         }
-        final String string2 = playerFragment.getString(2131230997);
+        final String string2 = playerFragment.getString(2131230999);
         Log.d("nf_play_error", "Check if link contains NCCP reason code");
         if (link.href.startsWith("RC:")) {
             Log.d("nf_play_error", "NCCP reason code found");

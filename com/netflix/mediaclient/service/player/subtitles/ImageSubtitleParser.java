@@ -18,6 +18,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.net.DnsManager;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.Log;
@@ -75,7 +76,13 @@ public class ImageSubtitleParser extends BaseImageSubtitleParser implements Imag
         }
         else {
             for (int i = 0; i < this.mSegmentIndexes.length; ++i) {
-                if (this.mSegmentIndexes[i].inRange(this.mLastKnownPosition)) {
+                final SegmentIndex segmentIndex = this.mSegmentIndexes[i];
+                if (segmentIndex == null) {
+                    ErrorLoggingManager.logHandledException("Image based subtitles: Segment index is null, this should NOT happen! It may happen only if current segment was requested BEFORE we finish parsing segment indexes.");
+                    Log.e("nf_subtitles", "Image based subtitles: Segment index is null, this should NOT happen! It may happen only if current segment was requested BEFORE we finish parsing segment indexes.");
+                    return 0;
+                }
+                if (segmentIndex.inRange(this.mLastKnownPosition)) {
                     return i;
                 }
             }

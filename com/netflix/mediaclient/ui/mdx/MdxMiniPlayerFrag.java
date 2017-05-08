@@ -197,9 +197,9 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements IMiniPlayerFrag
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getPlayable().getParentTitle());
-            String s = this.activity.getString(2131231062, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() });
+            String s = this.activity.getString(2131231065, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() });
             if (this.currentVideo.isNSRE()) {
-                s = this.activity.getString(2131231063, new Object[] { this.currentVideo.getTitle() });
+                s = this.activity.getString(2131231066, new Object[] { this.currentVideo.getTitle() });
             }
             this.views.updateSubtitleText(s);
         }
@@ -443,7 +443,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements IMiniPlayerFrag
             this.log("Activity is null or destroyed - bailing early");
             return;
         }
-        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131689993);
+        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131689992);
         if (mementoFrag != null) {
             mementoFrag.onManagerReady(serviceManager, status);
         }

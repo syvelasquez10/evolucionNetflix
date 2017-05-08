@@ -5,11 +5,14 @@
 package com.netflix.mediaclient.ui.home;
 
 import com.netflix.mediaclient.android.app.Status;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -25,6 +28,7 @@ import android.widget.AdapterView$OnItemClickListener;
 import android.view.ViewStub;
 import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.support.v4.widget.DrawerLayout;
@@ -63,8 +67,8 @@ class StandardSlidingMenu$AppListAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903274, (ViewGroup)null);
-            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131690027), inflate.findViewById(2131690028)));
+            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903281, (ViewGroup)null);
+            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131690026), inflate.findViewById(2131690027)));
         }
         final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder = (StandardSlidingMenu$GenreRowHolder)inflate.getTag();
         standardSlidingMenu$GenreRowHolder.tv.setText((CharSequence)this.getItem(n).text);

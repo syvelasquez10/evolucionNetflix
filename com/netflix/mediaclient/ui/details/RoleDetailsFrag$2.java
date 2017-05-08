@@ -54,6 +54,5 @@ class RoleDetailsFrag$2 implements ViewTreeObserver$OnGlobalLayoutListener
     
     public void onGlobalLayout() {
         ViewUtils.removeGlobalLayoutListener((View)this.this$0.actorDetailsView, (ViewTreeObserver$OnGlobalLayoutListener)this);
-        this.this$0.setupDetailsPageParallaxScrollListener();
     }
 }

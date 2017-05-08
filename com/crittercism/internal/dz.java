@@ -67,8 +67,8 @@ public final class dz
             return s;
         }
         finally {
-            final Throwable t2;
-            final Throwable t = t2;
+            final Object o2;
+            final Object o = o2;
             fileInputStream = null;
         }
         while (true) {
@@ -78,17 +78,15 @@ public final class dz
                 final FileInputStream fileInputStream3 = fileInputStream;
                 fileInputStream3.close();
                 return s;
-                // iftrue(Label_0031:, fileInputStream == null)
-                final Throwable t;
-                Block_6: {
-                    break Block_6;
+                while (true) {
+                    fileInputStream.close();
                     Label_0031: {
-                        throw t;
+                        throw;
                     }
+                    continue;
                 }
-                fileInputStream.close();
-                throw t;
             }
+            // iftrue(Label_0031:, fileInputStream == null)
             finally {
                 continue;
             }

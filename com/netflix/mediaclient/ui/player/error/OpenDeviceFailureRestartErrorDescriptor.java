@@ -20,7 +20,7 @@ class OpenDeviceFailureRestartErrorDescriptor extends PlaybackErrorDescriptor
     }
     
     static OpenDeviceFailureRestartErrorDescriptor build(final PlayerFragment playerFragment, final Error error) {
-        return new OpenDeviceFailureRestartErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131230838), null, new RestartApplicationAction(playerFragment.getActivity()), playerFragment.getString(2131231059), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new OpenDeviceFailureRestartErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131230838), null, new RestartApplicationAction(playerFragment.getActivity()), playerFragment.getString(2131231061), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
     
     static boolean isValid(final Error error) {

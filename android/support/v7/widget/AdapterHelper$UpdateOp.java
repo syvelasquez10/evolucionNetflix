@@ -8,12 +8,14 @@ class AdapterHelper$UpdateOp
 {
     int cmd;
     int itemCount;
+    Object payload;
     int positionStart;
     
-    AdapterHelper$UpdateOp(final int cmd, final int positionStart, final int itemCount) {
+    AdapterHelper$UpdateOp(final int cmd, final int positionStart, final int itemCount, final Object payload) {
         this.cmd = cmd;
         this.positionStart = positionStart;
         this.itemCount = itemCount;
+        this.payload = payload;
     }
     
     String cmdToString() {
@@ -53,6 +55,14 @@ class AdapterHelper$UpdateOp
                 if (this.positionStart != adapterHelper$UpdateOp.positionStart) {
                     return false;
                 }
+                if (this.payload != null) {
+                    if (!this.payload.equals(adapterHelper$UpdateOp.payload)) {
+                        return false;
+                    }
+                }
+                else if (adapterHelper$UpdateOp.payload != null) {
+                    return false;
+                }
             }
         }
         return true;
@@ -65,6 +75,6 @@ class AdapterHelper$UpdateOp
     
     @Override
     public String toString() {
-        return "[" + this.cmdToString() + ",s:" + this.positionStart + "c:" + this.itemCount + "]";
+        return Integer.toHexString(System.identityHashCode(this)) + "[" + this.cmdToString() + ",s:" + this.positionStart + "c:" + this.itemCount + ",p:" + this.payload + "]";
     }
 }

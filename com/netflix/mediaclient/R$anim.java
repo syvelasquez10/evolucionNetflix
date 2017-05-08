@@ -20,10 +20,12 @@ public final class R$anim
     public static final int anim_scale_up = 2130968587;
     public static final int anim_slide_right_in = 2130968588;
     public static final int anim_slide_right_out = 2130968589;
-    public static final int appear_from_center = 2130968590;
-    public static final int design_fab_in = 2130968591;
-    public static final int design_fab_out = 2130968592;
-    public static final int design_snackbar_in = 2130968593;
-    public static final int design_snackbar_out = 2130968594;
-    public static final int disappear_in_center = 2130968595;
+    public static final int anim_tablet_slide_right_in = 2130968590;
+    public static final int anim_tablet_slide_right_out = 2130968591;
+    public static final int appear_from_center = 2130968592;
+    public static final int design_fab_in = 2130968593;
+    public static final int design_fab_out = 2130968594;
+    public static final int design_snackbar_in = 2130968595;
+    public static final int design_snackbar_out = 2130968596;
+    public static final int disappear_in_center = 2130968597;
 }

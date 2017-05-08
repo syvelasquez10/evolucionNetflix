@@ -6,29 +6,43 @@ package android.support.v7.widget;
 
 import android.graphics.PointF;
 import android.support.v4.view.ViewConfigurationCompat;
+import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.VelocityTrackerCompat;
-import android.os.Parcelable;
 import android.view.ViewParent;
 import android.view.FocusFinder;
 import android.graphics.Canvas;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MotionEventCompat;
+import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.View$MeasureSpec;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import android.view.ViewGroup$LayoutParams;
+import android.content.res.TypedArray;
+import android.support.v7.recyclerview.R$styleable;
 import android.view.ViewConfiguration;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.os.Build$VERSION;
 import android.view.VelocityTracker;
 import android.graphics.Rect;
-import java.util.ArrayList;
+import android.support.v4.view.NestedScrollingChildHelper;
 import java.util.List;
+import java.util.ArrayList;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.view.accessibility.AccessibilityManager;
+import android.support.v4.view.ScrollingView;
+import android.support.v4.view.NestedScrollingChild;
 import android.view.ViewGroup;
+import android.support.v4.os.TraceCompat;
 import android.view.View;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ScrollerCompat;
@@ -119,6 +133,7 @@ class RecyclerView$ViewFlinger implements Runnable
             this.mReSchedulePostAnimationCallback = true;
             return;
         }
+        this.this$0.removeCallbacks((Runnable)this);
         ViewCompat.postOnAnimation((View)this.this$0, this);
     }
     
@@ -128,147 +143,194 @@ class RecyclerView$ViewFlinger implements Runnable
         this.this$0.consumePendingUpdateOperations();
         final ScrollerCompat mScroller = this.mScroller;
         final RecyclerView$SmoothScroller mSmoothScroller = this.this$0.mLayout.mSmoothScroller;
-        if (mScroller.computeScrollOffset()) {
-            final int currX = mScroller.getCurrX();
-            final int currY = mScroller.getCurrY();
-            final int n = currX - this.mLastFlingX;
-            final int n2 = currY - this.mLastFlingY;
-            int n3 = 0;
-            final int n4 = 0;
-            int scrollVerticallyBy = 0;
-            final int n5 = 0;
-            this.mLastFlingX = currX;
-            this.mLastFlingY = currY;
-            int n6 = 0;
-            int n7 = 0;
-            int n8 = 0;
-            final int n9 = 0;
-            if (this.this$0.mAdapter != null) {
-                this.this$0.eatRequestLayout();
-                this.this$0.mRunningLayoutOrScroll = true;
-                int scrollHorizontallyBy = n4;
-                if (n != 0) {
-                    scrollHorizontallyBy = this.this$0.mLayout.scrollHorizontallyBy(n, this.this$0.mRecycler, this.this$0.mState);
-                    n7 = n - scrollHorizontallyBy;
-                }
-                n8 = n9;
-                scrollVerticallyBy = n5;
-                if (n2 != 0) {
-                    scrollVerticallyBy = this.this$0.mLayout.scrollVerticallyBy(n2, this.this$0.mRecycler, this.this$0.mState);
-                    n8 = n2 - scrollVerticallyBy;
-                }
-                if (this.this$0.supportsChangeAnimations()) {
-                    for (int childCount = this.this$0.mChildHelper.getChildCount(), i = 0; i < childCount; ++i) {
-                        final View child = this.this$0.mChildHelper.getChildAt(i);
-                        final RecyclerView$ViewHolder childViewHolder = this.this$0.getChildViewHolder(child);
-                        if (childViewHolder != null && childViewHolder.mShadowingHolder != null) {
-                            View itemView;
-                            if (childViewHolder.mShadowingHolder != null) {
-                                itemView = childViewHolder.mShadowingHolder.itemView;
-                            }
-                            else {
-                                itemView = null;
-                            }
-                            if (itemView != null) {
-                                final int left = child.getLeft();
-                                final int top = child.getTop();
-                                if (left != itemView.getLeft() || top != itemView.getTop()) {
-                                    itemView.layout(left, top, itemView.getWidth() + left, itemView.getHeight() + top);
+        Label_0744: {
+            if (mScroller.computeScrollOffset()) {
+                final int currX = mScroller.getCurrX();
+                final int currY = mScroller.getCurrY();
+                final int n = currX - this.mLastFlingX;
+                final int n2 = currY - this.mLastFlingY;
+                int n3 = 0;
+                int scrollHorizontallyBy = 0;
+                int n4 = 0;
+                int scrollVerticallyBy = 0;
+                this.mLastFlingX = currX;
+                this.mLastFlingY = currY;
+                int n5 = 0;
+                int n6 = 0;
+                int n7 = 0;
+                int n8 = 0;
+                while (true) {
+                    Label_0849: {
+                        if (this.this$0.mAdapter == null) {
+                            break Label_0849;
+                        }
+                        this.this$0.eatRequestLayout();
+                        this.this$0.onEnterLayoutOrScroll();
+                        TraceCompat.beginSection("RV Scroll");
+                        if (n != 0) {
+                            scrollHorizontallyBy = this.this$0.mLayout.scrollHorizontallyBy(n, this.this$0.mRecycler, this.this$0.mState);
+                            n6 = n - scrollHorizontallyBy;
+                        }
+                        if (n2 != 0) {
+                            scrollVerticallyBy = this.this$0.mLayout.scrollVerticallyBy(n2, this.this$0.mRecycler, this.this$0.mState);
+                            n8 = n2 - scrollVerticallyBy;
+                        }
+                        TraceCompat.endSection();
+                        if (this.this$0.supportsChangeAnimations()) {
+                            for (int childCount = this.this$0.mChildHelper.getChildCount(), i = 0; i < childCount; ++i) {
+                                final View child = this.this$0.mChildHelper.getChildAt(i);
+                                final RecyclerView$ViewHolder childViewHolder = this.this$0.getChildViewHolder(child);
+                                if (childViewHolder != null && childViewHolder.mShadowingHolder != null) {
+                                    final View itemView = childViewHolder.mShadowingHolder.itemView;
+                                    final int left = child.getLeft();
+                                    final int top = child.getTop();
+                                    if (left != itemView.getLeft() || top != itemView.getTop()) {
+                                        itemView.layout(left, top, itemView.getWidth() + left, itemView.getHeight() + top);
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-                if (mSmoothScroller != null && !mSmoothScroller.isPendingInitialRun() && mSmoothScroller.isRunning()) {
-                    final int itemCount = this.this$0.mState.getItemCount();
-                    if (itemCount == 0) {
-                        mSmoothScroller.stop();
-                    }
-                    else if (mSmoothScroller.getTargetPosition() >= itemCount) {
-                        mSmoothScroller.setTargetPosition(itemCount - 1);
-                        mSmoothScroller.onAnimation(n - n7, n2 - n8);
-                    }
-                    else {
-                        mSmoothScroller.onAnimation(n - n7, n2 - n8);
-                    }
-                }
-                this.this$0.mRunningLayoutOrScroll = false;
-                this.this$0.resumeRequestLayout(false);
-                n3 = scrollHorizontallyBy;
-                n6 = n7;
-            }
-            boolean b;
-            if (n == n3 && n2 == scrollVerticallyBy) {
-                b = true;
-            }
-            else {
-                b = false;
-            }
-            if (!this.this$0.mItemDecorations.isEmpty()) {
-                this.this$0.invalidate();
-            }
-            if (ViewCompat.getOverScrollMode((View)this.this$0) != 2) {
-                this.this$0.considerReleasingGlowsOnScroll(n, n2);
-            }
-            if (n6 != 0 || n8 != 0) {
-                final int n10 = (int)mScroller.getCurrVelocity();
-                int n12;
-                if (n6 != currX) {
-                    int n11;
-                    if (n6 < 0) {
-                        n11 = -n10;
-                    }
-                    else if (n6 > 0) {
-                        n11 = n10;
-                    }
-                    else {
-                        n11 = 0;
-                    }
-                    n12 = n11;
-                }
-                else {
-                    n12 = 0;
-                }
-                int n13;
-                if (n8 != currY) {
-                    if (n8 < 0) {
-                        n13 = -n10;
-                    }
-                    else {
-                        n13 = n10;
-                        if (n8 <= 0) {
-                            n13 = 0;
+                        this.this$0.onExitLayoutOrScroll();
+                        this.this$0.resumeRequestLayout(false);
+                        n7 = n8;
+                        n4 = scrollVerticallyBy;
+                        n5 = n6;
+                        n3 = scrollHorizontallyBy;
+                        if (mSmoothScroller == null) {
+                            break Label_0849;
                         }
+                        n7 = n8;
+                        n4 = scrollVerticallyBy;
+                        n5 = n6;
+                        n3 = scrollHorizontallyBy;
+                        if (mSmoothScroller.isPendingInitialRun()) {
+                            break Label_0849;
+                        }
+                        n7 = n8;
+                        n4 = scrollVerticallyBy;
+                        n5 = n6;
+                        n3 = scrollHorizontallyBy;
+                        if (!mSmoothScroller.isRunning()) {
+                            break Label_0849;
+                        }
+                        final int itemCount = this.this$0.mState.getItemCount();
+                        int n9;
+                        int n10;
+                        if (itemCount == 0) {
+                            mSmoothScroller.stop();
+                            n9 = scrollVerticallyBy;
+                            n10 = n6;
+                        }
+                        else {
+                            if (mSmoothScroller.getTargetPosition() < itemCount) {
+                                mSmoothScroller.onAnimation(n - n6, n2 - n8);
+                                n3 = scrollHorizontallyBy;
+                                n5 = n6;
+                                n4 = scrollVerticallyBy;
+                                n7 = n8;
+                                break Label_0849;
+                            }
+                            mSmoothScroller.setTargetPosition(itemCount - 1);
+                            mSmoothScroller.onAnimation(n - n6, n2 - n8);
+                            n9 = scrollVerticallyBy;
+                            n10 = n6;
+                        }
+                        if (!this.this$0.mItemDecorations.isEmpty()) {
+                            this.this$0.invalidate();
+                        }
+                        if (ViewCompat.getOverScrollMode((View)this.this$0) != 2) {
+                            this.this$0.considerReleasingGlowsOnScroll(n, n2);
+                        }
+                        if (n10 != 0 || n8 != 0) {
+                            final int n11 = (int)mScroller.getCurrVelocity();
+                            int n13;
+                            if (n10 != currX) {
+                                int n12;
+                                if (n10 < 0) {
+                                    n12 = -n11;
+                                }
+                                else if (n10 > 0) {
+                                    n12 = n11;
+                                }
+                                else {
+                                    n12 = 0;
+                                }
+                                n13 = n12;
+                            }
+                            else {
+                                n13 = 0;
+                            }
+                            int n14;
+                            if (n8 != currY) {
+                                if (n8 < 0) {
+                                    n14 = -n11;
+                                }
+                                else {
+                                    n14 = n11;
+                                    if (n8 <= 0) {
+                                        n14 = 0;
+                                    }
+                                }
+                            }
+                            else {
+                                n14 = 0;
+                            }
+                            if (ViewCompat.getOverScrollMode((View)this.this$0) != 2) {
+                                this.this$0.absorbGlows(n13, n14);
+                            }
+                            if ((n13 != 0 || n10 == currX || mScroller.getFinalX() == 0) && (n14 != 0 || n8 == currY || mScroller.getFinalY() == 0)) {
+                                mScroller.abortAnimation();
+                            }
+                        }
+                        if (scrollHorizontallyBy != 0 || n9 != 0) {
+                            this.this$0.dispatchOnScrolled(scrollHorizontallyBy, n9);
+                        }
+                        if (!RecyclerView.access$3100(this.this$0)) {
+                            this.this$0.invalidate();
+                        }
+                        boolean b;
+                        if (n2 != 0 && this.this$0.mLayout.canScrollVertically() && n9 == n2) {
+                            b = true;
+                        }
+                        else {
+                            b = false;
+                        }
+                        boolean b2;
+                        if (n != 0 && this.this$0.mLayout.canScrollHorizontally() && scrollHorizontallyBy == n) {
+                            b2 = true;
+                        }
+                        else {
+                            b2 = false;
+                        }
+                        boolean b3;
+                        if ((n == 0 && n2 == 0) || b2 || b) {
+                            b3 = true;
+                        }
+                        else {
+                            b3 = false;
+                        }
+                        if (mScroller.isFinished() || !b3) {
+                            this.this$0.setScrollState(0);
+                            break Label_0744;
+                        }
+                        this.postOnAnimation();
+                        break Label_0744;
                     }
+                    int n10 = n5;
+                    n8 = n7;
+                    int n9 = n4;
+                    scrollHorizontallyBy = n3;
+                    continue;
                 }
-                else {
-                    n13 = 0;
-                }
-                if (ViewCompat.getOverScrollMode((View)this.this$0) != 2) {
-                    this.this$0.absorbGlows(n12, n13);
-                }
-                if ((n12 != 0 || n6 == currX || mScroller.getFinalX() == 0) && (n13 != 0 || n8 == currY || mScroller.getFinalY() == 0)) {
-                    mScroller.abortAnimation();
-                }
-            }
-            if (n3 != 0 || scrollVerticallyBy != 0) {
-                RecyclerView.access$2800(this.this$0, 0, 0, 0, 0);
-                if (this.this$0.mScrollListener != null) {
-                    this.this$0.mScrollListener.onScrolled(this.this$0, n3, scrollVerticallyBy);
-                }
-            }
-            if (!RecyclerView.access$3000(this.this$0)) {
-                this.this$0.invalidate();
-            }
-            if (mScroller.isFinished() || !b) {
-                this.this$0.setScrollState(0);
-            }
-            else {
-                this.postOnAnimation();
             }
         }
-        if (mSmoothScroller != null && mSmoothScroller.isPendingInitialRun()) {
-            mSmoothScroller.onAnimation(0, 0);
+        if (mSmoothScroller != null) {
+            if (mSmoothScroller.isPendingInitialRun()) {
+                mSmoothScroller.onAnimation(0, 0);
+            }
+            if (!this.mReSchedulePostAnimationCallback) {
+                mSmoothScroller.stop();
+            }
         }
         this.enableRunOnAnimationRequests();
     }

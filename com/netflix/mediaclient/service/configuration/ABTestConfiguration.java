@@ -96,13 +96,6 @@ public class ABTestConfiguration
         return this.mABTestConfigData.getPhoneOrientationConfig().getCell();
     }
     
-    public ABTestConfig$Cell getPushNotificationOptInConfig() {
-        if (this.mABTestConfigData == null || this.mABTestConfigData.getPushOptInConfig() == null) {
-            return ABTestConfig$Cell.CELL_ONE;
-        }
-        return this.mABTestConfigData.getPushOptInConfig().getCell();
-    }
-    
     public ABTestConfig$Cell getVoiceSearchABTestConfig() {
         if (this.mABTestConfigData == null || this.mABTestConfigData.getVoiceSearchABTestConfig() == null) {
             return ABTestConfig$Cell.CELL_ONE;

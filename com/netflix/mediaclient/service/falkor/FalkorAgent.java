@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.falkor;
 
+import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -18,9 +19,9 @@ import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.Asset;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import com.netflix.falkor.BranchNode;
@@ -720,18 +721,18 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.endBrowsePlaySession(n, n2, n3, n4, new FalkorAgent$7(this));
     }
     
-    public void expiringContent(final String s, final BrowseAgentCallback browseAgentCallback, final ExpiringContentAction expiringContentAction) {
-        if (Log.isLoggable()) {
-            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
-        }
-        this.cmp.expiringContent(s, browseAgentCallback, expiringContentAction);
-    }
-    
     public void fetchActorDetailsAndRelatedForTitle(final String s, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.fetchActorDetailsAndRelatedForTitle(s, browseAgentCallback);
+    }
+    
+    public void fetchAdvisories(final String s, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchAdvisories(s, browseAgentCallback);
     }
     
     @Override
@@ -899,11 +900,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     @Override
-    public void fetchPostPlayVideos(final String s, final VideoType videoType, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchPostPlayVideos(final String s, final VideoType videoType, final PostPlayRequestContext postPlayRequestContext, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchPostPlayVideos(s, videoType, browseAgentCallback);
+        this.cmp.fetchPostPlayVideos(s, videoType, postPlayRequestContext, browseAgentCallback);
     }
     
     public void fetchPreAppData(final int n, int n2) {
@@ -1002,6 +1003,13 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.forceFetchFromLocalCache(b);
     }
     
+    public String getLolomoId() {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        return this.cmp.getCurrLolomoId();
+    }
+    
     public ModelProxy<?> getModelProxy() {
         return this.cmp;
     }
@@ -1023,6 +1031,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.logBillboardActivity(video, billboardInteractionType, map);
+    }
+    
+    @Override
+    public void logPostPlayImpression(final String s, final VideoType videoType, final String s2, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.logPostPlayImpression(s, videoType, s2, browseAgentCallback);
     }
     
     public void markNotificationAsRead(final IrisNotificationSummary irisNotificationSummary) {
@@ -1348,5 +1364,12 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.updateBookmarkPosition(asset);
+    }
+    
+    public void updateExpiredContentAdvisoryStatus(final String s, final ExpiringContentAdvisory$ContentAction expiringContentAdvisory$ContentAction) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.updateExpiredContentAdvisoryStatus(s, expiringContentAdvisory$ContentAction);
     }
 }

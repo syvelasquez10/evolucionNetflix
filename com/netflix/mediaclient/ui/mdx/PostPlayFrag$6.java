@@ -4,11 +4,12 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
+import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.Asset;
@@ -23,11 +24,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.util.TimeUtils$CountdownTimer;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -41,14 +46,24 @@ class PostPlayFrag$6 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (intent == null) {
-            Log.v("PostPlayFrag", "Received null intent - ignoring");
+        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.getNetflixActivity()) || intent == null || this.this$0.video == null) {
+            return;
         }
-        else {
-            final String stringExtra = intent.getStringExtra("extra_video_id");
-            final float floatExtra = intent.getFloatExtra("extra_user_rating", -1.0f);
-            if (this.this$0.video != null && StringUtils.safeEquals(this.this$0.video.getId(), stringExtra) && this.this$0.rating != null) {
-                this.this$0.rating.setRating(floatExtra);
+        final String action = intent.getAction();
+        switch (action) {
+            default: {}
+            case "com.netflix.mediaclient.intent.action.MINI_PLAYER_POST_PLAY_TITLE_END": {
+                if (this.this$0.video.getType() == VideoType.MOVIE) {
+                    this.this$0.getNetflixActivity().getServiceManager().getBrowse().fetchMovieDetails(this.this$0.video.getId(), null, new PostPlayFrag$FetchPostPlayForPlaybackCallback(this.this$0, "PostPlayFrag"));
+                    return;
+                }
+                this.this$0.getNetflixActivity().getServiceManager().getBrowse().fetchPostPlayVideos(this.this$0.video.getPlayable().getParentId(), this.this$0.video.getType(), PostPlayRequestContext.POST_PLAY, new PostPlayFrag$FetchPostPlayForPlaybackCallback(this.this$0, "PostPlayFrag"));
+            }
+            case "com.netflix.mediaclient.intent.action.MINI_PLAYER_POST_PLAY_TITLE_NEXT": {
+                this.this$0.getNetflixActivity().getServiceManager().getBrowse().fetchEpisodeDetails(intent.getStringExtra("id"), null, new PostPlayFrag$FetchPostPlayForPlaybackCallback(this.this$0, "PostPlayFrag"));
+            }
+            case "com.netflix.mediaclient.intent.action.MINI_PLAYER_POST_HIDE": {
+                this.this$0.hidePostPlayViews();
             }
         }
     }

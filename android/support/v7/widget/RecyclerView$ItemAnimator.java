@@ -23,7 +23,7 @@ public abstract class RecyclerView$ItemAnimator
         this.mRemoveDuration = 120L;
         this.mMoveDuration = 250L;
         this.mChangeDuration = 250L;
-        this.mSupportsChangeAnimations = false;
+        this.mSupportsChangeAnimations = true;
     }
     
     public abstract boolean animateAdd(final RecyclerView$ViewHolder p0);

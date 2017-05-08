@@ -19,6 +19,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import android.support.design.widget.TabLayout$OnTabSelectedListener;
 import android.widget.TextView;
+import com.viewpagerindicator.android.osp.ViewPager$PageTransformer;
 import android.support.v4.view.PagerAdapter;
 import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
 import android.view.View;

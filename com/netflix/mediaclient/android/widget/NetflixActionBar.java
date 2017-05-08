@@ -16,6 +16,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
@@ -52,7 +53,7 @@ public class NetflixActionBar
             if (Log.isLoggable()) {
                 Log.v("NetflixActionBar", "Applying tint to navIcon: " + navigationIcon);
             }
-            if (navigationIcon != null) {
+            if (navigationIcon != null && !BrowseExperience.showKidsExperience()) {
                 DrawableCompat.setTint(navigationIcon, -1);
             }
         }
@@ -64,7 +65,7 @@ public class NetflixActionBar
             Log.e("NetflixActionBar", "actionBarGroup is null");
         }
         else {
-            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131689585);
+            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131689586);
             if (this.toolbar == null) {
                 Log.e("NetflixActionBar", "toolBar is null");
                 return;
@@ -240,10 +241,10 @@ public class NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837717;
+            navigationIcon = 2130837714;
         }
         else {
-            navigationIcon = 2130837715;
+            navigationIcon = 2130837712;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }
@@ -267,7 +268,7 @@ public class NetflixActionBar
     }
     
     protected void showDropShadowIfAvailable() {
-        final View viewById = this.actionBarGroup.findViewById(2131689600);
+        final View viewById = this.actionBarGroup.findViewById(2131689601);
         if (viewById != null) {
             viewById.setVisibility(0);
         }

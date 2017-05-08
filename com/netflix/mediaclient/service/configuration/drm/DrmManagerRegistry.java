@@ -42,11 +42,11 @@ public final class DrmManagerRegistry
         Label_0067_Outer:Label_0094_Outer:
         while (true) {
             while (true) {
-                Label_0312: {
+                Label_0315: {
                     while (true) {
-                    Label_0306:
+                    Label_0309:
                         while (true) {
-                            Label_0258: {
+                            Label_0261: {
                                 synchronized (DrmManagerRegistry.class) {
                                     setPreviousDrm(instance);
                                     cryptoProvider = MediaDrmUtils.getCryptoProvider(instance, serviceAgent$ConfigurationAgentInterface);
@@ -57,13 +57,13 @@ public final class DrmManagerRegistry
                                         }
                                         else {
                                             if (cryptoProvider != CryptoProvider.WIDEVINE_L3) {
-                                                break Label_0258;
+                                                break Label_0261;
                                             }
                                             Log.d("nf_drm", "WidevineDrmManager L3 created");
                                             DrmManagerRegistry.instance = new WidevineL3DrmManager(instance, serviceAgent$UserAgentInterface, serviceAgent$ConfigurationAgentInterface, errorLogging, errorHandler, drmManager$DrmReadyCallback);
                                         }
                                         if (cryptoProvider != CryptoProvider.LEGACY) {
-                                            break Label_0312;
+                                            break Label_0315;
                                         }
                                         if (AndroidUtils.getAndroidVersion() > 22) {
                                             currentDrmSystem = "M_PLUS_MGK";
@@ -76,10 +76,11 @@ public final class DrmManagerRegistry
                                             instance = (Context)DrmManagerRegistry.instance;
                                             return (DrmManager)instance;
                                         }
-                                        break Label_0306;
+                                        break Label_0309;
                                     }
                                     catch (Throwable t) {
                                         Log.e("nf_drm", "Unable to create WidevineDrmManager, default to LegacyDrmManager", t);
+                                        MediaDrmUtils.updateCryptoProvideToLegacy();
                                         DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
                                         continue Label_0067_Outer;
                                     }

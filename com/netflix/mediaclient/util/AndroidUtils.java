@@ -30,6 +30,7 @@ import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.graphics.Bitmap$Config;
 import android.graphics.Bitmap;
+import android.content.ContextWrapper;
 import android.text.format.Formatter;
 import android.os.StatFs;
 import android.content.pm.PackageInfo;
@@ -237,12 +238,32 @@ public final class AndroidUtils
         return ClassLoader.getSystemClassLoader();
     }
     
+    public static <T> T getContextAs(final Context context, final Class<T> clazz) {
+        if (clazz.isInstance(context)) {
+            return clazz.cast(context);
+        }
+        if (context instanceof ContextWrapper) {
+            final Context baseContext = ((ContextWrapper)context).getBaseContext();
+            if (baseContext != context) {
+                return (T)getContextAs(baseContext, (Class<Object>)clazz);
+            }
+        }
+        return null;
+    }
+    
     public static int getDimensionInDip(final Context context, final int n) {
         return (int)(context.getResources().getDimension(n) / context.getResources().getDisplayMetrics().density);
     }
     
     public static String getHeapSizeString(final Context context) {
         return Formatter.formatShortFileSize(context, Runtime.getRuntime().maxMemory());
+    }
+    
+    public static int getIntegerRes(final Context context, final int n) {
+        if (context == null) {
+            return 0;
+        }
+        return context.getResources().getInteger(n);
     }
     
     public static PackageInfo getPackageInfo(final Context context, final String s) {

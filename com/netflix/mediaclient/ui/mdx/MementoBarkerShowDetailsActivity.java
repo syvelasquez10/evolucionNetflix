@@ -11,6 +11,11 @@ public class MementoBarkerShowDetailsActivity extends BarkerShowDetailsActivity
     private static final String TAG = "MementoBarkerShowDetailsActivity";
     
     @Override
+    protected boolean allowTransitionAnimation() {
+        return false;
+    }
+    
+    @Override
     protected void initSlidingPanel() {
         super.initSlidingPanel();
         this.slidingPanel.setPanelHeight(0);

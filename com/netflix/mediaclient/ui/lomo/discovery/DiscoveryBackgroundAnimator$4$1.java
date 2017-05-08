@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.util.StringUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup$LayoutParams;

@@ -121,8 +121,15 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131689871);
-        this.fragBackground = view.findViewById(2131689883);
+        this.rootContainer = view.findViewById(2131689869);
+        this.fragBackground = view.findViewById(2131689881);
+        if (this.rootContainer != null) {
+            this.rootContainer.setBackgroundResource(this.getBackgroundResource());
+        }
+    }
+    
+    protected int getBackgroundResource() {
+        return 2131624148;
     }
     
     @Override
@@ -134,7 +141,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
         if (this.getActivity() == null) {
             return 0;
         }
-        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362183) * 2;
+        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362185) * 2;
     }
     
     @Override
@@ -211,6 +218,14 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
         if (this.getActivity() != null && BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) < DeviceUtils.getScreenWidthInPixels((Context)this.getActivity()) && this.fragBackground != null) {
             this.showRecyclerBackground = true;
             this.fragBackground.getLayoutParams().width = this.getRecyclerViewShadowWidth();
+        }
+    }
+    
+    @Override
+    protected void setupRecyclerView() {
+        super.setupRecyclerView();
+        if (this.recyclerView != null) {
+            this.recyclerView.setBackgroundResource(2131624168);
         }
     }
     

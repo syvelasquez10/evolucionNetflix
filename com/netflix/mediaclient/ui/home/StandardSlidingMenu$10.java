@@ -4,11 +4,8 @@
 
 package com.netflix.mediaclient.ui.home;
 
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
-import android.content.Context;
-import com.netflix.mediaclient.ui.voip.ContactUsActivity;
+import android.app.Activity;
+import com.netflix.mediaclient.ui.settings.AboutActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 final class StandardSlidingMenu$10 implements Runnable
@@ -21,12 +18,6 @@ final class StandardSlidingMenu$10 implements Runnable
     
     @Override
     public void run() {
-        final Intent startIntent = ContactUsActivity.createStartIntent((Context)this.val$context);
-        final IClientLogging$ModalView uiScreen = this.val$context.getUiScreen();
-        if (uiScreen != null) {
-            startIntent.putExtra("source", uiScreen.name());
-        }
-        startIntent.putExtra("entry", CustomerServiceLogging$EntryPoint.appMenu.name());
-        this.val$context.startActivity(startIntent);
+        this.val$context.startActivity(AboutActivity.createStartIntent(this.val$context));
     }
 }

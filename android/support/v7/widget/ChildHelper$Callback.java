@@ -23,6 +23,10 @@ interface ChildHelper$Callback
     
     int indexOfChild(final View p0);
     
+    void onEnteredHiddenState(final View p0);
+    
+    void onLeftHiddenState(final View p0);
+    
     void removeAllViews();
     
     void removeViewAt(final int p0);

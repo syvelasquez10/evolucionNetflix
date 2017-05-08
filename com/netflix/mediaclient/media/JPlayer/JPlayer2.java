@@ -398,6 +398,12 @@ public class JPlayer2
         this.nativeReleasePlayer(this.mNativePlayer);
     }
     
+    public void setAudioDuck(final boolean audioDuck) {
+        if (this.mAudioPipe != null && this.mAudioPipe instanceof MediaDecoder2Audio) {
+            ((MediaDecoder2Audio)this.mAudioPipe).setAudioDuck(audioDuck);
+        }
+    }
+    
     public void setMaxVideoHeight(final VideoResolutionRange mMaxVideoRes) {
         this.mMaxVideoRes = mMaxVideoRes;
     }

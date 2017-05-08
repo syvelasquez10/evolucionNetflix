@@ -10,9 +10,16 @@ import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
+import android.annotation.TargetApi;
+import android.transition.Transition;
+import com.netflix.mediaclient.util.gfx.ScaleTransition;
+import com.netflix.mediaclient.util.gfx.SlideTransition;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.app.FragmentTransaction;
+import android.app.Fragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import android.content.Context;
 import com.netflix.mediaclient.util.Coppola1Utils;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView$LayoutManager;
@@ -20,13 +27,6 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
-import android.annotation.TargetApi;
-import android.transition.Transition;
-import com.netflix.mediaclient.util.gfx.ScaleTransition;
-import android.transition.Slide;
-import android.content.Context;
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -41,28 +41,6 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     
     public MovieDetailsActivity() {
         this.backStack = new ArrayList<MovieDetailsActivity$BackStackData>();
-    }
-    
-    @TargetApi(21)
-    private void addTransitionAnimation(final Fragment fragment, final boolean b) {
-        if (AnimationUtils.isTransitionAnimationSupported((Context)this)) {
-            final int integer = this.getResources().getInteger(2131492871);
-            Transition setDuration = new Slide(5).setDuration((long)integer);
-            if (this.getPrimaryFrag() != null) {
-                Transition setDuration2 = new ScaleTransition().setDuration((long)integer);
-                final Fragment primaryFrag = this.getPrimaryFrag();
-                if (!b) {
-                    setDuration2 = setDuration;
-                }
-                primaryFrag.setEnterTransition(setDuration2);
-            }
-            if (fragment != null) {
-                if (!b) {
-                    setDuration = null;
-                }
-                fragment.setExitTransition(setDuration);
-            }
-        }
     }
     
     private void handleNewVideoId() {
@@ -88,14 +66,35 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
             this.setPrimaryFrag(this.createPrimaryFrag());
             ((MovieDetailsFrag)this.getPrimaryFrag()).setLayoutManagerSavedState(layoutManagerSavedState);
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            this.addTransitionAnimation(primaryFrag, layoutManagerSavedState != null);
-            beginTransaction.replace(2131689745, this.getPrimaryFrag(), "primary");
+            this.addBackStackTransitionAnimation(primaryFrag, layoutManagerSavedState != null);
+            beginTransaction.replace(2131689743, this.getPrimaryFrag(), "primary");
             if (!Coppola1Utils.shouldInjectPlayerFragment((Context)this)) {
                 beginTransaction.setTransition(4099);
             }
             beginTransaction.commit();
             this.getFragmentManager().executePendingTransactions();
             ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(this.manager, CommonStatus.OK);
+        }
+    }
+    
+    @TargetApi(21)
+    protected void addBackStackTransitionAnimation(final Fragment fragment, final boolean b) {
+        if (AnimationUtils.isTransitionAnimationSupported()) {
+            final SlideTransition exitTransition = new SlideTransition();
+            if (this.getPrimaryFrag() != null) {
+                final Fragment primaryFrag = this.getPrimaryFrag();
+                Object enterTransition;
+                if (b) {
+                    enterTransition = new ScaleTransition();
+                }
+                else {
+                    enterTransition = exitTransition;
+                }
+                primaryFrag.setEnterTransition((Transition)enterTransition);
+            }
+            if (fragment != null && b) {
+                fragment.setExitTransition((Transition)exitTransition);
+            }
         }
     }
     

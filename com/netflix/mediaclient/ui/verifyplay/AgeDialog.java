@@ -126,8 +126,8 @@ public class AgeDialog extends NetflixDialogFrag
         this.mVault = (PlayVerifierVault)this.getArguments().getParcelable(PlayVerifierVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
         final View inflate = this.getActivity().getLayoutInflater().inflate(2130903069, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131689605);
-        this.mAgeMessage = (TextView)inflate.findViewById(2131689604);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131689606);
+        this.mAgeMessage = (TextView)inflate.findViewById(2131689605);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             mDialogWidthInDp = 400;
@@ -139,8 +139,8 @@ public class AgeDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        create.setButton(-2, (CharSequence)this.getString(2131230991), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
-        create.setButton(-1, (CharSequence)this.getString(2131230962), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
+        create.setButton(-2, (CharSequence)this.getString(2131230993), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
+        create.setButton(-1, (CharSequence)this.getString(2131230964), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
         this.mActive = true;
         this.mDialog = create;
         if (!this.mRestored) {
@@ -193,10 +193,10 @@ public class AgeDialog extends NetflixDialogFrag
         final TextView mAgeMessage = this.mAgeMessage;
         int text;
         if (mInProgress) {
-            text = 2131230961;
+            text = 2131230963;
         }
         else {
-            text = 2131230963;
+            text = 2131230965;
         }
         mAgeMessage.setText(text);
         if (!mInProgress) {

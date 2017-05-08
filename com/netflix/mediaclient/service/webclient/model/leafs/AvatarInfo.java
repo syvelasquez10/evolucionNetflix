@@ -11,6 +11,7 @@ import android.os.Parcelable;
 public class AvatarInfo implements Parcelable
 {
     public static final Parcelable$Creator<AvatarInfo> CREATOR;
+    private boolean bIsInDefaultSet;
     private String name;
     private String url;
     
@@ -19,15 +20,17 @@ public class AvatarInfo implements Parcelable
     }
     
     protected AvatarInfo(final Parcel parcel) {
-        final String[] array = new String[2];
+        final String[] array = new String[3];
         parcel.readStringArray(array);
         this.name = array[0];
         this.url = array[1];
+        this.bIsInDefaultSet = Boolean.valueOf(array[2]);
     }
     
-    public AvatarInfo(final String name, final String url) {
+    public AvatarInfo(final String name, final String url, final boolean bIsInDefaultSet) {
         this.name = name;
         this.url = url;
+        this.bIsInDefaultSet = bIsInDefaultSet;
     }
     
     public int describeContents() {
@@ -68,12 +71,16 @@ public class AvatarInfo implements Parcelable
         return this.url;
     }
     
+    public boolean isInDefaultSet() {
+        return this.bIsInDefaultSet;
+    }
+    
     @Override
     public String toString() {
-        return new StringBuffer("Name: ").append(this.name).append("; url: ").append(this.url).toString();
+        return new StringBuffer("Name: ").append(this.name).append("; url: ").append(this.url).append("; isInDefaultSet: ").append(this.bIsInDefaultSet).toString();
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        parcel.writeStringArray(new String[] { this.name, this.url });
+        parcel.writeStringArray(new String[] { this.name, this.url, String.valueOf(this.bIsInDefaultSet) });
     }
 }

@@ -19,6 +19,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import android.support.design.widget.TabLayout$OnTabSelectedListener;
 import android.widget.TextView;
+import com.viewpagerindicator.android.osp.ViewPager$PageTransformer;
 import android.support.v4.view.PagerAdapter;
 import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
 import android.view.View;
@@ -52,6 +53,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     private CirclePageIndicator pagerIndicator;
     private List<MementoVideoSwatch> relatedTitles;
     private long requestId;
+    boolean resetPager;
     private List<FalkorActorStill> stills;
     private TabLayout tabLayout;
     private int[] tintColors;
@@ -66,6 +68,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
         this.tintIndex = -1;
         this.currentTint = this.tintColors[0];
         this.errorCallback = new MementoFrag$2(this);
+        this.resetPager = true;
     }
     
     private void fetchActorDetailsAndRelated() {
@@ -82,9 +85,9 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     private void findViews(final View view) {
-        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131689984);
-        this.tabLayout = (TabLayout)view.findViewById(2131689985);
-        this.pager = (ViewPager)view.findViewById(2131689983);
+        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131689982);
+        this.tabLayout = (TabLayout)view.findViewById(2131689983);
+        this.pager = (ViewPager)view.findViewById(2131689981);
     }
     
     private void hideStandardViews() {
@@ -103,6 +106,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
         }
         if (this.tabLayout != null) {
             this.tabLayout.setEnabled(false);
+            this.tabLayout.setVisibility(0);
             this.tabLayout.setAlpha(0.5f);
             this.tabLayout.getTabAt(0).select();
         }
@@ -119,6 +123,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
         final MementoFrag$4 adapter = new MementoFrag$4(this);
         if (this.pager != null) {
             this.pager.setAdapter(adapter);
+            this.pager.setPageTransformer(false, new MementoFrag$5(this));
         }
         if (this.pagerIndicator != null) {
             this.pagerIndicator.setViewPager(this.pager);
@@ -130,15 +135,30 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
             this.tabLayout.removeAllTabs();
             this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903199), 0, true);
             this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903199), 1, true);
-            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131689988)).setText(2131231053);
-            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131689988)).setText(2131231055);
+            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131689986)).setText(2131231055);
+            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131689986)).setText(2131231057);
             this.tabLayout.setOnTabSelectedListener(new MementoFrag$TabListener(this));
         }
     }
     
     private boolean isRDPShowing() {
-        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689998);
+        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689997);
         return roleDetailsFrag != null && !roleDetailsFrag.isHidden();
+    }
+    
+    private void resetTranslation(final int n) {
+        if (this.pager != null) {
+            final View viewWithTag = this.pager.findViewWithTag((Object)("POS_TAG" + String.valueOf(n)));
+            if (viewWithTag != null) {
+                View view;
+                if ((view = viewWithTag.findViewById(2131689944)) == null) {
+                    view = viewWithTag.findViewById(2131689949);
+                }
+                if (view != null) {
+                    view.setTranslationX(0.0f);
+                }
+            }
+        }
     }
     
     private void restoreInstanceState(final Bundle bundle) {
@@ -149,7 +169,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     
     private void showRDP(final String actorId) {
         if (this.isActivityValid() && this.getNetflixActivity().isPanelExpanded()) {
-            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689998);
+            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689997);
             if (roleDetailsFrag != null) {
                 final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
                 beginTransaction.setCustomAnimations(2131034114, 2131034115);
@@ -177,24 +197,35 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
             this.pager.setVisibility(0);
         }
         if (this.tabLayout != null) {
+            if (this.actors.size() <= 0 || this.relatedTitles.size() <= 0) {
+                this.tabLayout.setEnabled(false);
+                this.tabLayout.setAlpha(0.0f);
+                this.tabLayout.setVisibility(8);
+                return;
+            }
             this.tabLayout.setEnabled(true);
             this.tabLayout.setAlpha(1.0f);
+            this.tabLayout.setVisibility(0);
         }
     }
     
     private void toggleTabs(final int n) {
-        if (n < this.actors.size()) {
-            if (this.tabLayout.getSelectedTabPosition() != 0) {
-                this.tabLayout.getTabAt(0).select();
+        if (this.tabLayout.getAlpha() == 1.0f) {
+            if (n < this.actors.size()) {
+                if (this.tabLayout.getSelectedTabPosition() != 0) {
+                    this.resetPager = false;
+                    this.tabLayout.getTabAt(0).select();
+                }
             }
-        }
-        else if (n < this.relatedTitles.size() + this.actors.size() && this.tabLayout.getSelectedTabPosition() != 1) {
-            this.tabLayout.getTabAt(1).select();
+            else if (n < this.relatedTitles.size() + this.actors.size() && this.tabLayout.getSelectedTabPosition() != 1) {
+                this.resetPager = false;
+                this.tabLayout.getTabAt(1).select();
+            }
         }
     }
     
     protected void adjustHeight(final ImageView imageView) {
-        final float n = this.getActivity().getResources().getDimensionPixelOffset(2131362169);
+        final float n = this.getActivity().getResources().getDimensionPixelOffset(2131362171);
         final float n2 = 1;
         final ViewGroup$LayoutParams layoutParams = imageView.getLayoutParams();
         final float n3 = (BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) - n * (n2 + 1.0f)) / 1;

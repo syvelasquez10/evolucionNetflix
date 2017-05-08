@@ -141,7 +141,11 @@ public class MediaDrmUtils
         if (Log.isLoggable()) {
             Log.d(MediaDrmUtils.TAG, "MediaDrm system ID is: " + access$100);
         }
-        return !access$100.equalsIgnoreCase("4266");
+        if (!access$100.equalsIgnoreCase("4266") && !StringUtils.isEmpty(access$100) && access$100.trim().length() <= 5) {
+            Log.d(MediaDrmUtils.TAG, "Valid System ID.");
+            return true;
+        }
+        return false;
     }
     
     public static boolean isWidevineDrmAllowed() {
@@ -167,6 +171,12 @@ public class MediaDrmUtils
     @SuppressLint({ "NewApi" })
     public static boolean isWidewineSupported() {
         return MediaDrmUtils.WIDEVINE.supported;
+    }
+    
+    public static void updateCryptoProvideToLegacy() {
+        synchronized (MediaDrmUtils.class) {
+            MediaDrmUtils.sCryptoProvider = CryptoProvider.LEGACY;
+        }
     }
     
     public static boolean useWidevineSecurityLevelL1(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {

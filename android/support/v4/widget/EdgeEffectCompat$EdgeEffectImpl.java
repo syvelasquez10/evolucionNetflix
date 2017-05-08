@@ -21,6 +21,8 @@ interface EdgeEffectCompat$EdgeEffectImpl
     
     boolean onPull(final Object p0, final float p1);
     
+    boolean onPull(final Object p0, final float p1, final float p2);
+    
     boolean onRelease(final Object p0);
     
     void setSize(final Object p0, final int p1, final int p2);

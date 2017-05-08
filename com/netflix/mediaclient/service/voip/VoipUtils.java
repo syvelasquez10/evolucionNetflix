@@ -41,7 +41,7 @@ public final class VoipUtils
         }
         sb.append(modifyByXHeaderRules(deviceModel));
         sb.append("-android").append(AndroidUtils.getAndroidVersion());
-        sb.append('-').append("4.9.4");
+        sb.append('-').append("4.10.0");
         sb.append('-').append(AndroidManifestUtils.getVersionCode(context));
         if (Log.isLoggable()) {
             Log.d("nf_voip", "X-NFLX-ClientAppVer:" + sb.toString());

@@ -22,13 +22,17 @@ public final class R$integer
     public static final int ime_action_login = 2131492880;
     public static final int kids_lomo_genre_num_cols_horiz = 2131492865;
     public static final int kids_lomo_genre_num_cols_vert = 2131492866;
-    public static final int kubrick_show_details_num_columns = 2131492881;
-    public static final int postplay_mdx_timer_value = 2131492882;
-    public static final int postplay_timer_value = 2131492883;
-    public static final int profile_name_max_length = 2131492884;
-    public static final int ripple_anim_time_ms = 2131492885;
+    public static final int kids_movie_sims_num_cols = 2131492881;
+    public static final int kids_show_num_cols = 2131492882;
+    public static final int postplay_mdx_memento_postplay_countdown = 2131492883;
+    public static final int postplay_mdx_timer_value = 2131492884;
+    public static final int postplay_timer_value = 2131492885;
+    public static final int profile_name_max_length = 2131492886;
+    public static final int ripple_anim_time_ms = 2131492887;
     public static final int search_result_people_title_max_lines = 2131492864;
-    public static final int search_view_text_size = 2131492886;
-    public static final int status_bar_notification_info_maxnum = 2131492887;
-    public static final int window_anim_time_ms = 2131492888;
+    public static final int search_view_text_size = 2131492888;
+    public static final int status_bar_notification_info_maxnum = 2131492889;
+    public static final int tablet_activity_transition_alpha_anim_time_ms = 2131492890;
+    public static final int tablet_activity_transition_anim_delay_ms = 2131492891;
+    public static final int window_anim_time_ms = 2131492892;
 }

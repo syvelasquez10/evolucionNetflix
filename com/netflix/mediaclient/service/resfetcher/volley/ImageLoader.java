@@ -14,11 +14,11 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
 import com.android.volley.Response$Listener;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
-import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.UriUtil;
 import android.graphics.Bitmap$Config;
@@ -27,10 +27,8 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.android.volley.VolleyError;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$InteractiveListener;
 import android.os.Looper;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$TTRTracker;
 import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
@@ -51,19 +49,19 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     private int mRequestSocketTimeout;
     private final Object mRequestTag;
     private Runnable mRunnable;
-    InteractiveTimer$ATTITimer mTTRTimer;
+    InteractiveTracker$TTRTracker mTTRTracker;
     
-    public ImageLoader(final RequestQueue requestQueue, final ImageLoader$ImageCache imageLoader$ImageCache, final int n, final long mMinimumCacheTtl, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        this(requestQueue, imageLoader$ImageCache, n, applicationPerformanceMetricsLogging, serviceAgent$ConfigurationAgentInterface);
+    public ImageLoader(final RequestQueue requestQueue, final ImageLoader$ImageCache imageLoader$ImageCache, final int n, final long mMinimumCacheTtl, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
+        this(requestQueue, imageLoader$ImageCache, n, applicationPerformanceMetricsLogging);
         this.mMinimumCacheTtl = mMinimumCacheTtl;
     }
     
-    private ImageLoader(final RequestQueue requestQueue, final ImageLoader$ImageCache imageLoader$ImageCache, final int mRequestSocketTimeout, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        this(requestQueue, imageLoader$ImageCache, applicationPerformanceMetricsLogging, serviceAgent$ConfigurationAgentInterface);
+    private ImageLoader(final RequestQueue requestQueue, final ImageLoader$ImageCache imageLoader$ImageCache, final int mRequestSocketTimeout, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
+        this(requestQueue, imageLoader$ImageCache, applicationPerformanceMetricsLogging);
         this.mRequestSocketTimeout = mRequestSocketTimeout;
     }
     
-    private ImageLoader(final RequestQueue mRequestQueue, final ImageLoader$ImageCache mCache, final ApplicationPerformanceMetricsLogging mApmLogger, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
+    private ImageLoader(final RequestQueue mRequestQueue, final ImageLoader$ImageCache mCache, final ApplicationPerformanceMetricsLogging mApmLogger) {
         this.mRequestTag = new Object();
         this.mRequestSocketTimeout = -1;
         this.mBatchResponseDelayMs = 100;
@@ -74,18 +72,17 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         this.mRequestQueue = mRequestQueue;
         this.mCache = mCache;
         this.mApmLogger = mApmLogger;
-        this.mTTRTimer = new InteractiveTimer$ATTITimer(new ImageLoader$1(this));
     }
     
     private void batchResponse(final String s, final ImageLoader$BatchedImageRequest imageLoader$BatchedImageRequest) {
         this.mBatchedResponses.put(s, imageLoader$BatchedImageRequest);
         if (this.mRunnable == null) {
-            this.mRunnable = new ImageLoader$5(this);
+            this.mRunnable = new ImageLoader$4(this);
             this.mHandler.postDelayed(this.mRunnable, 100L);
         }
     }
     
-    private ImageLoader$ImageContainer get(final String s, final IClientLogging$AssetType clientLogging$AssetType, ImageLoader$ImageListener registerListener, final int n, final int n2, final Request$Priority request$Priority, final Bitmap$Config bitmap$Config) {
+    private ImageLoader$ImageContainer get(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ImageLoader$ImageListener imageLoader$ImageListener, final int n, final int n2, final Request$Priority request$Priority, final Bitmap$Config bitmap$Config) {
         this.throwIfNotOnMainThread();
         if (!UriUtil.isValidUri(s) || this.mRequestQueue == null) {
             String string;
@@ -96,40 +93,36 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
                 string = "Request URL is NOT valid, unable to load " + s;
             }
             Log.v("ImageLoader", string);
-            final ImageLoader$ImageContainer imageLoader$ImageContainer = new ImageLoader$ImageContainer(this, null, s, "ERROR", registerListener);
-            if (registerListener != null) {
-                registerListener.onErrorResponse(new VolleyError(string));
+            final ImageLoader$ImageContainer imageLoader$ImageContainer = new ImageLoader$ImageContainer(this, null, s, "ERROR", imageLoader$ImageListener);
+            if (imageLoader$ImageListener != null) {
+                imageLoader$ImageListener.onErrorResponse(new VolleyError(string));
                 return imageLoader$ImageContainer;
             }
             Log.e("ImageLoader", "Unable to report an error, missing listener");
             return imageLoader$ImageContainer;
         }
         else {
+            if (imageLoader$ImageListener instanceof ImageLoader$ImageInteractionTrackingListener) {
+                ((ImageLoader$ImageInteractionTrackingListener)imageLoader$ImageListener).registerForTTR(request$Priority);
+            }
+            final String startSession = PerformanceProfiler.getInstance().startSession(Sessions.IMAGE_FETCH, null);
             final String cacheKey = getCacheKey(s);
             final Bitmap bitmap = this.mCache.getBitmap(cacheKey);
             if (bitmap != null) {
                 final ImageLoader$ImageContainer imageLoader$ImageContainer2 = new ImageLoader$ImageContainer(this, bitmap, s, null, null);
-                registerListener.onResponse(imageLoader$ImageContainer2, true);
+                imageLoader$ImageListener.onResponse(imageLoader$ImageContainer2, ImageLoader$Type.CACHE);
                 ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.mApmLogger);
                 ApmLogUtils.reportAssetRequestResult(s, StatusCode.OK, this.mApmLogger);
                 return imageLoader$ImageContainer2;
             }
-            String startSession;
-            if (registerListener instanceof ImageLoader$ValidatingListener && request$Priority != Request$Priority.LOW && this.mTTRTimer.shouldTrack(((ImageLoader$ValidatingListener)registerListener).getImageView(), clientLogging$AssetType)) {
-                registerListener = this.mTTRTimer.registerListener(registerListener);
-                startSession = PerformanceProfiler.getInstance().startSession(Sessions.IMAGE_FETCH, null);
-            }
-            else {
-                startSession = "";
-            }
-            final ImageLoader$ImageContainer imageLoader$ImageContainer3 = new ImageLoader$ImageContainer(this, null, s, cacheKey, registerListener);
-            registerListener.onResponse(imageLoader$ImageContainer3, true);
+            final ImageLoader$ImageContainer imageLoader$ImageContainer3 = new ImageLoader$ImageContainer(this, null, s, cacheKey, imageLoader$ImageListener);
+            imageLoader$ImageListener.onResponse(imageLoader$ImageContainer3, ImageLoader$Type.PLACEHOLDER);
             final ImageLoader$BatchedImageRequest imageLoader$BatchedImageRequest = this.mInFlightRequests.get(cacheKey);
             if (imageLoader$BatchedImageRequest != null) {
                 imageLoader$BatchedImageRequest.addContainer(imageLoader$ImageContainer3);
                 return imageLoader$ImageContainer3;
             }
-            final ImageRequest imageRequest = new ImageRequest(s, new ImageLoader$3(this, s, startSession, cacheKey), n, n2, bitmap$Config, new ImageLoader$4(this, s, startSession, cacheKey), request$Priority, this.mRequestSocketTimeout, this.mMinimumCacheTtl);
+            final ImageRequest imageRequest = new ImageRequest(s, new ImageLoader$2(this, s, startSession, cacheKey), n, n2, bitmap$Config, new ImageLoader$3(this, s, startSession, cacheKey), request$Priority, this.mRequestSocketTimeout, this.mMinimumCacheTtl);
             imageRequest.setTag(this.mRequestTag);
             ApmLogUtils.reportAssetRequest(s, null, this.mApmLogger);
             this.mRequestQueue.add(imageRequest);
@@ -199,7 +192,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     }
     
     private ImageLoader$ImageListener wrapPrivateListener(final ImageLoader$ImageLoaderListener imageLoader$ImageLoaderListener) {
-        return new ImageLoader$2(this, imageLoader$ImageLoaderListener);
+        return new ImageLoader$1(this, imageLoader$ImageLoaderListener);
     }
     
     @Override
@@ -253,6 +246,11 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
             imageLoader$StaticImgConfig = ImageLoader$StaticImgConfig.DARK;
         }
         this.showImgInternal(advancedImageView, imageUrl, clientLogging$AssetType, imageLoader$StaticImgConfig, false, 1, imageLoaderInfo.bitmapConfig);
+    }
+    
+    @Override
+    public void setTTRTracker(final InteractiveTracker$TTRTracker mttrTracker) {
+        this.mTTRTracker = mttrTracker;
     }
     
     @Override

@@ -20,42 +20,63 @@ import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.util.SubtitleUtils;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.AutoResizeTextView;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.media.Watermark;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.Build;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView;
 import android.view.SurfaceHolder;
-import android.os.Handler;
 import android.widget.ViewFlipper;
 import android.widget.TextView;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.widget.PopupWindow$OnDismissListener;
+import com.netflix.mediaclient.android.widget.advisor.ExpiringContentAdvisor;
+import com.netflix.model.leafs.advisory.Advisory$Type;
+import com.netflix.mediaclient.android.widget.advisor.Advisor;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.model.leafs.advisory.Advisory;
+import java.util.List;
+import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
-class PlayScreen$1 implements Runnable
+class PlayScreen$1 extends SimpleManagerCallback
 {
     final /* synthetic */ PlayScreen this$0;
+    final /* synthetic */ Asset val$asset;
     
-    PlayScreen$1(final PlayScreen this$0) {
+    PlayScreen$1(final PlayScreen this$0, final Asset val$asset) {
         this.this$0 = this$0;
+        this.val$asset = val$asset;
     }
     
     @Override
-    public void run() {
-        if (this.this$0.mContentAdvisory == null) {
-            return;
+    public void onAdvisoriesFetched(final List<Advisory> list, final Status status) {
+        if (!status.isError()) {
+            final NetflixActivity netflixActivity = this.this$0.mController.getNetflixActivity();
+            if (netflixActivity != null && !netflixActivity.isFinishing()) {
+                this.this$0.mIsAdvisoryDisabled = (this.val$asset.isAdvisoryDisabled() || list.isEmpty());
+                for (int i = 0; i < list.size(); ++i) {
+                    final Advisory advisory = list.get(i);
+                    final Advisor make = Advisor.make(netflixActivity, advisory);
+                    if (advisory.getType() == Advisory$Type.EXPIRY_NOTICE) {
+                        ((ExpiringContentAdvisor)make).setController(this.this$0.mController);
+                    }
+                    if (i == list.size() - 1) {
+                        make.withDismissListener((PopupWindow$OnDismissListener)new PlayScreen$1$1(this));
+                    }
+                    make.queue();
+                }
+            }
         }
-        this.this$0.mContentAdvisory.show(true);
-        this.this$0.mHandler.postDelayed(this.this$0.contentAdvisoryNoticeCompletionRunnable, (long)this.this$0.mContentAdvisory.getDisplayDuration());
     }
 }

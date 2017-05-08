@@ -28,7 +28,7 @@ public class KubrickKidsCwTestView extends KubrickHighDensityCwView
     
     @Override
     protected int getLayoutId() {
-        return 2130903135;
+        return 2130903134;
     }
     
     @Override

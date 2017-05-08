@@ -4,7 +4,9 @@
 
 package android.support.v7.widget;
 
+import java.util.List;
 import android.view.ViewGroup;
+import android.support.v4.os.TraceCompat;
 
 public abstract class RecyclerView$Adapter<VH extends RecyclerView$ViewHolder>
 {
@@ -21,13 +23,18 @@ public abstract class RecyclerView$Adapter<VH extends RecyclerView$ViewHolder>
         if (this.hasStableIds()) {
             vh.mItemId = this.getItemId(mPosition);
         }
-        this.onBindViewHolder(vh, mPosition);
-        vh.setFlags(1, 7);
+        vh.setFlags(1, 519);
+        TraceCompat.beginSection("RV OnBindView");
+        this.onBindViewHolder(vh, mPosition, vh.getUnmodifiedPayloads());
+        vh.clearPayload();
+        TraceCompat.endSection();
     }
     
     public final VH createViewHolder(final ViewGroup viewGroup, final int mItemViewType) {
+        TraceCompat.beginSection("RV CreateView");
         final RecyclerView$ViewHolder onCreateViewHolder = this.onCreateViewHolder(viewGroup, mItemViewType);
         onCreateViewHolder.mItemViewType = mItemViewType;
+        TraceCompat.endSection();
         return (VH)onCreateViewHolder;
     }
     
@@ -57,6 +64,10 @@ public abstract class RecyclerView$Adapter<VH extends RecyclerView$ViewHolder>
         this.mObservable.notifyItemRangeChanged(n, 1);
     }
     
+    public final void notifyItemChanged(final int n, final Object o) {
+        this.mObservable.notifyItemRangeChanged(n, 1, o);
+    }
+    
     public final void notifyItemInserted(final int n) {
         this.mObservable.notifyItemRangeInserted(n, 1);
     }
@@ -67,6 +78,10 @@ public abstract class RecyclerView$Adapter<VH extends RecyclerView$ViewHolder>
     
     public final void notifyItemRangeChanged(final int n, final int n2) {
         this.mObservable.notifyItemRangeChanged(n, n2);
+    }
+    
+    public final void notifyItemRangeChanged(final int n, final int n2, final Object o) {
+        this.mObservable.notifyItemRangeChanged(n, n2, o);
     }
     
     public final void notifyItemRangeInserted(final int n, final int n2) {
@@ -86,9 +101,17 @@ public abstract class RecyclerView$Adapter<VH extends RecyclerView$ViewHolder>
     
     public abstract void onBindViewHolder(final VH p0, final int p1);
     
+    public void onBindViewHolder(final VH vh, final int n, final List<Object> list) {
+        this.onBindViewHolder(vh, n);
+    }
+    
     public abstract VH onCreateViewHolder(final ViewGroup p0, final int p1);
     
     public void onDetachedFromRecyclerView(final RecyclerView recyclerView) {
+    }
+    
+    public boolean onFailedToRecycleView(final VH vh) {
+        return false;
     }
     
     public void onViewAttachedToWindow(final VH vh) {

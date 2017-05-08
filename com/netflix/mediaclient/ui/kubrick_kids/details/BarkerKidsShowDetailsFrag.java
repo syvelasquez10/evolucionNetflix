@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 import android.widget.SpinnerAdapter;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
-import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
+import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -61,30 +61,35 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
         if (detailsPageContentWidth > 0) {
             n = (KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131362194);
+        return n + (int)this.getResources().getDimension(2131362196);
     }
     
     @SuppressLint({ "ResourceAsColor" })
     @Override
     protected ViewGroup createSeasonsSelectorGroup() {
         final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
-        this.setSpinnerBackground(this.getResources().getColor(2131624049));
+        this.setSpinnerBackground(this.getResources().getColor(2131624052));
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131624161);
-            seasonsSpinnerAdapter.setDropDownTextColor(2131624049);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131624167);
+            seasonsSpinnerAdapter.setDropDownTextColor(2131624052);
         }
         return seasonsSelectorGroup;
     }
     
     @Override
+    protected int getBackgroundResource() {
+        return 2131624152;
+    }
+    
+    @Override
     protected int getNumColumns() {
-        return this.getActivity().getResources().getInteger(2131492881);
+        return this.getActivity().getResources().getInteger(2131492882);
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362183) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362185) * 2;
     }
     
     @Override
@@ -99,9 +104,9 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     }
     
     protected void setSpinnerBackground(final int n) {
-        final Drawable drawable = this.getResources().getDrawable(2130837598);
+        final Drawable drawable = this.getResources().getDrawable(2130837596);
         drawable.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
-        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837816);
+        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837813);
         final Drawable drawable2 = layerDrawable.getDrawable(1);
         if (drawable2 != null) {
             drawable2.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
@@ -152,11 +157,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        if (BarkerHelper.isInTest((Context)this.getActivity())) {
-            super.setupRecyclerViewItemDecoration();
-            return;
-        }
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131362193), this.getNumColumns(), 3));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362161), this.getNumColumns()));
     }
     
     @Override
@@ -169,7 +170,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     @Override
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new BarkerKidsShowDetailsFrag$3(this));
-        adapter.setItemBackgroundColor(2131624049);
+        adapter.setItemBackgroundColor(2131624052);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     

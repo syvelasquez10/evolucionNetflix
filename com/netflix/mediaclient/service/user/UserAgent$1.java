@@ -11,9 +11,12 @@ import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.PrivacyUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import java.util.Iterator;
@@ -25,11 +28,11 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
@@ -73,10 +76,11 @@ class UserAgent$1 extends SimpleConfigurationAgentWebCallback
     public void onLoginVerified(final SignInData signInData, final Status status) {
         if (status.isError() || signInData == null || !signInData.isSignInSuccessful()) {
             if (Log.isLoggable() && signInData != null) {
-                Log.d("nf_service_useragent", String.format("fail: signInData:%s, retry?:%b, trySignUp:%b", signInData, signInData.shouldRetrySignIn(), signInData.shouldTrySignUp()));
+                Log.e("nf_service_useragent", String.format("fail: signInData:%s, retry?:%b, trySignUp:%b", signInData, signInData.shouldRetrySignIn(), signInData.shouldTrySignUp()));
             }
             if (signInData != null && signInData.shouldTrySignUp()) {
                 this.this$0.getApplication().clearSignedInOnce();
+                this.this$0.transferUserCookiesIntoNrmConfig();
                 this.this$0.notifyLoginComplete(StatusUtils.createStatus(StatusCode.USER_SIGNIN_FAILURE, "UserAgent: activateLoginViaDynecom fails", true, RootCause.clientFailure));
                 return;
             }

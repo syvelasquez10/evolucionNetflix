@@ -12,7 +12,6 @@ import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
-import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -35,12 +34,12 @@ public class CwDiscoveryView extends CwView
     
     @Override
     protected int getLayoutId() {
-        return 2130903086;
+        return 2130903085;
     }
     
     public void init() {
         super.init();
-        this.progress.setProgressDrawable(ContextCompat.getDrawable(this.getContext(), 2130837647));
+        this.progress.setProgressDrawable(ContextCompat.getDrawable(this.getContext(), 2130837645));
     }
     
     @Override
@@ -58,10 +57,10 @@ public class CwDiscoveryView extends CwView
         }
         this.progress.setProgress(progress);
         ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(((NetflixActivity)this.getContext()).getServiceManager(), cwVideo, this.playContext);
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231046), cwVideo.getTitle()));
-        this.clicker.update((View)this.info, cwVideo, this.img.getPressedStateHandler());
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231048), cwVideo.getTitle()));
+        this.clicker.update(this.info, cwVideo, this.img.getPressedStateHandler());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.setTitle(this.getContext().getString(2131231172, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            this.setTitle(this.getContext().getString(2131231178, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
             this.title.setVisibility(0);
         }
         else {

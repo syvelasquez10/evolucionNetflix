@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.falkor;
 
+import com.netflix.model.branches.PostPlayExperienceMap;
 import com.netflix.model.branches.FalkorVideo;
 import com.netflix.model.branches.FalkorSuggestion;
 import com.netflix.model.leafs.social.IrisNotificationsListSummary;
@@ -12,7 +13,6 @@ import com.netflix.model.branches.FalkorSeason;
 import com.netflix.model.branches.FalkorScene;
 import com.netflix.model.branches.FalkorPerson;
 import com.netflix.model.branches.FalkorKidsCharacter;
-import com.netflix.model.branches.FalkorExpiringContent;
 import com.netflix.model.branches.FalkorEvidenceList;
 import com.netflix.model.branches.FalkorEpisode;
 import com.netflix.model.leafs.DiscoverySummary;
@@ -25,7 +25,6 @@ import com.netflix.model.leafs.TrackableListSummary;
 import com.netflix.model.branches.SummarizedList;
 import com.netflix.model.leafs.SearchTrackableListSummary;
 import com.netflix.falkor.Ref;
-import com.netflix.model.branches.PostPlayMap;
 import com.netflix.model.branches.MementoVideoSwatch;
 import com.netflix.model.leafs.LoLoMoSummary;
 import com.netflix.model.leafs.ListOfMoviesSummary;
@@ -38,7 +37,6 @@ public class Falkor$Creator
     public static final Func<ListOfMoviesSummary> ListOfMoviesSummary;
     public static final Func<LoLoMoSummary> LoLoMoSummary;
     public static final Func<MementoVideoSwatch> MementoVideoSwatch;
-    public static final Func<PostPlayMap> PostPlayMap;
     public static final Func<Ref> Ref;
     public static Func<SearchTrackableListSummary> SearchTrackableListSummary;
     public static final Func<SummarizedList<Ref, LoLoMoSummary>> SummarizedListOfLoLoMoSummaryRefs;
@@ -56,10 +54,9 @@ public class Falkor$Creator
         LoLoMoSummary = new Falkor$Creator$6();
         SummarizedListOfLoLoMoSummaryRefs = new Falkor$Creator$7();
         SummarizedListOfSearchResults = new Falkor$Creator$8();
-        PostPlayMap = new Falkor$Creator$9();
         MementoVideoSwatch = new Falkor$Creator$10();
         Falkor$Creator.SearchTrackableListSummary = new Falkor$Creator$11();
-        BillboardSummary = new Falkor$Creator$23();
+        BillboardSummary = new Falkor$Creator$22();
     }
     
     public static Func<FalkorActorStill> FalkorActorStill(final ModelProxy<? extends BranchNode> modelProxy) {
@@ -67,15 +64,15 @@ public class Falkor$Creator
     }
     
     public static Func<FalkorBillboardData> FalkorBillboardData() {
-        return new Falkor$Creator$24();
+        return new Falkor$Creator$23();
     }
     
     public static Func<SummarizedList<Ref, DiscoverySummary>> FalkorDiscoveryList(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new Falkor$Creator$27(modelProxy);
+        return new Falkor$Creator$26(modelProxy);
     }
     
     public static Func<DiscoverySummary> FalkorDiscoverySummary(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new Falkor$Creator$26();
+        return new Falkor$Creator$25();
     }
     
     public static Func<FalkorEpisode> FalkorEpisode(final ModelProxy<? extends BranchNode> modelProxy) {
@@ -86,12 +83,8 @@ public class Falkor$Creator
         return new Falkor$Creator$13();
     }
     
-    public static Func<FalkorExpiringContent> FalkorExpiringContent(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new Falkor$Creator$18(modelProxy);
-    }
-    
     public static Func<FalkorKidsCharacter> FalkorKidsCharacter(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new Falkor$Creator$20(modelProxy);
+        return new Falkor$Creator$19(modelProxy);
     }
     
     public static Func<FalkorPerson> FalkorPerson(final ModelProxy<? extends BranchNode> modelProxy) {
@@ -99,7 +92,7 @@ public class Falkor$Creator
     }
     
     public static Func<FalkorScene> FalkorScene(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new Falkor$Creator$25(modelProxy);
+        return new Falkor$Creator$24(modelProxy);
     }
     
     public static Func<FalkorSeason> FalkorSeason(final ModelProxy<? extends BranchNode> modelProxy) {
@@ -107,7 +100,7 @@ public class Falkor$Creator
     }
     
     public static Func<FalkorIrisNotification> FalkorSocialNotifications(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new Falkor$Creator$21(modelProxy);
+        return new Falkor$Creator$20(modelProxy);
     }
     
     public static SummarizedList<Ref, IrisNotificationsListSummary> FalkorSocialNotificationsList(final ModelProxy<? extends BranchNode> modelProxy) {
@@ -115,14 +108,18 @@ public class Falkor$Creator
     }
     
     public static Func<IrisNotificationsListSummary> FalkorSocialNotificationsListSummary(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new Falkor$Creator$22();
+        return new Falkor$Creator$21();
     }
     
     public static Func<FalkorSuggestion> FalkorSuggestion(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new Falkor$Creator$19(modelProxy);
+        return new Falkor$Creator$18(modelProxy);
     }
     
     public static Func<FalkorVideo> FalkorVideo(final ModelProxy<? extends BranchNode> modelProxy) {
         return new Falkor$Creator$12(modelProxy);
+    }
+    
+    public static Func<PostPlayExperienceMap> PostPlayExperienceMap(final ModelProxy<? extends BranchNode> modelProxy) {
+        return new Falkor$Creator$9(modelProxy);
     }
 }

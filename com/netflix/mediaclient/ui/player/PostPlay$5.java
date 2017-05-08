@@ -4,18 +4,18 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import android.view.View;
-import android.view.View$OnClickListener;
-
-class PostPlay$5 implements View$OnClickListener
+class PostPlay$5 implements Runnable
 {
     final /* synthetic */ PostPlay this$0;
+    final /* synthetic */ PostPlayCallToAction val$autoPlayCta;
     
-    PostPlay$5(final PostPlay this$0) {
+    PostPlay$5(final PostPlay this$0, final PostPlayCallToAction val$autoPlayCta) {
         this.this$0 = this$0;
+        this.val$autoPlayCta = val$autoPlayCta;
     }
     
-    public void onClick(final View view) {
-        this.this$0.moveFromInterruptedToPlayingFromStart();
+    @Override
+    public void run() {
+        this.val$autoPlayCta.playAction(true);
     }
 }

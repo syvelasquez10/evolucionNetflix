@@ -6,14 +6,10 @@ package com.netflix.mediaclient.ui.home;
 
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.app.DialogFragment;
-import com.netflix.mediaclient.ui.push_notify.PushNotifOptInDialogFrag;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
-import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.content.Context;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import android.app.Activity;
@@ -77,22 +73,17 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
     }
     
     private boolean displayOptInDialogIfNeeded() {
+        boolean b = false;
         if (this.shouldDisplayOptInDialog()) {
             Log.d("DialogManager", "Displaying opt-in dialog");
-            NetflixDialogFrag instance;
-            if (PersistentConfig.getPushNotificationOptIn((Context)this.mOwner) == ABTestConfig$Cell.CELL_ONE) {
-                instance = SocialOptInDialogFrag.newInstance();
-                instance.setCancelable(false);
-            }
-            else {
-                instance = new PushNotifOptInDialogFrag();
-            }
+            final SocialOptInDialogFrag instance = SocialOptInDialogFrag.newInstance();
+            instance.setCancelable(false);
             if (this.canDialogBeDisplayedSafely() && this.mOwner.showDialog(instance)) {
                 ApmLogUtils.reportUiModalViewChanged((Context)this.mOwner, IClientLogging$ModalView.optInDialog);
             }
-            return true;
+            b = true;
         }
-        return false;
+        return b;
     }
     
     private boolean shouldDisplayOptInDialog() {

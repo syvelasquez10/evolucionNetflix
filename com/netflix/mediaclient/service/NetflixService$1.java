@@ -9,6 +9,7 @@ import android.os.Process;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
 import com.netflix.mediaclient.repository.SecurityRepository;

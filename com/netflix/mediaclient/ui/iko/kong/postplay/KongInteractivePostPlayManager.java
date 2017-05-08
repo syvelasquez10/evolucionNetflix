@@ -464,13 +464,13 @@ public class KongInteractivePostPlayManager implements InteractivePostPlayManage
     
     View inflateViews(final ViewGroup viewGroup) {
         viewGroup.addView(this.kongPostplayContainer = ((LayoutInflater)this.getActivity().getSystemService("layout_inflater")).inflate(2130903218, viewGroup, false));
-        this.unlockingGearContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690043);
-        this.powerUpContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690057);
-        this.gear1Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690053);
-        this.gear2Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690054);
-        this.battleIntroContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690048);
-        this.nextEpisodeContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690044);
-        this.battleResultAvatar = (ImageView)this.kongPostplayContainer.findViewById(2131690056);
+        this.unlockingGearContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690042);
+        this.powerUpContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690056);
+        this.gear1Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690052);
+        this.gear2Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690053);
+        this.battleIntroContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690047);
+        this.nextEpisodeContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690043);
+        this.battleResultAvatar = (ImageView)this.kongPostplayContainer.findViewById(2131690055);
         this.bgScreen.initViews(this.kongPostplayContainer);
         this.unlockScreen.initViews((View)this.unlockingGearContainer);
         this.powerUpScreen.initViews((View)this.powerUpContainer);

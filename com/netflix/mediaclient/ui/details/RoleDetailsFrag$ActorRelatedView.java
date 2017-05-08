@@ -41,6 +41,7 @@ import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.graphics.Color;
 import android.widget.ImageView;
@@ -84,6 +85,7 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     TextView synopsis;
     final /* synthetic */ RoleDetailsFrag this$0;
     TextView title;
+    TextView titleExpanded;
     AdvancedImageView titleImage;
     ViewGroup unExpandedGroup;
     
@@ -115,19 +117,20 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     private void findViews() {
-        this.synopsis = (TextView)this.findViewById(2131690241);
-        this.duration = (TextView)this.findViewById(2131690242);
-        this.title = (TextView)this.findViewById(2131690238);
-        this.genre = (TextView)this.findViewById(2131690243);
-        this.storyArtImage = (AdvancedImageView)this.findViewById(2131690221);
-        this.storyArtImageExpanded = (AdvancedImageView)this.findViewById(2131690237);
-        this.titleImage = (AdvancedImageView)this.findViewById(2131690234);
-        this.addToQueue = (TextView)this.findViewById(2131690240);
-        this.expand = this.findViewById(2131690235);
-        this.showDP = this.findViewById(2131690239);
-        this.expandedGroup = (ViewGroup)this.findViewById(2131690236);
-        this.unExpandedGroup = (ViewGroup)this.findViewById(2131690233);
-        this.flipper = (ViewFlipper)this.findViewById(2131690232);
+        this.synopsis = (TextView)this.findViewById(2131690248);
+        this.duration = (TextView)this.findViewById(2131690249);
+        this.titleExpanded = (TextView)this.findViewById(2131690245);
+        this.title = (TextView)this.findViewById(2131690241);
+        this.genre = (TextView)this.findViewById(2131690250);
+        this.storyArtImage = (AdvancedImageView)this.findViewById(2131690227);
+        this.storyArtImageExpanded = (AdvancedImageView)this.findViewById(2131690244);
+        this.titleImage = (AdvancedImageView)this.findViewById(2131690240);
+        this.addToQueue = (TextView)this.findViewById(2131690247);
+        this.expand = this.findViewById(2131690242);
+        this.showDP = this.findViewById(2131690246);
+        this.expandedGroup = (ViewGroup)this.findViewById(2131690243);
+        this.unExpandedGroup = (ViewGroup)this.findViewById(2131690239);
+        this.flipper = (ViewFlipper)this.findViewById(2131690238);
     }
     
     private void init() {
@@ -195,10 +198,24 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     private void updateTitle(final FalkorVideo falkorVideo) {
+        if (this.titleExpanded != null) {
+            this.titleExpanded.setText((CharSequence)falkorVideo.getTitle());
+        }
         if (this.title != null) {
-            this.title.setText((CharSequence)falkorVideo.getTitle());
+            if (!StringUtils.isNotEmpty(falkorVideo.getTitleImgUrl())) {
+                this.title.setVisibility(0);
+                this.title.setText((CharSequence)falkorVideo.getTitle());
+            }
+            else {
+                this.title.setVisibility(4);
+            }
         }
         if (this.titleImage != null) {
+            if (!StringUtils.isNotEmpty(falkorVideo.getTitleImgUrl())) {
+                this.titleImage.setVisibility(4);
+                return;
+            }
+            this.titleImage.setVisibility(0);
             NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.titleImage, falkorVideo.getTitleImgUrl(), IClientLogging$AssetType.boxArt, "RoleDetailsFragActorRelatedView", BrowseExperience.getImageLoaderConfig(), true);
             this.titleImage.getLayoutParams().height = this.storyArtImage.getLayoutParams().height / 3;
         }
@@ -219,7 +236,7 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     protected void adjustHeight(final ImageView imageView) {
-        imageView.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361869) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        imageView.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361867) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     public String getImageUrl(final Object o, final boolean b) {
@@ -231,7 +248,7 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     protected int getlayoutId() {
-        return 2130903249;
+        return 2130903256;
     }
     
     public void hide() {

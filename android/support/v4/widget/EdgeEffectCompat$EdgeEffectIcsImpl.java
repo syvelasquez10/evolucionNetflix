@@ -40,6 +40,11 @@ class EdgeEffectCompat$EdgeEffectIcsImpl implements EdgeEffectCompat$EdgeEffectI
     }
     
     @Override
+    public boolean onPull(final Object o, final float n, final float n2) {
+        return EdgeEffectCompatIcs.onPull(o, n);
+    }
+    
+    @Override
     public boolean onRelease(final Object o) {
         return EdgeEffectCompatIcs.onRelease(o);
     }

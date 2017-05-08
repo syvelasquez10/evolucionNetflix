@@ -15,7 +15,6 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.content.BroadcastReceiver;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -28,7 +27,7 @@ class DebugMenuItems$13 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        this.this$0.activity.unregisterReceiver((BroadcastReceiver)null);
+        this.this$0.beginTraceview();
         return true;
     }
 }

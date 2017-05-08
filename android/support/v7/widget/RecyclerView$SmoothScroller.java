@@ -9,23 +9,30 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat$Collect
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat$CollectionInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.ViewGroup$MarginLayoutParams;
-import android.view.View$MeasureSpec;
-import android.util.SparseArray;
 import android.support.v4.view.ViewConfigurationCompat;
+import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.VelocityTrackerCompat;
-import android.os.Parcelable;
+import android.support.v4.os.TraceCompat;
 import android.view.ViewParent;
 import android.view.FocusFinder;
 import android.graphics.Canvas;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MotionEventCompat;
+import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.View$MeasureSpec;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import android.view.ViewGroup$LayoutParams;
+import android.content.res.TypedArray;
+import android.support.v7.recyclerview.R$styleable;
 import android.support.v4.view.ViewCompat;
 import android.view.ViewConfiguration;
 import android.util.AttributeSet;
@@ -33,10 +40,13 @@ import android.content.Context;
 import android.os.Build$VERSION;
 import android.view.VelocityTracker;
 import android.graphics.Rect;
-import java.util.ArrayList;
+import android.support.v4.view.NestedScrollingChildHelper;
 import java.util.List;
+import java.util.ArrayList;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.view.accessibility.AccessibilityManager;
+import android.support.v4.view.ScrollingView;
+import android.support.v4.view.NestedScrollingChild;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.graphics.PointF;
@@ -59,14 +69,15 @@ public abstract class RecyclerView$SmoothScroller
     }
     
     private void onAnimation(final int n, final int n2) {
-        if (!this.mRunning || this.mTargetPosition == -1) {
+        final RecyclerView mRecyclerView = this.mRecyclerView;
+        if (!this.mRunning || this.mTargetPosition == -1 || mRecyclerView == null) {
             this.stop();
         }
         this.mPendingInitialRun = false;
         if (this.mTargetView != null) {
             if (this.getChildPosition(this.mTargetView) == this.mTargetPosition) {
-                this.onTargetFound(this.mTargetView, this.mRecyclerView.mState, this.mRecyclingAction);
-                this.mRecyclingAction.runIfNecessary(this.mRecyclerView);
+                this.onTargetFound(this.mTargetView, mRecyclerView.mState, this.mRecyclingAction);
+                this.mRecyclingAction.runIfNecessary(mRecyclerView);
                 this.stop();
             }
             else {
@@ -75,8 +86,17 @@ public abstract class RecyclerView$SmoothScroller
             }
         }
         if (this.mRunning) {
-            this.onSeekTargetStep(n, n2, this.mRecyclerView.mState, this.mRecyclingAction);
-            this.mRecyclingAction.runIfNecessary(this.mRecyclerView);
+            this.onSeekTargetStep(n, n2, mRecyclerView.mState, this.mRecyclingAction);
+            final boolean hasJumpTarget = this.mRecyclingAction.hasJumpTarget();
+            this.mRecyclingAction.runIfNecessary(mRecyclerView);
+            if (hasJumpTarget) {
+                if (!this.mRunning) {
+                    this.stop();
+                    return;
+                }
+                this.mPendingInitialRun = true;
+                mRecyclerView.mViewFlinger.postOnAnimation();
+            }
         }
     }
     
@@ -89,7 +109,7 @@ public abstract class RecyclerView$SmoothScroller
     }
     
     public int getChildPosition(final View view) {
-        return this.mRecyclerView.getChildPosition(view);
+        return this.mRecyclerView.getChildLayoutPosition(view);
     }
     
     public RecyclerView$LayoutManager getLayoutManager() {
@@ -98,10 +118,6 @@ public abstract class RecyclerView$SmoothScroller
     
     public int getTargetPosition() {
         return this.mTargetPosition;
-    }
-    
-    public void instantScrollToPosition(final int n) {
-        this.mRecyclerView.scrollToPosition(n);
     }
     
     public boolean isPendingInitialRun() {

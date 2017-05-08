@@ -9,7 +9,6 @@ import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerVideoDetailsViewGroup;
 import android.view.View;
 import android.content.Context;
@@ -29,6 +28,11 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     }
     
     @Override
+    protected int getBackgroundResource() {
+        return 2131624152;
+    }
+    
+    @Override
     protected int getLayoutId() {
         return 2130903152;
     }
@@ -40,7 +44,7 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362183) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362185) * 2;
     }
     
     @Override
@@ -52,12 +56,7 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     
     @Override
     protected void setupDetailsPageParallaxScrollListener() {
-        if (BarkerHelper.isInTest((Context)this.getActivity())) {
-            this.parallaxScroller = new KidsParallax(null, this.recyclerView, new View[0], null, null);
-        }
-        else {
-            this.parallaxScroller = new KidsParallax(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage(), ((BarkerVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, null, null);
-        }
+        this.parallaxScroller = new KidsParallax(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage(), ((BarkerVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, null, null);
         this.recyclerView.setOnScrollListener(this.parallaxScroller);
     }
     
@@ -77,7 +76,7 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131362193), this.numColumns, 3));
+        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131362195), this.numColumns, 3));
     }
     
     @Override

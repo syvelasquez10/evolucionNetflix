@@ -16,6 +16,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import java.util.Map;

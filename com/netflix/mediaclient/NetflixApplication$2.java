@@ -23,6 +23,7 @@ import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import android.content.Intent;
 import android.content.Context;
+import com.google.gson.GsonBuilder;
 import com.netflix.mediaclient.android.app.UserInputManager;
 import com.netflix.mediaclient.util.l10n.UserLocale;
 import java.util.concurrent.atomic.AtomicBoolean;

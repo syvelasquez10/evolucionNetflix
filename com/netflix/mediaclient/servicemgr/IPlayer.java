@@ -93,6 +93,8 @@ public interface IPlayer
     
     boolean selectTracks(final AudioSource p0, final Subtitle p1, final boolean p2);
     
+    void setAudioDuck(final boolean p0);
+    
     void setJPlayerListener(final JPlayer$JplayerListener p0);
     
     void setSurface(final Surface p0);

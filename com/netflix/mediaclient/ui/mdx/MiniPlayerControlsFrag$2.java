@@ -13,6 +13,7 @@ import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.app.FragmentTransaction;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import android.view.animation.Animation;
@@ -73,7 +74,7 @@ class MiniPlayerControlsFrag$2 implements RecyclerViewHeaderAdapter$IViewCreator
     }
     
     private void calculateViewDimensions() {
-        this.this$0.relatedViewWidth = (BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.relatedRecyclerView.getPaddingLeft() - this.this$0.relatedRecyclerView.getPaddingRight() - (this.this$0.numColumns + 1) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361871)) / this.this$0.numColumns;
+        this.this$0.relatedViewWidth = (BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.relatedRecyclerView.getPaddingLeft() - this.this$0.relatedRecyclerView.getPaddingRight() - (this.this$0.numColumns + 1) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361869)) / this.this$0.numColumns;
         this.this$0.relatedViewHeight = (int)(this.this$0.relatedViewWidth * 1.43f);
     }
     

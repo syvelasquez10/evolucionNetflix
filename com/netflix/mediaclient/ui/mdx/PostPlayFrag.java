@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.Asset;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.content.BroadcastReceiver;
 import android.widget.ImageView;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.util.TimeUtils$CountdownTimer;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
@@ -38,6 +40,8 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     public static final String MINI_PLAYER_POST_PLAY_ACTION_TITLE_NEXT = "com.netflix.mediaclient.intent.action.MINI_PLAYER_POST_PLAY_TITLE_NEXT";
     private static final String TAG = "PostPlayFrag";
     private TextView backToBrowsingButton;
+    private TextView countdown;
+    private TimeUtils$CountdownTimer countdownTimer;
     private EpisodeDetails episodeDetails;
     private TextView episodeTitle;
     private ImageView episodesButton;
@@ -54,8 +58,8 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     private VideoDetails video;
     
     public PostPlayFrag() {
-        this.miniPlayerPostPlay = new PostPlayFrag$5(this);
-        this.ratingsUpdateBroadcastReceiver = new PostPlayFrag$6(this);
+        this.miniPlayerPostPlay = new PostPlayFrag$6(this);
+        this.ratingsUpdateBroadcastReceiver = new PostPlayFrag$7(this);
     }
     
     private Intent createIntent(final String s) {
@@ -67,22 +71,24 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     }
     
     private void findViews(final View view) {
-        this.episodeTitle = (TextView)view.findViewById(2131690113);
-        this.showTitle = (TextView)view.findViewById(2131690107);
-        this.targetName = (TextView)view.findViewById(2131690112);
-        this.synopsis = (TextView)view.findViewById(2131690114);
-        this.playButton = (Button)view.findViewById(2131690115);
-        this.stopButton = (ImageView)view.findViewById(2131690116);
-        this.episodesButton = (ImageView)view.findViewById(2131690117);
-        this.backToBrowsingButton = (TextView)view.findViewById(2131690109);
-        this.postPlayForTitleEndContainer = (ViewGroup)view.findViewById(2131690106);
-        this.postPlayForNextContainer = (ViewGroup)view.findViewById(2131690110);
-        this.rating = (NetflixRatingBar)view.findViewById(2131690108);
+        this.episodeTitle = (TextView)view.findViewById(2131690122);
+        this.showTitle = (TextView)view.findViewById(2131690118);
+        this.targetName = (TextView)view.findViewById(2131690121);
+        this.countdown = (TextView)view.findViewById(2131690114);
+        this.synopsis = (TextView)view.findViewById(2131690123);
+        this.playButton = (Button)view.findViewById(2131690124);
+        this.stopButton = (ImageView)view.findViewById(2131690125);
+        this.episodesButton = (ImageView)view.findViewById(2131690126);
+        this.backToBrowsingButton = (TextView)view.findViewById(2131690117);
+        this.postPlayForTitleEndContainer = (ViewGroup)view.findViewById(2131690116);
+        this.postPlayForNextContainer = (ViewGroup)view.findViewById(2131690120);
+        this.rating = (NetflixRatingBar)view.findViewById(2131690119);
     }
     
     private void handlePlayNow() {
         if (this.episodeDetails != null) {
             MdxAgent$Utils.playVideo(this.getNetflixActivity(), Asset.create(this.episodeDetails.getPlayable(), PlayContext.DFLT_MDX_CONTEXT, true), true);
+            MiniPlayerControlsFrag.sendShowAndDisableIntent((Context)this.getActivity());
         }
     }
     
@@ -99,6 +105,7 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
         this.setMDXTargetName();
         this.setClickListeners();
         this.initReceivers();
+        this.setupCountdownTimer();
     }
     
     private void initReceivers() {
@@ -129,16 +136,25 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
             if (serviceManager != null && ServiceManagerUtils.isMdxAgentAvailable(serviceManager)) {
                 final String currentDeviceFriendlyName = ServiceManagerUtils.getCurrentDeviceFriendlyName(serviceManager);
                 if (!TextUtils.isEmpty((CharSequence)currentDeviceFriendlyName)) {
-                    this.targetName.setText((CharSequence)currentDeviceFriendlyName);
-                    this.targetName.setVisibility(0);
+                    this.targetName.setText((CharSequence)Html.fromHtml(this.getString(2131231363, new Object[] { String.valueOf(currentDeviceFriendlyName) })));
                 }
             }
         }
     }
     
+    private void setupCountdownTimer() {
+        (this.countdownTimer = new TimeUtils$CountdownTimer(this.getNetflixActivity())).setOnTick(new PostPlayFrag$5(this));
+        this.countdownTimer.setTime(this.getResources().getInteger(2131492883));
+    }
+    
     private void showPostPlayViewsForNext() {
         if (this.postPlayForNextContainer != null) {
             this.postPlayForNextContainer.setVisibility(0);
+            this.getActivity().sendBroadcast(new Intent("com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER"));
+        }
+        if (this.countdownTimer != null) {
+            this.countdownTimer.setTime(this.getResources().getInteger(2131492883));
+            this.countdownTimer.startTimer();
         }
     }
     
@@ -157,11 +173,12 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     
     private void updateDetails(final EpisodeDetails episodeDetails) {
         if (this.episodeTitle != null) {
-            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231064, new Object[] { this.episodeDetails.getSeasonAbbrSeqLabel(), this.episodeDetails.getEpisodeNumber(), this.episodeDetails.getTitle() }));
+            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231067, new Object[] { this.episodeDetails.getSeasonAbbrSeqLabel(), this.episodeDetails.getEpisodeNumber(), this.episodeDetails.getTitle() }));
         }
         if (this.synopsis != null) {
             this.synopsis.setText((CharSequence)episodeDetails.getSynopsis());
         }
+        this.setMDXTargetName();
     }
     
     private void updateDetails(final VideoDetails videoDetails) {
@@ -198,6 +215,9 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
             this.stopAllNotifications();
             this.getNetflixActivity().startService(this.createIntent("com.netflix.mediaclient.intent.action.MDX_STOP"));
             this.hidePostPlayViews();
+            this.countdownTimer.stopTimer();
+            this.countdown.setVisibility(4);
+            this.targetName.setVisibility(4);
         }
     }
     
@@ -215,10 +235,28 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("PostPlayFrag", "Creating new frag view...");
-        final View inflate = layoutInflater.inflate(2130903228, (ViewGroup)null, false);
+        final View inflate = layoutInflater.inflate(2130903234, (ViewGroup)null, false);
         this.findViews(inflate);
         this.init();
         return inflate;
+    }
+    
+    public void refreshTimerText() {
+        if (this.isActivityValid()) {
+            final int time = this.countdownTimer.getTime();
+            int n;
+            if (this.countdownTimer.getTime() > 1) {
+                n = 2131231364;
+            }
+            else {
+                n = 2131231149;
+            }
+            if (this.countdown != null) {
+                this.countdown.setText((CharSequence)Html.fromHtml(this.getString(n, new Object[] { String.valueOf(time) })));
+                this.countdown.setVisibility(0);
+                this.targetName.setVisibility(0);
+            }
+        }
     }
     
     public void setVideo(final VideoDetails video) {

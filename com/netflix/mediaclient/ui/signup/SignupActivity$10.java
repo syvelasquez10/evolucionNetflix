@@ -5,13 +5,10 @@
 package com.netflix.mediaclient.ui.signup;
 
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import java.util.ArrayList;
 import com.netflix.mediaclient.partner.playbilling.PlayBillingCallback;
 import android.widget.Toast;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$TwoButtonAlertDialogDescriptor;
-import com.netflix.mediaclient.android.widget.AlertDialogFactory;
-import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
 import android.view.View;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
@@ -20,24 +17,28 @@ import com.netflix.mediaclient.partner.playbilling.PlayBilling$OnSetupFinishedLi
 import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
+import com.netflix.mediaclient.ui.login.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
-import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import android.net.Uri;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import com.netflix.mediaclient.util.PreferenceUtils;
+import java.util.ArrayList;
 import android.webkit.WebSettings;
+import android.os.Bundle;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.webkit.CookieSyncManager;
+import android.webkit.CookieManager;
 import com.netflix.mediaclient.util.LoginUtils;
 import android.content.IntentSender$SendIntentException;
 import android.app.Activity;
@@ -54,6 +55,9 @@ import com.google.android.gms.auth.api.credentials.Credential$Builder;
 import com.google.android.gms.auth.api.Auth;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.webapi.WebApiCommand;
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -71,8 +75,8 @@ import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListe
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.netflix.mediaclient.ui.login.AccountActivity;
 import android.content.Context;
-import com.netflix.mediaclient.ui.login.LoginActivity;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
 
 class SignupActivity$10 implements Runnable
 {
@@ -84,9 +88,6 @@ class SignupActivity$10 implements Runnable
     
     @Override
     public void run() {
-        Log.d("SignupActivity", "Handling error during signup");
-        this.this$0.clearCookies();
-        this.this$0.startNextActivity(LoginActivity.createStartIntent((Context)this.this$0));
-        this.this$0.finish();
+        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131231209), this.this$0.getString(2131231128), null)));
     }
 }

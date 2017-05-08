@@ -12,6 +12,7 @@ public interface CommonStatus
     public static final NetflixImmutableStatus CONFIG_DOWNLOAD_FAILED = new NetflixImmutableStatus(StatusCode.CONFIG_DOWNLOAD_FAILED);
     public static final NetflixImmutableStatus DRM_FAILURE_CDM = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_CDM);
     public static final NetflixImmutableStatus DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED);
+    public static final NetflixImmutableStatus DRM_FAILURE_GOOGLE_DECLINED_PROVISIONING = new NetflixImmutableStatus(StatusCode.DRM_FAILURE_GOOGLE_DECLINED_PROVISIONING);
     public static final NetflixImmutableStatus FATAL_CONFIG_DOWNLOAD_FAILED = new NetflixImmutableStatus(StatusCode.FATAL_CONFIG_DOWNLOAD_FAILED);
     public static final NetflixImmutableStatus FORCED_TESTING_ERROR = new NetflixImmutableStatus(StatusCode.FORCED_TESTING_ERROR);
     public static final NetflixImmutableStatus HTTP_SSL_DATE_TIME_ERROR = new NetflixImmutableStatus(StatusCode.HTTP_SSL_DATE_TIME_ERROR);

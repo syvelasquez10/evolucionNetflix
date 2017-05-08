@@ -20,12 +20,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
-import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.model.branches.MementoVideoSwatch;
@@ -46,6 +45,11 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     @Override
     public void onActorDetailsAndRelatedFetched(final List<FalkorPerson> list, final List<MementoVideoSwatch> list2, final Status status, final List<FalkorActorStill> list3) {
         this.handler.post((Runnable)new PostToHandlerCallbackWrapper$22(this, list, list2, status, list3));
+    }
+    
+    @Override
+    public void onAdvisoriesFetched(final List<Advisory> list, final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$36(this, list, status));
     }
     
     @Override
@@ -79,11 +83,6 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
-    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$34(this, expiringContentWarning, status, expiringContentAction));
-    }
-    
-    @Override
     public void onGenreListsFetched(final List<GenreList> list, final Status status) {
         this.handler.post((Runnable)new PostToHandlerCallbackWrapper$23(this, list, status));
     }
@@ -105,7 +104,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onIrisNotificationsMarkedAsRead(final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$33(this, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$34(this, status));
     }
     
     @Override
@@ -135,7 +134,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$32(this, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$33(this, list, status));
     }
     
     @Override
@@ -146,6 +145,11 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     @Override
     public void onPersonRelatedFetched(final FalkorPerson falkorPerson, final List<Video> list, final Status status) {
         this.handler.post((Runnable)new PostToHandlerCallbackWrapper$21(this, falkorPerson, list, status));
+    }
+    
+    @Override
+    public void onPostPlayImpressionLogged(final boolean b, final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$32(this, b, status));
     }
     
     @Override

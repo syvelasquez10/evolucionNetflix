@@ -299,4 +299,11 @@ class ViewCompat$BaseViewCompatImpl implements ViewCompat$ViewCompatImpl
     @Override
     public void setTranslationY(final View view, final float n) {
     }
+    
+    @Override
+    public void stopNestedScroll(final View view) {
+        if (view instanceof NestedScrollingChild) {
+            ((NestedScrollingChild)view).stopNestedScroll();
+        }
+    }
 }

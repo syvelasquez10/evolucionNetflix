@@ -4,10 +4,12 @@
 
 package com.netflix.mediaclient.ui.signup;
 
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
+import android.annotation.SuppressLint;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View$OnTouchListener;
 
-class SignupActivity$8 extends SimpleManagerCallback
+class SignupActivity$8 implements View$OnTouchListener
 {
     final /* synthetic */ SignupActivity this$0;
     
@@ -15,8 +17,18 @@ class SignupActivity$8 extends SimpleManagerCallback
         this.this$0 = this$0;
     }
     
-    @Override
-    public void onLoginComplete(final Status status) {
-        this.this$0.runOnUiThread((Runnable)new SignupActivity$8$1(this, status));
+    @SuppressLint({ "ClickableViewAccessibility" })
+    public boolean onTouch(final View view, final MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            case 0:
+            case 1: {
+                if (!view.hasFocus()) {
+                    view.requestFocus();
+                    break;
+                }
+                break;
+            }
+        }
+        return false;
     }
 }

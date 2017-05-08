@@ -111,4 +111,6 @@ interface ViewCompat$ViewCompatImpl
     void setTranslationX(final View p0, final float p1);
     
     void setTranslationY(final View p0, final float p1);
+    
+    void stopNestedScroll(final View p0);
 }

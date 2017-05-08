@@ -4,14 +4,15 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import java.util.List;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface IBrowseManager
@@ -24,9 +25,9 @@ public interface IBrowseManager
     
     void endBrowsePlaySession(final long p0, final int p1, final int p2, final int p3);
     
-    void expiringContent(final String p0, final ManagerCallback p1, final ExpiringContentAction p2);
-    
     boolean fetchActorDetailsAndRelatedForTitle(final String p0, final ManagerCallback p1);
+    
+    void fetchAdvisories(final String p0, final ManagerCallback p1);
     
     boolean fetchCWVideos(final int p0, final int p1, final ManagerCallback p2);
     
@@ -58,7 +59,7 @@ public interface IBrowseManager
     
     boolean fetchPersonRelated(final String p0, final ManagerCallback p1);
     
-    boolean fetchPostPlayVideos(final String p0, final VideoType p1, final ManagerCallback p2);
+    boolean fetchPostPlayVideos(final String p0, final VideoType p1, final PostPlayRequestContext p2, final ManagerCallback p3);
     
     boolean fetchScenePosition(final VideoType p0, final String p1, final String p2, final ManagerCallback p3);
     
@@ -82,11 +83,15 @@ public interface IBrowseManager
     
     boolean flushCaches();
     
+    String getLolomoId();
+    
     ModelProxy<?> getModelProxy();
     
     void invalidateCachedEpisodes(final String p0, final VideoType p1);
     
     void logBillboardActivity(final Video p0, final BillboardInteractionType p1, final Map<String, String> p2);
+    
+    boolean logPostPlayImpression(final String p0, final VideoType p1, final String p2, final ManagerCallback p3);
     
     void markNotificationAsRead(final IrisNotificationSummary p0);
     
@@ -111,4 +116,6 @@ public interface IBrowseManager
     boolean searchNetflix(final String p0, final ManagerCallback p1);
     
     boolean setVideoRating(final String p0, final VideoType p1, final int p2, final int p3, final ManagerCallback p4);
+    
+    void updateExpiredContentAdvisoryStatus(final String p0, final ExpiringContentAdvisory$ContentAction p1);
 }

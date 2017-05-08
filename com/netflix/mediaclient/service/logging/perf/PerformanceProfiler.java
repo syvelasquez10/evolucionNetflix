@@ -158,7 +158,7 @@ public class PerformanceProfiler
     }
     
     public void endSession(final Sessions sessions, final Map<String, String> map, final String s) {
-        if (this.sessions.containsKey(s)) {
+        if (s != null && this.sessions.containsKey(s)) {
             final PerfSession perfSession = this.sessions.get(s);
             if (perfSession != null) {
                 if (Log.isLoggable()) {

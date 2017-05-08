@@ -28,78 +28,86 @@ public class DebugMenuItems
     }
     
     private void addBarkerBars(final Menu menu) {
-        menu.add((CharSequence)"Show Barker Bars").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$20(this));
+        menu.add((CharSequence)"Show Barker Bars").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$21(this));
     }
     
     private void addCrashItem(final Menu menu) {
-        menu.add((CharSequence)"Crash").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$13(this));
+        menu.add((CharSequence)"Crash").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$14(this));
     }
     
     private void addCreateAutoLoginToken(final Menu menu) {
-        menu.add((CharSequence)"Create AutoLogin Token").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$3(this));
+        menu.add((CharSequence)"Create AutoLogin Token").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$4(this));
     }
     
     private void addDumpCacheToDiskItem(final Menu menu) {
-        menu.add((CharSequence)"Dump Cache to Disk").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$4(this));
+        menu.add((CharSequence)"Dump Cache to Disk").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$5(this));
     }
     
     private void addDumpHomeLolomoToHtmlItem(final Menu menu) {
         if (!(this.activity instanceof HomeActivity)) {
             return;
         }
-        menu.add((CharSequence)"Dump Lolomo to Html").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$5(this, (HomeActivity)this.activity));
+        menu.add((CharSequence)"Dump Lolomo to Html").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$6(this, (HomeActivity)this.activity));
     }
     
     private void addDumpPerfData(final Menu menu) {
-        menu.add((CharSequence)"Dump Perf Data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$17(this));
+        menu.add((CharSequence)"Dump Perf Data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$18(this));
     }
     
     private void addFlushDataCacheItem(final Menu menu) {
-        menu.add((CharSequence)"Flush Data Cache").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$16(this));
+        menu.add((CharSequence)"Flush Data Cache").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$17(this));
     }
     
     private void addHprofDumpItem(final Menu menu) {
-        menu.add((CharSequence)"Dump hprof profile").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$11(this));
+        menu.add((CharSequence)"Dump hprof profile").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$12(this));
+    }
+    
+    private void addKitchensink(final Menu menu) {
+        menu.add((CharSequence)"Kitchensink").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this));
     }
     
     private void addLaunchNotificationsActivity(final Menu menu) {
-        menu.add((CharSequence)"Launch Notifications Activity").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this));
+        menu.add((CharSequence)"Launch Notifications Activity").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$3(this));
     }
     
     private void addMakeRefreshCwRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshCw Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$8(this));
+        menu.add((CharSequence)"Make refreshCw Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$9(this));
     }
     
     private void addMakeRefreshIqRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshIq Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$9(this));
+        menu.add((CharSequence)"Make refreshIq Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$10(this));
     }
     
     private void addMakeRefreshLolomoRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshLolomo Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$10(this));
+        menu.add((CharSequence)"Make refreshLolomo Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$11(this));
     }
     
     private void addResetABConfigData(final Menu menu) {
-        menu.add((CharSequence)"Request config data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$19(this));
+        menu.add((CharSequence)"Request config data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$20(this));
     }
     
     private void addRunPrefetchLolomoSchedulerJob(final Menu menu) {
-        menu.add((CharSequence)"Run Prefetch Lolomo JobScheduler").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$18(this));
+        menu.add((CharSequence)"Run Prefetch Lolomo JobScheduler").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$19(this));
     }
     
     private void addSendCwRefreshBroadcast(final Menu menu) {
-        menu.add((CharSequence)"Send Cw Refresh Broadcast").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$7(this));
+        menu.add((CharSequence)"Send Cw Refresh Broadcast").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$8(this));
     }
     
     private void addSendHomeRefreshBroadcast(final Menu menu) {
-        menu.add((CharSequence)"Send Home Refresh").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$6(this));
+        menu.add((CharSequence)"Send Home Refresh").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$7(this));
+    }
+    
+    private void addToaster(final Menu menu) {
+        menu.add((CharSequence)"Show Playback Advisory").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$22(this));
     }
     
     private void addToggleFetchErrorsItem(final Menu menu) {
-        menu.add((CharSequence)"Toggle Fetch Errors").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$15(this));
+        menu.add((CharSequence)"Toggle Fetch Errors").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$16(this));
     }
     
     private void addTraceviewItem(final Menu menu) {
-        menu.add((CharSequence)"5s Traceview").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$12(this));
+        menu.add((CharSequence)"5s Traceview").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$13(this));
     }
     
     private void beginTraceview() {
@@ -107,7 +115,7 @@ public class DebugMenuItems
         Log.i(this.logTag, "Starting method trace...");
         Log.i(this.logTag, "**********************************************************************");
         Debug.startMethodTracing("nflx");
-        new Handler().postDelayed((Runnable)new DebugMenuItems$14(this), 5000L);
+        new Handler().postDelayed((Runnable)new DebugMenuItems$15(this), 5000L);
     }
     
     private boolean requestExternalFileWritePermission() {
@@ -119,10 +127,11 @@ public class DebugMenuItems
     }
     
     public void addAPIEnvironmentPicker(final Menu menu) {
-        menu.add((CharSequence)"Pick API environment").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this, new String[] { "INT", "TEST" }, PreferenceUtils.getStringPref((Context)this.activity, "api_environment_preference", ""), new String[] { "PROD", "STAGING" }));
+        menu.add((CharSequence)"Pick API environment").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this, new String[] { "INT", "TEST" }, PreferenceUtils.getStringPref((Context)this.activity, "api_environment_preference", ""), new String[] { "PROD", "STAGING" }));
     }
     
     public void addItems(final Menu menu) {
+        this.addToaster(menu);
         this.addResetABConfigData(menu);
         this.addRunPrefetchLolomoSchedulerJob(menu);
         this.addBarkerBars(menu);
@@ -142,5 +151,6 @@ public class DebugMenuItems
         this.addCreateAutoLoginToken(menu);
         this.addCrashItem(menu);
         this.addAPIEnvironmentPicker(menu);
+        this.addKitchensink(menu);
     }
 }

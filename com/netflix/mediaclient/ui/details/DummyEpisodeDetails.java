@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.details;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import java.util.Random;
+import com.netflix.model.leafs.advisory.Advisory;
 import java.util.ArrayList;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
@@ -38,18 +39,8 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
-    public String getAdvisoryDescription() {
-        return null;
-    }
-    
-    @Override
-    public int getAdvisoryDisplayDuration() {
-        return 0;
-    }
-    
-    @Override
-    public String getAdvisoryRating() {
-        return null;
+    public List<Advisory> getAdvisories() {
+        return new ArrayList<Advisory>();
     }
     
     @Override

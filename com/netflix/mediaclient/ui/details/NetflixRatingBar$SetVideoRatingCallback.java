@@ -67,13 +67,13 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
         this.this$0.setEnabled(true);
         if (status.isError()) {
             Log.w("NetflixRatingBar", "Invalid status code");
-            Toast.makeText(this.this$0.getContext(), 2131231074, 1).show();
+            Toast.makeText(this.this$0.getContext(), 2131231076, 1).show();
             this.this$0.setRating((float)this.this$0.currRating);
-            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131231074), ActionOnUIError.displayedError), null, this.this$0.currRating);
+            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131231076), ActionOnUIError.displayedError), null, this.this$0.currRating);
             return;
         }
         Log.v("NetflixRatingBar", "Rating has been updated");
-        Toast.makeText(this.this$0.getContext(), 2131231162, 1).show();
+        Toast.makeText(this.this$0.getContext(), 2131231167, 1).show();
         this.this$0.currRating = this.rating;
         if (this.this$0.ratableObject != null) {
             this.this$0.ratableObject.setUserRating(this.rating);

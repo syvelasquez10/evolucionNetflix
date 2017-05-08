@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import java.util.List;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
@@ -11,8 +12,8 @@ import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface IBrowseInterface
@@ -23,9 +24,9 @@ public interface IBrowseInterface
     
     void endBrowsePlaySession(final long p0, final int p1, final int p2, final int p3);
     
-    void expiringContent(final String p0, final int p1, final int p2, final ExpiringContentAction p3);
-    
     void fetchActorDetailsAndRelatedForTitle(final String p0, final int p1, final int p2);
+    
+    void fetchAdvisories(final String p0, final int p1, final int p2);
     
     void fetchCWVideos(final int p0, final int p1, final int p2, final int p3);
     
@@ -57,7 +58,7 @@ public interface IBrowseInterface
     
     void fetchPersonRelated(final String p0, final int p1, final int p2);
     
-    void fetchPostPlayVideos(final String p0, final VideoType p1, final int p2, final int p3);
+    void fetchPostPlayVideos(final String p0, final VideoType p1, final PostPlayRequestContext p2, final int p3, final int p4);
     
     void fetchPreAppData(final int p0, final int p1);
     
@@ -85,11 +86,15 @@ public interface IBrowseInterface
     
     void forceFetchFromLocalCache(final boolean p0);
     
+    String getLolomoId();
+    
     ModelProxy<?> getModelProxy();
     
     void invalidateCachedEpisodes(final String p0, final VideoType p1);
     
     void logBillboardActivity(final Video p0, final BillboardInteractionType p1, final Map<String, String> p2);
+    
+    void logPostPlayImpression(final String p0, final VideoType p1, final String p2, final int p3, final int p4);
     
     void markNotificationAsRead(final IrisNotificationSummary p0);
     
@@ -118,4 +123,6 @@ public interface IBrowseInterface
     void setVideoRating(final String p0, final VideoType p1, final int p2, final int p3, final int p4, final int p5);
     
     void updateCachedVideoPosition(final Asset p0);
+    
+    void updateExpiredContentAdvisoryStatus(final String p0, final ExpiringContentAdvisory$ContentAction p1);
 }

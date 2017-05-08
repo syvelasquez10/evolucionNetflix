@@ -16,9 +16,9 @@ import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.content.IntentFilter;
 import android.content.Context;
 import android.content.Intent;
@@ -50,7 +50,7 @@ public class MDXControllerActivity extends NetflixActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlayViewGroup = this.findViewById(2131690122);
+        this.postPlayViewGroup = this.findViewById(2131690102);
         this.postPlayController = PostPlayFactory.createForMdx(this);
     }
     
@@ -67,31 +67,27 @@ public class MDXControllerActivity extends NetflixActivity
             this.postPlayViewGroup.setVisibility(0);
             if (this.getIntent().hasExtra("extra_get_details_video_id")) {
                 this.videoId = this.getIntent().getExtras().getString("extra_get_details_video_id");
-                if (!TextUtils.isEmpty((CharSequence)this.videoId) && this.postPlayController != null) {
-                    final boolean booleanExtra = this.getIntent().getBooleanExtra("extra_get_details_is_episode", false);
-                    final PostPlay postPlayController = this.postPlayController;
-                    final String videoId = this.videoId;
-                    VideoType videoType;
-                    if (booleanExtra) {
-                        videoType = VideoType.EPISODE;
-                    }
-                    else {
-                        videoType = VideoType.MOVIE;
-                    }
-                    postPlayController.fetchPostPlayVideos(videoId, videoType);
-                }
             }
             else if (this.getIntent().hasExtra("extra_get_details_EPISODE_DETAILS")) {
                 final EpisodeDetails episodeDetails = (EpisodeDetails)this.getIntent().getSerializableExtra("extra_get_details_EPISODE_DETAILS");
-                if (episodeDetails != null && this.postPlayController != null) {
-                    ((PostPlayForMDX)this.postPlayController).init(episodeDetails);
+                if (episodeDetails != null) {
+                    this.videoId = episodeDetails.getId();
                 }
             }
+            if (!TextUtils.isEmpty((CharSequence)this.videoId) && this.postPlayController != null) {
+                final boolean booleanExtra = this.getIntent().getBooleanExtra("extra_get_details_is_episode", false);
+                final PostPlay postPlayController = this.postPlayController;
+                final String videoId = this.videoId;
+                VideoType videoType;
+                if (booleanExtra) {
+                    videoType = VideoType.EPISODE;
+                }
+                else {
+                    videoType = VideoType.MOVIE;
+                }
+                postPlayController.fetchPostPlayVideos(videoId, videoType, PostPlayRequestContext.MDX);
+            }
         }
-    }
-    
-    public static void showMDXController(final NetflixActivity netflixActivity, final int n, final boolean b, final PlayContext playContext) {
-        showMDXController(netflixActivity, String.valueOf(n), b, playContext);
     }
     
     public static void showMDXController(final NetflixActivity netflixActivity, final String s, final boolean b, final PlayContext playContext) {

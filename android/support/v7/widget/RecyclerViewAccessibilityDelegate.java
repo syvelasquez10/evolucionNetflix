@@ -20,6 +20,10 @@ public class RecyclerViewAccessibilityDelegate extends AccessibilityDelegateComp
         this.mRecyclerView = mRecyclerView;
     }
     
+    private boolean shouldIgnore() {
+        return this.mRecyclerView.hasPendingAdapterUpdates();
+    }
+    
     AccessibilityDelegateCompat getItemDelegate() {
         return this.mItemDelegate;
     }
@@ -28,7 +32,7 @@ public class RecyclerViewAccessibilityDelegate extends AccessibilityDelegateComp
     public void onInitializeAccessibilityEvent(final View view, final AccessibilityEvent accessibilityEvent) {
         super.onInitializeAccessibilityEvent(view, accessibilityEvent);
         accessibilityEvent.setClassName((CharSequence)RecyclerView.class.getName());
-        if (view instanceof RecyclerView) {
+        if (view instanceof RecyclerView && !this.shouldIgnore()) {
             final RecyclerView recyclerView = (RecyclerView)view;
             if (recyclerView.getLayoutManager() != null) {
                 recyclerView.getLayoutManager().onInitializeAccessibilityEvent(accessibilityEvent);
@@ -40,13 +44,13 @@ public class RecyclerViewAccessibilityDelegate extends AccessibilityDelegateComp
     public void onInitializeAccessibilityNodeInfo(final View view, final AccessibilityNodeInfoCompat accessibilityNodeInfoCompat) {
         super.onInitializeAccessibilityNodeInfo(view, accessibilityNodeInfoCompat);
         accessibilityNodeInfoCompat.setClassName(RecyclerView.class.getName());
-        if (this.mRecyclerView.getLayoutManager() != null) {
+        if (!this.shouldIgnore() && this.mRecyclerView.getLayoutManager() != null) {
             this.mRecyclerView.getLayoutManager().onInitializeAccessibilityNodeInfo(accessibilityNodeInfoCompat);
         }
     }
     
     @Override
     public boolean performAccessibilityAction(final View view, final int n, final Bundle bundle) {
-        return super.performAccessibilityAction(view, n, bundle) || (this.mRecyclerView.getLayoutManager() != null && this.mRecyclerView.getLayoutManager().performAccessibilityAction(n, bundle));
+        return super.performAccessibilityAction(view, n, bundle) || (!this.shouldIgnore() && this.mRecyclerView.getLayoutManager() != null && this.mRecyclerView.getLayoutManager().performAccessibilityAction(n, bundle));
     }
 }

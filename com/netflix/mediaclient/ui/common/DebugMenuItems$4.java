@@ -7,15 +7,16 @@ package com.netflix.mediaclient.ui.common;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
-import android.content.Context;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.os.Handler;
 import android.os.Debug;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.Log;
+import android.content.Context;
+import com.netflix.mediaclient.service.NetflixService;
+import android.content.Intent;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -28,14 +29,10 @@ class DebugMenuItems$4 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        if (!this.this$0.requestExternalFileWritePermission()) {
-            Log.e(this.this$0.logTag, "Error: Don't have External write permissions yet... ");
-            return false;
-        }
-        final ServiceManager serviceManager = this.this$0.activity.getServiceManager();
-        if (serviceManager != null) {
-            serviceManager.getBrowse().dumpCacheToDisk();
-        }
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.USER_CREATE_AUTOLOGIN_TOKEN");
+        intent.setClass((Context)this.this$0.activity, (Class)NetflixService.class);
+        intent.addCategory("com.netflix.mediaclient.intent.category.USER");
+        this.this$0.activity.startService(intent);
         return true;
     }
 }

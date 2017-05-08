@@ -10,9 +10,11 @@ import android.content.IntentFilter;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
+import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.MdxPostplayState;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import android.content.Intent;
@@ -50,7 +52,7 @@ public final class MdxReceiver extends BroadcastReceiver
     private void showFirstEpisodeInNextSeries(final MdxPostplayState mdxPostplayState) {
         final WebApiUtils$VideoIds videoIds = this.mActivity.getServiceManager().getMdx().getVideoIds();
         if (videoIds != null && videoIds.episodeId > 0) {
-            this.mActivity.getServiceManager().getBrowse().fetchPostPlayVideos(String.valueOf(videoIds.episodeId), videoIds.getVideoType(), new MdxReceiver$FetchNextSeriesEpisodeVideoDetailsForMdxCallback("nf_mdx", this.mActivity));
+            this.mActivity.getServiceManager().getBrowse().fetchPostPlayVideos(String.valueOf(videoIds.episodeId), videoIds.getVideoType(), PostPlayRequestContext.MDX, new MdxReceiver$FetchNextSeriesEpisodeVideoDetailsForMdxCallback("nf_mdx", this.mActivity));
         }
     }
     
@@ -58,11 +60,19 @@ public final class MdxReceiver extends BroadcastReceiver
         final String string = intent.getExtras().getString("postplayState");
         if (!StringUtils.isEmpty(string)) {
             final MdxPostplayState mdxPostplayState = new MdxPostplayState(string);
-            if (mdxPostplayState.isInCountdown()) {
-                this.showNextEpisodeInSeries(mdxPostplayState);
+            if (BrowseExperience.shouldShowMemento((Context)this.mActivity)) {
+                if (mdxPostplayState.isInCountdown()) {
+                    this.showNextEpisodeInSeries(mdxPostplayState);
+                }
+                else if (mdxPostplayState.isInPrompt()) {
+                    this.showFirstEpisodeInNextSeries(mdxPostplayState);
+                }
             }
-            else if (mdxPostplayState.isInPrompt()) {
-                this.showFirstEpisodeInNextSeries(mdxPostplayState);
+            else {
+                final WebApiUtils$VideoIds videoIds = this.mActivity.getServiceManager().getMdx().getVideoIds();
+                if (videoIds != null && videoIds.episodeId > 0) {
+                    MDXControllerActivity.showMDXController(this.mActivity, String.valueOf(videoIds.episodeId), true, PlayContext.DFLT_MDX_CONTEXT);
+                }
             }
         }
     }

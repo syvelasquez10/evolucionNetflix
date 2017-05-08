@@ -11,6 +11,7 @@ import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
 import com.netflix.mediaclient.repository.SecurityRepository;
@@ -78,6 +79,7 @@ import android.app.Service;
 public final class NetflixService extends Service implements INetflixService
 {
     public static final String ACTION_CLOSE_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_CLOSE_MINI_PLAYER";
+    public static final String ACTION_EXPAND_HOME_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_HOME_MDX_MINI_PLAYER";
     public static final String ACTION_EXPAND_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER";
     private static final String ACTION_REFRESH_WIDGET_CONTENT_ALARM_INTENT = "com.netflix.mediaclient.service.ACTION_REFRESH_WIDGET_CONTENT";
     private static final String ACTION_SHOW_MDX_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER";
@@ -375,6 +377,10 @@ public final class NetflixService extends Service implements INetflixService
         this.mUserAgent.addWebUserProfile(s, b, s2, new NetflixService$UserAgentClientCallback(this, n, n2));
     }
     
+    public void consumeUmaAlert() {
+        this.mUserAgent.consumeUmaAlert();
+    }
+    
     public void createAutoLoginToken(final long n, final int n2, final int n3) {
         this.mUserAgent.createAutoLoginToken(n, new NetflixService$UserAgentClientCallback(this, n2, n3));
     }
@@ -528,6 +534,10 @@ public final class NetflixService extends Service implements INetflixService
         return this.mUserAgent.getEmail();
     }
     
+    public UmaAlert getUserMessageAlert() {
+        return this.mUserAgent.getUserMessageAlert();
+    }
+    
     public IVoip getVoip() {
         return this.mVoipAgent;
     }
@@ -538,6 +548,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public boolean isDeviceHd() {
         return this.mConfigurationAgent.isDeviceHd();
+    }
+    
+    public boolean isNonMemberPlayback() {
+        return this.mUserAgent.isNonMemberPlayback();
     }
     
     public boolean isProfileSwitchingDisabled() {
@@ -710,12 +724,16 @@ public final class NetflixService extends Service implements INetflixService
         return true;
     }
     
-    public void recordEndOfGrandfatheringImpression(final String s, final String s2) {
+    public void recordPlanSelection(final String s, final String s2) {
+        this.mUserAgent.recordPlanSelection(s, s2);
+    }
+    
+    public void recordUserMessageImpression(final String s, final String s2) {
         this.mUserAgent.recordUmsImpression(s, s2);
     }
     
-    public void recordPlanSelection(final String s, final String s2) {
-        this.mUserAgent.recordPlanSelection(s, s2);
+    public void refreshCurrentUserMessageArea() {
+        this.mUserAgent.refreshUserMessage();
     }
     
     public void refreshProfileSwitchingStatus() {
@@ -761,6 +779,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public void setCurrentAppLocale(final String currentAppLocale) {
         this.mUserAgent.setCurrentAppLocale(currentAppLocale);
+    }
+    
+    public void setNonMemberPlayback(final boolean nonMemberPlayback) {
+        this.mUserAgent.setNonMemberPlayback(nonMemberPlayback);
     }
     
     public void startJob(final NetflixJob$NetflixJobId netflixJob$NetflixJobId) {

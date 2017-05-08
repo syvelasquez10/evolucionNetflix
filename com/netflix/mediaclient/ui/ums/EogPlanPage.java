@@ -49,25 +49,25 @@ public class EogPlanPage
     
     EogPlanPage(final EndOfGrandfatheringActivity mOwner) {
         this.mOwner = mOwner;
-        this.mTitle = (TextView)this.mOwner.findViewById(2131689799);
-        this.mSelect = (TextView)this.mOwner.findViewById(2131689800);
-        this.mSdName = (TextView)this.mOwner.findViewById(2131689803);
-        this.mSdValue = (TextView)this.mOwner.findViewById(2131689804);
-        this.mHdName = (TextView)this.mOwner.findViewById(2131689807);
-        this.mHdValue = (TextView)this.mOwner.findViewById(2131689808);
-        this.mUhdName = (TextView)this.mOwner.findViewById(2131689811);
-        this.mUhdValue = (TextView)this.mOwner.findViewById(2131689812);
-        this.mAccount = (TextView)this.mOwner.findViewById(2131689813);
-        this.mContinue = (TextView)this.mOwner.findViewById(2131689815);
-        this.mDisclaimer = (TextView)this.mOwner.findViewById(2131689816);
-        this.mSdCheckBox = (CheckBox)this.mOwner.findViewById(2131689802);
-        this.mHdCheckBox = (CheckBox)this.mOwner.findViewById(2131689806);
-        this.mUhdCheckBox = (CheckBox)this.mOwner.findViewById(2131689810);
-        this.mSdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689801);
-        this.mHdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689805);
-        this.mUhdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689809);
-        this.mInactive_plan_drawable = ContextCompat.getDrawable(this.mOwner.getApplicationContext(), 2130837657);
-        this.mActive_plan_drawable = ContextCompat.getDrawable(this.mOwner.getApplicationContext(), 2130837656);
+        this.mTitle = (TextView)this.mOwner.findViewById(2131689797);
+        this.mSelect = (TextView)this.mOwner.findViewById(2131689798);
+        this.mSdName = (TextView)this.mOwner.findViewById(2131689801);
+        this.mSdValue = (TextView)this.mOwner.findViewById(2131689802);
+        this.mHdName = (TextView)this.mOwner.findViewById(2131689805);
+        this.mHdValue = (TextView)this.mOwner.findViewById(2131689806);
+        this.mUhdName = (TextView)this.mOwner.findViewById(2131689809);
+        this.mUhdValue = (TextView)this.mOwner.findViewById(2131689810);
+        this.mAccount = (TextView)this.mOwner.findViewById(2131689811);
+        this.mContinue = (TextView)this.mOwner.findViewById(2131689813);
+        this.mDisclaimer = (TextView)this.mOwner.findViewById(2131689814);
+        this.mSdCheckBox = (CheckBox)this.mOwner.findViewById(2131689800);
+        this.mHdCheckBox = (CheckBox)this.mOwner.findViewById(2131689804);
+        this.mUhdCheckBox = (CheckBox)this.mOwner.findViewById(2131689808);
+        this.mSdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689799);
+        this.mHdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689803);
+        this.mUhdPlanHeader = (LinearLayout)this.mOwner.findViewById(2131689807);
+        this.mInactive_plan_drawable = ContextCompat.getDrawable(this.mOwner.getApplicationContext(), 2130837655);
+        this.mActive_plan_drawable = ContextCompat.getDrawable(this.mOwner.getApplicationContext(), 2130837654);
     }
     
     private void logPlanChangeEventByUser(final int n) {
@@ -83,15 +83,15 @@ public class EogPlanPage
                     break;
                 }
                 case 0: {
-                    s = eogAlert.sdPlanPlanId;
+                    s = eogAlert.sdPlanPlanId();
                     break;
                 }
                 case 1: {
-                    s = eogAlert.hdPlanPlanId;
+                    s = eogAlert.hdPlanPlanId();
                     break;
                 }
                 case 2: {
-                    s = eogAlert.uhdPlanPlanId;
+                    s = eogAlert.uhdPlanPlanId();
                     break;
                 }
             }
@@ -152,27 +152,27 @@ public class EogPlanPage
             return;
         }
         final EogAlert eogAlert = this.mOwner.getEogAlert();
-        this.mTitle.setText((CharSequence)eogAlert.title);
+        this.mTitle.setText((CharSequence)eogAlert.title());
         final TextView mSelect = this.mSelect;
         String text;
         if (EogUtils.isPlanOnlyCell(eogAlert)) {
-            text = eogAlert.body;
+            text = eogAlert.body();
         }
         else {
-            text = eogAlert.selectPlanText;
+            text = eogAlert.selectPlanText();
         }
         mSelect.setText((CharSequence)text);
-        this.mSdName.setText((CharSequence)eogAlert.sdPlanText);
-        this.mSdValue.setText((CharSequence)eogAlert.sdPlanPrice);
-        this.mHdName.setText((CharSequence)eogAlert.hdPlanText);
-        this.mHdValue.setText((CharSequence)eogAlert.hdPlanPrice);
-        this.mUhdName.setText((CharSequence)eogAlert.uhdPlanText);
-        this.mUhdValue.setText((CharSequence)eogAlert.uhdPlanPrice);
+        this.mSdName.setText((CharSequence)eogAlert.sdPlanText());
+        this.mSdValue.setText((CharSequence)eogAlert.sdPlanPrice());
+        this.mHdName.setText((CharSequence)eogAlert.hdPlanText());
+        this.mHdValue.setText((CharSequence)eogAlert.hdPlanPrice());
+        this.mUhdName.setText((CharSequence)eogAlert.uhdPlanText());
+        this.mUhdValue.setText((CharSequence)eogAlert.uhdPlanPrice());
         this.setPlanSelectionUi(this.mOwner.getCurrentPlanIndex());
         this.mAccount.setText((CharSequence)EogLandingPage.buildAccountString(this.mOwner, this.mOwner.getEogAlert()));
         this.mAccount.setMovementMethod(LinkMovementMethod.getInstance());
-        this.mContinue.setText((CharSequence)eogAlert.continueBtnText);
-        this.mDisclaimer.setText((CharSequence)eogAlert.disclaimerText);
+        this.mContinue.setText((CharSequence)eogAlert.continueBtnText());
+        this.mDisclaimer.setText((CharSequence)eogAlert.disclaimerText());
     }
     
     public boolean performAction(final View view) {
@@ -187,9 +187,9 @@ public class EogPlanPage
                 }
                 return false;
             }
-            case 2131689814: {
+            case 2131689812: {
                 this.mOwner.recordPlanSelection();
-                if (EndOfGrandfatheringActivity.shouldBlockUser(this.mOwner.getEogAlert().isBlocking)) {
+                if (EndOfGrandfatheringActivity.shouldBlockUser(this.mOwner.getEogAlert().isBlocking())) {
                     this.mOwner.startActivity(HomeActivity.createStartIntent(this.mOwner));
                 }
                 this.mOwner.finish();
@@ -210,22 +210,22 @@ public class EogPlanPage
                 }
                 return false;
             }
-            case 2131689801:
-            case 2131689802: {
+            case 2131689799:
+            case 2131689800: {
                 Log.d("eog_plan_page", "Clicked on SD plan");
                 this.setPlanSelectionUi(0);
                 this.logPlanChangeEventByUser(0);
                 return true;
             }
-            case 2131689805:
-            case 2131689806: {
+            case 2131689803:
+            case 2131689804: {
                 Log.d("eog_plan_page", "Clicked on HD plan");
                 this.setPlanSelectionUi(1);
                 this.logPlanChangeEventByUser(1);
                 return true;
             }
-            case 2131689809:
-            case 2131689810: {
+            case 2131689807:
+            case 2131689808: {
                 Log.d("eog_plan_page", "Clicked on UHD plan");
                 this.setPlanSelectionUi(2);
                 this.logPlanChangeEventByUser(2);

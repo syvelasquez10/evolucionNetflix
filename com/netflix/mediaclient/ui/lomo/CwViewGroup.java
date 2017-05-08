@@ -19,10 +19,7 @@ public class CwViewGroup extends VideoViewGroup<CWVideo, CwView>
     
     @Override
     protected CwView createChildView(final Context context) {
-        if (CWTestUtil.isInTest(context)) {
-            return new CwTestView(context);
-        }
-        return new CwView(context);
+        return CWTestUtil.createCWViewForTest(context);
     }
     
     @Override

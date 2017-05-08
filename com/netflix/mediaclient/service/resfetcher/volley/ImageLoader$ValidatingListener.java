@@ -9,19 +9,17 @@ import android.graphics.drawable.Drawable;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
 import com.android.volley.Response$Listener;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
-import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.util.UriUtil;
 import android.graphics.Bitmap$Config;
 import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$InteractiveListener;
 import android.os.Looper;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$TTRTracker;
 import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
@@ -35,17 +33,14 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 
-class ImageLoader$ValidatingListener implements ImageLoader$ImageListener
+class ImageLoader$ValidatingListener extends ImageLoader$ImageInteractionTrackingListener
 {
-    protected final String imgUrl;
     protected final ImageLoader$StaticImgConfig staticImgConfig;
     final /* synthetic */ ImageLoader this$0;
-    protected final AdvancedImageView view;
     
-    public ImageLoader$ValidatingListener(final ImageLoader this$0, final AdvancedImageView view, final String imgUrl, final ImageLoader$StaticImgConfig staticImgConfig) {
+    public ImageLoader$ValidatingListener(final ImageLoader this$0, final AdvancedImageView advancedImageView, final String s, final ImageLoader$StaticImgConfig staticImgConfig) {
         this.this$0 = this$0;
-        this.view = view;
-        this.imgUrl = imgUrl;
+        super(this$0, advancedImageView, s);
         this.staticImgConfig = staticImgConfig;
     }
     
@@ -63,12 +58,9 @@ class ImageLoader$ValidatingListener implements ImageLoader$ImageListener
         return b;
     }
     
-    public AdvancedImageView getImageView() {
-        return this.view;
-    }
-    
     @Override
     public void onErrorResponse(final VolleyError volleyError) {
+        super.onErrorResponse(volleyError);
         if (this.responseIsOutdated()) {
             return;
         }
@@ -77,12 +69,13 @@ class ImageLoader$ValidatingListener implements ImageLoader$ImageListener
     }
     
     @Override
-    public void onResponse(final ImageLoader$ImageContainer imageLoader$ImageContainer, final boolean b) {
+    public void onResponse(final ImageLoader$ImageContainer imageLoader$ImageContainer, final ImageLoader$Type imageLoader$Type) {
+        super.onResponse(imageLoader$ImageContainer, imageLoader$Type);
         if (this.responseIsOutdated()) {
             return;
         }
         final Bitmap bitmap = imageLoader$ImageContainer.getBitmap();
-        if (bitmap != null && b) {
+        if (bitmap != null && imageLoader$Type.isImmediate()) {
             this.this$0.setDrawableBitmap(this.view, bitmap);
             return;
         }

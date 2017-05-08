@@ -23,6 +23,7 @@ import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.widget.ScrollerCompat;
 import android.graphics.Rect;
+import android.support.v4.view.NestedScrollingParent;
 import android.view.ViewGroup;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.view.View;

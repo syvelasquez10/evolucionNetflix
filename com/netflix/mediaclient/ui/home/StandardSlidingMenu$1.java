@@ -5,11 +5,13 @@
 package com.netflix.mediaclient.ui.home;
 
 import com.netflix.mediaclient.android.app.Status;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import android.content.Context;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import android.os.Build$VERSION;
 import com.netflix.mediaclient.util.ViewUtils;
 import java.util.List;
+import com.netflix.mediaclient.ui.iris.notifications.NotificationsFrag$NotificationsListStatusListener;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,9 +38,11 @@ import com.netflix.mediaclient.android.widget.StaticListView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.ui.iris.notifications.NotificationsFrag$NotificationsListStatusListener;
+import android.content.Intent;
+import android.content.Context;
+import android.content.BroadcastReceiver;
 
-class StandardSlidingMenu$1 implements NotificationsFrag$NotificationsListStatusListener
+class StandardSlidingMenu$1 extends BroadcastReceiver
 {
     final /* synthetic */ StandardSlidingMenu this$0;
     
@@ -45,8 +50,7 @@ class StandardSlidingMenu$1 implements NotificationsFrag$NotificationsListStatus
         this.this$0 = this$0;
     }
     
-    @Override
-    public void onNotificationsListUpdated(final boolean b) {
-        this.this$0.setNotificationsVisible(b);
+    public void onReceive(final Context context, final Intent intent) {
+        this.this$0.updateBlockingState();
     }
 }

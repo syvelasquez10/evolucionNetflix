@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import android.support.design.widget.TabLayout$OnTabSelectedListener;
+import com.viewpagerindicator.android.osp.ViewPager$PageTransformer;
 import android.support.v4.view.PagerAdapter;
 import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -63,8 +64,8 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     
     private void updateImage(final int n) {
         final FalkorPerson falkorPerson = this.this$0.actors.get(n);
-        final FocalPointImageView focalPointImageView = (FocalPointImageView)this.findViewById(2131689946);
-        final View viewById = this.findViewById(2131689947);
+        final FocalPointImageView focalPointImageView = (FocalPointImageView)this.findViewById(2131689944);
+        final View viewById = this.findViewById(2131689945);
         if (focalPointImageView != null) {
             final FalkorActorStill still = this.this$0.getStill(this.this$0.videoId, falkorPerson.detail.getId());
             focalPointImageView.setImageDrawable(null);
@@ -108,7 +109,7 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     
     void updateTitle(final int n) {
         final FalkorPerson falkorPerson = this.this$0.actors.get(n);
-        final TextView textView = (TextView)this.findViewById(2131689950);
+        final TextView textView = (TextView)this.findViewById(2131689948);
         if (textView != null) {
             textView.setText((CharSequence)falkorPerson.detail.name);
         }

@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.ui.player.MDXControllerActivity;
-import com.netflix.mediaclient.ui.common.PlayContext;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import android.content.Context;
@@ -35,9 +33,7 @@ class MdxReceiver$FetchPostPlayForPlaybackCallback extends LoggingManagerCallbac
                 intent.putExtra("id", episodeDetails.getId());
                 LocalBroadcastManager.getInstance((Context)this.mActivity).sendBroadcast(intent);
                 LocalBroadcastManager.getInstance((Context)this.mActivity).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.RDP_CLOSE"));
-            }
-            else {
-                MDXControllerActivity.showMDXController(this.mActivity, episodeDetails.getId(), true, PlayContext.DFLT_MDX_CONTEXT);
+                MiniPlayerControlsFrag.sendShowAndDisableIntent((Context)this.mActivity);
             }
             this.processed = true;
         }

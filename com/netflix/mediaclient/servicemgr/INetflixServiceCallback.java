@@ -26,19 +26,18 @@ import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
+import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.model.branches.FalkorActorStill;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.model.branches.MementoVideoSwatch;
 import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 
 public interface INetflixServiceCallback
 {
-    void expiringContent(final int p0, final IExpiringContentWarning p1, final Status p2, final ExpiringContentAction p3);
-    
     void onActorDetailsAndRelatedFetched(final int p0, final List<FalkorPerson> p1, final List<MementoVideoSwatch> p2, final Status p3, final List<FalkorActorStill> p4);
+    
+    void onAdvisoriesFetched(final int p0, final List<Advisory> p1, final Status p2);
     
     void onAutoLoginTokenCreated(final int p0, final String p1, final Status p2);
     
@@ -81,6 +80,8 @@ public interface INetflixServiceCallback
     void onPersonDetailFetched(final int p0, final FalkorPerson p1, final FalkorActorStill p2, final Status p3);
     
     void onPersonRelatedFetched(final int p0, final FalkorPerson p1, final List<Video> p2, final Status p3);
+    
+    void onPostPlayImpressionLogged(final int p0, final boolean p1, final Status p2);
     
     void onPostPlayVideosFetched(final int p0, final PostPlayVideosProvider p1, final Status p2);
     

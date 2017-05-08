@@ -4,11 +4,14 @@
 
 package com.netflix.mediaclient.ui.home;
 
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -24,6 +27,7 @@ import android.widget.AdapterView$OnItemClickListener;
 import android.view.ViewStub;
 import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.content.BroadcastReceiver;
 import android.widget.TextView;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;

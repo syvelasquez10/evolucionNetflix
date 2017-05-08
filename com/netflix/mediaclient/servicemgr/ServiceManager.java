@@ -6,6 +6,7 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -147,6 +148,14 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
+    public void consumeUmaAlert() {
+        if (this.validateService()) {
+            this.mService.consumeUmaAlert();
+            return;
+        }
+        Log.w("ServiceManager", "recordUserMessageImpression:: service is not available");
+    }
+    
     public AddToListData$StateListener createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n) {
         return this.addToMyListWrapper.createAddToMyListWrapper(netflixActivity, textView, s, videoType, n);
     }
@@ -190,23 +199,27 @@ public final class ServiceManager implements IServiceManagerAccess
             try {
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
+                final int addCallback = this.addCallback(managerCallback);
+                // iftrue(Label_0073:, !Log.isLoggable())
+                // iftrue(Label_0103:, !this.validateService())
                 while (true) {
-                    final int addCallback;
-                    this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
-                    b = true;
-                    return b;
-                    Label_0103: {
-                        Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
+                    Block_3: {
+                        break Block_3;
+                        Label_0103: {
+                            Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
+                        }
+                        return b;
+                        while (true) {
+                            this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                            b = true;
+                            return b;
+                            continue;
+                        }
                     }
-                    return b;
-                    addCallback = this.addCallback(managerCallback);
                     Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                    Label_0073:
                     continue;
                 }
             }
-            // iftrue(Label_0073:, !Log.isLoggable())
-            // iftrue(Label_0103:, !this.validateService())
             finally {
             }
             // monitorexit(this)
@@ -437,6 +450,14 @@ public final class ServiceManager implements IServiceManagerAccess
         return null;
     }
     
+    public UmaAlert getUserMessageAlert() {
+        if (this.validateService()) {
+            return this.mService.getUserMessageAlert();
+        }
+        Log.w("ServiceManager", "getUserMessageAlert:: service is not available");
+        return null;
+    }
+    
     public IVoip getVoip() {
         final INetflixService mService = this.mService;
         if (mService != null) {
@@ -469,6 +490,14 @@ public final class ServiceManager implements IServiceManagerAccess
     
     public boolean isDolbyDigitalPlus51Supported() {
         return this.validateService() && this.mService.getConfiguration().isDolbyDigitalPlus51Supported();
+    }
+    
+    public boolean isNonMemberPlayback() {
+        if (this.validateService()) {
+            return this.mService.isNonMemberPlayback();
+        }
+        Log.w("ServiceManager", "isNonMemberPlayback:: service is not available");
+        return false;
     }
     
     public boolean isProfileSwitchingDisabled() {
@@ -542,20 +571,28 @@ public final class ServiceManager implements IServiceManagerAccess
         Log.w("ServiceManager", "markSurveysAsRead:: service is not available");
     }
     
-    public void recordEndOfGrandfatheringImpression(final String s, final String s2) {
-        if (this.validateService()) {
-            this.mService.recordEndOfGrandfatheringImpression(s, s2);
-            return;
-        }
-        Log.w("ServiceManager", "recordEndOfGrandfatheringImpression:: service is not available");
-    }
-    
     public void recordPlanSelection(final String s, final String s2) {
         if (this.validateService()) {
             this.mService.recordPlanSelection(s, s2);
             return;
         }
         Log.w("ServiceManager", "recordPlanSelection:: service is not available");
+    }
+    
+    public void recordUserMessageImpression(final String s, final String s2) {
+        if (this.validateService()) {
+            this.mService.recordUserMessageImpression(s, s2);
+            return;
+        }
+        Log.w("ServiceManager", "recordUserMessageImpression:: service is not available");
+    }
+    
+    public void refreshCurrentUserMessageArea() {
+        if (this.validateService()) {
+            this.mService.refreshCurrentUserMessageArea();
+            return;
+        }
+        Log.w("ServiceManager", "refreshUserMessage:: service is not available");
     }
     
     public void refreshProfileSwitchingStatus() {
@@ -613,6 +650,15 @@ public final class ServiceManager implements IServiceManagerAccess
             return true;
         }
         Log.w("ServiceManager", "setCurrentAppLocale:: service is not available");
+        return false;
+    }
+    
+    public boolean setNonMemberPlayback(final boolean nonMemberPlayback) {
+        if (this.validateService()) {
+            this.mService.setNonMemberPlayback(nonMemberPlayback);
+            return true;
+        }
+        Log.w("ServiceManager", "setNonMemberPlayback:: service is not available");
         return false;
     }
     

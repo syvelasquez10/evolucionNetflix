@@ -28,10 +28,10 @@ class AuthFailureErrorDescriptor extends PlaybackErrorDescriptor
         AlertDialogFactory$TwoButtonAlertDialogDescriptor alertDialogFactory$TwoButtonAlertDialogDescriptor;
         if (error.checkForAuthFailureRegistrationRequired()) {
             playerFragment.getNetflixActivity().getServiceManager().getClientLogging().getErrorLogging().logHandledException("AuthFailure, RegistrationRequired");
-            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, resetApplicationAction, playerFragment.getString(2131231059), launchHelpInBrowserAction);
+            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, resetApplicationAction, playerFragment.getString(2131231061), launchHelpInBrowserAction);
         }
         else {
-            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, exitPlayerAction, playerFragment.getString(2131231059), launchHelpInBrowserAction);
+            alertDialogFactory$TwoButtonAlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", string, null, exitPlayerAction, playerFragment.getString(2131231061), launchHelpInBrowserAction);
         }
         return new AuthFailureErrorDescriptor(alertDialogFactory$TwoButtonAlertDialogDescriptor);
     }

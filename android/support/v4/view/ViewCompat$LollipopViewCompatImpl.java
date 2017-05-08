@@ -59,4 +59,9 @@ class ViewCompat$LollipopViewCompatImpl extends ViewCompat$KitKatViewCompatImpl
     public void setOnApplyWindowInsetsListener(final View view, final OnApplyWindowInsetsListener onApplyWindowInsetsListener) {
         ViewCompatLollipop.setOnApplyWindowInsetsListener(view, onApplyWindowInsetsListener);
     }
+    
+    @Override
+    public void stopNestedScroll(final View view) {
+        ViewCompatLollipop.stopNestedScroll(view);
+    }
 }

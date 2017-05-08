@@ -26,4 +26,12 @@ public class AccessibilityEventCompat
     public static AccessibilityRecordCompat asRecord(final AccessibilityEvent accessibilityEvent) {
         return new AccessibilityRecordCompat(accessibilityEvent);
     }
+    
+    public static int getContentChangeTypes(final AccessibilityEvent accessibilityEvent) {
+        return AccessibilityEventCompat.IMPL.getContentChangeTypes(accessibilityEvent);
+    }
+    
+    public static void setContentChangeTypes(final AccessibilityEvent accessibilityEvent, final int n) {
+        AccessibilityEventCompat.IMPL.setContentChangeTypes(accessibilityEvent, n);
+    }
 }

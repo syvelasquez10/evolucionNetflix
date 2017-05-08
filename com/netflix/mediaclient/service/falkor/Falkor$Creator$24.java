@@ -4,13 +4,21 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.model.branches.FalkorBillboardData;
+import com.netflix.falkor.BranchNode;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.model.branches.FalkorScene;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$24 implements Func<FalkorBillboardData>
+final class Falkor$Creator$24 implements Func<FalkorScene>
 {
+    final /* synthetic */ ModelProxy val$proxy;
+    
+    Falkor$Creator$24(final ModelProxy val$proxy) {
+        this.val$proxy = val$proxy;
+    }
+    
     @Override
-    public FalkorBillboardData call() {
-        return new FalkorBillboardData(Falkor$Creator.BillboardSummary);
+    public FalkorScene call() {
+        return new FalkorScene(this.val$proxy);
     }
 }

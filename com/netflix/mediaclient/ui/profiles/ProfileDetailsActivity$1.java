@@ -65,7 +65,7 @@ class ProfileDetailsActivity$1 implements ManagerStatusListener
                 this.this$0.mServiceManager.fetchAvailableAvatarsList(new ProfileDetailsActivity$AvatarsFetchedCallback(this.this$0, null));
             }
             else {
-                this.this$0.mDefaultAvatar = new AvatarInfo(this.this$0.mInputProfile.getProfileName(), this.this$0.mInputProfile.getAvatarUrl());
+                this.this$0.mDefaultAvatar = new AvatarInfo(this.this$0.mInputProfile.getProfileName(), this.this$0.mInputProfile.getAvatarUrl(), true);
                 this.this$0.mCurrentAvatar = this.this$0.mDefaultAvatar;
             }
         }

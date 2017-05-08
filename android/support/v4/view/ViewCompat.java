@@ -265,4 +265,8 @@ public class ViewCompat
     public static void setTranslationY(final View view, final float n) {
         ViewCompat.IMPL.setTranslationY(view, n);
     }
+    
+    public static void stopNestedScroll(final View view) {
+        ViewCompat.IMPL.stopNestedScroll(view);
+    }
 }

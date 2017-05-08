@@ -49,6 +49,10 @@ public class EdgeEffectCompat
         return EdgeEffectCompat.IMPL.onPull(this.mEdgeEffect, n);
     }
     
+    public boolean onPull(final float n, final float n2) {
+        return EdgeEffectCompat.IMPL.onPull(this.mEdgeEffect, n, n2);
+    }
+    
     public boolean onRelease() {
         return EdgeEffectCompat.IMPL.onRelease(this.mEdgeEffect);
     }

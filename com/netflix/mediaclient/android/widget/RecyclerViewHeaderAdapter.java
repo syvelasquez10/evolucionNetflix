@@ -283,8 +283,11 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
             Log.v("RecyclerViewHeaderAdapter", "Skipping setItemChecked() - invalid position: " + n);
             return;
         }
+        final int itemCheckedPosition = this.itemCheckedPosition;
+        final int headerViewsCount = this.getHeaderViewsCount();
         this.itemCheckedPosition = n - this.getHeaderViewsCount();
-        this.notifyDataSetChanged();
+        this.notifyItemChanged(itemCheckedPosition + headerViewsCount);
+        this.notifyItemChanged(n);
     }
     
     public void setItemContentType(final int itemContentType) {

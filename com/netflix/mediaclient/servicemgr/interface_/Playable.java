@@ -4,13 +4,12 @@
 
 package com.netflix.mediaclient.servicemgr.interface_;
 
+import com.netflix.model.leafs.advisory.Advisory;
+import java.util.List;
+
 public interface Playable
 {
-    String getAdvisoryDescription();
-    
-    int getAdvisoryDisplayDuration();
-    
-    String getAdvisoryRating();
+    List<Advisory> getAdvisories();
     
     int getAutoPlayMaxCount();
     
@@ -57,4 +56,6 @@ public interface Playable
     boolean isPinProtected();
     
     boolean isPlayableEpisode();
+    
+    boolean isSupplementalVideo();
 }

@@ -4,13 +4,17 @@
 
 package android.support.v7.widget;
 
+import java.util.ArrayList;
 import android.support.v4.util.ArrayMap;
+import android.view.View;
+import java.util.List;
 import android.util.SparseArray;
 
 public class RecyclerView$State
 {
     private SparseArray<Object> mData;
     private int mDeletedInvisibleItemCountSincePreviousLayout;
+    final List<View> mDisappearingViewsInLayoutPass;
     private boolean mInPreLayout;
     int mItemCount;
     ArrayMap<Long, RecyclerView$ViewHolder> mOldChangedHolders;
@@ -27,6 +31,7 @@ public class RecyclerView$State
         this.mPreLayoutHolderMap = new ArrayMap<RecyclerView$ViewHolder, RecyclerView$ItemHolderInfo>();
         this.mPostLayoutHolderMap = new ArrayMap<RecyclerView$ViewHolder, RecyclerView$ItemHolderInfo>();
         this.mOldChangedHolders = new ArrayMap<Long, RecyclerView$ViewHolder>();
+        this.mDisappearingViewsInLayoutPass = new ArrayList<View>();
         this.mItemCount = 0;
         this.mPreviousLayoutItemCount = 0;
         this.mDeletedInvisibleItemCountSincePreviousLayout = 0;
@@ -45,15 +50,17 @@ public class RecyclerView$State
         }
     }
     
+    void addToDisappearingList(final View view) {
+        if (!this.mDisappearingViewsInLayoutPass.contains(view)) {
+            this.mDisappearingViewsInLayoutPass.add(view);
+        }
+    }
+    
     public int getItemCount() {
         if (this.mInPreLayout) {
             return this.mPreviousLayoutItemCount - this.mDeletedInvisibleItemCountSincePreviousLayout;
         }
         return this.mItemCount;
-    }
-    
-    public int getTargetScrollPosition() {
-        return this.mTargetPosition;
     }
     
     public boolean hasTargetScrollPosition() {
@@ -68,12 +75,17 @@ public class RecyclerView$State
         this.onViewRecycled(recyclerView$ViewHolder);
     }
     
-    public void onViewRecycled(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+    void onViewRecycled(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
         this.mPreLayoutHolderMap.remove(recyclerView$ViewHolder);
         this.mPostLayoutHolderMap.remove(recyclerView$ViewHolder);
         if (this.mOldChangedHolders != null) {
             this.removeFrom(this.mOldChangedHolders, recyclerView$ViewHolder);
         }
+        this.mDisappearingViewsInLayoutPass.remove(recyclerView$ViewHolder.itemView);
+    }
+    
+    void removeFromDisappearingList(final View view) {
+        this.mDisappearingViewsInLayoutPass.remove(view);
     }
     
     @Override

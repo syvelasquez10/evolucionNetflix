@@ -14,7 +14,6 @@ public class Falkor$Branches
     public static final String DISCOVERY_EVIDENCE = "discoveryEvidence";
     public static final String EPISODES = "episodes";
     public static final String EVIDENCE_LISTS = "evidenceLists";
-    public static final String EXPIRING_CONTENT = "expiringContentNotice";
     public static final String FLAT_GENRE = "flatGenre";
     public static final String GENRE_LIST = "genreList";
     public static final String INTERACTIVE_INFO = "interactive";
@@ -27,7 +26,9 @@ public class Falkor$Branches
     public static final String NOTIFICATIONS = "notifications";
     public static final String NOTIFICATIONS_LIST = "notificationsList";
     public static final String PEOPLE = "people";
-    public static final String POST_PLAY = "postplay";
+    public static final String POST_PLAY_EXPERIENCE = "postPlayExperience";
+    public static final String POST_PLAY_EXPERIENCES = "postPlayExperiences";
+    public static final String POST_PLAY_PLAYBACK_VIDEOS = "playbackVideos";
     public static final String RELATED_VIDEOS = "relatedVideos";
     public static final String SCENES = "scenes";
     public static final String SEARCH = "search";

@@ -82,13 +82,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             if (item.isCC()) {
                 Log.d("nf_language_selector", "Add CC");
                 sb.append(' ');
-                sb.append(this.activity.getText(2131230994));
+                sb.append(this.activity.getText(2131230996));
             }
             text = sb.toString();
             equals = item.equals(subtitle);
         }
         else {
-            text = this.activity.getString(2131231118);
+            text = this.activity.getString(2131231120);
             if (subtitle == null) {
                 equals = true;
                 text = text;

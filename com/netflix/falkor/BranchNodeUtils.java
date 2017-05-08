@@ -13,15 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.core.JsonParser;
 import com.netflix.mediaclient.Log;
+import java.util.HashSet;
 
 public class BranchNodeUtils
 {
     private static final boolean ENABLE_VERBOSE_LOGGING;
+    private static final HashSet<String> SERIALIZATION_IGNORE_KEYS_SET;
     private static final String TAG = "BranchNodeUtils";
     
     static {
         if (Log.isLoggable()) {}
         ENABLE_VERBOSE_LOGGING = false;
+        SERIALIZATION_IGNORE_KEYS_SET = new HashSet<String>();
+        addToIgnoreSet("postPlayExperience");
+        addToIgnoreSet("postPlayExperiences");
+    }
+    
+    private static void addToIgnoreSet(final String s) {
+        BranchNodeUtils.SERIALIZATION_IGNORE_KEYS_SET.add(s);
     }
     
     public static List<String> getAsStringArray(final JsonParser jsonParser) {
@@ -225,7 +234,7 @@ public class BranchNodeUtils
                 return jsonParser.getValueAsBoolean();
             }
             if (jsonToken.equals(JsonToken.VALUE_NUMBER_INT)) {
-                return jsonParser.getValueAsInt();
+                return jsonParser.getValueAsLong();
             }
             if (jsonToken.equals(JsonToken.VALUE_NUMBER_FLOAT)) {
                 return jsonParser.getValueAsDouble();
@@ -269,5 +278,9 @@ public class BranchNodeUtils
             }
         }
         return valueAsString;
+    }
+    
+    public static boolean shouldIgnoreKey(final String s) {
+        return BranchNodeUtils.SERIALIZATION_IGNORE_KEYS_SET.contains(s);
     }
 }

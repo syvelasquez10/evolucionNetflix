@@ -28,8 +28,8 @@ class DebugMenuItems$7 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Log.d(this.this$0.logTag, "Sending CW refresh: com.netflix.mediaclient.intent.action.BA_CW_REFRESH");
-        this.this$0.activity.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.BA_CW_REFRESH"));
+        Log.d(this.this$0.logTag, "Sending home refresh: com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO");
+        this.this$0.activity.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO"));
         return true;
     }
 }

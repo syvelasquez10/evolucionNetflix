@@ -17,6 +17,11 @@ class MotionEventCompat$BaseMotionEventVersionImpl implements MotionEventCompat$
     }
     
     @Override
+    public float getAxisValue(final MotionEvent motionEvent, final int n) {
+        return 0.0f;
+    }
+    
+    @Override
     public int getPointerCount(final MotionEvent motionEvent) {
         return 1;
     }
@@ -27,6 +32,11 @@ class MotionEventCompat$BaseMotionEventVersionImpl implements MotionEventCompat$
             return 0;
         }
         throw new IndexOutOfBoundsException("Pre-Eclair does not support multiple pointers");
+    }
+    
+    @Override
+    public int getSource(final MotionEvent motionEvent) {
+        return 0;
     }
     
     @Override

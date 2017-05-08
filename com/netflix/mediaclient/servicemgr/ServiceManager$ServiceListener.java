@@ -6,6 +6,7 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -43,12 +44,11 @@ import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
+import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.model.branches.MementoVideoSwatch;
 import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
-import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
@@ -64,7 +64,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     private void logShowDetailsInfo(final Status status, final int n, final ShowDetails showDetails) {
-        Log.d("ServiceManager", "onShowDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+        Log.d("ServiceManager", "onShowDetailsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
         Log.d("ServiceManager", "onShowDetailsFetched requestedSdp=" + showDetails);
         if (showDetails != null && StringUtils.isNotEmpty(showDetails.getId()) && showDetails.getSimilars() != null) {
             Log.d("ServiceManager", "onShowDetailsFetched sims size=" + showDetails.getSimilars().size());
@@ -76,20 +76,6 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
         if (status instanceof NetflixStatus) {
             ((NetflixStatus)status).setRequestId(requestId);
         }
-    }
-    
-    @Override
-    public void expiringContent(final int n, final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
-        this.updateStatusRequestId(status, n);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManager", "expiringContentWarningAction requestId=" + n + " erroCode=" + status.getStatusCode());
-        }
-        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
-        if (access$400 == null) {
-            Log.d("ServiceManager", "No callback for expiringContentWarningAction requestId " + n);
-            return;
-        }
-        access$400.onExpiringContentWarning(expiringContentWarning, status, expiringContentAction);
     }
     
     @Override
@@ -114,10 +100,24 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
+    public void onAdvisoriesFetched(final int n, final List<Advisory> list, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onAdvisoriesFetched requestId=" + n + " errorCode=" + status.getStatusCode());
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onAdvisoriesFetched requestId " + n);
+            return;
+        }
+        access$400.onAdvisoriesFetched(list, status);
+    }
+    
+    @Override
     public void onAutoLoginTokenCreated(final int n, final String s, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onAutoLoginTokenCreated requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onAutoLoginTokenCreated requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -131,7 +131,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onAvailableAvatarsListFetched(final int n, final List<AvatarInfo> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onAvailableAvatarsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onAvailableAvatarsListFetched requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -145,7 +145,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onBBVideosFetched(final int n, final List<Billboard> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onBBVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onBBVideosFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onBBVideosFetched requestedVideos=" + list);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -160,7 +160,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onCWVideosFetched(final int n, final List<CWVideo> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onCWVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onCWVideosFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onCWVideosFetched requestedVideos=" + list);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -175,7 +175,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onDiscoveryVideosFetched(final int n, final List<Discovery> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onDiscoveryVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onDiscoveryVideosFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onDiscoveryVideosFetched requestedVideos=" + list);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -190,7 +190,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onEpisodeDetailsFetched(final int n, final EpisodeDetails episodeDetails, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onEpisodeDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onEpisodeDetailsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onEpisodeDetailsFetched requestedEdp=" + episodeDetails);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -205,7 +205,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onEpisodesFetched(final int n, final List<EpisodeDetails> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onEpisodesFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onEpisodesFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onEpisodesFetched requestedEpisodes=" + list);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -220,7 +220,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onGenreListsFetched(final int n, final List<GenreList> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onGenreListsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onGenreListsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onGenreListsFetched requestedGenreLists=" + list);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -251,7 +251,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onGenresFetched(final int n, final List<Genre> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onGenresFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onGenresFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onGenresFetched requestedGenres=" + list);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -266,7 +266,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onInteractiveMomentsFetched(final int n, final InteractiveMoments interactiveMoments, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onInteractiveMomentsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onInteractiveMomentsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onInteractiveMomentsFetched requestedMoments=" + interactiveMoments);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -281,7 +281,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onIrisNotificationsListFetched(final int n, final IrisNotificationsList list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onIrisNotificationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onIrisNotificationsListFetched requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -295,7 +295,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onKidsCharacterDetailsFetched(final int n, final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onKidsCharacterDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onKidsCharacterDetailsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onKidsCharacterDetailsFetched kidsCharacterDetails=" + kidsCharacterDetails);
             if (kidsCharacterDetails != null) {
                 Log.d("ServiceManager", "onKidsCharacterDetailsFetched gallery size=" + kidsCharacterDetails.getGallery().size());
@@ -330,7 +330,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onLoLoMoSummaryFetched(final int n, final LoLoMo loLoMo, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onLoLoMoSummaryFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onLoLoMoSummaryFetched requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -391,7 +391,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onMovieDetailsFetched(final int n, final MovieDetails movieDetails, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onMovieDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onMovieDetailsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onMovieDetailsFetched requestedMdp=" + movieDetails);
             if (movieDetails != null) {
                 Log.d("ServiceManager", "onMovieDetailsFetched sims size=" + movieDetails.getSimilars().size());
@@ -429,10 +429,25 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
+    public void onPostPlayImpressionLogged(final int n, final boolean b, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onPostPlayImpressionLogged requestId=" + n + " errorCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onPostPlayImpressionLogged success=" + b);
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onPostPlayImpressionLogged requestId " + n);
+            return;
+        }
+        access$400.onPostPlayImpressionLogged(b, status);
+    }
+    
+    @Override
     public void onPostPlayVideosFetched(final int n, final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onPostPlayVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onPostPlayVideosFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onPostPlayVideosFetched requestedVideos=" + postPlayVideosProvider);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -447,7 +462,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onProfileListUpdateStatus(final int n, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onProfileListUpdateStatus requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onProfileListUpdateStatus requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -461,7 +476,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onQueueAdd(final int n, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onQueueAdd requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onQueueAdd requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -475,7 +490,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onQueueRemove(final int n, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onQueueRemove requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onQueueRemove requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -530,7 +545,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onScenePositionFetched(final int n, final int n2, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onScenePositionFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onScenePositionFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onScenePositionFetched position=" + n2);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -545,7 +560,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onSearchResultsFetched(final int n, final ISearchResults searchResults, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onSearchResultsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onSearchResultsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onSearchResultsFetched results=" + searchResults);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -560,7 +575,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onSeasonDetailsFetched(final int n, final SeasonDetails seasonDetails, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onSeasonDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onSeasonDetailsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             final StringBuilder append = new StringBuilder().append("onSeasonDetailsFetched seasonDetailsId=");
             String id;
             if (seasonDetails == null) {
@@ -583,7 +598,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onSeasonsFetched(final int n, final List<SeasonDetails> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onSeasonsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onSeasonsFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onSeasonsFetched requestedSeasons=" + list);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -643,7 +658,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onSimilarVideosFetched(final int n, final SearchVideoListProvider searchVideoListProvider, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onSimilarVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onSimilarVideosFetched requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -657,7 +672,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onSurveyFetched(final int n, final Survey survey, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onSurveyFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onSurveyFetched requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -685,7 +700,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onVideoHide(final int n, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onVideoHide requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onVideoHide requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -699,7 +714,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onVideoRatingSet(final int n, final UserRating userRating, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onVideoRatingSet requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onVideoRatingSet requestId=" + n + " errorCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
@@ -713,7 +728,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onVideoSummaryFetched(final int n, final Video$Summary video$Summary, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onVideoSummaryFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onVideoSummaryFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onVideoSummaryFetched requestedMdp=" + video$Summary);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
@@ -728,7 +743,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     public void onVideosFetched(final int n, final List<Video> list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onVideosFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onVideosFetched requestId=" + n + " errorCode=" + status.getStatusCode());
             Log.d("ServiceManager", "onVideosFetched requestedVideos=" + list);
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);

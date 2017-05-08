@@ -19,7 +19,7 @@ public class BarkerHelper$BarkerBars
         this.mContext = mContext;
         this.mModalFormat = BarkerHelper$ModalFormat.getFormatForDevice(mContext);
         this.mArtworkFormat = BarkerHelper$ArtworkFormat.getFormatForDevice(mContext);
-        this.mMaxModalWidth = (int)this.mContext.getResources().getDimension(2131362017);
+        this.mMaxModalWidth = (int)this.mContext.getResources().getDimension(2131362016);
         final int totalColumnNum = this.getTotalColumnNum();
         int n;
         if (this.isOversized()) {
@@ -56,7 +56,7 @@ public class BarkerHelper$BarkerBars
     }
     
     public int getGutterWidth() {
-        return this.mContext.getResources().getDimensionPixelOffset(2131362016);
+        return this.mContext.getResources().getDimensionPixelOffset(2131362015);
     }
     
     public int getModalWidth() {

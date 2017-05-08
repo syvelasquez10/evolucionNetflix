@@ -7,9 +7,7 @@ package com.netflix.mediaclient.service.user.volley;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
-import com.google.gson.JsonObject;
 import java.util.List;
-import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.webclient.model.leafs.User$Summary;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
@@ -19,7 +17,10 @@ import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalkorException;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
+import com.google.gson.JsonObject;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
@@ -42,12 +43,40 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         this.responseCallback = responseCallback;
         this.pqlQuery1 = new StringBuilder("['profilesList', 'summary']").toString();
         this.pqlQuery2 = "['profilesList', {'to':" + 5 + "}, ['summary', 'subtitlePreference']]";
-        this.pqlQuery3 = new StringBuilder("['user', ['summary', 'subtitleDefaults', 'umaEog']]").toString();
+        this.pqlQuery3 = new StringBuilder("['user', ['summary', 'subtitleDefaults', 'umaEog', 'uma']]").toString();
         if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery1);
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery2);
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery3);
         }
+    }
+    
+    private static EogAlert getEogAlert(final JsonObject jsonObject) {
+        final EogAlert eogAlert = FalkorParseUtils.getPropertyObject(jsonObject, "umaEog", EogAlert.class);
+        if (eogAlert != null) {
+            if (Log.isLoggable()) {
+                Log.d("nf_service_user_fetchaccountdatarequest", "EOG loaded from server : " + eogAlert);
+            }
+            return eogAlert;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_service_user_fetchaccountdatarequest", "No EOG loaded from server");
+        }
+        return null;
+    }
+    
+    private static UmaAlert getUmaAlert(final JsonObject jsonObject) {
+        final UmaAlert umaAlert = FalkorParseUtils.getPropertyObject(jsonObject, "uma", UmaAlert.class);
+        if (umaAlert != null) {
+            if (Log.isLoggable()) {
+                Log.d("nf_service_user_fetchaccountdatarequest", "UMA loaded from server : " + umaAlert);
+            }
+            return umaAlert;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_service_user_fetchaccountdatarequest", "No UMA loaded from server");
+        }
+        return null;
     }
     
     public static AccountData parseProfilesList(final String s, final boolean b) {
@@ -58,7 +87,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         ArrayList<UserProfile> userProfiles;
         while (true) {
             while (true) {
-                Label_0431: {
+                Label_0434: {
                     while (true) {
                         int n = 0;
                         Label_0240: {
@@ -67,7 +96,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                             try {
                                 final JsonObject asJsonObject = dataObj.getAsJsonObject("profilesList");
                                 if (!asJsonObject.has("summary")) {
-                                    break Label_0431;
+                                    break Label_0434;
                                 }
                                 final int length = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", ListSummary.class).getLength();
                                 userProfiles = new ArrayList<UserProfile>();
@@ -117,7 +146,8 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                 throw new FalkorException("response missing user json objects", ex2);
             }
             user.subtitleDefaults = FalkorParseUtils.getPropertyObject(asJsonObject3, "subtitleDefaults", SubtitlePreference.class);
-            user.eogAlert = FalkorParseUtils.getPropertyObject(asJsonObject3, "umaEog", EogAlert.class);
+            user.eogAlert = getEogAlert(asJsonObject3);
+            user.setUmaAlert(getUmaAlert(asJsonObject3));
             accountData.setUser(user);
         }
         accountData.setUserProfiles(userProfiles);

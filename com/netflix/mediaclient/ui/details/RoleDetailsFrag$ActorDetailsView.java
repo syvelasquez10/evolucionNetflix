@@ -38,13 +38,13 @@ import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import android.widget.ImageView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import com.netflix.model.branches.FalkorPerson;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.kubrick.BarkerUtils;
@@ -92,17 +92,17 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void findViews() {
-        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690221);
-        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690222);
-        this.knownFor = (TextView)this.findViewById(2131690226);
-        this.knownForLabel = (TextView)this.findViewById(2131690225);
-        this.spouse = (TextView)this.findViewById(2131690230);
-        this.spouseLabel = (TextView)this.findViewById(2131690229);
-        this.name = (TextView)this.findViewById(2131690224);
-        this.born = (TextView)this.findViewById(2131690228);
-        this.bornLabel = (TextView)this.findViewById(2131690227);
-        this.onNetFlixLabel = this.findViewById(2131690223);
-        this.this$0.caret = this.findViewById(2131690231);
+        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690227);
+        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690228);
+        this.knownFor = (TextView)this.findViewById(2131690232);
+        this.knownForLabel = (TextView)this.findViewById(2131690231);
+        this.spouse = (TextView)this.findViewById(2131690236);
+        this.spouseLabel = (TextView)this.findViewById(2131690235);
+        this.name = (TextView)this.findViewById(2131690230);
+        this.born = (TextView)this.findViewById(2131690234);
+        this.bornLabel = (TextView)this.findViewById(2131690233);
+        this.onNetFlixLabel = this.findViewById(2131690229);
+        this.this$0.caret = this.findViewById(2131690237);
     }
     
     private void init() {
@@ -113,7 +113,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     
     private void setupCaret() {
         if (this.this$0.caret != null) {
-            this.this$0.caret.setTranslationX((float)(-(BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361852))));
+            this.this$0.caret.setTranslationX((float)(-(BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362230))));
             this.this$0.caret.setOnClickListener((View$OnClickListener)new RoleDetailsFrag$ActorDetailsView$1(this));
         }
     }
@@ -121,6 +121,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     private void updateActorHeadshotmage(final FalkorPerson falkorPerson) {
         if (this.actorHeadshotImg != null) {
             if (falkorPerson.detail.getHeadshotImageUrl() == null) {
+                this.actorHeadshotImg.setImageLoaderInfo(null);
                 this.actorHeadshotImg.setImageDrawable(null);
                 return;
             }
@@ -129,7 +130,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void updateActorStillImage(final FalkorPerson falkorPerson) {
-        final View viewById = this.findViewById(2131689947);
+        final View viewById = this.findViewById(2131689945);
         if (this.actorStillImg != null) {
             this.adjustHeight(this.actorStillImg);
             this.actorStillImg.setImageLoaderInfo(null);
@@ -198,7 +199,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     
     protected void adjustHeight(final ImageView imageView) {
         if (this.this$0.stillImageHeight < 1) {
-            final float n = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362169);
+            final float n = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362171);
             final float n2 = 1;
             final ViewGroup$LayoutParams layoutParams = imageView.getLayoutParams();
             final float n3 = (BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - n * (n2 + 1.0f)) / 1;
@@ -216,7 +217,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903248;
+        return 2130903255;
     }
     
     void updateDetails(final FalkorPerson falkorPerson, final boolean b) {

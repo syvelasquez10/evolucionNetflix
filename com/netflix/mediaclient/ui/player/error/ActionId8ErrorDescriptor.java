@@ -20,6 +20,6 @@ class ActionId8ErrorDescriptor extends PlaybackErrorDescriptor
     
     static ActionId8ErrorDescriptor build(final PlayerFragment playerFragment, final NccpActionId nccpActionId, final String s) {
         Log.w("nf_play_error", "ActionID 8 NFErr_MC_NCCP_GetNewCredentials");
-        return new ActionId8ErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131230781), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131231059), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new ActionId8ErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, playerFragment.getString(2131230781), null, new UnregisterAction(playerFragment.getActivity()), playerFragment.getString(2131231061), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
 }

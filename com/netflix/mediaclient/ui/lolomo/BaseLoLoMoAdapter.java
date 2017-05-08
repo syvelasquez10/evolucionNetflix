@@ -12,15 +12,16 @@ import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AbsListView;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.ui.lomo.LoMoUtils;
-import com.netflix.mediaclient.util.Coppola2Utils;
-import android.widget.ListView;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.lomo.LoMoUtils;
+import com.netflix.mediaclient.util.ThreadUtils;
+import com.netflix.mediaclient.util.Coppola2Utils;
 import android.app.Activity;
-import android.view.ViewGroup;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.Iterator;
-import com.netflix.mediaclient.util.ThreadUtils;
+import android.widget.ListView;
+import android.view.ViewGroup;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.content.res.Resources;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -40,6 +41,7 @@ import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import java.util.Set;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.ums.UserMessageAreaView;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -59,6 +61,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     private boolean lomoRequestPending;
     private final List<T> lomos;
     private LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
+    private UserMessageAreaView mUserMessageAreaView;
     private ServiceManager manager;
     private final Set<LoMoViewPager> pagerSet;
     private final ObjectRecycler$ViewRecycler viewRecycler;
@@ -68,6 +71,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.isLoading = true;
         this.lomos = new ArrayList<T>(40);
         this.lomoRequestPending = true;
+        this.mUserMessageAreaView = null;
         this.frag = frag;
         this.activity = (NetflixActivity)frag.getActivity();
         this.viewRecycler = frag.getViewRecycler();
@@ -101,19 +105,19 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131689894);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131689892);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131689896);
+        final TextView textView = (TextView)view.findViewById(2131689894);
         final Resources resources = this.activity.getResources();
         int n;
         if (BrowseExperience.showKidsExperience()) {
             n = 2131624002;
         }
         else {
-            n = 2131624099;
+            n = 2131624102;
         }
         textView.setTextColor(resources.getColor(n));
-        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131689922));
+        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131689920));
     }
     
     private void fetchMoreData() {
@@ -131,18 +135,31 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.makeFetchRequest(this.lolomoId, this.loMoStartIndex, n, new BaseLoLoMoAdapter$LoMoCallbacks(this, this.lomoRequestId, n - this.loMoStartIndex));
     }
     
-    private void hideLoadingAndErrorViews() {
-        this.frag.hideLoadingAndErrorViews();
+    private UmaAlert getUserMessage() {
+        if (this.manager != null && this.manager.isReady()) {
+            final UmaAlert userMessageAlert = this.manager.getUserMessageAlert();
+            if (userMessageAlert != null) {
+                return userMessageAlert;
+            }
+        }
+        return null;
     }
     
-    private void initLoadingState() {
-        ThreadUtils.assertOnMain();
-        this.lomos.clear();
-        this.lomoRequestId = -2147483648L;
-        this.lomoRequestPending = true;
-        this.hasMoreData = false;
-        this.loMoStartIndex = 0;
-        this.notifyDataSetChanged();
+    private UserMessageAreaView handleUserMessage() {
+        final ListView listView = this.frag.getListView();
+        if (listView != null) {
+            final UmaAlert userMessage = this.getUserMessage();
+            if (userMessage != null && !userMessage.isConsumed()) {
+                final UserMessageAreaView userMessageAreaView = new UserMessageAreaView(listView.getContext());
+                userMessageAreaView.show(userMessage, listView, (ViewGroup)this.frag.getContentView());
+                return userMessageAreaView;
+            }
+        }
+        return null;
+    }
+    
+    private void hideLoadingAndErrorViews() {
+        this.frag.hideLoadingAndErrorViews();
     }
     
     private boolean isAnyPagerLoading() {
@@ -163,6 +180,14 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             }
         }
         return false;
+    }
+    
+    private void refreshUserMessage() {
+        final UmaAlert userMessage = this.getUserMessage();
+        if (userMessage != null && (userMessage.isStale() || userMessage.isConsumed())) {
+            Log.v("BaseLoLoMoAdapter", "User message is stale or consumed, refreshing");
+            this.activity.getServiceManager().refreshCurrentUserMessageArea();
+        }
     }
     
     private void showErrorView() {
@@ -235,24 +260,6 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             else {
                 this.updateRowViews((BaseLoLoMoAdapter$RowHolder)inflate.getTag(), (T)item, n);
             }
-            final ListView listView = this.frag.getListView();
-            int headerViewsCount;
-            if (listView == null) {
-                headerViewsCount = 0;
-            }
-            else {
-                headerViewsCount = listView.getHeaderViewsCount();
-            }
-            if (headerViewsCount == 0) {
-                int actionBarHeight;
-                if (n == 0) {
-                    actionBarHeight = this.activity.getActionBarHeight();
-                }
-                else {
-                    actionBarHeight = 0;
-                }
-                ViewUtils.setPaddingTop(inflate, actionBarHeight);
-            }
             dummyView = inflate;
             if (this.hasMoreData) {
                 dummyView = inflate;
@@ -276,8 +283,22 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         return 1;
     }
     
+    protected void initLoadingState() {
+        ThreadUtils.assertOnMain();
+        this.lomos.clear();
+        if (this.mUserMessageAreaView != null) {
+            this.mUserMessageAreaView.dismiss(false);
+            this.mUserMessageAreaView = null;
+        }
+        this.lomoRequestId = -2147483648L;
+        this.lomoRequestPending = true;
+        this.hasMoreData = false;
+        this.loMoStartIndex = 0;
+        this.notifyDataSetChanged();
+    }
+    
     protected TextView initTitleView(final View view) {
-        final TextView textView = (TextView)view.findViewById(2131689895);
+        final TextView textView = (TextView)view.findViewById(2131689893);
         if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "Manipulating title padding, view: " + textView);
         }
@@ -326,9 +347,10 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
     }
     
-    public void onManagerReady(final ServiceManager manager, final Status status) {
+    public final void onManagerReady(final ServiceManager manager, final Status status) {
         this.manager = manager;
         this.refreshData();
+        this.refreshUserMessage();
     }
     
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
@@ -371,6 +393,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected void updateLoMoData(final List<T> list) {
+        if (list.size() > 0 && this.mUserMessageAreaView == null) {
+            this.mUserMessageAreaView = this.handleUserMessage();
+        }
         this.lomos.addAll((Collection<? extends T>)list);
         this.loMoStartIndex += list.size();
         this.notifyDataSetChanged();
@@ -383,7 +408,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final TextView title = baseLoLoMoAdapter$RowHolder.title;
         String text;
         if (t.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131231200);
+            text = this.activity.getString(2131231206);
         }
         else {
             text = t.getTitle();
@@ -391,12 +416,12 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         title.setText((CharSequence)text);
         if (t.getType() == LoMoType.DISCOVERY_ROW) {
             baseLoLoMoAdapter$RowHolder.title.setVisibility(0);
-            baseLoLoMoAdapter$RowHolder.title.setText(2131231003);
+            baseLoLoMoAdapter$RowHolder.title.setText(2131231005);
             baseLoLoMoAdapter$RowHolder.title.setTypeface(Typeface.create("sans-serif-light", 0));
             baseLoLoMoAdapter$RowHolder.title.setLineSpacing(0.0f, 1.0f);
             ((RelativeLayout$LayoutParams)baseLoLoMoAdapter$RowHolder.title.getLayoutParams()).removeRule(20);
             ((RelativeLayout$LayoutParams)baseLoLoMoAdapter$RowHolder.title.getLayoutParams()).addRule(14, -1);
-            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131362069);
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131362068);
             ((RelativeLayout$LayoutParams)baseLoLoMoAdapter$RowHolder.title.getLayoutParams()).setMargins(0, dimensionPixelSize * 2, 0, dimensionPixelSize);
         }
         else {
@@ -410,7 +435,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         baseLoLoMoAdapter$RowHolder.rowContent.refresh(t, n);
         if (BrowseExperience.showKidsExperience()) {
             Api16Util.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, null);
-            baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, this.activity.getResources().getDimensionPixelSize(2131362202));
+            baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, this.activity.getResources().getDimensionPixelSize(2131362204));
             baseLoLoMoAdapter$RowHolder.title.setTextColor(baseLoLoMoAdapter$RowHolder.defaultTitleColors);
         }
     }

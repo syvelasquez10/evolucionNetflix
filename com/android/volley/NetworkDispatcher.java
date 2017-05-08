@@ -44,8 +44,8 @@ public class NetworkDispatcher extends Thread
                 try {
                     while (true) {
                         request = this.mQueue.take();
-                        if (Log.isLoggable("RequestQueue_Blocked", 4) && this.mQueue.size() > 0) {
-                            Log.i("RequestQueue_Blocked", "Http request is blocked - queue size: " + this.mQueue.size());
+                        if (Log.isLoggable("RequestQueue_Blocked", 4)) {
+                            Log.i("RequestQueue_Blocked", "Http request is blocked - queue size: " + this.mQueue.size() + ", url - " + request.getUrl());
                         }
                         try {
                             request.addMarker("network-queue-take");

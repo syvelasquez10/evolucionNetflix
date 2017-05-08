@@ -17,6 +17,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import android.content.res.Resources;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -42,20 +43,18 @@ import android.annotation.SuppressLint;
 public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
 {
     private static final String EXTRA_CHARACTER_ID = "extra_chararcter_id";
-    public static final String EXTRA_KIDS_COLOR = "extra_kids_color";
-    private static final float ROW_HEIGHT_LANDSCAPE_SCALE_FACTOR = 0.8f;
-    private static final float ROW_HEIGHT_PORTRAIT_SCALE_FACTOR = 1.1f;
+    public static final String EXTRA_KIDS_COLOR_ID = "extra_kids_color_id";
     private static final String TAG = "KidsCharacterDetailsFrag";
     private String characterId;
     private KidsCharacterDetails kidsCharacterDetails;
-    private int kidsColor;
+    private int kidsColorId;
     boolean shouldRenderAsSDP;
     
     public static Fragment create(final String s, final int n) {
         final BarkerKidsCharacterDetailsFrag barkerKidsCharacterDetailsFrag = new BarkerKidsCharacterDetailsFrag();
         final Bundle arguments = new Bundle();
         arguments.putString("extra_chararcter_id", s);
-        arguments.putInt("extra_kids_color", n);
+        arguments.putInt("extra_kids_color_id", n);
         arguments.putBoolean("extra_show_details", true);
         barkerKidsCharacterDetailsFrag.setArguments(arguments);
         return (Fragment)barkerKidsCharacterDetailsFrag;
@@ -107,24 +106,32 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
     @Override
     protected ViewGroup createSeasonsSelectorGroup() {
         final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
-        this.setSpinnerBackground(this.getResources().getColor(this.kidsColor));
+        this.setSpinnerBackground(this.getResources().getColor(this.kidsColorId));
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
-            seasonsSpinnerAdapter.setItemBackgroundColor(this.kidsColor);
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131624161);
-            seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColor);
+            seasonsSpinnerAdapter.setItemBackgroundColor(this.kidsColorId);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131624167);
+            seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColorId);
         }
         return seasonsSelectorGroup;
     }
     
     @Override
     protected int getNumColumns() {
-        return this.getActivity().getResources().getInteger(2131492881);
+        final Resources resources = this.getActivity().getResources();
+        int n;
+        if (this.shouldRenderAsSDP) {
+            n = 2131492882;
+        }
+        else {
+            n = 2131492881;
+        }
+        return resources.getInteger(n);
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362183) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362185) * 2;
     }
     
     @Override
@@ -154,7 +161,7 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.characterId = this.getArguments().getString("extra_chararcter_id");
-        this.kidsColor = this.getArguments().getInt("extra_kids_color");
+        this.kidsColorId = this.getArguments().getInt("extra_kids_color_id");
     }
     
     @Override

@@ -4,14 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import java.util.Date;
-import junit.framework.Assert;
-import android.view.View$OnClickListener;
-import com.netflix.mediaclient.util.l10n.LocalizationUtils;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import java.nio.ByteBuffer;
@@ -21,6 +13,7 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.media.Language;
 import android.content.res.Configuration;
+import com.netflix.mediaclient.android.widget.advisor.Advisor;
 import android.app.Activity;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.media.Watermark$Anchor;
@@ -28,21 +21,19 @@ import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.util.SubtitleUtils;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.AutoResizeTextView;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.media.Watermark;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.Build;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView;
 import android.view.SurfaceHolder;
-import android.os.Handler;
 import android.widget.ViewFlipper;
 import android.widget.TextView;
 import android.view.View;
@@ -53,8 +44,6 @@ import android.widget.RelativeLayout;
 public class PlayScreen implements Screen
 {
     protected static final String TAG = "screen";
-    private final Runnable contentAdvisoryNoticeCompletionRunnable;
-    private final Runnable contentAdvisoryStartNoticeRunnable;
     private int currentTimelineProgress;
     protected PlayScreen$Listeners listeners;
     protected RelativeLayout mBackground;
@@ -62,13 +51,10 @@ public class PlayScreen implements Screen
     private ViewPropertyAnimator mBifAnim;
     protected BottomPanel mBottomPanel;
     protected View mBufferingOverlay;
-    private ContentAdvisoryController mContentAdvisory;
     protected PlayerFragment mController;
     protected TextView mDebugData;
     private PlayScreenDecorator mDecorator;
-    private PlayScreen$ExpiringContent mExpiringContent;
     protected ViewFlipper mFlipper;
-    private final Handler mHandler;
     protected SurfaceHolder mHolder;
     private boolean mIsAdvisoryDisabled;
     protected View mLoadingOverlay;
@@ -88,10 +74,6 @@ public class PlayScreen implements Screen
         this.mState = PlayerUiState.Loading;
         this.mNavigationBarSetVisibleInProgress = false;
         this.mZoomEnabled = true;
-        this.mHandler = new Handler();
-        this.mContentAdvisory = null;
-        this.contentAdvisoryStartNoticeRunnable = new PlayScreen$1(this);
-        this.contentAdvisoryNoticeCompletionRunnable = new PlayScreen$2(this);
         if (mController == null || listeners == null) {
             throw new IllegalArgumentException("Argument can not be null!");
         }
@@ -100,7 +82,7 @@ public class PlayScreen implements Screen
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
         final View view = mController.getView();
-        this.mSurface = (TappableSurfaceView)view.findViewById(2131690078);
+        this.mSurface = (TappableSurfaceView)view.findViewById(2131690077);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -109,32 +91,35 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)view.findViewById(2131689833);
-        this.mBackground = (RelativeLayout)view.findViewById(2131689832);
-        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131690081);
-        this.mBufferingOverlay = view.findViewById(2131690100);
-        this.mLoadingOverlay = view.findViewById(2131690082);
+        this.mFlipper = (ViewFlipper)view.findViewById(2131689831);
+        this.mBackground = (RelativeLayout)view.findViewById(2131689830);
+        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131690080);
+        this.mBufferingOverlay = view.findViewById(2131690099);
+        this.mLoadingOverlay = view.findViewById(2131690081);
         int n;
         if (mController.getNetflixActivity().isTablet()) {
-            n = 2131690097;
+            n = 2131690096;
         }
         else {
-            n = 2131690080;
+            n = 2131690079;
         }
         this.mBif = (ImageView)view.findViewById(n);
-        this.mTabletBifsLayout = view.findViewById(2131690096);
-        this.mQuickActions = view.findViewById(2131690089);
+        this.mTabletBifsLayout = view.findViewById(2131690095);
+        this.mQuickActions = view.findViewById(2131690088);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
         final Asset currentAsset = mController.getCurrentAsset();
         if (currentAsset == null) {
-            Log.w("screen", "PlayerFragment getCurrentAsset() is null. Content advisory notice is disabled.");
+            Log.w("screen", "PlayerFragment getCurrentAsset() is null. Advisory notice is disabled.");
+            return;
         }
-        else if (!(this.mIsAdvisoryDisabled = (currentAsset.isAdvisoryDisabled() || StringUtils.isEmpty(currentAsset.getAdvisoryRating()) || StringUtils.isEmpty(currentAsset.getAdvisoryDescription())))) {
-            (this.mContentAdvisory = ContentAdvisoryController.createInstance(mController)).setDisplayDuration(currentAsset.getAdvisoryDisplayDuration() * 1000);
-            this.mContentAdvisory.populateViews(currentAsset.getAdvisoryRating(), mController.getCurrentAsset().getAdvisoryDescription());
+        this.createAdvisories(currentAsset);
+    }
+    
+    private void createAdvisories(final Asset asset) {
+        if (!this.mIsAdvisoryDisabled && this.mController != null && isBrowseValid(this.mController)) {
+            this.mController.getServiceManager().getBrowse().fetchAdvisories(asset.getPlayableId(), new PlayScreen$1(this, asset));
         }
-        this.setupABTest();
     }
     
     static PlayScreen createInstance(final PlayerFragment playerFragment, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
@@ -175,7 +160,7 @@ public class PlayScreen implements Screen
         return playScreen2;
     }
     
-    private static boolean isBrowseValid(final NetflixFrag netflixFrag) {
+    public static boolean isBrowseValid(final NetflixFrag netflixFrag) {
         return netflixFrag != null && netflixFrag.getServiceManager() != null && netflixFrag.getServiceManager().getBrowse() != null;
     }
     
@@ -205,7 +190,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131624149);
+        final int color = this.mController.getResources().getColor(2131624153);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -222,7 +207,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131624149);
+        final int color = this.mController.getResources().getColor(2131624153);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -238,11 +223,11 @@ public class PlayScreen implements Screen
     }
     
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
-        if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
+        if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone || postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.SignupForPhone) {
             Log.d("screen", "playout_phone_episode");
             return 2130903221;
         }
-        if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
+        if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet || postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.SignupForTablet) {
             Log.d("screen", "playout_tablet_episode");
             return 2130903225;
         }
@@ -272,15 +257,6 @@ public class PlayScreen implements Screen
         }
     }
     
-    private void setupABTest() {
-        if (this.mController != null && this.mController.getServiceManager() != null) {
-            final ABTestConfig abTestConfiguration_6634 = this.mController.getServiceManager().getConfiguration().getABTestConfiguration_6634();
-            if (abTestConfiguration_6634 != null && abTestConfiguration_6634.getCell() == ABTestConfig$Cell.CELL_ONE) {
-                this.mExpiringContent = new PlayScreen$ExpiringContent(this);
-            }
-        }
-    }
-    
     void addWatermark(final Watermark watermark) {
         if (this.mWatermarkDisplayArea != null && watermark != null && StringUtils.isNotEmpty(watermark.getIdentifier())) {
             if (Log.isLoggable()) {
@@ -290,13 +266,13 @@ public class PlayScreen implements Screen
             autoResizeTextView.setGravity(119);
             final int dipToPixels = AndroidUtils.dipToPixels((Context)this.mController.getActivity(), 5);
             autoResizeTextView.setPadding(dipToPixels, dipToPixels, dipToPixels, dipToPixels);
-            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231222, new Object[] { watermark.getIdentifier() }));
+            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231228, new Object[] { watermark.getIdentifier() }));
             float n;
             if (this.mController.getNetflixActivity().isTablet()) {
-                n = this.mController.getResources().getDimension(2131362249);
+                n = this.mController.getResources().getDimension(2131362255);
             }
             else {
-                n = this.mController.getResources().getDimension(2131362247);
+                n = this.mController.getResources().getDimension(2131362253);
             }
             SubtitleUtils.applyStyle(autoResizeTextView, watermark.getStyle((Context)this.mController.getActivity()), n);
             final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-2, -2);
@@ -456,13 +432,9 @@ public class PlayScreen implements Screen
         return this.mTopPanel;
     }
     
-    void hideContentAdvisory() {
-        if (this.mContentAdvisory == null) {
-            return;
-        }
-        this.mContentAdvisory.hide(false);
-        this.mHandler.removeCallbacks(this.contentAdvisoryStartNoticeRunnable);
-        this.mHandler.removeCallbacks(this.contentAdvisoryNoticeCompletionRunnable);
+    public void hideAdvisories() {
+        this.mIsAdvisoryDisabled = (Advisor.getQueueSize() <= 0);
+        Advisor.dismissAll();
     }
     
     void hideNavigationBar() {
@@ -694,9 +666,6 @@ public class PlayScreen implements Screen
             if (this.mTopPanel != null) {
                 this.mTopPanel.hide();
             }
-            if (this.mExpiringContent != null) {
-                this.mExpiringContent.hideWarning();
-            }
         }
         else {
             if (b) {
@@ -708,9 +677,6 @@ public class PlayScreen implements Screen
             }
             if (this.mTopPanel != null) {
                 this.mTopPanel.show();
-            }
-            if (this.mExpiringContent != null) {
-                this.mExpiringContent.tryShowWarning();
             }
         }
         final SubtitleManager subtitleManager = this.mController.getSubtitleManager();
@@ -846,6 +812,11 @@ public class PlayScreen implements Screen
         return !this.mController.isStalled() && this.mState != PlayerUiState.Loading;
     }
     
+    public void showAdvisories() {
+        this.mIsAdvisoryDisabled = (Advisor.getQueueSize() <= 0);
+        Advisor.showAll();
+    }
+    
     public void showBif(final ByteBuffer byteBuffer) {
         if (this.mController == null || !this.mController.isActivityValid()) {
             return;
@@ -873,14 +844,6 @@ public class PlayScreen implements Screen
         if (!this.isCoppolaPortrait()) {
             this.mBottomPanel.show();
         }
-    }
-    
-    void showContentAdvisory() {
-        if (this.mContentAdvisory == null || this.isAdvisoryDisabled()) {
-            return;
-        }
-        this.mHandler.removeCallbacks(this.contentAdvisoryNoticeCompletionRunnable);
-        this.mHandler.postDelayed(this.contentAdvisoryStartNoticeRunnable, 500L);
     }
     
     void showNavigationBar() {

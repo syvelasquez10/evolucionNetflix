@@ -14,6 +14,7 @@ import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.app.FragmentTransaction;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import android.view.animation.Animation;
@@ -129,9 +130,9 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
     }
     
     private void findViews(final View view) {
-        this.relatedRecyclerView = (RecyclerView)view.findViewById(2131689997);
-        this.relatedGridTitle = (TextView)view.findViewById(2131689996);
-        this.relatedGridGroup = view.findViewById(2131689995);
+        this.relatedRecyclerView = (RecyclerView)view.findViewById(2131689996);
+        this.relatedGridTitle = (TextView)view.findViewById(2131689995);
+        this.relatedGridGroup = view.findViewById(2131689994);
     }
     
     private void hideDialogFragmentIfNecessary() {
@@ -146,7 +147,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
         if (this.isActivityValid()) {
             final FragmentManager fragmentManager = this.getFragmentManager();
             if (fragmentManager != null) {
-                final MementoFrag mementoFrag = (MementoFrag)fragmentManager.findFragmentById(2131689993);
+                final MementoFrag mementoFrag = (MementoFrag)fragmentManager.findFragmentById(2131689992);
                 if (mementoFrag != null) {
                     mementoFrag.hideLoading();
                 }
@@ -202,7 +203,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
     }
     
     private void setupRecyclerViewItemDecoration() {
-        this.relatedRecyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361871), this.numColumns));
+        this.relatedRecyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361869), this.numColumns));
     }
     
     private void showAndDisable() {
@@ -268,7 +269,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getPlayable().getParentTitle());
-            this.views.updateSubtitleText(this.activity.getString(2131231062, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() }));
+            this.views.updateSubtitleText(this.activity.getString(2131231065, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() }));
         }
         else {
             this.views.updateTitleText(this.currentVideo.getTitle());
@@ -314,12 +315,12 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
         else {
             this.log("Video is not instance of EpisodeDetails");
         }
-        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131689993);
+        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131689992);
         if (mementoFrag != null) {
             mementoFrag.setVideoId(this.currentVideo.getPlayable().getParentId());
             mementoFrag.fetchData();
         }
-        final PostPlayFrag postPlayFrag = (PostPlayFrag)this.getFragmentManager().findFragmentById(2131689994);
+        final PostPlayFrag postPlayFrag = (PostPlayFrag)this.getFragmentManager().findFragmentById(2131689993);
         if (postPlayFrag != null) {
             postPlayFrag.setVideo(this.currentVideo);
         }
@@ -445,7 +446,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
             this.relatedGridGroup.startAnimation((Animation)alphaAnimation);
             return true;
         }
-        final PostPlayFrag postPlayFrag = (PostPlayFrag)this.getFragmentManager().findFragmentById(2131689994);
+        final PostPlayFrag postPlayFrag = (PostPlayFrag)this.getFragmentManager().findFragmentById(2131689993);
         if (postPlayFrag != null && postPlayFrag.isShowingTitleEnd()) {
             this.getActivity().sendBroadcast(new Intent("com.netflix.mediaclient.service.ACTION_CLOSE_MINI_PLAYER"));
             return true;
@@ -454,7 +455,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
     }
     
     public boolean hideRDP() {
-        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689998);
+        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689997);
         if (roleDetailsFrag != null && !roleDetailsFrag.isHidden() && roleDetailsFrag.isResumed()) {
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
             beginTransaction.setCustomAnimations(2131034114, 2131034115);
@@ -465,6 +466,10 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
             return true;
         }
         return false;
+    }
+    
+    public void hideRelatedGroup() {
+        ViewUtils.setVisibleOrGone(this.relatedGridGroup, false);
     }
     
     @Override
@@ -579,7 +584,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
             this.log("Activity is null or destroyed - bailing early");
             return;
         }
-        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131689993);
+        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131689992);
         if (mementoFrag != null) {
             mementoFrag.onManagerReady(serviceManager, status);
         }

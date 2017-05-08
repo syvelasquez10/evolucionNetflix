@@ -11,7 +11,6 @@ import com.netflix.mediaclient.util.LanguageChoice;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
@@ -49,7 +48,6 @@ import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
@@ -61,15 +59,17 @@ import com.netflix.mediaclient.ui.player.subtitles.SubtitleManagerFactory;
 import android.os.Debug;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
-import android.app.Activity;
 import android.os.SystemClock;
-import android.app.DialogFragment;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import android.app.DialogFragment;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
+import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
@@ -339,12 +339,26 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
     }
     
     private void continueInitAfterPlayVerify() {
+        final boolean b = false;
         Log.v("PlayerFragment", "Playback verified - completing init process...");
+        final ServiceManager serviceManager = this.getServiceManager();
         if (this.mAsset != null) {
             this.mScreen.setTitle(this.getTitleForScreen(this.mAsset));
             this.mScreen.onAssetUpdated(this.mAsset);
         }
-        this.mScreen.getTopPanel().setEpisodeSelectorVisibility(this.mAsset != null && this.mAsset.isEpisode());
+        final boolean b2 = serviceManager != null && serviceManager.isNonMemberPlayback();
+        final TopPanel topPanel = this.mScreen.getTopPanel();
+        boolean episodeSelectorVisibility = b;
+        if (this.mAsset != null) {
+            episodeSelectorVisibility = b;
+            if (this.mAsset.isEpisode()) {
+                episodeSelectorVisibility = b;
+                if (!b2) {
+                    episodeSelectorVisibility = true;
+                }
+            }
+        }
+        topPanel.setEpisodeSelectorVisibility(episodeSelectorVisibility);
         if (!this.mState.videoLoaded && this.loadVideo()) {
             this.mState.playerState = PlayerFragment$PlayerFragmentState.ACTIVITY_PLAYER_READY;
         }
@@ -613,7 +627,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                     }
                     catch (Throwable t) {
                         Log.e("PlayerFragment", "Exception in video preparation", t);
-                        this.addError(new NccpActionId(3, "", this.getString(2131231079), "handleActionId", "ACTION_ID", 0, null));
+                        this.addError(new NccpActionId(3, "", this.getString(2131231081), "handleActionId", "ACTION_ID", 0, null));
                         return false;
                     }
                 }
@@ -635,19 +649,19 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
     }
     
     private void noConnectivityWarning() {
-        this.getNetflixActivity().displayDialog(AlertDialogFactory.createDialog((Context)this.getActivity(), this.mHandler, new AlertDialogFactory$AlertDialogDescriptor(null, this.getString(2131231203), this.getString(2131231126), this.exitButtonHandler)));
+        this.getNetflixActivity().displayDialog(AlertDialogFactory.createDialog((Context)this.getActivity(), this.mHandler, new AlertDialogFactory$AlertDialogDescriptor(null, this.getString(2131231209), this.getString(2131231128), this.exitButtonHandler)));
     }
     
     private void nonWifiPlayWarning(final boolean b) {
         ThreadUtils.assertOnMain();
         String s;
         if (b) {
-            s = this.getString(2131231121);
+            s = this.getString(2131231123);
         }
         else {
-            s = this.getString(2131231122);
+            s = this.getString(2131231124);
         }
-        final String string = this.getString(2131231126);
+        final String string = this.getString(2131231128);
         Runnable exitButtonHandler;
         if (b) {
             exitButtonHandler = null;
@@ -777,23 +791,26 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
     }
     
     private void showEpisodesFrag() {
-        if (this.mEpisodesFrag == null) {
-            NetflixDialogFrag mEpisodesFrag;
-            if (BrowseExperience.isKubrick() || BarkerHelper.isInTest((Context)this.getActivity())) {
-                mEpisodesFrag = BarkerShowDetailsFrag.create(false);
+        final NetflixActivity netflixActivity = this.getNetflixActivity();
+        if (netflixActivity != null && !AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity) && !EpisodesFrag.isDialogFragmentVisible(netflixActivity, this.mEpisodesFrag)) {
+            if (this.mEpisodesFrag == null) {
+                NetflixDialogFrag mEpisodesFrag;
+                if (BrowseExperience.isKubrick() || BarkerHelper.isInTest((Context)this.getActivity())) {
+                    mEpisodesFrag = BarkerShowDetailsFrag.create(false);
+                }
+                else {
+                    mEpisodesFrag = EpisodesFrag.createEpisodes(this.mAsset.getParentId(), this.mAsset.getPlayableId(), false);
+                }
+                (this.mEpisodesFrag = mEpisodesFrag).onManagerReady(this.getServiceManager(), CommonStatus.OK);
+                this.mEpisodesFrag.setCancelable(true);
+                this.mEpisodesFrag.setStyle(1, 2131427569);
             }
-            else {
-                mEpisodesFrag = EpisodesFrag.createEpisodes(this.mAsset.getParentId(), this.mAsset.getPlayableId(), false);
+            if (this.mEpisodesFrag instanceof BarkerShowDetailsFrag) {
+                ((BarkerShowDetailsFrag)this.mEpisodesFrag).addEpisodeArguments(this.mAsset.getParentId(), this.mAsset.getPlayableId());
             }
-            (this.mEpisodesFrag = mEpisodesFrag).onManagerReady(this.getServiceManager(), CommonStatus.OK);
-            this.mEpisodesFrag.setCancelable(true);
-            this.mEpisodesFrag.setStyle(1, 2131427564);
+            this.notifyOthersOfPlayStop();
+            netflixActivity.showDialog(this.mEpisodesFrag);
         }
-        if (this.mEpisodesFrag instanceof BarkerShowDetailsFrag) {
-            ((BarkerShowDetailsFrag)this.mEpisodesFrag).addEpisodeArguments(this.mAsset.getParentId(), this.mAsset.getPlayableId());
-        }
-        this.notifyOthersOfPlayStop();
-        this.getNetflixActivity().showDialog(this.mEpisodesFrag);
     }
     
     private void showLoading() {
@@ -825,7 +842,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
     }
     
     private void slowNetworkWarning() {
-        this.getNetflixActivity().displayDialog(AlertDialogFactory.createDialog((Context)this.getActivity(), this.mHandler, new AlertDialogFactory$AlertDialogDescriptor(null, this.getString(2131231186), this.getString(2131231126), this.exitButtonHandler)));
+        this.getNetflixActivity().displayDialog(AlertDialogFactory.createDialog((Context)this.getActivity(), this.mHandler, new AlertDialogFactory$AlertDialogDescriptor(null, this.getString(2131231192), this.getString(2131231128), this.exitButtonHandler)));
     }
     
     private void startScreenUpdate() {
@@ -913,13 +930,13 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                     sb.append(playoutMetadata.instantBitRate).append("/");
                     sb.append(playoutMetadata.targetBitRate).append("/");
                     if (playoutMetadata.isSuperHD) {
-                        sb.append(this.getString(2131231207));
+                        sb.append(this.getString(2131231213));
                     }
                     else if (playoutMetadata.isHD) {
-                        sb.append(this.getString(2131231085));
+                        sb.append(this.getString(2131231087));
                     }
                     else {
-                        sb.append(this.getString(2131231170));
+                        sb.append(this.getString(2131231176));
                     }
                     sb2.append(playoutMetadata.language).append("/");
                     sb2.append(playoutMetadata.getAudioChannel()).append("/");
@@ -941,7 +958,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                         s = string;
                         s2 = "N/A";
                     }
-                    final String string2 = this.getString(2131231048, new Object[] { "Release", AndroidManifestUtils.getVersionCode(this.getActivity().getBaseContext()), (int)(Debug.getNativeHeapAllocatedSize() / 1048576L), "UI Version", n, n2, sb.toString(), sb2.toString(), PlayerTypeFactory.getCurrentType(this.getActivity().getBaseContext()).getDescription(), s, s2, SubtitleManagerFactory.getSubtitleManagerLabel(this.mSubtitleManager), DrmManagerRegistry.getDrmInfo() });
+                    final String string2 = this.getString(2131231050, new Object[] { "Release", AndroidManifestUtils.getVersionCode(this.getActivity().getBaseContext()), (int)(Debug.getNativeHeapAllocatedSize() / 1048576L), "UI Version", n, n2, sb.toString(), sb2.toString(), PlayerTypeFactory.getCurrentType(this.getActivity().getBaseContext()).getDescription(), s, s2, SubtitleManagerFactory.getSubtitleManagerLabel(this.mSubtitleManager), DrmManagerRegistry.getDrmInfo() });
                     if (this.mScreen != null) {
                         this.mScreen.setDebugData(string2);
                         return;
@@ -969,7 +986,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
         }
         final PostPlayFactory$PostPlayType postPlayType = PostPlay.getPostPlayType(this.getNetflixActivity(), this.mAsset);
         this.setFragmentContentView(PlayScreen.resolveContentView(postPlayType));
-        final Toolbar supportActionBar = (Toolbar)this.mRootLayout.findViewById(2131690087);
+        final Toolbar supportActionBar = (Toolbar)this.mRootLayout.findViewById(2131690086);
         this.staticToolbarMenu = supportActionBar.getMenu();
         this.getNetflixActivity().setSupportActionBar(supportActionBar);
         this.mPlayer = serviceManager.getPlayer();
@@ -1007,7 +1024,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
             else {
                 videoType = VideoType.MOVIE;
             }
-            postPlay.fetchPostPlayVideosIfNeeded(playableId, videoType);
+            postPlay.fetchPostPlayVideosIfNeeded(playableId, videoType, PostPlayRequestContext.POST_PLAY);
         }
         if (AndroidUtils.getAndroidVersion() > 18) {
             this.mScreen.getSurfaceView().setSecure(true);
@@ -1017,7 +1034,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
         this.mPlayerSuspendNotification = new PlayerSuspendNotification(this.getNetflixActivity(), serviceManager);
         this.getNetflixActivity().registerReceiverWithAutoUnregister(this.mPlayerSuspendIntentReceiver, PlayerSuspendNotification.getNotificationIntentFilter());
         if (AndroidUtils.getAndroidVersion() >= 16 && (PlayerTypeFactory.isJPlayerBase(PlayerTypeFactory.getCurrentType((Context)this.getActivity())) || PlayerTypeFactory.isJPlayer(PlayerTypeFactory.getCurrentType((Context)this.getActivity())))) {
-            this.mSurface2 = new SecondSurface((TextureView)this.mRootLayout.findViewById(2131690079));
+            this.mSurface2 = new SecondSurface((TextureView)this.mRootLayout.findViewById(2131690078));
         }
         this.mState.playerState = PlayerFragment$PlayerFragmentState.ACTIVITY_SRVCMNGR_READY;
     }
@@ -1283,13 +1300,13 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
     
     public String getTitleForScreen(final Asset asset) {
         if (asset.isEpisode()) {
-            String s = this.getResources().getString(2131231289, new Object[] { LocalizationUtils.forceLayoutDirectionIfNeeded(asset.getParentTitle()), asset.getSeasonAbbrSeqLabel(), asset.getEpisodeNumber(), LocalizationUtils.forceLayoutDirectionIfNeeded(asset.getTitle()) });
+            String s = this.getResources().getString(2131231295, new Object[] { LocalizationUtils.forceLayoutDirectionIfNeeded(asset.getParentTitle()), asset.getSeasonAbbrSeqLabel(), asset.getEpisodeNumber(), LocalizationUtils.forceLayoutDirectionIfNeeded(asset.getTitle()) });
             if (asset.isNSRE()) {
-                s = this.getResources().getString(2131231290, new Object[] { LocalizationUtils.forceLayoutDirectionIfNeeded(asset.getParentTitle()), LocalizationUtils.forceLayoutDirectionIfNeeded(asset.getTitle()) });
+                s = this.getResources().getString(2131231296, new Object[] { LocalizationUtils.forceLayoutDirectionIfNeeded(asset.getParentTitle()), LocalizationUtils.forceLayoutDirectionIfNeeded(asset.getTitle()) });
             }
             return s;
         }
-        return this.getResources().getString(2131231291, new Object[] { asset.getTitle() });
+        return this.getResources().getString(2131231297, new Object[] { asset.getTitle() });
     }
     
     public ResourceHelper getUiResources() {
@@ -1480,6 +1497,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                 break;
             }
             case 1: {
+                this.mPlayer.setAudioDuck(false);
                 string = "AUDIOFOCUS_GAIN";
                 break;
             }
@@ -1500,6 +1518,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                 break;
             }
             case -3: {
+                this.mPlayer.setAudioDuck(true);
                 string = "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK";
                 break;
             }
@@ -1884,7 +1903,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                     }
                     if (this.mState.lowBandwidth) {
                         Log.d("PlayerFragment", "Enabled Toast");
-                        Toast.makeText((Context)this.getActivity(), 2131231094, 1).show();
+                        Toast.makeText((Context)this.getActivity(), 2131231096, 1).show();
                     }
                     this.mScreen.setBufferingOverlayVisibility(true);
                 }
@@ -1976,7 +1995,7 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                 else {
                     videoType = VideoType.MOVIE;
                 }
-                postPlay.fetchPostPlayVideosIfNeeded(playableId, videoType);
+                postPlay.fetchPostPlayVideosIfNeeded(playableId, videoType, PostPlayRequestContext.POST_PLAY);
                 if (this.mPlaybackStateListener != null) {
                     this.mPlaybackStateListener.onPlaybackStarted();
                     if (PersistentConfig.getCoppola1ABTestCell((Context)this.getActivity()).ordinal() == ABTestConfig$Cell.CELL_THREE.ordinal()) {

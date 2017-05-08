@@ -140,6 +140,7 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
     }
     
     private void handlePostplayState(final String s, final String mPostplayStateBlob) {
+        Log.w("nf_mdx", "postplayState: " + mPostplayStateBlob);
         if (StringUtils.isNotEmpty(mPostplayStateBlob) && !mPostplayStateBlob.equals(this.mPostplayStateBlob)) {
             this.mNotifier.postplayState(s, mPostplayStateBlob);
         }

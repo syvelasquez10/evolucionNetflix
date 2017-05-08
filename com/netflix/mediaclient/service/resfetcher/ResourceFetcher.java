@@ -100,7 +100,7 @@ public class ResourceFetcher extends ServiceAgent
                 applicationPerformanceMetricsLogging2 = this.getService().getClientLogging().getApplicationPerformanceMetricsLogging();
             }
         }
-        return new ImageLoader(this.mRequestQueue, this.getImageCache(context), resourceRequestTimeout, imageCacheMinimumTtl, applicationPerformanceMetricsLogging2, configurationAgent);
+        return new ImageLoader(this.mRequestQueue, this.getImageCache(context), resourceRequestTimeout, imageCacheMinimumTtl, applicationPerformanceMetricsLogging2);
     }
     
     private static FalkorVolleyWebClient createWebClient() {

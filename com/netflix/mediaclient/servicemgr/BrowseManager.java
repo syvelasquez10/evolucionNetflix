@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import java.util.List;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
@@ -11,8 +12,8 @@ import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.service.browse.DataDumper;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -76,20 +77,6 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void expiringContent(final String s, final ManagerCallback managerCallback, final ExpiringContentAction expiringContentAction) {
-        final int requestId = this.mgr.getRequestId(managerCallback);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManagerBrowse", "expiringContentWarningAction requestId=" + requestId + " id=" + s);
-        }
-        final INetflixService service = this.mgr.getService();
-        if (service != null) {
-            service.getBrowse().expiringContent(s, this.mgr.getClientId(), requestId, expiringContentAction);
-            return;
-        }
-        Log.w("ServiceManagerBrowse", "expiringContentWarningAction:: service is not available");
-    }
-    
-    @Override
     public boolean fetchActorDetailsAndRelatedForTitle(final String s, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
@@ -108,6 +95,23 @@ public final class BrowseManager implements IBrowseManager
             }
             return b;
         }
+    }
+    
+    @Override
+    public void fetchAdvisories(final String s, final ManagerCallback managerCallback) {
+        if (Log.isLoggable()) {
+            Log.d("ServiceManagerBrowse", "fetchAdvisories id=" + s);
+        }
+        final int requestId = this.mgr.getRequestId(managerCallback);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManagerBrowse", "fetchScenePosition requestId=" + requestId + " videoId=" + s);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().fetchAdvisories(s, this.mgr.getClientId(), requestId);
+            return;
+        }
+        Log.w("ServiceManagerBrowse", "fetchAdvisories:: service is not available");
     }
     
     @Override
@@ -469,16 +473,16 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchPostPlayVideos(final String s, final VideoType videoType, final ManagerCallback managerCallback) {
+    public boolean fetchPostPlayVideos(final String s, final VideoType videoType, final PostPlayRequestContext postPlayRequestContext, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
             if (Log.isLoggable()) {
-                Log.d("ServiceManagerBrowse", "fetchPostPlayVideos requestId=" + requestId + " currentPlayableId=" + s);
+                Log.d("ServiceManagerBrowse", "fetchPostPlayVideos requestId=" + requestId + " currentPlayableId=" + s + " context=" + postPlayRequestContext);
             }
             final INetflixService service = this.mgr.getService();
             boolean b;
             if (service != null) {
-                service.getBrowse().fetchPostPlayVideos(s, videoType, this.mgr.getClientId(), requestId);
+                service.getBrowse().fetchPostPlayVideos(s, videoType, postPlayRequestContext, this.mgr.getClientId(), requestId);
                 b = true;
             }
             else {
@@ -734,6 +738,16 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
+    public String getLolomoId() {
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            return service.getBrowse().getLolomoId();
+        }
+        Log.w("ServiceManagerBrowse", "getLolomoId:: service is not available");
+        return null;
+    }
+    
+    @Override
     public ModelProxy<?> getModelProxy() {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
@@ -772,6 +786,27 @@ public final class BrowseManager implements IBrowseManager
             return;
         }
         Log.w("ServiceManagerBrowse", "logBillboardActivity:: service is not available");
+    }
+    
+    @Override
+    public boolean logPostPlayImpression(final String s, final VideoType videoType, final String s2, final ManagerCallback managerCallback) {
+        synchronized (this) {
+            final int requestId = this.mgr.getRequestId(managerCallback);
+            if (Log.isLoggable()) {
+                Log.d("ServiceManagerBrowse", "logPostPlayImpression requestId=" + requestId + " currentPlayableId=" + s + " impressionData=" + s2);
+            }
+            final INetflixService service = this.mgr.getService();
+            boolean b;
+            if (service != null) {
+                service.getBrowse().logPostPlayImpression(s, videoType, s2, this.mgr.getClientId(), requestId);
+                b = true;
+            }
+            else {
+                Log.w("ServiceManagerBrowse", "logPostPlayImpression:: service is not available");
+                b = false;
+            }
+            return b;
+        }
     }
     
     @Override
@@ -944,5 +979,18 @@ public final class BrowseManager implements IBrowseManager
         }
         // monitorexit(this)
         return b;
+    }
+    
+    @Override
+    public void updateExpiredContentAdvisoryStatus(final String s, final ExpiringContentAdvisory$ContentAction expiringContentAdvisory$ContentAction) {
+        if (Log.isLoggable()) {
+            Log.d("ServiceManagerBrowse", "updateExpiredContentAdvisoryStatus id=" + s);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().updateExpiredContentAdvisoryStatus(s, expiringContentAdvisory$ContentAction);
+            return;
+        }
+        Log.w("ServiceManagerBrowse", "updateExpiredContentAdvisoryStatus:: service is not available");
     }
 }

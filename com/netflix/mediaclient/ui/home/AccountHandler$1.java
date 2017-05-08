@@ -9,6 +9,8 @@ import com.netflix.mediaclient.util.LaunchBrowser;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
+import android.net.Uri$Builder;
+import android.net.Uri;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 

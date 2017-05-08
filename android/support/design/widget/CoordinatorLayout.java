@@ -43,9 +43,10 @@ import java.lang.reflect.Constructor;
 import java.util.Map;
 import android.view.View;
 import java.util.Comparator;
+import android.support.v4.view.NestedScrollingParent;
 import android.view.ViewGroup;
 
-public class CoordinatorLayout extends ViewGroup
+public class CoordinatorLayout extends ViewGroup implements NestedScrollingParent
 {
     static final Class<?>[] CONSTRUCTOR_PARAMS;
     static final CoordinatorLayoutInsetsHelper INSETS_HELPER;

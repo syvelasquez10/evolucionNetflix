@@ -114,7 +114,7 @@ class OpReorderer
             obtainUpdateOp = null;
         }
         else if (adapterHelper$UpdateOp.positionStart < adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount) {
-            obtainUpdateOp = this.mCallback.obtainUpdateOp(1, adapterHelper$UpdateOp.positionStart + 1, adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount - adapterHelper$UpdateOp.positionStart);
+            obtainUpdateOp = this.mCallback.obtainUpdateOp(1, adapterHelper$UpdateOp.positionStart + 1, adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount - adapterHelper$UpdateOp.positionStart, null);
             adapterHelper$UpdateOp2.itemCount = adapterHelper$UpdateOp.positionStart - adapterHelper$UpdateOp2.positionStart;
         }
         else {
@@ -180,7 +180,7 @@ class OpReorderer
         }
         else if (adapterHelper$UpdateOp.itemCount < adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount) {
             --adapterHelper$UpdateOp2.itemCount;
-            obtainUpdateOp2 = this.mCallback.obtainUpdateOp(2, adapterHelper$UpdateOp.positionStart, 1);
+            obtainUpdateOp2 = this.mCallback.obtainUpdateOp(2, adapterHelper$UpdateOp.positionStart, 1, adapterHelper$UpdateOp2.payload);
         }
         else {
             obtainUpdateOp2 = null;
@@ -190,7 +190,7 @@ class OpReorderer
         }
         else if (adapterHelper$UpdateOp.positionStart < adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount) {
             final int n3 = adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount - adapterHelper$UpdateOp.positionStart;
-            obtainUpdateOp = this.mCallback.obtainUpdateOp(2, adapterHelper$UpdateOp.positionStart + 1, n3);
+            obtainUpdateOp = this.mCallback.obtainUpdateOp(2, adapterHelper$UpdateOp.positionStart + 1, n3, adapterHelper$UpdateOp2.payload);
             adapterHelper$UpdateOp2.itemCount -= n3;
         }
         list.set(n2, adapterHelper$UpdateOp);

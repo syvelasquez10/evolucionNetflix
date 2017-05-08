@@ -20,12 +20,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
-import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.model.branches.MementoVideoSwatch;
@@ -35,6 +34,8 @@ import java.util.List;
 public interface BrowseAgentCallback
 {
     void onActorDetailsAndRelatedFetched(final List<FalkorPerson> p0, final List<MementoVideoSwatch> p1, final Status p2, final List<FalkorActorStill> p3);
+    
+    void onAdvisoriesFetched(final List<Advisory> p0, final Status p1);
     
     void onBBVideosFetched(final List<Billboard> p0, final Status p1);
     
@@ -47,8 +48,6 @@ public interface BrowseAgentCallback
     void onEpisodeDetailsFetched(final EpisodeDetails p0, final Status p1);
     
     void onEpisodesFetched(final List<EpisodeDetails> p0, final Status p1);
-    
-    void onExpiringContentWarning(final IExpiringContentWarning p0, final Status p1, final ExpiringContentAction p2);
     
     void onGenreListsFetched(final List<GenreList> p0, final Status p1);
     
@@ -75,6 +74,8 @@ public interface BrowseAgentCallback
     void onPersonDetailFetched(final FalkorPerson p0, final FalkorActorStill p1, final Status p2);
     
     void onPersonRelatedFetched(final FalkorPerson p0, final List<Video> p1, final Status p2);
+    
+    void onPostPlayImpressionLogged(final boolean p0, final Status p1);
     
     void onPostPlayVideosFetched(final PostPlayVideosProvider p0, final Status p1);
     

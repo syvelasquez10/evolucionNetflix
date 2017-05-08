@@ -23,7 +23,6 @@ public class ABTestConfigData
     public static final String MEMENTO_TEST_ID = "7131";
     public static final String MOTION_BB_AB_TEST_ID = "6930";
     public static final String PHONE_ORIENTATION_TEST_ID = "7129";
-    public static final String PUSH_OPT_IN_TEST_ID = "7035";
     public static final String SURVEY_TEST_ID = "7141";
     private static final String TAG = "nf_config";
     public static final String VOICE_SEARCH_AB_TEST_ID = "6786";
@@ -44,8 +43,6 @@ public class ABTestConfigData
     private ABTestConfig motionBBConfig;
     @SerializedName("7129")
     private ABTestConfig phoneOrientationConfig;
-    @SerializedName("7035")
-    private ABTestConfig pushOptInConfig;
     @SerializedName("7141")
     private ABTestConfig surveyConfig;
     @SerializedName("6786")
@@ -70,7 +67,6 @@ public class ABTestConfigData
         ABTestConfigData.testIds.add("6786");
         ABTestConfigData.testIds.add("6930");
         ABTestConfigData.testIds.add("7196");
-        ABTestConfigData.testIds.add("7035");
         ABTestConfigData.testIds.add("7151");
         ABTestConfigData.testIds.add("7141");
         ABTestConfigData.testIds.add("7131");
@@ -117,10 +113,6 @@ public class ABTestConfigData
     
     public ABTestConfig getPhoneOrientationConfig() {
         return this.phoneOrientationConfig;
-    }
-    
-    public ABTestConfig getPushOptInConfig() {
-        return this.pushOptInConfig;
     }
     
     public ABTestConfig getVoiceSearchABTestConfig() {

@@ -21,6 +21,7 @@ import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.ui.launch.LaunchActivity;
+import com.google.gson.GsonBuilder;
 import com.netflix.mediaclient.android.app.UserInputManager;
 import com.netflix.mediaclient.util.l10n.UserLocale;
 import java.util.concurrent.atomic.AtomicBoolean;

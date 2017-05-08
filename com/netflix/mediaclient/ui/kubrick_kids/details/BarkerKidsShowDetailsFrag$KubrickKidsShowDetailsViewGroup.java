@@ -43,7 +43,7 @@ class BarkerKidsShowDetailsFrag$KubrickKidsShowDetailsViewGroup extends BarkerVi
     @Override
     protected void findViews() {
         super.findViews();
-        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131689844);
+        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131689842);
     }
     
     @Override

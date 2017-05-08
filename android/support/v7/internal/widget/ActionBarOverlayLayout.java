@@ -25,9 +25,10 @@ import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.widget.ScrollerCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.graphics.Rect;
+import android.support.v4.view.NestedScrollingParent;
 import android.view.ViewGroup;
 
-public class ActionBarOverlayLayout extends ViewGroup implements DecorContentParent
+public class ActionBarOverlayLayout extends ViewGroup implements NestedScrollingParent, DecorContentParent
 {
     static final int[] ATTRS;
     private final int ACTION_BAR_ANIMATE_DELAY;

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.configuration.drm;
 
 import android.media.MediaDrm$ProvisionRequest;
 import com.netflix.mediaclient.util.CryptoUtils;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.Arrays;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.util.StringUtils;
@@ -14,8 +15,8 @@ import android.media.MediaDrm$CryptoSession;
 import android.util.Base64;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import android.media.NotProvisionedException;
 import com.netflix.mediaclient.StatusCode;
+import android.media.NotProvisionedException;
 import java.util.HashMap;
 import android.media.MediaDrm$KeyRequest;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -69,6 +70,7 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
         this.mContext = mContext;
         this.drm = new MediaDrm(MediaDrmUtils.WIDEVINE_SCHEME);
         this.setSecurityLevel();
+        this.verifySystemId();
         this.drm.setOnEventListener((MediaDrm$OnEventListener)this);
         this.mKeyIdsMap = new AccountKeyMap(this.mContext);
         this.showProperties();
@@ -106,12 +108,56 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
     }
     
     private MediaDrm$KeyRequest createKeyRequest() {
-        synchronized (this) {
+        // monitorenter(this)
+        try {
             Log.d(WidevineDrmManager.TAG, "get NCCP session key request");
             this.closeCryptoSessions(this.nccpCryptoFactoryCryptoSession.pendingSessionId);
-            Log.d(WidevineDrmManager.TAG, "Create a new crypto session");
-            this.nccpCryptoFactoryCryptoSession.pendingSessionId = this.drm.openSession();
-            return this.drm.getKeyRequest(this.nccpCryptoFactoryCryptoSession.pendingSessionId, WidevineDrmManager.init, "application/xml", 2, new HashMap());
+            try {
+                Log.d(WidevineDrmManager.TAG, "Create a new crypto session");
+                this.nccpCryptoFactoryCryptoSession.pendingSessionId = this.drm.openSession();
+                final WidevineDrmManager widevineDrmManager = this;
+                final MediaDrm mediaDrm = widevineDrmManager.drm;
+                final WidevineDrmManager widevineDrmManager2 = this;
+                final WidevineDrmManager$CryptoSession widevineDrmManager$CryptoSession = widevineDrmManager2.nccpCryptoFactoryCryptoSession;
+                final byte[] array = widevineDrmManager$CryptoSession.pendingSessionId;
+                final byte[] array2 = WidevineDrmManager.init;
+                final String s = "application/xml";
+                final int n = 2;
+                final HashMap hashMap = new HashMap();
+                final MediaDrm$KeyRequest keyRequest = mediaDrm.getKeyRequest(array, array2, s, n, (HashMap)hashMap);
+                return keyRequest;
+            }
+            catch (NotProvisionedException ex) {
+                this.mErrorLogging.logHandledException("NotProvisionedException::createKeyRequest::openSession:: Failed to open new session " + ex.getMessage());
+                throw ex;
+            }
+            catch (Throwable t) {
+                this.mErrorLogging.logHandledException("createKeyRequest::openSession Failed to open new session " + t.getMessage());
+                throw t;
+            }
+        }
+        finally {}
+        try {
+            final WidevineDrmManager widevineDrmManager = this;
+            final MediaDrm mediaDrm = widevineDrmManager.drm;
+            final WidevineDrmManager widevineDrmManager2 = this;
+            final WidevineDrmManager$CryptoSession widevineDrmManager$CryptoSession = widevineDrmManager2.nccpCryptoFactoryCryptoSession;
+            final byte[] array = widevineDrmManager$CryptoSession.pendingSessionId;
+            final byte[] array2 = WidevineDrmManager.init;
+            final String s = "application/xml";
+            final int n = 2;
+            final HashMap hashMap = new HashMap();
+            final MediaDrm$KeyRequest keyRequest2;
+            final MediaDrm$KeyRequest keyRequest = keyRequest2 = mediaDrm.getKeyRequest(array, array2, s, n, (HashMap)hashMap);
+            return keyRequest2;
+        }
+        catch (NotProvisionedException ex2) {
+            this.mErrorLogging.logHandledException("NotProvisionedException::createKeyRequest::getKeyRequest:: Failed to get key request " + ex2.getMessage());
+            throw ex2;
+        }
+        catch (Throwable t2) {
+            this.mErrorLogging.logHandledException("createKeyRequest::getKeyRequest:: Failed to get key request " + t2.getMessage());
+            throw t2;
         }
     }
     
@@ -129,12 +175,12 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
     
     private boolean createNccpCryptoFactoryDrmSession() {
         while (true) {
-            Label_0147: {
+            Label_0148: {
                 try {
                     this.nccpCryptoFactoryCryptoSession.sessionId = this.drm.openSession();
                     if (Log.isLoggable()) {
                         if (this.nccpCryptoFactoryCryptoSession.sessionId == null) {
-                            break Label_0147;
+                            break Label_0148;
                         }
                         Log.d(WidevineDrmManager.TAG, "Device is provisioned. NCCP crypto factory session ID: " + new String(this.nccpCryptoFactoryCryptoSession.sessionId));
                     }
@@ -148,7 +194,7 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
                 catch (Throwable t) {
                     Log.e(WidevineDrmManager.TAG, "Fatal error, can not recover!", t);
                     this.mCallback.drmError(CommonStatus.DRM_FAILURE_CDM);
-                    this.mErrorLogging.logHandledException("Failed to created NCCP crypto factory DRM session " + t.getMessage());
+                    this.mErrorLogging.logHandledException("openSession:: Failed to created NCCP crypto factory DRM session " + t.getMessage());
                     return false;
                 }
             }
@@ -274,7 +320,7 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
                             Log.d(WidevineDrmManager.TAG, "MediaDrm provide key update failed or restore keys failed. Unregister device, logout user, and kill app process after error is displayed.");
                             runnable = new WidevineDrmManager$3(this);
                         }
-                        this.mErrorHandler.addError(new WidevineErrorDescriptor(this.mContext, statusCode, runnable, 2131231061));
+                        this.mErrorHandler.addError(new WidevineErrorDescriptor(this.mContext, statusCode, runnable, 2131231063));
                         return;
                     }
                     finally {
@@ -363,6 +409,22 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
         this.nccpCryptoFactoryCryptoSession.kchKeyId = kchKeyId;
         this.mKeyIdsMap.addCurrentKeyIds(new String(provideKeyResponse), new String(kceKeyId), new String(kchKeyId));
         this.mDrmSystemChanged = false;
+    }
+    
+    private void verifySystemId() {
+        final String deviceType = this.getDeviceType();
+        if (StringUtils.isEmpty(deviceType)) {
+            final IllegalStateException ex = new IllegalStateException("Empty system ID!");
+            ErrorLoggingManager.logHandledException(ex);
+            throw ex;
+        }
+        final int length = deviceType.trim().length();
+        if (length > 5) {
+            final IllegalStateException ex2 = new IllegalStateException("System ID is invalid. Its length is " + length);
+            ErrorLoggingManager.logHandledException(ex2);
+            throw ex2;
+        }
+        Log.d(WidevineDrmManager.TAG, "Valid System ID.");
     }
     
     void clearKeys(final String s) {
@@ -610,7 +672,6 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
                                 this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
-                            return b;
                             Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
                             return b;
                         }

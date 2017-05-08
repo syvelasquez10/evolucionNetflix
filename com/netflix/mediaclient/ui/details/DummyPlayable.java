@@ -4,22 +4,14 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.model.leafs.advisory.Advisory;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 
 public class DummyPlayable implements Playable
 {
     @Override
-    public String getAdvisoryDescription() {
-        return null;
-    }
-    
-    @Override
-    public int getAdvisoryDisplayDuration() {
-        return 0;
-    }
-    
-    @Override
-    public String getAdvisoryRating() {
+    public List<Advisory> getAdvisories() {
         return null;
     }
     
@@ -135,6 +127,11 @@ public class DummyPlayable implements Playable
     
     @Override
     public boolean isPlayableEpisode() {
+        return false;
+    }
+    
+    @Override
+    public boolean isSupplementalVideo() {
         return false;
     }
 }

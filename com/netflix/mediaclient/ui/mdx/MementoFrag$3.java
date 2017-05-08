@@ -19,6 +19,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import android.support.design.widget.TabLayout$OnTabSelectedListener;
 import android.widget.TextView;
+import com.viewpagerindicator.android.osp.ViewPager$PageTransformer;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -47,6 +48,9 @@ class MementoFrag$3 implements ViewPager$OnPageChangeListener
     
     @Override
     public void onPageScrollStateChanged(final int n) {
+        if (n == 0) {
+            this.this$0.toggleTabs(this.this$0.pager.getCurrentItem());
+        }
     }
     
     @Override
@@ -55,7 +59,6 @@ class MementoFrag$3 implements ViewPager$OnPageChangeListener
     
     @Override
     public void onPageSelected(final int n) {
-        this.this$0.toggleTabs(n);
         final View viewWithTag = this.this$0.pager.findViewWithTag((Object)("POS_TAG" + String.valueOf(n)));
         if (viewWithTag instanceof MementoFrag$ActorDetailsView) {
             this.this$0.currentTint = ((MementoFrag$ActorDetailsView)viewWithTag).getImageTint();

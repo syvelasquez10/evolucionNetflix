@@ -240,7 +240,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         }
         netflixActionBar.setLogoType(logoType);
         if (this.isProfileEditMode) {
-            this.getNetflixActionBar().setTitle(this.getResources().getString(2131231259));
+            this.getNetflixActionBar().setTitle(this.getResources().getString(2131231265));
         }
         this.getNetflixActionBar().setDisplayHomeAsUpEnabled(this.isProfileEditMode);
         final ViewPropertyAnimator animate = this.topTextHeader.animate();
@@ -258,7 +258,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                 Log.e("ProfileSelectionActivity", "Something wierd happened: null grid child view!");
             }
             else if (i < this.profiles.size()) {
-                final View viewById = child.findViewById(2131690210);
+                final View viewById = child.findViewById(2131690219);
                 int visibility;
                 if (this.isProfileEditMode) {
                     visibility = 0;
@@ -267,7 +267,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     visibility = 8;
                 }
                 viewById.setVisibility(visibility);
-                this.findViewAndAnimate(child, 2131689609);
+                this.findViewAndAnimate(child, 2131689610);
             }
         }
         this.invalidateOptionsMenu();
@@ -330,13 +330,13 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     private void showPromoViewIfNeeded(final int n) {
-        final View viewById = this.findViewById(2131690209);
+        final View viewById = this.findViewById(2131690218);
         if (PreferenceUtils.getBooleanPref((Context)this, "user_profile_was_selected", false) || this.profiles == null || this.profiles.size() > 1) {
             viewById.setVisibility(8);
             return;
         }
         viewById.setVisibility(0);
-        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131361864)) / 2.0f);
+        final int n2 = (int)((this.columnWidth - this.getResources().getDimension(2131361862)) / 2.0f);
         ((ViewGroup$MarginLayoutParams)viewById.getLayoutParams()).setMargins(n + n2, 0, n2 + n, (int)this.getResources().getDimension(2131362125));
     }
     
@@ -445,14 +445,14 @@ public class ProfileSelectionActivity extends NetflixActivity
         if (bundle == null) {
             PerformanceProfiler.getInstance().startSession(Sessions.PROFILE_GATE, null);
         }
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131361860);
-        this.setContentView(2130903242);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131690205), this.errorCallback);
-        this.content = this.findViewById(2131690206);
-        this.topTextHeader = (TextView)this.findViewById(2131690207);
-        (this.gridView = (StaticGridView)this.findViewById(2131690208)).setOnItemClickListener(this.onAvatarClickListener);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131361858);
+        this.setContentView(2130903250);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131690214), this.errorCallback);
+        this.content = this.findViewById(2131690215);
+        this.topTextHeader = (TextView)this.findViewById(2131690216);
+        (this.gridView = (StaticGridView)this.findViewById(2131690217)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ProfileSelectionActivity$1(this));
-        this.kidsLoadingScreen = this.findViewById(2131689849);
+        this.kidsLoadingScreen = this.findViewById(2131689847);
         this.mDestination = this.getIntent().getStringExtra("extra_destination");
         if (bundle == null) {
             this.logKidsEntryExit();
@@ -474,9 +474,9 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         super.onCreateOptionsMenu(menu, menu2);
-        final MenuItem add = menu.add(0, 2131689484, 0, (CharSequence)this.getString(2131231258));
+        final MenuItem add = menu.add(0, 2131689484, 0, (CharSequence)this.getString(2131231264));
         add.setShowAsAction(1);
-        add.setIcon(2130837738);
+        add.setIcon(2130837735);
         add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new ProfileSelectionActivity$3(this));
     }
     

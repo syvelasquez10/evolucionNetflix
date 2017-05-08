@@ -604,6 +604,12 @@ public final class be extends Transaction implements cf
         // monitorexit(b)
     }
     
+    private void c(final long n) {
+        synchronized (this) {
+            this.a(be$a.h, n);
+        }
+    }
+    
     private void d(final long n) {
         if (m()) {
             this.n = be.d.schedule(new be$5(this), n, TimeUnit.MILLISECONDS);
@@ -822,6 +828,138 @@ public final class be extends Transaction implements cf
         return array[0] * 10L;
     }
     
+    private void o() {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: monitorenter   
+        //     2: aload_0        
+        //     3: getfield        com/crittercism/internal/be.b:Lcom/crittercism/internal/be$a;
+        //     6: getstatic       com/crittercism/internal/be$a.a:Lcom/crittercism/internal/be$a;
+        //     9: if_acmpne       125
+        //    12: aload_0        
+        //    13: getstatic       com/crittercism/internal/be$a.b:Lcom/crittercism/internal/be$a;
+        //    16: putfield        com/crittercism/internal/be.b:Lcom/crittercism/internal/be$a;
+        //    19: aload_0        
+        //    20: invokestatic    java/lang/System.currentTimeMillis:()J
+        //    23: putfield        com/crittercism/internal/be.h:J
+        //    26: aload_0        
+        //    27: invokestatic    java/lang/System.nanoTime:()J
+        //    30: putfield        com/crittercism/internal/be.m:J
+        //    33: aload_0        
+        //    34: getstatic       com/crittercism/internal/be.u:Lcom/crittercism/internal/bf;
+        //    37: aload_0        
+        //    38: getfield        com/crittercism/internal/be.e:Ljava/lang/String;
+        //    41: invokevirtual   com/crittercism/internal/bf.a:(Ljava/lang/String;)J
+        //    44: putfield        com/crittercism/internal/be.f:J
+        //    47: getstatic       com/crittercism/internal/be.o:Ljava/util/List;
+        //    50: astore_1       
+        //    51: aload_1        
+        //    52: monitorenter   
+        //    53: getstatic       com/crittercism/internal/be.o:Ljava/util/List;
+        //    56: aload_0        
+        //    57: invokeinterface java/util/List.add:(Ljava/lang/Object;)Z
+        //    62: pop            
+        //    63: aload_1        
+        //    64: monitorexit    
+        //    65: new             Lcom/crittercism/internal/be$4;
+        //    68: dup            
+        //    69: aload_0        
+        //    70: new             Lcom/crittercism/internal/be;
+        //    73: dup            
+        //    74: aload_0        
+        //    75: invokespecial   com/crittercism/internal/be.<init>:(Lcom/crittercism/internal/be;)V
+        //    78: invokespecial   com/crittercism/internal/be$4.<init>:(Lcom/crittercism/internal/be;Lcom/crittercism/internal/be;)V
+        //    81: astore_2       
+        //    82: getstatic       com/crittercism/internal/be.c:Ljava/util/concurrent/ExecutorService;
+        //    85: astore_1       
+        //    86: aload_1        
+        //    87: monitorenter   
+        //    88: getstatic       com/crittercism/internal/be.c:Ljava/util/concurrent/ExecutorService;
+        //    91: aload_2        
+        //    92: invokeinterface java/util/concurrent/ExecutorService.execute:(Ljava/lang/Runnable;)V
+        //    97: aload_0        
+        //    98: aload_0        
+        //    99: getfield        com/crittercism/internal/be.f:J
+        //   102: invokespecial   com/crittercism/internal/be.d:(J)V
+        //   105: aload_1        
+        //   106: monitorexit    
+        //   107: aload_0        
+        //   108: monitorexit    
+        //   109: return         
+        //   110: astore_2       
+        //   111: aload_1        
+        //   112: monitorexit    
+        //   113: aload_2        
+        //   114: athrow         
+        //   115: astore_1       
+        //   116: aload_0        
+        //   117: monitorexit    
+        //   118: aload_1        
+        //   119: athrow         
+        //   120: astore_2       
+        //   121: aload_1        
+        //   122: monitorexit    
+        //   123: aload_2        
+        //   124: athrow         
+        //   125: new             Ljava/lang/StringBuilder;
+        //   128: dup            
+        //   129: ldc_w           "Transaction "
+        //   132: invokespecial   java/lang/StringBuilder.<init>:(Ljava/lang/String;)V
+        //   135: aload_0        
+        //   136: getfield        com/crittercism/internal/be.e:Ljava/lang/String;
+        //   139: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   142: ldc_w           " has already been started."
+        //   145: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   148: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   151: new             Ljava/lang/IllegalStateException;
+        //   154: dup            
+        //   155: ldc_w           "Transaction has already started"
+        //   158: invokespecial   java/lang/IllegalStateException.<init>:(Ljava/lang/String;)V
+        //   161: invokestatic    com/crittercism/internal/dw.b:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   164: goto            107
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type
+        //  -----  -----  -----  -----  ----
+        //  2      53     115    120    Any
+        //  53     65     110    115    Any
+        //  65     88     115    120    Any
+        //  88     107    120    125    Any
+        //  111    113    110    115    Any
+        //  113    115    115    120    Any
+        //  121    123    120    125    Any
+        //  123    125    115    120    Any
+        //  125    164    115    120    Any
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0107:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
     private void p() {
         synchronized (this) {
             if (this.n != null) {
@@ -836,6 +974,19 @@ public final class be extends Transaction implements cf
             if (this.b == be$a.b) {
                 this.b(be$a.f, nanoTime);
             }
+        }
+    }
+    
+    @Override
+    public final void a() {
+        try {
+            this.o();
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            dw.b(t);
         }
     }
     
@@ -856,9 +1007,22 @@ public final class be extends Transaction implements cf
         }
     }
     
+    @Override
     public final void b() {
         try {
             this.a(System.nanoTime());
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            dw.b(t);
+        }
+    }
+    
+    public final void d() {
+        try {
+            this.c(System.nanoTime());
         }
         catch (ThreadDeath threadDeath) {
             throw threadDeath;

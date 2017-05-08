@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
@@ -81,11 +82,6 @@ public final class UserVolleyWebClient implements UserWebClient
     }
     
     @Override
-    public void recordNrmInfo(final String s) {
-        this.webclient.sendRequest(new RecordNonRegisteredMemberInfo(this.service.getApplicationContext(), s));
-    }
-    
-    @Override
     public void recordPlanSelection(final String s, final String s2) {
         this.webclient.sendRequest(new RecordPlanSelection(this.service.getApplicationContext(), s, s2));
     }
@@ -93,6 +89,11 @@ public final class UserVolleyWebClient implements UserWebClient
     @Override
     public void recordUmsImpression(final String s, final String s2) {
         this.webclient.sendRequest(new RecordUmsImpression(this.service.getApplicationContext(), s, s2));
+    }
+    
+    @Override
+    public void refreshUserMessage(final User user) {
+        this.webclient.sendRequest(new RefreshUserMessageRequest(this.service.getApplicationContext(), user));
     }
     
     @Override

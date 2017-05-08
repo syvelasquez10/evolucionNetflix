@@ -60,6 +60,12 @@ public class JPlayer2Helper implements MediaPlayerHelper
         this.jp = null;
     }
     
+    public void setAudioDuck(final boolean audioDuck) {
+        if (this.jp != null) {
+            this.jp.setAudioDuck(audioDuck);
+        }
+    }
+    
     public void setMaxVideoHeight(final VideoResolutionRange maxVideoHeight) {
         if (this.jp != null) {
             this.jp.setMaxVideoHeight(maxVideoHeight);

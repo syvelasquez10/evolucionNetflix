@@ -7,6 +7,7 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import android.os.Handler;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
@@ -24,6 +25,8 @@ public interface INetflixService
     public static final String INTENT_NAME_INIT_COMPLETE = "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE";
     
     void addProfile(final String p0, final boolean p1, final String p2, final int p3, final int p4);
+    
+    void consumeUmaAlert();
     
     void createAutoLoginToken(final long p0, final int p1, final int p2);
     
@@ -93,11 +96,15 @@ public interface INetflixService
     
     String getUserEmail();
     
+    UmaAlert getUserMessageAlert();
+    
     IVoip getVoip();
     
     boolean isCurrentProfileIQEnabled();
     
     boolean isDeviceHd();
+    
+    boolean isNonMemberPlayback();
     
     boolean isProfileSwitchingDisabled();
     
@@ -115,9 +122,11 @@ public interface INetflixService
     
     void markSurveysAsRead();
     
-    void recordEndOfGrandfatheringImpression(final String p0, final String p1);
-    
     void recordPlanSelection(final String p0, final String p1);
+    
+    void recordUserMessageImpression(final String p0, final String p1);
+    
+    void refreshCurrentUserMessageArea();
     
     void refreshProfileSwitchingStatus();
     
@@ -130,6 +139,8 @@ public interface INetflixService
     void selectProfile(final String p0);
     
     void setCurrentAppLocale(final String p0);
+    
+    void setNonMemberPlayback(final boolean p0);
     
     void startJob(final NetflixJob$NetflixJobId p0);
     

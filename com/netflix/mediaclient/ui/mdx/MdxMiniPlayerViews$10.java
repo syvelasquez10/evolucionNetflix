@@ -95,7 +95,7 @@ class MdxMiniPlayerViews$10 implements View$OnClickListener
             else {
                 videoType = currentVideo.getType();
             }
-            final RatingDialogFrag create = RatingDialogFrag.create(playableVideoId, videoType, s, null, 2130903246, true);
+            final RatingDialogFrag create = RatingDialogFrag.create(playableVideoId, videoType, s, null, 2130903253, true);
             create.setCancelable(true);
             this.this$0.activity.showDialog(create);
             if (this.this$0.activity != null && this.this$0.activity.getServiceManager() != null) {

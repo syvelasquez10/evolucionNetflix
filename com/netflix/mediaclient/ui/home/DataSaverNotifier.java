@@ -31,7 +31,7 @@ public class DataSaverNotifier
     }
     
     private static void showNotification(final Activity activity) {
-        Snackbar.make(activity.findViewById(16908290), 2131230924, 0).setAction(2131231174, (View$OnClickListener)new DataSaverNotifier$AppSettingsClickListener(activity)).show();
+        Snackbar.make(activity.findViewById(16908290), 2131230926, 0).setAction(2131231180, (View$OnClickListener)new DataSaverNotifier$AppSettingsClickListener(activity)).show();
     }
     
     public static void showNotificationIfNecessary(final Activity activity) {

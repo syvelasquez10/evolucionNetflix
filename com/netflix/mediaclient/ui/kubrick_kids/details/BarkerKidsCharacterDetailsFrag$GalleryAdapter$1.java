@@ -15,6 +15,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
+import android.content.res.Resources;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -52,7 +53,16 @@ class BarkerKidsCharacterDetailsFrag$GalleryAdapter$1 implements RecyclerViewHea
     }
     
     private int getImageHeight() {
-        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131362169) * (this.val$this$0.getNumColumns() + 1.0f)) / this.val$this$0.getNumColumns() * 0.5625f);
+        final float n = this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131362171);
+        final float n2 = this.val$this$0.getNumColumns();
+        float n3;
+        if (this.val$this$0.shouldRenderAsSDP) {
+            n3 = 0.5625f;
+        }
+        else {
+            n3 = 1.43f;
+        }
+        return (int)(n3 * ((KidsUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - (n2 + 1.0f) * n) / this.val$this$0.getNumColumns()));
     }
     
     @Override
@@ -61,7 +71,7 @@ class BarkerKidsCharacterDetailsFrag$GalleryAdapter$1 implements RecyclerViewHea
         videoView.setAdjustViewBounds(true);
         videoView.setScaleType(ImageView$ScaleType.FIT_XY);
         videoView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.getImageHeight()));
-        videoView.setIsHorizontal(true);
+        videoView.setIsHorizontal(this.val$this$0.shouldRenderAsSDP);
         return (View)videoView;
     }
 }

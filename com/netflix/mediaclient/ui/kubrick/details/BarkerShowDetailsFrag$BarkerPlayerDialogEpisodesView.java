@@ -79,7 +79,7 @@ public class BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView extends Barker
     @Override
     protected void findViews() {
         super.findViews();
-        this.nowPlaying = (TextView)this.findViewById(2131689748);
+        this.nowPlaying = (TextView)this.findViewById(2131689746);
     }
     
     @Override

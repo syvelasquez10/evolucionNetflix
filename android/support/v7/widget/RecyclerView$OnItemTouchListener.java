@@ -10,5 +10,7 @@ public interface RecyclerView$OnItemTouchListener
 {
     boolean onInterceptTouchEvent(final RecyclerView p0, final MotionEvent p1);
     
+    void onRequestDisallowInterceptTouchEvent(final boolean p0);
+    
     void onTouchEvent(final RecyclerView p0, final MotionEvent p1);
 }

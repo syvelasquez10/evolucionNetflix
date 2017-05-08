@@ -45,10 +45,10 @@ public final class Coppola1Utils
             final FragmentTransaction beginTransaction = activity.getFragmentManager().beginTransaction();
             int n;
             if (videoType == VideoType.MOVIE) {
-                n = 2131689745;
+                n = 2131689743;
             }
             else {
-                n = 2131689746;
+                n = 2131689744;
             }
             beginTransaction.add(n, (Fragment)playerFragment).commitAllowingStateLoss();
             new Handler().postDelayed((Runnable)new Coppola1Utils$1(activity, playerFragment, serviceManager, status), 2000L);

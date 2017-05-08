@@ -4,8 +4,11 @@
 
 package com.netflix.mediaclient.ui.home;
 
-import android.app.Activity;
-import com.netflix.mediaclient.ui.login.LogoutActivity;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
+import android.content.Context;
+import com.netflix.mediaclient.ui.voip.ContactUsActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 final class StandardSlidingMenu$11 implements Runnable
@@ -18,6 +21,12 @@ final class StandardSlidingMenu$11 implements Runnable
     
     @Override
     public void run() {
-        LogoutActivity.showLogoutDialog(this.val$context);
+        final Intent startIntent = ContactUsActivity.createStartIntent((Context)this.val$context);
+        final IClientLogging$ModalView uiScreen = this.val$context.getUiScreen();
+        if (uiScreen != null) {
+            startIntent.putExtra("source", uiScreen.name());
+        }
+        startIntent.putExtra("entry", CustomerServiceLogging$EntryPoint.appMenu.name());
+        this.val$context.startActivity(startIntent);
     }
 }

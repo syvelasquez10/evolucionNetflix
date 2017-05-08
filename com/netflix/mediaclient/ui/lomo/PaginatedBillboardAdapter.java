@@ -42,7 +42,7 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     }
     
     public static int getPortraitBillboardPhoneOffset(final NetflixActivity netflixActivity) {
-        return netflixActivity.getResources().getDimensionPixelSize(2131362019);
+        return netflixActivity.getResources().getDimensionPixelSize(2131362018);
     }
     
     @Override

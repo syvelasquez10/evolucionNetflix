@@ -4,12 +4,53 @@
 
 package android.support.v7.widget;
 
+import android.support.v4.view.ViewConfigurationCompat;
+import android.os.SystemClock;
+import android.support.v4.view.AccessibilityDelegateCompat;
+import android.support.v4.view.VelocityTrackerCompat;
+import android.support.v4.os.TraceCompat;
+import android.view.ViewParent;
+import android.view.FocusFinder;
+import android.graphics.Canvas;
+import android.os.Parcelable;
+import android.util.SparseArray;
+import android.support.v4.util.SimpleArrayMap;
+import android.support.v4.util.ArrayMap;
+import android.support.v4.view.MotionEventCompat;
+import android.util.TypedValue;
+import android.view.MotionEvent;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.View$MeasureSpec;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import android.view.ViewGroup$LayoutParams;
+import android.content.res.TypedArray;
+import android.support.v7.recyclerview.R$styleable;
+import android.view.ViewConfiguration;
+import android.util.AttributeSet;
+import android.content.Context;
+import android.os.Build$VERSION;
+import android.view.VelocityTracker;
+import android.graphics.Rect;
+import android.support.v4.view.NestedScrollingChildHelper;
+import android.support.v4.widget.EdgeEffectCompat;
+import android.view.accessibility.AccessibilityManager;
+import android.view.animation.Interpolator;
+import android.support.v4.view.ScrollingView;
+import android.support.v4.view.NestedScrollingChild;
+import android.view.ViewGroup;
 import android.util.Log;
 import android.support.v4.view.ViewCompat;
+import java.util.ArrayList;
+import java.util.Collections;
 import android.view.View;
+import java.util.List;
 
 public abstract class RecyclerView$ViewHolder
 {
+    static final int FLAG_ADAPTER_FULLUPDATE = 1024;
+    static final int FLAG_ADAPTER_POSITION_UNKNOWN = 512;
     static final int FLAG_BOUND = 1;
     static final int FLAG_CHANGED = 64;
     static final int FLAG_IGNORE = 128;
@@ -19,17 +60,26 @@ public abstract class RecyclerView$ViewHolder
     static final int FLAG_RETURNED_FROM_SCRAP = 32;
     static final int FLAG_TMP_DETACHED = 256;
     static final int FLAG_UPDATE = 2;
+    private static final List<Object> FULLUPDATE_PAYLOADS;
     public final View itemView;
     private int mFlags;
     private int mIsRecyclableCount;
     long mItemId;
     int mItemViewType;
     int mOldPosition;
+    RecyclerView mOwnerRecyclerView;
+    List<Object> mPayloads;
     int mPosition;
     int mPreLayoutPosition;
     private RecyclerView$Recycler mScrapContainer;
     RecyclerView$ViewHolder mShadowedHolder;
     RecyclerView$ViewHolder mShadowingHolder;
+    List<Object> mUnmodifiedPayloads;
+    private int mWasImportantForAccessibilityBeforeHidden;
+    
+    static {
+        FULLUPDATE_PAYLOADS = Collections.EMPTY_LIST;
+    }
     
     public RecyclerView$ViewHolder(final View itemView) {
         this.mPosition = -1;
@@ -39,12 +89,50 @@ public abstract class RecyclerView$ViewHolder
         this.mPreLayoutPosition = -1;
         this.mShadowedHolder = null;
         this.mShadowingHolder = null;
+        this.mPayloads = null;
+        this.mUnmodifiedPayloads = null;
         this.mIsRecyclableCount = 0;
         this.mScrapContainer = null;
+        this.mWasImportantForAccessibilityBeforeHidden = 0;
         if (itemView == null) {
             throw new IllegalArgumentException("itemView may not be null");
         }
         this.itemView = itemView;
+    }
+    
+    private void createPayloadsIfNeeded() {
+        if (this.mPayloads == null) {
+            this.mPayloads = new ArrayList<Object>();
+            this.mUnmodifiedPayloads = Collections.unmodifiableList((List<?>)this.mPayloads);
+        }
+    }
+    
+    private boolean doesTransientStatePreventRecycling() {
+        return (this.mFlags & 0x10) == 0x0 && ViewCompat.hasTransientState(this.itemView);
+    }
+    
+    private void onEnteredHiddenState() {
+        this.mWasImportantForAccessibilityBeforeHidden = ViewCompat.getImportantForAccessibility(this.itemView);
+        ViewCompat.setImportantForAccessibility(this.itemView, 4);
+    }
+    
+    private void onLeftHiddenState() {
+        ViewCompat.setImportantForAccessibility(this.itemView, this.mWasImportantForAccessibilityBeforeHidden);
+        this.mWasImportantForAccessibilityBeforeHidden = 0;
+    }
+    
+    private boolean shouldBeKeptAsChild() {
+        return (this.mFlags & 0x10) != 0x0;
+    }
+    
+    void addChangePayload(final Object o) {
+        if (o == null) {
+            this.addFlags(1024);
+        }
+        else if ((this.mFlags & 0x400) == 0x0) {
+            this.createPayloadsIfNeeded();
+            this.mPayloads.add(o);
+        }
     }
     
     void addFlags(final int n) {
@@ -54,6 +142,13 @@ public abstract class RecyclerView$ViewHolder
     void clearOldPosition() {
         this.mOldPosition = -1;
         this.mPreLayoutPosition = -1;
+    }
+    
+    void clearPayload() {
+        if (this.mPayloads != null) {
+            this.mPayloads.clear();
+        }
+        this.mFlags &= 0xFFFFFBFF;
     }
     
     void clearReturnedFromScrapFlag() {
@@ -70,6 +165,13 @@ public abstract class RecyclerView$ViewHolder
         this.mPosition = mPosition;
     }
     
+    public final int getAdapterPosition() {
+        if (this.mOwnerRecyclerView == null) {
+            return -1;
+        }
+        return this.mOwnerRecyclerView.getAdapterPositionFor(this);
+    }
+    
     public final long getItemId() {
         return this.mItemId;
     }
@@ -78,15 +180,41 @@ public abstract class RecyclerView$ViewHolder
         return this.mItemViewType;
     }
     
+    public final int getLayoutPosition() {
+        if (this.mPreLayoutPosition == -1) {
+            return this.mPosition;
+        }
+        return this.mPreLayoutPosition;
+    }
+    
     public final int getOldPosition() {
         return this.mOldPosition;
     }
     
+    @Deprecated
     public final int getPosition() {
         if (this.mPreLayoutPosition == -1) {
             return this.mPosition;
         }
         return this.mPreLayoutPosition;
+    }
+    
+    List<Object> getUnmodifiedPayloads() {
+        if ((this.mFlags & 0x400) != 0x0) {
+            return RecyclerView$ViewHolder.FULLUPDATE_PAYLOADS;
+        }
+        if (this.mPayloads == null || this.mPayloads.size() == 0) {
+            return RecyclerView$ViewHolder.FULLUPDATE_PAYLOADS;
+        }
+        return this.mUnmodifiedPayloads;
+    }
+    
+    boolean hasAnyOfTheFlags(final int n) {
+        return (this.mFlags & n) != 0x0;
+    }
+    
+    boolean isAdapterPositionUnknown() {
+        return (this.mFlags & 0x200) != 0x0 || this.isInvalid();
     }
     
     boolean isBound() {
@@ -146,6 +274,8 @@ public abstract class RecyclerView$ViewHolder
         this.mIsRecyclableCount = 0;
         this.mShadowedHolder = null;
         this.mShadowingHolder = null;
+        this.clearPayload();
+        this.mWasImportantForAccessibilityBeforeHidden = 0;
     }
     
     void saveOldPosition() {
@@ -223,6 +353,9 @@ public abstract class RecyclerView$ViewHolder
         }
         if (!this.isRecyclable()) {
             sb.append(" not recyclable(" + this.mIsRecyclableCount + ")");
+        }
+        if (this.isAdapterPositionUnknown()) {
+            sb.append("undefined adapter position");
         }
         if (this.itemView.getParent() == null) {
             sb.append(" no parent");

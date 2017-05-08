@@ -60,12 +60,12 @@ public class AvatarsGridActivity extends NetflixActivity
     
     private void initUI() {
         this.setContentView(2130903070);
-        this.mGridView = (GridView)this.findViewById(2131689607);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131689606), this.errorCallback);
+        this.mGridView = (GridView)this.findViewById(2131689608);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131689607), this.errorCallback);
         this.mAdapter = new AvatarsGridActivity$ProfileAvatarAdapter(this, null);
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getResources().getString(2131231252));
+            netflixActionBar.setTitle(this.getResources().getString(2131231258));
             netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         }
     }

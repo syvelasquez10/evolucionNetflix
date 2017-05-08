@@ -147,7 +147,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     
     private void displayConfirmationDialog() {
         this.mVerificationDialogDisplayed = true;
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, this.getString(2131231010), this.getString(2131231009), new ContactUsActivity$2(this), this.getString(2131231008), new ContactUsActivity$3(this)), null));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, this.getString(2131231012), this.getString(2131231011), new ContactUsActivity$2(this), this.getString(2131231010), new ContactUsActivity$3(this)), null));
     }
     
     private void doStartDial() {
@@ -207,10 +207,10 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     private void initUI(final boolean b) {
         this.setContentView(2130903079);
         this.getSupportActionBar().hide();
-        this.mFlipper = (ViewFlipper)this.findViewById(2131689679);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131689680);
         this.mLandingPage = new LandingPageScreen(this);
         this.mDialerScreen = new DialerScreen(this);
-        this.mDialButton = this.findViewById(2131689727);
+        this.mDialButton = this.findViewById(2131689728);
         if (b || this.mVoip.isEnabled()) {
             if (Log.isLoggable()) {
                 Log.d("VoipActivity", "VOIP is enabled, show dial button on landing page! This is force enabled: " + b);
@@ -255,7 +255,7 @@ public class ContactUsActivity extends NetflixActivity implements ActivityCompat
     private void requestAudioPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, "android.permission.RECORD_AUDIO")) {
             Log.i("VoipActivity", "Displaying audio permission rationale to provide additional context.");
-            Snackbar.make(this.mLandingPage.getFab(), 2131230904, -2).setAction(2131231126, (View$OnClickListener)new ContactUsActivity$4(this)).show();
+            Snackbar.make(this.mLandingPage.getFab(), 2131230904, -2).setAction(2131231128, (View$OnClickListener)new ContactUsActivity$4(this)).show();
             return;
         }
         ActivityCompat.requestPermissions(this, ContactUsActivity.PERMISSIONS_AUDIO, 0);

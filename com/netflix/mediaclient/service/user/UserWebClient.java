@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.user;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.User;
+
 public interface UserWebClient
 {
     void addWebUserProfile(final String p0, final boolean p1, final String p2, final UserAgentWebCallback p3);
@@ -30,11 +32,11 @@ public interface UserWebClient
     
     void markSurveysAsRead();
     
-    void recordNrmInfo(final String p0);
-    
     void recordPlanSelection(final String p0, final String p1);
     
     void recordUmsImpression(final String p0, final String p1);
+    
+    void refreshUserMessage(final User p0);
     
     void removeWebUserProfile(final String p0, final UserAgentWebCallback p1);
     

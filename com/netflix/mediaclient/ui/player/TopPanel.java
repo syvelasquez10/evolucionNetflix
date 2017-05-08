@@ -59,16 +59,16 @@ public final class TopPanel extends PlayerSection
         this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
         this.mListeners = mListeners;
         (this.mActionBar = playerFragment.getNetflixActivity().getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131690088);
-        this.mTopGradient = playerFragment.getView().findViewById(2131690085);
-        this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131690087);
+        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131690087);
+        this.mTopGradient = playerFragment.getView().findViewById(2131690084);
+        this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131690086);
     }
     
     private void changeControlsVisibility(final boolean b) {
         boolean b2 = true;
         if (b) {
             this.mCurrentToolbarAnimation = AnimationUtils.startViewAppearanceAnimation((View)this.mToolBar, b);
-            this.hideContentAdvisory();
+            this.hideAdvisories();
             if (this.showLanguageMenuItem()) {
                 ViewUtils.setVisibility(this.mLanguage, true);
             }
@@ -78,7 +78,7 @@ public final class TopPanel extends PlayerSection
                 this.mCurrentToolbarAnimation.cancel();
             }
             ViewUtils.setVisibleOrInvisible((View)this.mToolBar, false);
-            this.showContentAdvisory();
+            this.showAdvisories();
         }
         boolean gradientVisibility = b;
         if (this.mScreen != null) {
@@ -97,9 +97,9 @@ public final class TopPanel extends PlayerSection
         this.mdxTargetSelector.setTarget(localDevicePosition);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerFragment.getActivity());
         mdxTargetSelectionDialog$Builder.setCancelable(false);
-        mdxTargetSelectionDialog$Builder.setTitle(2131231092);
+        mdxTargetSelectionDialog$Builder.setTitle(2131231094);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerFragment.getActivity()));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231242), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231248), this.getCurrentTitle()));
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerFragment, b));
         mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerFragment));
         return mdxTargetSelectionDialog$Builder.create();
@@ -112,9 +112,9 @@ public final class TopPanel extends PlayerSection
         return this.mTitleLabel.getText().toString();
     }
     
-    private void hideContentAdvisory() {
+    private void hideAdvisories() {
         if (this.mScreen != null) {
-            this.mScreen.hideContentAdvisory();
+            this.mScreen.hideAdvisories();
         }
     }
     
@@ -124,7 +124,7 @@ public final class TopPanel extends PlayerSection
     
     private void initGeneric(final Menu menu) {
         (this.mEpisodeSelector = menu.add(2131230878)).setVisible(this.mEpisodeSelectorEnabled);
-        this.mEpisodeSelector.setIcon(2130837700);
+        this.mEpisodeSelector.setIcon(2130837698);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
     }
@@ -132,13 +132,13 @@ public final class TopPanel extends PlayerSection
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.playerFragment.getNetflixActivity(), this.playerFragment.getNetflixActivity().isTablet(), new TopPanel$3(this));
         (this.mLanguage = menu.add(2131230879)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837775);
+        this.mLanguage.setIcon(2130837772);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131230880)).setIcon(2130837681);
+        (this.mMdxTarget = menu.add(2131230880)).setIcon(2130837679);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
         this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
@@ -148,7 +148,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu) {
-        (this.mSound = menu.add(2131230898)).setIcon(2130837780);
+        (this.mSound = menu.add(2131230898)).setIcon(2130837777);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }
@@ -220,9 +220,9 @@ public final class TopPanel extends PlayerSection
         return !b2 && b;
     }
     
-    private void showContentAdvisory() {
+    private void showAdvisories() {
         if (this.mScreen != null) {
-            this.mScreen.showContentAdvisory();
+            this.mScreen.showAdvisories();
         }
     }
     

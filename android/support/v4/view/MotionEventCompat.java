@@ -39,12 +39,20 @@ public class MotionEventCompat
         return motionEvent.getAction() & 0xFF;
     }
     
+    public static float getAxisValue(final MotionEvent motionEvent, final int n) {
+        return MotionEventCompat.IMPL.getAxisValue(motionEvent, n);
+    }
+    
     public static int getPointerCount(final MotionEvent motionEvent) {
         return MotionEventCompat.IMPL.getPointerCount(motionEvent);
     }
     
     public static int getPointerId(final MotionEvent motionEvent, final int n) {
         return MotionEventCompat.IMPL.getPointerId(motionEvent, n);
+    }
+    
+    public static int getSource(final MotionEvent motionEvent) {
+        return MotionEventCompat.IMPL.getSource(motionEvent);
     }
     
     public static float getX(final MotionEvent motionEvent, final int n) {

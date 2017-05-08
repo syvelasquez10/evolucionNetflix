@@ -5,9 +5,10 @@
 package android.support.v7.widget;
 
 import java.util.Collection;
+import android.support.v4.animation.AnimatorCompatHelper;
 import java.util.List;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.view.View;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.view.ViewCompat;
 import java.util.Iterator;

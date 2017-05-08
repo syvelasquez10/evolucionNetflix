@@ -13,9 +13,12 @@ import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import java.util.Iterator;
@@ -26,11 +29,11 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import org.json.JSONException;
 import org.json.JSONTokener;
 import org.json.JSONArray;
@@ -75,10 +78,10 @@ class UserAgent$ActivateListener implements EventListener
             final ActivateEvent activateEvent = (ActivateEvent)uiEvent;
             if (!activateEvent.failed()) {
                 final String cookies = activateEvent.getCookies();
-                final String access$900 = this.this$0.extractToken(this.this$0.getNetflixIdName() + "=", cookies);
-                final String access$901 = this.this$0.extractToken(this.this$0.getSecureNetflixIdName() + "=", cookies);
-                if (StringUtils.isNotEmpty(access$900) && StringUtils.isNotEmpty(access$901)) {
-                    this.this$0.mUserAgentStateManager.accountOrProfileActivated(true, access$900, access$901);
+                final String access$1000 = this.this$0.extractToken(this.this$0.getNetflixIdName() + "=", cookies);
+                final String access$1001 = this.this$0.extractToken(this.this$0.getSecureNetflixIdName() + "=", cookies);
+                if (StringUtils.isNotEmpty(access$1000) && StringUtils.isNotEmpty(access$1001)) {
+                    this.this$0.mUserAgentStateManager.accountOrProfileActivated(true, access$1000, access$1001);
                 }
             }
             else if (activateEvent.isActionId()) {
@@ -86,7 +89,7 @@ class UserAgent$ActivateListener implements EventListener
                     Log.d("nf_service_useragent", "Received a activate event with ActionID error: " + activateEvent.getActionID() + ", reason:" + activateEvent.getReasonCode() + "  Received msg " + activateEvent.getMessage());
                 }
                 if (BlacklistedWidevinePluginErrorDescriptor.canHandle(activateEvent)) {
-                    Log.d("nf_service_useragent", "Action ID 3 and code 15003: blacklisted Widevine L3 plugin, report an error");
+                    Log.d("nf_service_useragent", "Action ID 3 and reason code 15003: blacklisted Widevine L3 plugin, report an error");
                     this.this$0.getErrorHandler().addError(new BlacklistedWidevinePluginErrorDescriptor(this.this$0.getContext()));
                     return;
                 }

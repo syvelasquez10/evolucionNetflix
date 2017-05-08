@@ -4,6 +4,7 @@
 
 package com.netflix.falkor;
 
+import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.google.gson.ExclusionStrategy;
@@ -17,7 +18,7 @@ import java.util.LinkedHashSet;
 import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.util.StringUtils;
 import com.fasterxml.jackson.core.JsonFactory;
 import java.io.Reader;
@@ -50,7 +51,6 @@ import com.netflix.mediaclient.util.AlphanumComparator;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.browse.PostToHandlerCallbackWrapper;
 import com.google.gson.JsonObject;
-import com.netflix.model.branches.FalkorExpiringContent;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.branches.FalkorObject;
 import android.util.Pair;

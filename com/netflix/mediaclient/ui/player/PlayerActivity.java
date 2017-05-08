@@ -119,7 +119,7 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903129;
+        return 2130903128;
     }
     
     @Override

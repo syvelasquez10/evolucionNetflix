@@ -6,6 +6,7 @@ package com.crittercism.internal;
 
 import android.os.Build$VERSION;
 import android.os.Build;
+import com.crittercism.app.Transaction;
 import java.util.List;
 import org.json.JSONObject;
 import java.util.Collection;
@@ -403,15 +404,9 @@ public final class ax implements ar, au, av, f
                     Label_0012: {
                         return;
                     }
-                    // iftrue(Label_0012:, this.o.a((Runnable)ax$7))
                     // iftrue(Label_0067:, !this.s)
-                    ax$7 ax$7 = null;
-                Block_5:
-                    while (true) {
-                        ax$7 = new ax$7(this, t, Thread.currentThread().getId());
-                        break Block_5;
-                        continue;
-                    }
+                    final ax$7 ax$7 = new ax$7(this, t, Thread.currentThread().getId());
+                    // iftrue(Label_0012:, this.o.a((Runnable)ax$7))
                     this.r.execute(ax$7);
                     return;
                 }
@@ -438,6 +433,31 @@ public final class ax implements ar, au, av, f
         return a;
     }
     
+    public final void c(final String s) {
+        if (this.s) {
+            dw.b("Transactions are not supported for services. Ignoring Crittercism.beginTransaction() call for " + s + ".");
+        }
+        else {
+            final Transaction a = Transaction.a(s);
+            if (a instanceof be) {
+                synchronized (this.z) {
+                    final Transaction transaction = this.z.remove(s);
+                    if (transaction != null) {
+                        ((be)transaction).d();
+                    }
+                    if (this.z.size() > 50) {
+                        dw.b("Crittercism only supports a maximum of 50 concurrent transactions. Ignoring Crittercism.beginTransaction() call for " + s + ".");
+                        return;
+                    }
+                }
+                final Throwable t;
+                this.z.put(t, a);
+                a.a();
+            }
+            // monitorexit(map)
+        }
+    }
+    
     @Override
     public final boolean c(final String s, final String s2) {
         boolean boolean1 = false;
@@ -451,6 +471,21 @@ public final class ax implements ar, au, av, f
     @Override
     public final String d() {
         return "5.6.4";
+    }
+    
+    public final void d(final String s) {
+        if (this.s) {
+            dw.b("Transactions are not supported for services. Ignoring Crittercism.endTransaction() call for " + s + ".");
+        }
+        else {
+            synchronized (this.z) {
+                final Transaction transaction = this.z.remove(s);
+                // monitorexit(this.z)
+                if (transaction != null) {
+                    transaction.b();
+                }
+            }
+        }
     }
     
     @Override

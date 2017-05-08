@@ -102,6 +102,11 @@ public final class GsonBuilder
         return this;
     }
     
+    public GsonBuilder registerTypeAdapterFactory(final TypeAdapterFactory typeAdapterFactory) {
+        this.factories.add(typeAdapterFactory);
+        return this;
+    }
+    
     public GsonBuilder setPrettyPrinting() {
         this.prettyPrinting = true;
         return this;

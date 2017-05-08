@@ -10,12 +10,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.Collection;
-import java.util.ArrayList;
 import com.netflix.falkor.CachedModelProxy;
 import java.util.Collections;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.ArrayList;
+import com.netflix.model.leafs.advisory.Advisory;
 import java.util.List;
 import com.netflix.falkor.Undefined;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -27,6 +28,7 @@ import com.netflix.model.leafs.TrackableListSummary;
 import com.netflix.falkor.Ref;
 import com.netflix.model.leafs.KidsCharacter$Summary;
 import com.netflix.model.leafs.KidsCharacter$Detail;
+import com.netflix.model.leafs.Video$Advisories;
 import java.util.Comparator;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
@@ -37,6 +39,7 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
 {
     private static final Comparator<FalkorVideo> REVERSE_SORT_BY_YEAR;
     private static final String TAG = "FalkorKidsCharacter";
+    private Video$Advisories advisories;
     public KidsCharacter$Detail kidsDetail;
     public KidsCharacter$Summary kidsSummary;
     public SummarizedList<Ref, TrackableListSummary> videoGallery;
@@ -131,6 +134,9 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
             default: {
                 return null;
             }
+            case "advisories": {
+                return this.advisories;
+            }
             case "summary": {
                 return this.kidsSummary;
             }
@@ -153,30 +159,11 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
-    public String getAdvisoryDescription() {
-        final Video$Detail watchNextDetails = this.getWatchNextDetails();
-        if (watchNextDetails == null) {
-            return null;
+    public List<Advisory> getAdvisories() {
+        if (this.advisories == null) {
+            return new ArrayList<Advisory>(0);
         }
-        return watchNextDetails.advisoryDescription;
-    }
-    
-    @Override
-    public int getAdvisoryDisplayDuration() {
-        final Video$Detail watchNextDetails = this.getWatchNextDetails();
-        if (watchNextDetails == null) {
-            return -1;
-        }
-        return watchNextDetails.advisoryDisplayDuration;
-    }
-    
-    @Override
-    public String getAdvisoryRating() {
-        final Video$Detail watchNextDetails = this.getWatchNextDetails();
-        if (watchNextDetails == null) {
-            return null;
-        }
-        return watchNextDetails.advisoryRating;
+        return this.advisories.getAdvisoryList();
     }
     
     @Override
@@ -365,6 +352,9 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     @Override
     public Set<String> getKeys() {
         final HashSet<String> set = new HashSet<String>();
+        if (this.advisories != null) {
+            set.add("advisories");
+        }
         if (this.kidsSummary != null) {
             set.add("summary");
         }
@@ -401,6 +391,9 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
         switch (s) {
             default: {
                 return null;
+            }
+            case "advisories": {
+                return this.advisories = new Video$Advisories();
             }
             case "summary": {
                 return this.kidsSummary = new KidsCharacter$Summary();
@@ -630,6 +623,11 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public boolean isSupplementalVideo() {
+        return false;
+    }
+    
+    @Override
     public void remove(final String s) {
         this.set(s, null);
     }
@@ -638,6 +636,9 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     public void set(final String s, final Object o) {
         switch (s) {
             default: {}
+            case "advisories": {
+                this.advisories = (Video$Advisories)o;
+            }
             case "summary": {
                 this.kidsSummary = (KidsCharacter$Summary)o;
             }

@@ -4,86 +4,87 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.TypeAdapter;
+import com.google.gson.Gson;
 
-public class EogAlert
+public abstract class EogAlert
 {
-    @SerializedName("abTestCell")
-    public int abTestCell;
-    @SerializedName("abTestId")
-    public int abTestId;
-    @SerializedName("body")
-    public String body;
-    @SerializedName("continueBtnText")
-    public String continueBtnText;
-    @SerializedName("currentPlanId")
-    public String currentPlanId;
-    @SerializedName("currentPlanTier")
-    public String currentPlanTier;
-    @SerializedName("disclaimerText")
-    public String disclaimerText;
-    @SerializedName("footerLinkText")
-    public String footerLinkText;
-    @SerializedName("footerSuffix")
-    public String footerSuffix;
-    @SerializedName("footerText")
-    public String footerText;
-    @SerializedName("hdPlanIsCurrentPlan")
-    public boolean hdPlanIsCurrentPlan;
-    @SerializedName("hdPlanPlanId")
-    public String hdPlanPlanId;
-    @SerializedName("hdPlanPlanTier")
-    public String hdPlanPlanTier;
-    @SerializedName("hdPlanPrice")
-    public String hdPlanPrice;
-    @SerializedName("hdPlanText")
-    public String hdPlanText;
-    @SerializedName("isBlocking")
-    public boolean isBlocking;
+    static final String FIELD_EOG = "eogAlert";
     public boolean isDirty;
-    @SerializedName("locale")
-    public String locale;
-    @SerializedName("messageName")
-    public String messageName;
-    @SerializedName("sdPlanIsCurrentPlan")
-    public boolean sdPlanIsCurrentPlan;
-    @SerializedName("sdPlanPlanId")
-    public String sdPlanPlanId;
-    @SerializedName("sdPlanPlanTier")
-    public String sdPlanPlanTier;
-    @SerializedName("sdPlanPrice")
-    public String sdPlanPrice;
-    @SerializedName("sdPlanText")
-    public String sdPlanText;
-    @SerializedName("seeOtherPlansText")
-    public String seeOtherPlansText;
-    @SerializedName("selectPlanText")
-    public String selectPlanText;
-    @SerializedName("skipBtnImpressionType")
-    public String skipBtnImpressionType;
-    @SerializedName("skipBtnText")
-    public String skipBtnText;
-    @SerializedName("templateId")
-    public String templateId;
-    @SerializedName("title")
-    public String title;
-    @SerializedName("uhdPlanIsCurrentPlan")
-    public boolean uhdPlanIsCurrentPlan;
-    @SerializedName("uhdPlanPlanId")
-    public String uhdPlanPlanId;
-    @SerializedName("uhdPlanPlanTier")
-    public String uhdPlanPlanTier;
-    @SerializedName("uhdPlanPrice")
-    public String uhdPlanPrice;
-    @SerializedName("uhdPlanText")
-    public String uhdPlanText;
-    @SerializedName("urlImage1")
-    public String urlImage1;
-    @SerializedName("urlImage2")
-    public String urlImage2;
     
-    @Override
-    public String toString() {
-        return "EogAlert{isDirty=" + this.isDirty + ", abTestCell=" + this.abTestCell + ", abTestId=" + this.abTestId + ", locale='" + this.locale + '\'' + ", messageName='" + this.messageName + '\'' + ", templateId='" + this.templateId + '\'' + ", title='" + this.title + '\'' + ", body='" + this.body + '\'' + ", seeOtherPlansText='" + this.seeOtherPlansText + '\'' + ", continueBtnText='" + this.continueBtnText + '\'' + ", currentPlanId='" + this.currentPlanId + '\'' + ", currentPlanTier='" + this.currentPlanTier + '\'' + ", skipBtnText='" + this.skipBtnText + '\'' + ", skipBtnImpressionType='" + this.skipBtnImpressionType + '\'' + ", footerText='" + this.footerText + '\'' + ", footerLinkText='" + this.footerLinkText + '\'' + ", footerSuffix='" + this.footerSuffix + '\'' + ", selectPlanText='" + this.selectPlanText + '\'' + ", sdPlanText='" + this.sdPlanText + '\'' + ", sdPlanPrice='" + this.sdPlanPrice + '\'' + ", sdPlanPlanId='" + this.sdPlanPlanId + '\'' + ", sdPlanPlanTier='" + this.sdPlanPlanTier + '\'' + ", sdPlanIsCurrentPlan=" + this.sdPlanIsCurrentPlan + ", hdPlanText='" + this.hdPlanText + '\'' + ", hdPlanPrice='" + this.hdPlanPrice + '\'' + ", hdPlanPlanId='" + this.hdPlanPlanId + '\'' + ", hdPlanPlanTier='" + this.hdPlanPlanTier + '\'' + ", hdPlanIsCurrentPlan=" + this.hdPlanIsCurrentPlan + ", uhdPlanText='" + this.uhdPlanText + '\'' + ", uhdPlanPrice='" + this.uhdPlanPrice + '\'' + ", uhdPlanPlanId='" + this.uhdPlanPlanId + '\'' + ", uhdPlanPlanTier='" + this.uhdPlanPlanTier + '\'' + ", uhdPlanIsCurrentPlan=" + this.uhdPlanIsCurrentPlan + ", disclaimerText='" + this.disclaimerText + '\'' + ", isBlocking=" + this.isBlocking + ", urlImage1='" + this.urlImage1 + '\'' + ", urlImage2='" + this.urlImage2 + '\'' + '}';
+    public static TypeAdapter<EogAlert> typeAdapter(final Gson gson) {
+        return new AutoValue_EogAlert$GsonTypeAdapter(gson);
     }
+    
+    public abstract int abTestCell();
+    
+    public abstract int abTestId();
+    
+    public abstract String body();
+    
+    public abstract String continueBtnText();
+    
+    public abstract String currentPlanId();
+    
+    public abstract String currentPlanTier();
+    
+    public abstract String disclaimerText();
+    
+    public abstract String footerLinkText();
+    
+    public abstract String footerSuffix();
+    
+    public abstract String footerText();
+    
+    public abstract boolean hdPlanIsCurrentPlan();
+    
+    public abstract String hdPlanPlanId();
+    
+    public abstract String hdPlanPlanTier();
+    
+    public abstract String hdPlanPrice();
+    
+    public abstract String hdPlanText();
+    
+    public abstract boolean isBlocking();
+    
+    public abstract String locale();
+    
+    public abstract String messageName();
+    
+    public abstract boolean sdPlanIsCurrentPlan();
+    
+    public abstract String sdPlanPlanId();
+    
+    public abstract String sdPlanPlanTier();
+    
+    public abstract String sdPlanPrice();
+    
+    public abstract String sdPlanText();
+    
+    public abstract String seeOtherPlansText();
+    
+    public abstract String selectPlanText();
+    
+    public abstract String skipBtnImpressionType();
+    
+    public abstract String skipBtnText();
+    
+    public abstract String templateId();
+    
+    public abstract String title();
+    
+    public abstract boolean uhdPlanIsCurrentPlan();
+    
+    public abstract String uhdPlanPlanId();
+    
+    public abstract String uhdPlanPlanTier();
+    
+    public abstract String uhdPlanPrice();
+    
+    public abstract String uhdPlanText();
+    
+    public abstract String urlImage1();
+    
+    public abstract String urlImage2();
 }

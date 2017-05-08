@@ -42,7 +42,7 @@ class KubrickKidsCharacterView$CharacterVideoDetailsClickListener extends VideoD
     @Override
     protected void launchDetailsActivity(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext) {
         final Bundle bundle = new Bundle();
-        bundle.putInt("extra_kids_color", this.this$0.kidsColor);
+        bundle.putInt("extra_kids_color_id", this.this$0.kidsColor);
         DetailsActivityLauncher.show(netflixActivity, video, playContext, "DeetsClickListener", bundle);
     }
 }

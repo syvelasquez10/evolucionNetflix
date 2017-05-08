@@ -25,8 +25,12 @@ class RecyclerView$AdapterDataObservable extends Observable<RecyclerView$Adapter
     }
     
     public void notifyItemRangeChanged(final int n, final int n2) {
+        this.notifyItemRangeChanged(n, n2, null);
+    }
+    
+    public void notifyItemRangeChanged(final int n, final int n2, final Object o) {
         for (int i = this.mObservers.size() - 1; i >= 0; --i) {
-            ((RecyclerView$AdapterDataObserver)this.mObservers.get(i)).onItemRangeChanged(n, n2);
+            ((RecyclerView$AdapterDataObserver)this.mObservers.get(i)).onItemRangeChanged(n, n2, o);
         }
     }
     

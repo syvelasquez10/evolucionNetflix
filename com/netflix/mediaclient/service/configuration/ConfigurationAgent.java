@@ -716,11 +716,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public ABTestConfig$Cell getPushNotifOptInConfig() {
-        return this.mABTestConfigOverride.getPushNotificationOptInConfig();
-    }
-    
-    @Override
     public int getRateLimitForGcmBrowseEvents() {
         return this.mDeviceConfigOverride.getRateLimitForGcmBrowseEvents();
     }
@@ -930,6 +925,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public boolean isWidevineL1Enabled() {
         return this.mDeviceConfigOverride.enableWidevineL1();
+    }
+    
+    @Override
+    public void persistNrmConfigData(final NrmConfigData nrmConfigData) {
+        this.mNrmConfigOverride.persistNrmConfigOverride(nrmConfigData);
     }
     
     public void refreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback, final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {

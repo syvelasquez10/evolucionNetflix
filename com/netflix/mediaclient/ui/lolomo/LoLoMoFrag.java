@@ -35,6 +35,7 @@ import android.widget.AbsListView$RecyclerListener;
 import android.widget.ListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
+import android.widget.FrameLayout;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 
@@ -46,6 +47,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     public static final int NUM_LOMOS_TO_FETCH_PER_BATCH = 20;
     private static final String TAG = "LoLoMoFrag";
     private LoLoMoFrag$ILoLoMoAdapter adapter;
+    private FrameLayout content;
     protected LoLoMoFocusHandler focusHandler;
     protected String genreId;
     private boolean isFirstLaunch;
@@ -118,6 +120,10 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         return this.focusHandler != null && this.focusHandler.dispatchKeyEvent(keyEvent);
     }
     
+    public FrameLayout getContentView() {
+        return this.content;
+    }
+    
     protected int getLayoutId() {
         return 2130903167;
     }
@@ -167,21 +173,17 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        boolean isFirstLaunch = false;
         Log.v("LoLoMoFrag", "Creating frag view");
-        final View inflate = layoutInflater.inflate(this.getLayoutId(), viewGroup, false);
-        if (bundle == null) {
-            isFirstLaunch = true;
-        }
-        this.isFirstLaunch = isFirstLaunch;
+        this.content = (FrameLayout)layoutInflater.inflate(this.getLayoutId(), viewGroup, false);
+        this.isFirstLaunch = (bundle == null);
         if (Log.isLoggable()) {
             Log.v("LoLoMoFrag", "onCreateView: isFirstLaunch = " + this.isFirstLaunch);
         }
-        this.setupMainView(inflate);
+        this.setupMainView((View)this.content);
         this.setupFocushandler();
-        this.setupErrorWrapper(inflate);
+        this.setupErrorWrapper((View)this.content);
         this.handleInitIfReady();
-        return inflate;
+        return (View)this.content;
     }
     
     public void onDestroyView() {

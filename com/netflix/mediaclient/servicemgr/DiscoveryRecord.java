@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.model.leafs.advisory.Advisory;
+import java.util.List;
 import com.netflix.model.branches.FalkorVideo;
 import com.netflix.model.leafs.DiscoverySummary;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
@@ -22,18 +24,8 @@ public class DiscoveryRecord implements Discovery
     }
     
     @Override
-    public String getAdvisoryDescription() {
-        return this.video.getAdvisoryDescription();
-    }
-    
-    @Override
-    public int getAdvisoryDisplayDuration() {
-        return this.video.getAdvisoryDisplayDuration();
-    }
-    
-    @Override
-    public String getAdvisoryRating() {
-        return this.video.getAdvisoryRating();
+    public List<Advisory> getAdvisories() {
+        return this.video.getAdvisories();
     }
     
     @Override
@@ -263,5 +255,10 @@ public class DiscoveryRecord implements Discovery
     @Override
     public boolean isPreRelease() {
         return this.video.isPreRelease();
+    }
+    
+    @Override
+    public boolean isSupplementalVideo() {
+        return this.video.isSupplementalVideo();
     }
 }

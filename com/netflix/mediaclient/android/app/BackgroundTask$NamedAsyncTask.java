@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.android.app;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.osp.AsyncTaskCompat;
 
@@ -19,7 +20,8 @@ class BackgroundTask$NamedAsyncTask extends AsyncTaskCompat<Runnable, Void, Void
             }
         }
         catch (Exception ex) {
-            Log.e("BackgroundTask", "Failed to execute!", ex);
+            Log.e("BackgroundTask", "Failed to execute BackgroundTask !", ex);
+            ErrorLoggingManager.logHandledException(new BackgroundTask$BackgroundTaskException(ex));
         }
         return null;
     }

@@ -30,7 +30,6 @@ import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
-import android.view.View;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import java.util.Map;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
@@ -38,6 +37,7 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import android.view.View;
 import java.util.Iterator;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -93,23 +93,27 @@ class RoleDetailsFrag$FetchActorDetailsAndRelatedCallback extends LoggingManager
             this.this$0.isLoading = false;
             if (status.isError()) {
                 Log.w("RoleDetailsFrag", "Invalid status code");
-                if (this.this$0.actorDetailsView != null) {
-                    this.this$0.actorDetailsView.onNetFlixLabel.setVisibility(4);
-                }
+                return;
             }
-            else {
-                if (this.this$0.actorDetailsView != null) {
-                    this.this$0.actorDetailsView.onNetFlixLabel.setVisibility(0);
-                }
-                if (list != null) {
-                    final ArrayList<Video> items = new ArrayList<Video>();
-                    for (final Video video : list) {
-                        if (video.getType() != null && video.getType() != VideoType.UNKNOWN) {
-                            items.add(video);
-                        }
+            if (list != null) {
+                final ArrayList<Video> items = new ArrayList<Video>();
+                for (final Video video : list) {
+                    if (video.getType() != null && video.getType() != VideoType.UNKNOWN && this.this$0.videoId.compareTo(video.getId()) != 0) {
+                        items.add(video);
                     }
-                    this.this$0.adapter.setItems(items);
                 }
+                if (this.this$0.actorDetailsView != null) {
+                    final View onNetFlixLabel = this.this$0.actorDetailsView.onNetFlixLabel;
+                    int visibility;
+                    if (items.size() > 0) {
+                        visibility = 0;
+                    }
+                    else {
+                        visibility = 4;
+                    }
+                    onNetFlixLabel.setVisibility(visibility);
+                }
+                this.this$0.adapter.setItems(items);
             }
         }
     }

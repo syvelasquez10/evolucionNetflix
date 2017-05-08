@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.falkor;
 
+import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.Asset;
 import java.util.List;
@@ -13,8 +14,8 @@ import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -52,13 +53,13 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void expiringContent(final String s, final int n, final int n2, final ExpiringContentAction expiringContentAction) {
-        this.mBrowseAgent.expiringContent(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)), expiringContentAction);
+    public void fetchActorDetailsAndRelatedForTitle(final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchActorDetailsAndRelatedForTitle(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
-    public void fetchActorDetailsAndRelatedForTitle(final String s, final int n, final int n2) {
-        this.mBrowseAgent.fetchActorDetailsAndRelatedForTitle(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchAdvisories(final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchAdvisories(s, new FalkorAccess$BrowseAgentClientCallback(this, n, n2));
     }
     
     @Override
@@ -137,8 +138,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchPostPlayVideos(final String s, final VideoType videoType, final int n, final int n2) {
-        this.mBrowseAgent.fetchPostPlayVideos(s, videoType, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchPostPlayVideos(final String s, final VideoType videoType, final PostPlayRequestContext postPlayRequestContext, final int n, final int n2) {
+        this.mBrowseAgent.fetchPostPlayVideos(s, videoType, postPlayRequestContext, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -207,6 +208,11 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public String getLolomoId() {
+        return this.mBrowseAgent.getLolomoId();
+    }
+    
+    @Override
     public ModelProxy<?> getModelProxy() {
         return this.mBrowseAgent.getModelProxy();
     }
@@ -219,6 +225,11 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType, final Map<String, String> map) {
         this.mBrowseAgent.logBillboardActivity(video, billboardInteractionType, map);
+    }
+    
+    @Override
+    public void logPostPlayImpression(final String s, final VideoType videoType, final String s2, final int n, final int n2) {
+        this.mBrowseAgent.logPostPlayImpression(s, videoType, s2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -289,5 +300,10 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void updateCachedVideoPosition(final Asset asset) {
         this.mBrowseAgent.updateCachedVideoPosition(asset);
+    }
+    
+    @Override
+    public void updateExpiredContentAdvisoryStatus(final String s, final ExpiringContentAdvisory$ContentAction expiringContentAdvisory$ContentAction) {
+        this.mBrowseAgent.updateExpiredContentAdvisoryStatus(s, expiringContentAdvisory$ContentAction);
     }
 }

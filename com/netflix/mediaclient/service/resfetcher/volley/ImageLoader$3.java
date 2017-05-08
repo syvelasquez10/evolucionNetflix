@@ -11,31 +11,29 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.StringUtils;
 import com.android.volley.Request;
-import com.android.volley.Response$ErrorListener;
+import com.android.volley.Response$Listener;
+import com.netflix.mediaclient.StatusCode;
+import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.UriUtil;
 import android.graphics.Bitmap$Config;
 import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.android.volley.VolleyError;
+import android.graphics.Bitmap;
 import android.widget.ImageView;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$InteractiveListener;
 import android.os.Looper;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$TTRTracker;
 import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
-import com.netflix.mediaclient.StatusCode;
-import android.graphics.Bitmap;
-import com.android.volley.Response$Listener;
+import com.android.volley.VolleyError;
+import com.android.volley.Response$ErrorListener;
 
-class ImageLoader$3 implements Response$Listener<Bitmap>
+class ImageLoader$3 implements Response$ErrorListener
 {
     final /* synthetic */ ImageLoader this$0;
     final /* synthetic */ String val$cacheKey;
@@ -50,9 +48,9 @@ class ImageLoader$3 implements Response$Listener<Bitmap>
     }
     
     @Override
-    public void onResponse(final Bitmap bitmap) {
-        ApmLogUtils.reportAssetRequestResult(this.val$requestUrl, StatusCode.OK, this.this$0.mApmLogger);
-        PerformanceProfiler.getInstance().endSession(Sessions.IMAGE_FETCH, null, this.val$sessionId);
-        this.this$0.onGetImageSuccess(this.val$cacheKey, bitmap);
+    public void onErrorResponse(final VolleyError volleyError) {
+        ApmLogUtils.reportAssetRequestFailure(this.val$requestUrl, volleyError, this.this$0.mApmLogger);
+        PerformanceProfiler.getInstance().endSession(Sessions.IMAGE_FETCH, PerformanceProfiler.createFailedMap(), this.val$sessionId);
+        this.this$0.onGetImageError(this.val$cacheKey, volleyError);
     }
 }

@@ -51,10 +51,10 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837944);
-        this.drawableOneSeason = this.getResources().getDrawable(2131624149);
+        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837941);
+        this.drawableOneSeason = this.getResources().getDrawable(2131624153);
         Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);
-        this.setId(2131689491);
+        this.setId(2131689492);
         ScalePressedStateHandler pressedHandler;
         if (BrowseExperience.showKidsExperience()) {
             pressedHandler = new ScalePressedStateHandler((View)this);
@@ -124,7 +124,7 @@ public class SeasonsSpinner extends Spinner
     
     public void updateSeasonData(final List<SeasonDetails> list) {
         ((SeasonsSpinnerAdapter)this.getAdapter()).updateSeasonData(list);
-        final boolean enabled = ((SeasonsSpinnerAdapter)this.getAdapter()).getCount() > 1;
+        final boolean enabled = this.getAdapter().getCount() > 1;
         this.setEnabled(enabled);
         if (enabled) {
             Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);

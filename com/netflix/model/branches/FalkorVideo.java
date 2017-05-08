@@ -5,6 +5,7 @@
 package com.netflix.model.branches;
 
 import com.netflix.falkor.CachedModelProxy;
+import com.netflix.model.leafs.PostPlayExperience;
 import com.netflix.falkor.PQL;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
 import com.netflix.mediaclient.util.TimeUtils;
@@ -14,9 +15,10 @@ import java.util.Set;
 import com.netflix.model.leafs.InteractivePostplay;
 import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import java.util.ArrayList;
-import java.util.List;
 import com.netflix.mediaclient.util.StringUtils;
+import java.util.ArrayList;
+import com.netflix.model.leafs.advisory.Advisory;
+import java.util.List;
 import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.model.leafs.Episode$Detail;
 import com.netflix.falkor.Sentinel;
@@ -31,6 +33,7 @@ import com.netflix.model.leafs.Video$Summary;
 import com.netflix.model.leafs.TrackableListSummary;
 import com.netflix.model.leafs.Video$SearchTitle;
 import com.netflix.model.leafs.Video$UserRating;
+import com.netflix.model.leafs.PostPlayImpression;
 import com.netflix.model.leafs.Video$KubrickSummary;
 import com.netflix.model.leafs.InteractivePlaybackMoments;
 import com.netflix.model.leafs.Video$InQueue;
@@ -38,8 +41,10 @@ import com.netflix.model.leafs.Video$HeroImages;
 import com.netflix.falkor.Ref;
 import com.netflix.falkor.BranchMap;
 import com.netflix.model.leafs.Video$Detail;
+import com.netflix.model.leafs.Video$CwCleanBoxart;
 import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.model.leafs.originals.BillboardSummary;
+import com.netflix.model.leafs.Video$Advisories;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
@@ -59,8 +64,10 @@ import com.netflix.model.BaseFalkorObject;
 public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboard, CWVideo, KubrickVideo, Playable, UserRating, Video, InteractiveMoments, KubrickShowDetails, MovieDetails, PostPlayVideo, PostPlayVideosProvider, ShowDetails, SearchVideo, FalkorObject
 {
     private static final String TAG = "FalkorVideo";
+    private Video$Advisories advisories;
     private BillboardSummary billboardSummary;
     protected Video$Bookmark bookmark;
+    private Video$CwCleanBoxart cleanBoxshot;
     private Video$Detail detail;
     private BranchMap<Ref> episodes;
     private Video$HeroImages heroImages;
@@ -71,7 +78,8 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     private UnsummarizedList<MementoVideoSwatch> mementoVideoSwatches;
     private BranchMap<Ref> performerStills;
     private BranchMap<Ref> performers;
-    private UnsummarizedList<PostPlayMap> postPlays;
+    private Ref postPlayExperience;
+    private PostPlayImpression postPlayImpression;
     private Video$UserRating rating;
     private BranchMap<FalkorScene> scenes;
     private Video$SearchTitle searchTitle;
@@ -189,6 +197,12 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             default: {
                 return null;
             }
+            case "cleanBoxart": {
+                return this.cleanBoxshot;
+            }
+            case "advisories": {
+                return this.advisories;
+            }
             case "summary": {
                 return this.summary;
             }
@@ -225,6 +239,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             case "interactiveMoments": {
                 return this.interactivePlaybackMoments;
             }
+            case "postPlayImpression": {
+                return this.postPlayImpression;
+            }
             case "similars": {
                 return this.sims;
             }
@@ -237,8 +254,8 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             case "scenes": {
                 return this.scenes;
             }
-            case "postplay": {
-                return this.postPlays;
+            case "postPlayExperience": {
+                return this.postPlayExperience;
             }
             case "cast": {
                 return this.performers;
@@ -264,30 +281,11 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
-    public String getAdvisoryDescription() {
-        final Video$Detail detail = this.getDetail();
-        if (detail == null) {
-            return null;
+    public List<Advisory> getAdvisories() {
+        if (this.advisories == null) {
+            return new ArrayList<Advisory>(0);
         }
-        return detail.advisoryDescription;
-    }
-    
-    @Override
-    public int getAdvisoryDisplayDuration() {
-        final Video$Detail detail = this.getDetail();
-        if (detail == null) {
-            return -1;
-        }
-        return detail.advisoryDisplayDuration;
-    }
-    
-    @Override
-    public String getAdvisoryRating() {
-        final Video$Detail detail = this.getDetail();
-        if (detail == null) {
-            return null;
-        }
-        return detail.advisoryRating;
+        return this.advisories.getAdvisoryList();
     }
     
     @Override
@@ -368,6 +366,14 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return null;
         }
         return this.kubrick.certification;
+    }
+    
+    @Override
+    public String getCleanBoxshotUrl() {
+        if (this.cleanBoxshot == null) {
+            return null;
+        }
+        return this.cleanBoxshot.getCleanBoxshotUrl();
     }
     
     @Override
@@ -637,6 +643,12 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     @Override
     public Set<String> getKeys() {
         final HashSet<String> set = new HashSet<String>();
+        if (this.cleanBoxshot != null) {
+            set.add("cleanBoxart");
+        }
+        if (this.advisories != null) {
+            set.add("advisories");
+        }
         if (this.summary != null) {
             set.add("summary");
         }
@@ -673,14 +685,17 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         if (this.interactivePlaybackMoments != null) {
             set.add("interactiveMoments");
         }
+        if (this.postPlayImpression != null) {
+            set.add("postPlayImpression");
+        }
         if (this.sims != null) {
             set.add("similars");
         }
         if (this.episodes != null) {
             set.add("episodes");
         }
-        if (this.postPlays != null) {
-            set.add("postplay");
+        if (this.postPlayExperience != null) {
+            set.add("postPlayExperience");
         }
         if (this.performers != null) {
             set.add("cast");
@@ -797,6 +812,12 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             default: {
                 return null;
             }
+            case "cleanBoxart": {
+                return this.cleanBoxshot = new Video$CwCleanBoxart();
+            }
+            case "advisories": {
+                return this.advisories = new Video$Advisories();
+            }
             case "summary": {
                 return this.summary = new Video$Summary();
             }
@@ -833,14 +854,17 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             case "interactiveMoments": {
                 return this.interactivePlaybackMoments = new InteractivePlaybackMoments();
             }
+            case "postPlayImpression": {
+                return this.postPlayImpression = new PostPlayImpression();
+            }
             case "similars": {
                 return this.sims = new SummarizedList<Ref, TrackableListSummary>(Falkor$Creator.Ref, Falkor$Creator.TrackableListSummary);
             }
             case "episodes": {
                 return this.episodes = new BranchMap<Ref>(Falkor$Creator.Ref);
             }
-            case "postplay": {
-                return this.postPlays = new UnsummarizedList<PostPlayMap>(Falkor$Creator.PostPlayMap);
+            case "postPlayExperience": {
+                return this.postPlayExperience = new Ref();
             }
             case "cast": {
                 return this.performers = new BranchMap<Ref>(Falkor$Creator.Ref);
@@ -916,7 +940,18 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         if (this.isPostPlayInvalid("contexts")) {
             return null;
         }
-        return this.proxy.getItemsAsList(PQL.create(this.getType().getValue(), this.getId(), "postplay", PQL.range(2), "postplayContext"));
+        return this.proxy.getItemsAsList(PQL.create(this.getType().getValue(), this.getId(), "postPlayExperience", PQL.range(2), "postplayContext"));
+    }
+    
+    @Override
+    public PostPlayExperience getPostPlayExperienceData() {
+        if (this.postPlayExperience != null) {
+            final List<PostPlayExperience> itemsAsList = (List<PostPlayExperience>)this.proxy.getItemsAsList(PQL.create("postPlayExperiences", this.getId(), "experienceData"));
+            if (itemsAsList.size() != 0) {
+                return itemsAsList.get(0);
+            }
+        }
+        return null;
     }
     
     @Override
@@ -924,7 +959,7 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         if (this.isPostPlayInvalid("videos")) {
             return null;
         }
-        return this.proxy.getItemsAsList(PQL.create(this.getType().getValue(), this.getId(), "postplay", PQL.range(2), "videoRef", "summary"));
+        return this.proxy.getItemsAsList(PQL.create(this.getType().getValue(), this.getId(), "postPlayExperience", PQL.range(2), "videoRef", "summary"));
     }
     
     @Override
@@ -1364,6 +1399,12 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     public void set(final String s, final Object o) {
         switch (s) {
             default: {}
+            case "cleanBoxart": {
+                this.cleanBoxshot = (Video$CwCleanBoxart)o;
+            }
+            case "advisories": {
+                this.advisories = (Video$Advisories)o;
+            }
             case "summary": {
                 this.summary = (Video$Summary)o;
             }
@@ -1415,8 +1456,8 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             case "scenes": {
                 this.scenes = (BranchMap<FalkorScene>)o;
             }
-            case "postplay": {
-                this.postPlays = (UnsummarizedList<PostPlayMap>)o;
+            case "postPlayExperience": {
+                this.postPlayExperience = (Ref)o;
             }
             case "cast": {
                 this.performers = new BranchMap<Ref>(Falkor$Creator.Ref);

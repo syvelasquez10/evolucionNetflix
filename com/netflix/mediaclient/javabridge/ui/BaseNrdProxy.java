@@ -55,8 +55,14 @@ public abstract class BaseNrdProxy implements NrdProxy
     public void disconnect() {
         final Transport transport = this.transport;
         if (transport != null) {
-            transport.uiUnloaded();
-            return;
+            try {
+                transport.uiUnloaded();
+                return;
+            }
+            catch (Throwable t) {
+                Log.e(this.getLogTag(), "SPY-10406: Exception form native, ignore...", t);
+                return;
+            }
         }
         Log.d(this.getLogTag(), "NrdProxy::disconnect: transport is NULL!");
     }

@@ -53,6 +53,7 @@ import android.content.Context;
 import com.netflix.mediaclient.servicemgr.MdxPostplayState$PostplayTitle;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
+import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.MdxPostplayState;
 import com.netflix.mediaclient.util.StringUtils;
 import android.app.Service;
@@ -140,7 +141,7 @@ class MdxAgent$3 extends BroadcastReceiver
     }
     
     private void doMDXPostPlayPrompt(final Intent intent, final String s) {
-        this.this$0.getBrowseAgent().fetchPostPlayVideos(String.valueOf(this.this$0.getVideoIds().episodeId), this.this$0.getVideoIds().getVideoType(), new MdxAgent$3$1(this));
+        this.this$0.getBrowseAgent().fetchPostPlayVideos(String.valueOf(this.this$0.getVideoIds().episodeId), this.this$0.getVideoIds().getVideoType(), PostPlayRequestContext.MDX, new MdxAgent$3$1(this));
     }
     
     private void dpMDXSimplePlaybackState(final Intent intent) {

@@ -25,6 +25,6 @@ class ActionId11ErrorDescriptor extends PlaybackErrorDescriptor
         if (StringUtils.isEmpty(s2 = nccpActionId.getMessage())) {
             s2 = playerFragment.getString(2131230775);
         }
-        return new ActionId11ErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, s2, null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231059), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new ActionId11ErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, s2, null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231061), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
 }

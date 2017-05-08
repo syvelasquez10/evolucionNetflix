@@ -4,14 +4,13 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import android.animation.TimeInterpolator;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
-import com.netflix.mediaclient.ui.common.PlayContext;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.model.leafs.PostPlayAction;
+import com.netflix.model.leafs.PostPlayItem;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.TextUtils;
@@ -22,19 +21,17 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.IPlayer;
-import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.servicemgr.Asset;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
-import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
-import java.util.List;
-import android.view.animation.DecelerateInterpolator;
+import com.netflix.model.leafs.PostPlayExperience;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import com.netflix.model.leafs.InteractivePostplay;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import android.widget.LinearLayout;
 import com.netflix.mediaclient.ui.iko.InteractivePostPlayManager;
+import com.netflix.mediaclient.util.TimeUtils$CountdownTimer;
 import com.netflix.mediaclient.Log;
 
 class PostPlay$6 implements Runnable

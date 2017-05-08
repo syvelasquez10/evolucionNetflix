@@ -61,16 +61,16 @@ public final class BottomPanel extends PlayerSection
     
     private void init(final PlayScreen$Listeners playScreen$Listeners) {
         final View view = this.playerFragment.getView();
-        this.durationLabel = (TextView)view.findViewById(2131690094);
-        this.bottomPanel = view.findViewById(2131690090);
-        this.bottomGradient = view.findViewById(2131690086);
-        this.timeline = (TimelineSeekBar)view.findViewById(2131690093);
+        this.durationLabel = (TextView)view.findViewById(2131690093);
+        this.bottomPanel = view.findViewById(2131690089);
+        this.bottomGradient = view.findViewById(2131690085);
+        this.timeline = (TimelineSeekBar)view.findViewById(2131690092);
         this.videoPositionListener = playScreen$Listeners.videoPositionListener;
         this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.playerFragment.getNetflixActivity(), this.playerFragment.getUiResources().timelineThumbOffsetInDip));
-        (this.media = (ImageButton)view.findViewById(2131690091)).setOnClickListener(playScreen$Listeners.playPauseListener);
-        (this.skipBack = (ImageButton)view.findViewById(2131690092)).setOnClickListener(playScreen$Listeners.skipBackListener);
-        (this.zoom = (ImageButton)view.findViewById(2131690095)).setOnClickListener(playScreen$Listeners.zoomListener);
-        this.extraSeekbarHandler = view.findViewById(2131690102);
+        (this.media = (ImageButton)view.findViewById(2131690090)).setOnClickListener(playScreen$Listeners.playPauseListener);
+        (this.skipBack = (ImageButton)view.findViewById(2131690091)).setOnClickListener(playScreen$Listeners.skipBackListener);
+        (this.zoom = (ImageButton)view.findViewById(2131690094)).setOnClickListener(playScreen$Listeners.zoomListener);
+        this.extraSeekbarHandler = view.findViewById(2131690101);
         this.currentTime = CurrentTime.newInstance(this.playerFragment);
     }
     
@@ -99,7 +99,7 @@ public final class BottomPanel extends PlayerSection
         }
         int n;
         if (enabled) {
-            n = 2131624161;
+            n = 2131624167;
         }
         else {
             n = 2131624025;

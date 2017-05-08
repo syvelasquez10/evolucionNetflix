@@ -22,13 +22,12 @@ import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
-import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
-import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
+import com.netflix.model.leafs.advisory.Advisory;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
 import com.netflix.model.branches.FalkorActorStill;
@@ -66,6 +65,13 @@ public class LoggingManagerCallback implements ManagerCallback
                 value2 = list2.size();
             }
             Log.v(tag2, String.format("onActorDetailsAndRelatedFetched, related: %s items", value2));
+        }
+    }
+    
+    @Override
+    public void onAdvisoriesFetched(final List<Advisory> list, final Status status) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onAdvisoriesFetched, status: %d", status.getStatusCode().getValue()));
         }
     }
     
@@ -162,13 +168,6 @@ public class LoggingManagerCallback implements ManagerCallback
                 size = list.size();
             }
             Log.v(tag, String.format("onEpisodesFetched, num: %d, status: %d", size, status.getStatusCode().getValue()));
-        }
-    }
-    
-    @Override
-    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
-        if (Log.isLoggable()) {
-            Log.v(this.tag, String.format("onExpiringContentWarning, status: %d", status.getStatusCode().getValue()));
         }
     }
     
@@ -360,6 +359,13 @@ public class LoggingManagerCallback implements ManagerCallback
                 value = list.size();
             }
             Log.v(tag2, String.format("onPersonRelatedFetched, related: %s items", value));
+        }
+    }
+    
+    @Override
+    public void onPostPlayImpressionLogged(final boolean b, final Status status) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onPostPlayImpressionLogged, status: %d", status.getStatusCode().getValue()));
         }
     }
     

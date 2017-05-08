@@ -174,7 +174,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         if (this.isNSREEpisodic(billboardSummary) && !this.showArtworkOnly) {
             String infoText;
             if (!TextUtils.isEmpty((CharSequence)billboardSummary.getTitle())) {
-                infoText = this.getResources().getString(2131231063, new Object[] { billboardSummary.getTitle() });
+                infoText = this.getResources().getString(2131231066, new Object[] { billboardSummary.getTitle() });
             }
             else {
                 infoText = this.infoText;
@@ -208,20 +208,20 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         this.detailsListener = new VideoDetailsClickListener(netflixActivity, this);
         netflixActivity.getLayoutInflater().inflate(2130903077, (ViewGroup)this);
-        this.infoViewGroup = this.findViewById(2131689660);
-        this.infoViewMargin = this.findViewById(2131689662);
-        this.info = (TextView)this.findViewById(2131689666);
-        this.infoPhone = (TextView)this.findViewById(2131689657);
-        this.infoWrapper = this.findViewById(2131689664);
-        this.episodeBadge = (TextView)this.findViewById(2131689665);
-        this.dateBadge = (AdvancedImageView)this.findViewById(2131689667);
-        this.awardsHeadline = (AdvancedImageView)this.findViewById(2131689661);
-        this.synopsis = (TextView)this.findViewById(2131689668);
-        this.tvCard = (AdvancedImageView)this.findViewById(2131689663);
-        this.storyArtFrame = (FrameLayout)this.findViewById(2131689654);
-        this.storyArt = (TopCropImageView)this.findViewById(2131689655);
-        this.motionStoryArt = (TextureView)this.findViewById(2131689656);
-        this.muteButton = (TextView)this.findViewById(2131689674);
+        this.infoViewGroup = this.findViewById(2131689661);
+        this.infoViewMargin = this.findViewById(2131689663);
+        this.info = (TextView)this.findViewById(2131689667);
+        this.infoPhone = (TextView)this.findViewById(2131689658);
+        this.infoWrapper = this.findViewById(2131689665);
+        this.episodeBadge = (TextView)this.findViewById(2131689666);
+        this.dateBadge = (AdvancedImageView)this.findViewById(2131689668);
+        this.awardsHeadline = (AdvancedImageView)this.findViewById(2131689662);
+        this.synopsis = (TextView)this.findViewById(2131689669);
+        this.tvCard = (AdvancedImageView)this.findViewById(2131689664);
+        this.storyArtFrame = (FrameLayout)this.findViewById(2131689655);
+        this.storyArt = (TopCropImageView)this.findViewById(2131689656);
+        this.motionStoryArt = (TextureView)this.findViewById(2131689657);
+        this.muteButton = (TextView)this.findViewById(2131689675);
         if (netflixActivity.getServiceManager() != null) {
             this.isTablet = netflixActivity.getServiceManager().isTablet();
         }
@@ -237,14 +237,14 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             n = DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) / 3;
         }
         ViewUtils.setPaddingStart((View)this.storyArtFrame, n);
-        this.shadowOverlay = this.findViewById(2131689658);
+        this.shadowOverlay = this.findViewById(2131689659);
         ((RelativeLayout$LayoutParams)this.shadowOverlay.getLayoutParams()).width = n;
-        this.shadowOverlayGradient = this.findViewById(2131689659);
+        this.shadowOverlayGradient = this.findViewById(2131689660);
         ((RelativeLayout$LayoutParams)this.shadowOverlayGradient.getLayoutParams()).setMarginStart(n);
-        this.cta1Button = (Button)this.findViewById(2131689670);
-        this.cta2Button = (Button)this.findViewById(2131689671);
-        this.myListButton = (Button)this.findViewById(2131689672);
-        this.infoButton = (Button)this.findViewById(2131689673);
+        this.cta1Button = (Button)this.findViewById(2131689671);
+        this.cta2Button = (Button)this.findViewById(2131689672);
+        this.myListButton = (Button)this.findViewById(2131689673);
+        this.infoButton = (Button)this.findViewById(2131689674);
         this.updateViewVisibility();
         if (PersistentConfig.getMotionBBTestCell(this.getContext()).ordinal() == ABTestConfig$Cell.CELL_TWO.ordinal()) {
             motionBillboardsEnabled = true;
@@ -269,9 +269,9 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             this.storyArtUrl = billboardBackground.getUrl();
             if (!billboardBackground.getTone().equals("light")) {
                 this.synopsis.setTextColor(this.getResources().getColor(2131623959));
-                this.synopsis.setShadowLayer(2.0f, 0.0f, -1.0f, this.getResources().getColor(2131624138));
-                this.info.setTextColor(this.getResources().getColor(2131624161));
-                this.info.setShadowLayer(2.0f, 0.0f, -1.0f, this.getResources().getColor(2131624138));
+                this.synopsis.setShadowLayer(2.0f, 0.0f, -1.0f, this.getResources().getColor(2131624142));
+                this.info.setTextColor(this.getResources().getColor(2131624167));
+                this.info.setShadowLayer(2.0f, 0.0f, -1.0f, this.getResources().getColor(2131624142));
                 return;
             }
             this.synopsis.setTextColor(this.getResources().getColor(2131623960));
@@ -441,21 +441,21 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
     }
     
     private void updateLogoSize(final BillboardSummary billboardSummary) {
-        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131362021);
-        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(2131362022);
+        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131362020);
+        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(2131362021);
         final int screenWidthInPixels = DeviceUtils.getScreenWidthInPixels(this.getContext());
-        int width = dimensionPixelSize2;
+        int min = dimensionPixelSize2;
         int height = dimensionPixelSize;
         if (billboardSummary != null) {
-            width = dimensionPixelSize2;
+            min = dimensionPixelSize2;
             height = dimensionPixelSize;
             if (billboardSummary.isOriginal()) {
-                width = screenWidthInPixels / 3;
-                height = (int)(width * 0.4);
+                min = Math.min(screenWidthInPixels / 3, this.getResources().getDimensionPixelSize(2131362019));
+                height = (int)(min * 0.4);
             }
         }
         final ViewGroup$LayoutParams layoutParams = this.tvCard.getLayoutParams();
-        layoutParams.width = width;
+        layoutParams.width = min;
         layoutParams.height = height;
         this.tvCard.setLayoutParams(layoutParams);
     }
@@ -466,10 +466,10 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             final Resources resources = this.getResources();
             int n;
             if (this.mediaPlayerWrapper.isMuted()) {
-                n = 2131231323;
+                n = 2131231330;
             }
             else {
-                n = 2131231325;
+                n = 2131231332;
             }
             muteButton.setText((CharSequence)resources.getString(n));
             this.muteButton.setOnClickListener((View$OnClickListener)new BillboardView$5(this));
@@ -644,7 +644,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
                     this.infoPhone.setText((CharSequence)this.infoText);
                     this.infoPhone.setVisibility(0);
                 }
-                this.storyArt.setPadding(0, 0, 0, this.getContext().getResources().getDimensionPixelSize(2131362019));
+                this.storyArt.setPadding(0, 0, 0, this.getContext().getResources().getDimensionPixelSize(2131362018));
             }
             else {
                 this.infoPhone.setVisibility(8);

@@ -16,6 +16,7 @@ import android.app.Fragment;
 import android.os.Handler;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
+import com.viewpagerindicator.android.osp.ViewPager$PageTransformer;
 import android.support.v4.view.PagerAdapter;
 import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
 import android.view.View;
@@ -51,12 +52,20 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     }
     
     private void setPagerPositionOnTabSelect(final TabLayout$Tab tabLayout$Tab) {
-        final int position = tabLayout$Tab.getPosition();
-        if (position == 0 && this.this$0.pager.getCurrentItem() >= this.this$0.actors.size()) {
-            this.this$0.pager.setCurrentItem(0);
+        if (!this.this$0.resetPager) {
+            this.this$0.resetPager = true;
         }
-        else if (position == 1) {
-            this.this$0.pager.setCurrentItem(this.this$0.actors.size());
+        else {
+            final int position = tabLayout$Tab.getPosition();
+            if (position == 0) {
+                this.this$0.pager.setCurrentItem(0, false);
+                this.this$0.resetTranslation(0);
+                return;
+            }
+            if (position == 1) {
+                this.this$0.pager.setCurrentItem(this.this$0.actors.size(), false);
+                this.this$0.resetTranslation(this.this$0.actors.size());
+            }
         }
     }
     
@@ -67,16 +76,16 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     
     @Override
     public void onTabSelected(final TabLayout$Tab pagerPositionOnTabSelect) {
-        pagerPositionOnTabSelect.getCustomView().findViewById(2131689987).setVisibility(0);
-        final TextView textView = (TextView)pagerPositionOnTabSelect.getCustomView().findViewById(2131689988);
+        pagerPositionOnTabSelect.getCustomView().findViewById(2131689985).setVisibility(0);
+        final TextView textView = (TextView)pagerPositionOnTabSelect.getCustomView().findViewById(2131689986);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         this.setPagerPositionOnTabSelect(pagerPositionOnTabSelect);
         if (this.this$0.isActivityValid()) {
-            if (this.this$0.getResources().getString(2131231053).compareToIgnoreCase(textView.getText().toString()) == 0) {
+            if (this.this$0.getResources().getString(2131231055).compareToIgnoreCase(textView.getText().toString()) == 0) {
                 UIViewLogUtils.reportUIViewCommand((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.mementoTabCast, IClientLogging$ModalView.memento, this.this$0.getNetflixActivity().getDataContext());
                 return;
             }
-            if (this.this$0.getResources().getString(2131231055).compareToIgnoreCase(textView.getText().toString()) == 0) {
+            if (this.this$0.getResources().getString(2131231057).compareToIgnoreCase(textView.getText().toString()) == 0) {
                 UIViewLogUtils.reportUIViewCommand((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.mementoTabRelated, IClientLogging$ModalView.memento, this.this$0.getNetflixActivity().getDataContext());
             }
         }
@@ -84,7 +93,7 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     
     @Override
     public void onTabUnselected(final TabLayout$Tab tabLayout$Tab) {
-        tabLayout$Tab.getCustomView().findViewById(2131689987).setVisibility(4);
-        ((TextView)tabLayout$Tab.getCustomView().findViewById(2131689988)).setTypeface(Typeface.DEFAULT);
+        tabLayout$Tab.getCustomView().findViewById(2131689985).setVisibility(4);
+        ((TextView)tabLayout$Tab.getCustomView().findViewById(2131689986)).setTypeface(Typeface.DEFAULT);
     }
 }

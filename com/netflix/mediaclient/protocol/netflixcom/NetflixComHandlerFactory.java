@@ -31,6 +31,7 @@ public class NetflixComHandlerFactory
     public static final String HANDLER_PREFIX = "www.netflix.com";
     public static final String HANDLER_SCHEME = "http";
     private static final String HOME_SUFFIX = "";
+    protected static final String NM_WATCH_SUFFIX = "nmwatch";
     protected static final String PROFILES_SUFFIX = "profiles";
     protected static final String SEARCH_SUFFIX = "search";
     protected static final String SYNC_SUFFIX = "sync";
@@ -105,7 +106,8 @@ public class NetflixComHandlerFactory
             case "title": {
                 return new NetflixComVideoDetailsHandler();
             }
-            case "watch": {
+            case "watch":
+            case "nmwatch": {
                 return new NetflixComWatchHandler(NetflixComUtils.getStartTimeFromParams(map), NetflixComUtils.getSceneFromParams(map));
             }
             case "browse": {

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.login;
 
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.app.Activity;
@@ -17,6 +18,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import java.util.Map;
@@ -35,6 +37,7 @@ import android.app.Fragment;
 
 public class LoginActivity extends AccountActivity implements LoginFragmentListener
 {
+    private static final String PREFERENCE_NON_MEMBER_PLAYBACK = "prefs_non_member_playback";
     public static final int RC_SAVE = 1;
     private static final String TAG = "LoginActivity";
     private EmailPasswordFragment mEmailPasswordFragment;
@@ -76,7 +79,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
         final FragmentManager fragmentManager = this.getFragmentManager();
         final FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
         this.mEmailPasswordFragment = EmailPasswordFragment.newInstance(this.getIntent().getExtras());
-        beginTransaction.replace(2131689913, (Fragment)this.mEmailPasswordFragment, "EmailPasswordFragment").addToBackStack("EmailPasswordFragment");
+        beginTransaction.replace(2131689911, (Fragment)this.mEmailPasswordFragment, "EmailPasswordFragment").addToBackStack("EmailPasswordFragment");
         beginTransaction.commitAllowingStateLoss();
         fragmentManager.executePendingTransactions();
         this.getActiveFragment(fragmentManager);
@@ -116,6 +119,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
             if (Log.isLoggable()) {
                 Log.d("LoginActivity", "New profile requested - starting profile selection activity...");
             }
+            PreferenceUtils.putBooleanPref((Context)this, "prefs_non_member_playback", false);
             this.startActivity(ProfileSelectionActivity.createStartIntent((Context)this));
             AccountActivity.finishAllAccountActivities((Context)this);
             return;
@@ -156,6 +160,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
         if (Log.isLoggable()) {
             Log.d("LoginActivity", "SmartLogin save not enabled, regular workflow...");
         }
+        PreferenceUtils.putBooleanPref((Context)this, "prefs_non_member_playback", false);
         this.startActivity(ProfileSelectionActivity.createStartIntent((Context)this));
         AccountActivity.finishAllAccountActivities((Context)this);
     }
@@ -202,6 +207,10 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
     
     @Override
     protected void onResume() {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager != null && serviceManager.isReady()) {
+            serviceManager.setNonMemberPlayback(false);
+        }
         super.onResume();
     }
     

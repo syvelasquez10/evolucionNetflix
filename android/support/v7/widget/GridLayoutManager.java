@@ -9,8 +9,8 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import java.util.Arrays;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.view.ViewGroup$LayoutParams;
-import android.util.AttributeSet;
 import android.util.Log;
+import android.util.AttributeSet;
 import android.content.Context;
 import android.view.View$MeasureSpec;
 import android.view.View;
@@ -23,11 +23,12 @@ public class GridLayoutManager extends LinearLayoutManager
     public static final int DEFAULT_SPAN_COUNT = -1;
     static final int MAIN_DIR_SPEC;
     private static final String TAG = "GridLayoutManager";
+    int[] mCachedBorders;
     final Rect mDecorInsets;
+    boolean mPendingSpanCountChange;
     final SparseIntArray mPreLayoutSpanIndexCache;
     final SparseIntArray mPreLayoutSpanSizeCache;
     View[] mSet;
-    int mSizePerSpan;
     int mSpanCount;
     GridLayoutManager$SpanSizeLookup mSpanSizeLookup;
     
@@ -37,6 +38,7 @@ public class GridLayoutManager extends LinearLayoutManager
     
     public GridLayoutManager(final Context context, final int spanCount) {
         super(context);
+        this.mPendingSpanCountChange = false;
         this.mSpanCount = -1;
         this.mPreLayoutSpanSizeCache = new SparseIntArray();
         this.mPreLayoutSpanIndexCache = new SparseIntArray();
@@ -47,6 +49,7 @@ public class GridLayoutManager extends LinearLayoutManager
     
     public GridLayoutManager(final Context context, final int spanCount, final int n, final boolean b) {
         super(context, n, b);
+        this.mPendingSpanCountChange = false;
         this.mSpanCount = -1;
         this.mPreLayoutSpanSizeCache = new SparseIntArray();
         this.mPreLayoutSpanIndexCache = new SparseIntArray();
@@ -55,40 +58,51 @@ public class GridLayoutManager extends LinearLayoutManager
         this.setSpanCount(spanCount);
     }
     
+    public GridLayoutManager(final Context context, final AttributeSet set, final int n, final int n2) {
+        super(context, set, n, n2);
+        this.mPendingSpanCountChange = false;
+        this.mSpanCount = -1;
+        this.mPreLayoutSpanSizeCache = new SparseIntArray();
+        this.mPreLayoutSpanIndexCache = new SparseIntArray();
+        this.mSpanSizeLookup = new GridLayoutManager$DefaultSpanSizeLookup();
+        this.mDecorInsets = new Rect();
+        this.setSpanCount(RecyclerView$LayoutManager.getProperties(context, set, n, n2).spanCount);
+    }
+    
     private void assignSpans(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, int i, int n, final boolean b) {
         int n2;
-        int n4;
+        int n3;
         if (b) {
             n2 = 1;
-            final int n3 = 0;
-            n4 = i;
-            i = n3;
+            n = 0;
+            n3 = i;
+            i = n;
         }
         else {
             --i;
             n2 = -1;
-            n4 = -1;
+            n3 = -1;
         }
-        int n5;
+        int n4;
         if (this.mOrientation == 1 && this.isLayoutRTL()) {
-            --n;
-            n5 = -1;
+            n = this.mSpanCount - 1;
+            n4 = -1;
         }
         else {
             n = 0;
-            n5 = 1;
+            n4 = 1;
         }
-        while (i != n4) {
+        while (i != n3) {
             final View view = this.mSet[i];
             final GridLayoutManager$LayoutParams gridLayoutManager$LayoutParams = (GridLayoutManager$LayoutParams)view.getLayoutParams();
             gridLayoutManager$LayoutParams.mSpanSize = this.getSpanSize(recyclerView$Recycler, recyclerView$State, this.getPosition(view));
-            if (n5 == -1 && gridLayoutManager$LayoutParams.mSpanSize > 1) {
+            if (n4 == -1 && gridLayoutManager$LayoutParams.mSpanSize > 1) {
                 gridLayoutManager$LayoutParams.mSpanIndex = n - (gridLayoutManager$LayoutParams.mSpanSize - 1);
             }
             else {
                 gridLayoutManager$LayoutParams.mSpanIndex = n;
             }
-            n += gridLayoutManager$LayoutParams.mSpanSize * n5;
+            n += gridLayoutManager$LayoutParams.mSpanSize * n4;
             i += n2;
         }
     }
@@ -96,9 +110,35 @@ public class GridLayoutManager extends LinearLayoutManager
     private void cachePreLayoutSpanMapping() {
         for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
             final GridLayoutManager$LayoutParams gridLayoutManager$LayoutParams = (GridLayoutManager$LayoutParams)this.getChildAt(i).getLayoutParams();
-            final int viewPosition = gridLayoutManager$LayoutParams.getViewPosition();
-            this.mPreLayoutSpanSizeCache.put(viewPosition, gridLayoutManager$LayoutParams.getSpanSize());
-            this.mPreLayoutSpanIndexCache.put(viewPosition, gridLayoutManager$LayoutParams.getSpanIndex());
+            final int viewLayoutPosition = gridLayoutManager$LayoutParams.getViewLayoutPosition();
+            this.mPreLayoutSpanSizeCache.put(viewLayoutPosition, gridLayoutManager$LayoutParams.getSpanSize());
+            this.mPreLayoutSpanIndexCache.put(viewLayoutPosition, gridLayoutManager$LayoutParams.getSpanIndex());
+        }
+    }
+    
+    private void calculateItemBorders(int n) {
+        final int n2 = 0;
+        if (this.mCachedBorders == null || this.mCachedBorders.length != this.mSpanCount + 1 || this.mCachedBorders[this.mCachedBorders.length - 1] != n) {
+            this.mCachedBorders = new int[this.mSpanCount + 1];
+        }
+        this.mCachedBorders[0] = 0;
+        final int n3 = n / this.mSpanCount;
+        final int n4 = n % this.mSpanCount;
+        final int n5 = 1;
+        int n6 = 0;
+        n = n2;
+        for (int i = n5; i <= this.mSpanCount; ++i) {
+            n += n4;
+            int n7;
+            if (n > 0 && this.mSpanCount - n < n4) {
+                n -= this.mSpanCount;
+                n7 = n3 + 1;
+            }
+            else {
+                n7 = n3;
+            }
+            n6 += n7;
+            this.mCachedBorders[i] = n6;
         }
     }
     
@@ -107,8 +147,8 @@ public class GridLayoutManager extends LinearLayoutManager
         this.mPreLayoutSpanIndexCache.clear();
     }
     
-    private void ensureAnchorIsInFirstSpan(final LinearLayoutManager$AnchorInfo linearLayoutManager$AnchorInfo) {
-        for (int n = this.mSpanSizeLookup.getCachedSpanIndex(linearLayoutManager$AnchorInfo.mPosition, this.mSpanCount); n > 0 && linearLayoutManager$AnchorInfo.mPosition > 0; n = this.mSpanSizeLookup.getCachedSpanIndex(linearLayoutManager$AnchorInfo.mPosition, this.mSpanCount)) {
+    private void ensureAnchorIsInFirstSpan(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, final LinearLayoutManager$AnchorInfo linearLayoutManager$AnchorInfo) {
+        for (int n = this.getSpanIndex(recyclerView$Recycler, recyclerView$State, linearLayoutManager$AnchorInfo.mPosition); n > 0 && linearLayoutManager$AnchorInfo.mPosition > 0; n = this.getSpanIndex(recyclerView$Recycler, recyclerView$State, linearLayoutManager$AnchorInfo.mPosition)) {
             --linearLayoutManager$AnchorInfo.mPosition;
         }
     }
@@ -164,10 +204,29 @@ public class GridLayoutManager extends LinearLayoutManager
         return n2;
     }
     
-    private void measureChildWithDecorationsAndMargin(final View view, final int n, final int n2) {
+    private void measureChildWithDecorationsAndMargin(final View view, int updateSpecWithExtra, final int n, final boolean b) {
         this.calculateItemDecorationsForChild(view, this.mDecorInsets);
         final RecyclerView$LayoutParams recyclerView$LayoutParams = (RecyclerView$LayoutParams)view.getLayoutParams();
-        view.measure(this.updateSpecWithExtra(n, recyclerView$LayoutParams.leftMargin + this.mDecorInsets.left, recyclerView$LayoutParams.rightMargin + this.mDecorInsets.right), this.updateSpecWithExtra(n2, recyclerView$LayoutParams.topMargin + this.mDecorInsets.top, recyclerView$LayoutParams.bottomMargin + this.mDecorInsets.bottom));
+        int updateSpecWithExtra2 = 0;
+        Label_0067: {
+            if (!b) {
+                updateSpecWithExtra2 = updateSpecWithExtra;
+                if (this.mOrientation != 1) {
+                    break Label_0067;
+                }
+            }
+            updateSpecWithExtra2 = this.updateSpecWithExtra(updateSpecWithExtra, recyclerView$LayoutParams.leftMargin + this.mDecorInsets.left, recyclerView$LayoutParams.rightMargin + this.mDecorInsets.right);
+        }
+        Label_0113: {
+            if (!b) {
+                updateSpecWithExtra = n;
+                if (this.mOrientation != 0) {
+                    break Label_0113;
+                }
+            }
+            updateSpecWithExtra = this.updateSpecWithExtra(n, recyclerView$LayoutParams.topMargin + this.mDecorInsets.top, recyclerView$LayoutParams.bottomMargin + this.mDecorInsets.bottom);
+        }
+        view.measure(updateSpecWithExtra2, updateSpecWithExtra);
     }
     
     private void updateMeasurements() {
@@ -178,7 +237,7 @@ public class GridLayoutManager extends LinearLayoutManager
         else {
             n = this.getHeight() - this.getPaddingBottom() - this.getPaddingTop();
         }
-        this.mSizePerSpan = n / this.mSpanCount;
+        this.calculateItemBorders(n);
     }
     
     private int updateSpecWithExtra(final int n, final int n2, final int n3) {
@@ -194,6 +253,74 @@ public class GridLayoutManager extends LinearLayoutManager
     @Override
     public boolean checkLayoutParams(final RecyclerView$LayoutParams recyclerView$LayoutParams) {
         return recyclerView$LayoutParams instanceof GridLayoutManager$LayoutParams;
+    }
+    
+    @Override
+    View findReferenceChild(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, int i, final int n, final int n2) {
+        View view = null;
+        this.ensureLayoutState();
+        final int startAfterPadding = this.mOrientationHelper.getStartAfterPadding();
+        final int endAfterPadding = this.mOrientationHelper.getEndAfterPadding();
+        int n3;
+        if (n > i) {
+            n3 = 1;
+        }
+        else {
+            n3 = -1;
+        }
+        View view2 = null;
+    Label_0093_Outer:
+        while (i != n) {
+            final View child = this.getChildAt(i);
+            final int position = this.getPosition(child);
+            while (true) {
+                Label_0216: {
+                    if (position < 0 || position >= n2) {
+                        break Label_0216;
+                    }
+                    View view4;
+                    View view5;
+                    if (this.getSpanIndex(recyclerView$Recycler, recyclerView$State, position) != 0) {
+                        final View view3 = view;
+                        view4 = view2;
+                        view5 = view3;
+                    }
+                    else if (((RecyclerView$LayoutParams)child.getLayoutParams()).isItemRemoved()) {
+                        if (view2 != null) {
+                            break Label_0216;
+                        }
+                        view5 = view;
+                        view4 = child;
+                    }
+                    else {
+                        if (this.mOrientationHelper.getDecoratedStart(child) < endAfterPadding) {
+                            final View view6 = child;
+                            if (this.mOrientationHelper.getDecoratedEnd(child) >= startAfterPadding) {
+                                return view6;
+                            }
+                        }
+                        if (view != null) {
+                            break Label_0216;
+                        }
+                        view4 = view2;
+                        view5 = child;
+                    }
+                    i += n3;
+                    final View view7 = view4;
+                    view = view5;
+                    view2 = view7;
+                    continue Label_0093_Outer;
+                }
+                final View view8 = view2;
+                View view5 = view;
+                View view4 = view8;
+                continue;
+            }
+        }
+        if (view == null) {
+            view = view2;
+        }
+        return view;
     }
     
     @Override
@@ -298,13 +425,13 @@ public class GridLayoutManager extends LinearLayoutManager
             else {
                 this.addDisappearingView(view, 0);
             }
-            final int measureSpec = View$MeasureSpec.makeMeasureSpec(this.getSpanSize(recyclerView$Recycler, recyclerView$State, this.getPosition(view)) * this.mSizePerSpan, 1073741824);
             final GridLayoutManager$LayoutParams gridLayoutManager$LayoutParams = (GridLayoutManager$LayoutParams)view.getLayoutParams();
+            final int measureSpec = View$MeasureSpec.makeMeasureSpec(this.mCachedBorders[gridLayoutManager$LayoutParams.mSpanIndex + gridLayoutManager$LayoutParams.mSpanSize] - this.mCachedBorders[gridLayoutManager$LayoutParams.mSpanIndex], 1073741824);
             if (this.mOrientation == 1) {
-                this.measureChildWithDecorationsAndMargin(view, measureSpec, this.getMainDirSpec(gridLayoutManager$LayoutParams.height));
+                this.measureChildWithDecorationsAndMargin(view, measureSpec, this.getMainDirSpec(gridLayoutManager$LayoutParams.height), false);
             }
             else {
-                this.measureChildWithDecorationsAndMargin(view, this.getMainDirSpec(gridLayoutManager$LayoutParams.width), measureSpec);
+                this.measureChildWithDecorationsAndMargin(view, this.getMainDirSpec(gridLayoutManager$LayoutParams.width), measureSpec, false);
             }
             final int decoratedMeasurement = this.mOrientationHelper.getDecoratedMeasurement(view);
             if (decoratedMeasurement > mConsumed) {
@@ -316,12 +443,13 @@ public class GridLayoutManager extends LinearLayoutManager
         for (int j = 0; j < n3; ++j) {
             final View view2 = this.mSet[j];
             if (this.mOrientationHelper.getDecoratedMeasurement(view2) != mConsumed) {
-                final int measureSpec2 = View$MeasureSpec.makeMeasureSpec(this.getSpanSize(recyclerView$Recycler, recyclerView$State, this.getPosition(view2)) * this.mSizePerSpan, 1073741824);
+                final GridLayoutManager$LayoutParams gridLayoutManager$LayoutParams2 = (GridLayoutManager$LayoutParams)view2.getLayoutParams();
+                final int measureSpec2 = View$MeasureSpec.makeMeasureSpec(this.mCachedBorders[gridLayoutManager$LayoutParams2.mSpanIndex + gridLayoutManager$LayoutParams2.mSpanSize] - this.mCachedBorders[gridLayoutManager$LayoutParams2.mSpanIndex], 1073741824);
                 if (this.mOrientation == 1) {
-                    this.measureChildWithDecorationsAndMargin(view2, measureSpec2, mainDirSpec);
+                    this.measureChildWithDecorationsAndMargin(view2, measureSpec2, mainDirSpec, true);
                 }
                 else {
-                    this.measureChildWithDecorationsAndMargin(view2, mainDirSpec, measureSpec2);
+                    this.measureChildWithDecorationsAndMargin(view2, mainDirSpec, measureSpec2, true);
                 }
             }
         }
@@ -362,17 +490,17 @@ public class GridLayoutManager extends LinearLayoutManager
         int n10 = n8;
         while (k < n3) {
             final View view3 = this.mSet[k];
-            final GridLayoutManager$LayoutParams gridLayoutManager$LayoutParams2 = (GridLayoutManager$LayoutParams)view3.getLayoutParams();
+            final GridLayoutManager$LayoutParams gridLayoutManager$LayoutParams3 = (GridLayoutManager$LayoutParams)view3.getLayoutParams();
             if (this.mOrientation == 1) {
-                n9 = this.mSizePerSpan * gridLayoutManager$LayoutParams2.mSpanIndex + this.getPaddingLeft();
+                n9 = this.mCachedBorders[gridLayoutManager$LayoutParams3.mSpanIndex] + this.getPaddingLeft();
                 mOffset2 = this.mOrientationHelper.getDecoratedMeasurementInOther(view3) + n9;
             }
             else {
-                n10 = this.mSizePerSpan * gridLayoutManager$LayoutParams2.mSpanIndex + this.getPaddingTop();
+                n10 = this.mCachedBorders[gridLayoutManager$LayoutParams3.mSpanIndex] + this.getPaddingTop();
                 mOffset = this.mOrientationHelper.getDecoratedMeasurementInOther(view3) + n10;
             }
-            this.layoutDecorated(view3, n9 + gridLayoutManager$LayoutParams2.leftMargin, n10 + gridLayoutManager$LayoutParams2.topMargin, mOffset2 - gridLayoutManager$LayoutParams2.rightMargin, mOffset - gridLayoutManager$LayoutParams2.bottomMargin);
-            if (gridLayoutManager$LayoutParams2.isItemRemoved() || gridLayoutManager$LayoutParams2.isItemChanged()) {
+            this.layoutDecorated(view3, n9 + gridLayoutManager$LayoutParams3.leftMargin, n10 + gridLayoutManager$LayoutParams3.topMargin, mOffset2 - gridLayoutManager$LayoutParams3.rightMargin, mOffset - gridLayoutManager$LayoutParams3.bottomMargin);
+            if (gridLayoutManager$LayoutParams3.isItemRemoved() || gridLayoutManager$LayoutParams3.isItemChanged()) {
                 linearLayoutManager$LayoutChunkResult.mIgnoreConsumed = true;
             }
             linearLayoutManager$LayoutChunkResult.mFocusable |= view3.isFocusable();
@@ -382,11 +510,11 @@ public class GridLayoutManager extends LinearLayoutManager
     }
     
     @Override
-    void onAnchorReady(final RecyclerView$State recyclerView$State, final LinearLayoutManager$AnchorInfo linearLayoutManager$AnchorInfo) {
-        super.onAnchorReady(recyclerView$State, linearLayoutManager$AnchorInfo);
+    void onAnchorReady(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, final LinearLayoutManager$AnchorInfo linearLayoutManager$AnchorInfo) {
+        super.onAnchorReady(recyclerView$Recycler, recyclerView$State, linearLayoutManager$AnchorInfo);
         this.updateMeasurements();
         if (recyclerView$State.getItemCount() > 0 && !recyclerView$State.isPreLayout()) {
-            this.ensureAnchorIsInFirstSpan(linearLayoutManager$AnchorInfo);
+            this.ensureAnchorIsInFirstSpan(recyclerView$Recycler, recyclerView$State, linearLayoutManager$AnchorInfo);
         }
         if (this.mSet == null || this.mSet.length != this.mSpanCount) {
             this.mSet = new View[this.mSpanCount];
@@ -401,7 +529,7 @@ public class GridLayoutManager extends LinearLayoutManager
             return;
         }
         final GridLayoutManager$LayoutParams gridLayoutManager$LayoutParams = (GridLayoutManager$LayoutParams)layoutParams;
-        final int spanGroupIndex = this.getSpanGroupIndex(recyclerView$Recycler, recyclerView$State, gridLayoutManager$LayoutParams.getViewPosition());
+        final int spanGroupIndex = this.getSpanGroupIndex(recyclerView$Recycler, recyclerView$State, gridLayoutManager$LayoutParams.getViewLayoutPosition());
         if (this.mOrientation == 0) {
             accessibilityNodeInfoCompat.setCollectionItemInfo(AccessibilityNodeInfoCompat$CollectionItemInfoCompat.obtain(gridLayoutManager$LayoutParams.getSpanIndex(), gridLayoutManager$LayoutParams.getSpanSize(), spanGroupIndex, 1, this.mSpanCount > 1 && gridLayoutManager$LayoutParams.getSpanSize() == this.mSpanCount, false));
             return;
@@ -430,7 +558,7 @@ public class GridLayoutManager extends LinearLayoutManager
     }
     
     @Override
-    public void onItemsUpdated(final RecyclerView recyclerView, final int n, final int n2) {
+    public void onItemsUpdated(final RecyclerView recyclerView, final int n, final int n2, final Object o) {
         this.mSpanSizeLookup.invalidateSpanIndexCache();
     }
     
@@ -441,12 +569,16 @@ public class GridLayoutManager extends LinearLayoutManager
         }
         super.onLayoutChildren(recyclerView$Recycler, recyclerView$State);
         this.clearPreLayoutSpanMappingCache();
+        if (!recyclerView$State.isPreLayout()) {
+            this.mPendingSpanCountChange = false;
+        }
     }
     
     public void setSpanCount(final int mSpanCount) {
         if (mSpanCount == this.mSpanCount) {
             return;
         }
+        this.mPendingSpanCountChange = true;
         if (mSpanCount < 1) {
             throw new IllegalArgumentException("Span count should be at least 1. Provided " + mSpanCount);
         }
@@ -468,6 +600,6 @@ public class GridLayoutManager extends LinearLayoutManager
     
     @Override
     public boolean supportsPredictiveItemAnimations() {
-        return this.mPendingSavedState == null;
+        return this.mPendingSavedState == null && !this.mPendingSpanCountChange;
     }
 }

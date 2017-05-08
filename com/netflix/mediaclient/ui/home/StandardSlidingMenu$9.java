@@ -4,8 +4,11 @@
 
 package com.netflix.mediaclient.ui.home;
 
-import android.app.Activity;
-import com.netflix.mediaclient.ui.settings.AboutActivity;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.NetworkErrorStatus;
+import com.netflix.mediaclient.util.VolleyUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 final class StandardSlidingMenu$9 implements Runnable
@@ -18,6 +21,14 @@ final class StandardSlidingMenu$9 implements Runnable
     
     @Override
     public void run() {
-        this.val$context.startActivity(AboutActivity.createStartIntent(this.val$context));
+        Log.d("StandardSlidingMenu", "Get autologin token...");
+        if (this.val$context.getServiceManager().getService() == null) {
+            Log.e("StandardSlidingMenu", "Service is not available!");
+            return;
+        }
+        final AccountHandler accountHandler = new AccountHandler(this.val$context);
+        final StandardSlidingMenu$9$1 standardSlidingMenu$9$1 = new StandardSlidingMenu$9$1(this, accountHandler, new NetworkErrorStatus(VolleyUtils.TIMEOUT_ERROR));
+        this.val$context.getHandler().postDelayed((Runnable)standardSlidingMenu$9$1, 10000L);
+        this.val$context.getServiceManager().createAutoLoginToken(3600000L, new StandardSlidingMenu$9$2(this, standardSlidingMenu$9$1, accountHandler));
     }
 }

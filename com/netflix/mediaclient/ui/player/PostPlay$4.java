@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnClickListener;
 
@@ -17,9 +16,6 @@ class PostPlay$4 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        Log.d("nf_postplay", "Interrupter mode, stop");
-        if (this.this$0.mPlayerFragment != null) {
-            this.this$0.mPlayerFragment.finish();
-        }
+        this.this$0.moveFromInterruptedToPlayingFromStart();
     }
 }

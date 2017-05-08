@@ -25,6 +25,23 @@ public final class ParcelUtils
         return "true".equals(parcel.readString());
     }
     
+    public static float readFloat(final Parcel parcel) {
+        return readFloat(parcel.toString());
+    }
+    
+    public static float readFloat(final String s) {
+        if ("=NULL=".equals(s)) {
+            return 0.0f;
+        }
+        try {
+            return Float.parseFloat(s);
+        }
+        catch (Throwable t) {
+            Log.e(ParcelUtils.TAG, "Failed to parse string to int ", t);
+            return 0.0f;
+        }
+    }
+    
     public static int readInt(final Intent intent, final String s) {
         return intent.getIntExtra(s, 0);
     }

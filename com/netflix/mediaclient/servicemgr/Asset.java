@@ -18,9 +18,6 @@ import android.os.Parcelable;
 public class Asset implements Parcelable, PlayContext
 {
     public static final Parcelable$Creator<Asset> CREATOR;
-    public static final String PARAM_ADVISORY_DESCRIPTION = "advisoryDescription";
-    public static final String PARAM_ADVISORY_DISPLAY_DURATION = "advisoryDisplayDuration";
-    public static final String PARAM_ADVISORY_RATING = "advisoryRating";
     public static final String PARAM_AUTOPLAY_MAX_COUNT = "autoPlayMaxCount";
     public static final String PARAM_DURATION = "duration";
     public static final String PARAM_ENDTIME = "endtime";
@@ -39,6 +36,7 @@ public class Asset implements Parcelable, PlayContext
     public static final String PARAM_IS_NSRE = "isNSRE";
     public static final String PARAM_IS_PIN_PROTECTED = "isPinProtected";
     public static final String PARAM_IS_PIN_VERIFIED = "isPinVerified";
+    public static final String PARAM_IS_SUPPLEMENTAL_VIDEO = "isSupplementalVideo";
     public static final String PARAM_LIST_POS = "listpos";
     public static final String PARAM_LOGICAL_START = "logicalStart";
     public static final String PARAM_ORIGINAL_URL = "nflx";
@@ -53,9 +51,6 @@ public class Asset implements Parcelable, PlayContext
     public static final String PARAM_TRK_ID = "trkid";
     public static final String PARAM_VIDEO_POS = "videopos";
     private static final String TAG = "nf_asset";
-    private String mAdvisoryDescription;
-    private int mAdvisoryDisplayDuration;
-    private String mAdvisoryRating;
     private int mAutoPlayMaxCount;
     private int mDuration;
     private int mEndtime;
@@ -71,6 +66,7 @@ public class Asset implements Parcelable, PlayContext
     private boolean mIsNextPlayableEpisode;
     private boolean mIsPinProtected;
     private boolean mIsPinVerified;
+    private boolean mIsSupplementalVideo;
     private int mListPos;
     private int mLogicalStart;
     private String mNflx;
@@ -103,6 +99,7 @@ public class Asset implements Parcelable, PlayContext
         this.mTrackId = ParcelUtils.readInt(parcel);
         this.mIsNSRE = ParcelUtils.readBoolean(parcel);
         this.mIsEpisode = ParcelUtils.readBoolean(parcel);
+        this.mIsSupplementalVideo = ParcelUtils.readBoolean(parcel);
         this.mTitle = ParcelUtils.readString(parcel);
         this.mParentTitle = ParcelUtils.readString(parcel);
         this.mWatchedDate = ParcelUtils.readLong(parcel);
@@ -124,9 +121,6 @@ public class Asset implements Parcelable, PlayContext
         this.mIsPinVerified = ParcelUtils.readBoolean(parcel);
         this.mExpirationTime = ParcelUtils.readLong(parcel);
         this.mPlayLocation = ParcelUtils.readString(parcel);
-        this.mAdvisoryRating = ParcelUtils.readString(parcel);
-        this.mAdvisoryDescription = ParcelUtils.readString(parcel);
-        this.mAdvisoryDisplayDuration = ParcelUtils.readInt(parcel);
         this.mIsAdvisoryDisabled = ParcelUtils.readBoolean(parcel);
         this.mIsBrowsePlay = ParcelUtils.readBoolean(parcel);
         this.mSeasonAbbrSeqLabel = ParcelUtils.readString(parcel);
@@ -153,6 +147,7 @@ public class Asset implements Parcelable, PlayContext
             asset.mEpisodeNumber = playable.getEpisodeNumber();
             asset.mIsNSRE = playable.isNSRE();
             asset.mIsEpisode = playable.isPlayableEpisode();
+            asset.mIsSupplementalVideo = playable.isSupplementalVideo();
             asset.mIsAutoPlayEnabled = playable.isAutoPlayEnabled();
             asset.mIsExemptFromInterrupterLimit = playable.isExemptFromInterrupterLimit();
             asset.mAutoPlayMaxCount = playable.getAutoPlayMaxCount();
@@ -160,9 +155,6 @@ public class Asset implements Parcelable, PlayContext
             asset.mIsAgeProtected = playable.isAgeProtected();
             asset.mIsPinProtected = playable.isPinProtected();
             asset.mExpirationTime = playable.getExpirationTime();
-            asset.mAdvisoryRating = playable.getAdvisoryRating();
-            asset.mAdvisoryDescription = playable.getAdvisoryDescription();
-            asset.mAdvisoryDisplayDuration = playable.getAdvisoryDisplayDuration();
             asset.mIsAdvisoryDisabled = playable.isAdvisoryDisabled();
             asset.mSeasonAbbrSeqLabel = playable.getSeasonAbbrSeqLabel();
         }
@@ -197,6 +189,7 @@ public class Asset implements Parcelable, PlayContext
         asset.mParentId = ParcelUtils.readString(intent, "parentid");
         asset.mIsNSRE = ParcelUtils.readBoolean(intent, "isNSRE");
         asset.mIsEpisode = ParcelUtils.readBoolean(intent, "isEpisode");
+        asset.mIsSupplementalVideo = ParcelUtils.readBoolean(intent, "isSupplementalVideo");
         asset.mTrackId = ParcelUtils.readInt(intent, "trkid");
         asset.mTitle = ParcelUtils.readString(intent, "title");
         asset.mParentTitle = ParcelUtils.readString(intent, "parent_title");
@@ -221,9 +214,6 @@ public class Asset implements Parcelable, PlayContext
         asset.mIsPinVerified = ParcelUtils.readBoolean(intent, "isPinVerified");
         asset.mExpirationTime = ParcelUtils.readLong(intent, "expirationTime");
         asset.mPlayLocation = ParcelUtils.readString(intent, "playLocation");
-        asset.mAdvisoryRating = ParcelUtils.readString(intent, "advisoryRating");
-        asset.mAdvisoryDescription = ParcelUtils.readString(intent, "advisoryDescription");
-        asset.mAdvisoryDisplayDuration = ParcelUtils.readInt(intent, "advisoryDisplayDuration");
         asset.mIsAdvisoryDisabled = ParcelUtils.readBoolean(intent, "isAdvisoryDisabled");
         asset.mIsBrowsePlay = ParcelUtils.readBoolean(intent, "isBrowsePlay");
         asset.mSeasonAbbrSeqLabel = ParcelUtils.readString(intent, "seasonNumAbbrLabel");
@@ -232,18 +222,6 @@ public class Asset implements Parcelable, PlayContext
     
     public int describeContents() {
         return 0;
-    }
-    
-    public String getAdvisoryDescription() {
-        return this.mAdvisoryDescription;
-    }
-    
-    public int getAdvisoryDisplayDuration() {
-        return this.mAdvisoryDisplayDuration;
-    }
-    
-    public String getAdvisoryRating() {
-        return this.mAdvisoryRating;
     }
     
     public int getAutoPlayMaxCount() {
@@ -382,6 +360,10 @@ public class Asset implements Parcelable, PlayContext
         return this.mIsPinVerified;
     }
     
+    public boolean isSupplementalVideo() {
+        return this.mIsSupplementalVideo;
+    }
+    
     public void setAdvisoryDisabled(final boolean mIsAdvisoryDisabled) {
         this.mIsAdvisoryDisabled = mIsAdvisoryDisabled;
     }
@@ -410,6 +392,7 @@ public class Asset implements Parcelable, PlayContext
         intent.putExtra("parentid", ParcelUtils.validateString(this.mParentId));
         intent.putExtra("isNSRE", this.mIsNSRE);
         intent.putExtra("isEpisode", this.mIsEpisode);
+        intent.putExtra("isSupplementalVideo", this.mIsSupplementalVideo);
         intent.putExtra("trkid", this.mTrackId);
         intent.putExtra("title", ParcelUtils.validateString(this.mTitle));
         intent.putExtra("parent_title", ParcelUtils.validateString(this.mParentTitle));
@@ -434,9 +417,6 @@ public class Asset implements Parcelable, PlayContext
         intent.putExtra("isPinVerified", this.mIsPinVerified);
         intent.putExtra("expirationTime", this.mExpirationTime);
         intent.putExtra("playLocation", this.mPlayLocation);
-        intent.putExtra("advisoryRating", this.mAdvisoryRating);
-        intent.putExtra("advisoryDescription", this.mAdvisoryDescription);
-        intent.putExtra("advisoryDisplayDuration", this.mAdvisoryDisplayDuration);
         intent.putExtra("isAdvisoryDisabled", this.mIsAdvisoryDisabled);
         intent.putExtra("isBrowsePlay", this.mIsBrowsePlay);
         intent.putExtra("seasonNumAbbrLabel", this.mSeasonAbbrSeqLabel);
@@ -445,7 +425,7 @@ public class Asset implements Parcelable, PlayContext
     
     @Override
     public String toString() {
-        return "Asset [mPlayableId=" + this.mPlayableId + ", mParentId=" + this.mParentId + ", mIsNSRE" + this.mIsNSRE + ", mIsEpisode=" + this.mIsEpisode + ", mIsAutoPlayEnabled=" + this.mIsAutoPlayEnabled + ", mIsExemptFromInterrupterLimit=" + this.mIsExemptFromInterrupterLimit + ", mAutoPlayMaxCount=" + this.mAutoPlayMaxCount + ", mIsNextPlayableEpisode=" + this.mIsNextPlayableEpisode + ", mTrackId=" + this.mTrackId + ", mReqId=" + this.mReqId + ", mListPos=" + this.mListPos + ", mVideoPos=" + this.mVideoPos + ", mTitle=" + this.mTitle + ", mParentTitle=" + this.mParentTitle + ", mWatchedDate=" + this.mWatchedDate + ", mPlaybackBookmark=" + this.mPlaybackBookmark + ", mNflx=" + this.mNflx + ", mDuration=" + this.mDuration + ", mEndtime=" + this.mEndtime + ", mLogicalStart=" + this.mLogicalStart + ", mIsAgeProtected=" + this.mIsAgeProtected + ", mIsPinProtected=" + this.mIsPinProtected + ", mIsPinVerified=" + this.mIsPinVerified + ", mSeasonNumber=" + this.mSeasonNumber + ", mEpisodeNumber=" + this.mEpisodeNumber + ", mPostPlayVideoPlayed=" + this.mPostPlayVideoPlayed + ", mExpirationEnd=" + this.mExpirationTime + ", mPlayRequestedLocation=" + this.mPlayLocation + ", mAdvisoryRating=" + this.mAdvisoryRating + ", mAdvisoryDescription=" + this.mAdvisoryDescription + ", mAdvisoryDisplayDuration=" + this.mAdvisoryDisplayDuration + ", mIsAdvisoryDisabled=" + this.mIsAdvisoryDisabled + ", mIsBrowsePlay=" + this.mIsBrowsePlay + ", mSeasonAbbrSeqLabel=" + this.mSeasonAbbrSeqLabel + "]";
+        return "Asset [mPlayableId=" + this.mPlayableId + ", mParentId=" + this.mParentId + ", mIsNSRE" + this.mIsNSRE + ", mIsEpisode=" + this.mIsEpisode + ", mIsSupplementalVideo=" + this.mIsSupplementalVideo + ", mIsAutoPlayEnabled=" + this.mIsAutoPlayEnabled + ", mIsExemptFromInterrupterLimit=" + this.mIsExemptFromInterrupterLimit + ", mAutoPlayMaxCount=" + this.mAutoPlayMaxCount + ", mIsNextPlayableEpisode=" + this.mIsNextPlayableEpisode + ", mTrackId=" + this.mTrackId + ", mReqId=" + this.mReqId + ", mListPos=" + this.mListPos + ", mVideoPos=" + this.mVideoPos + ", mTitle=" + this.mTitle + ", mParentTitle=" + this.mParentTitle + ", mWatchedDate=" + this.mWatchedDate + ", mPlaybackBookmark=" + this.mPlaybackBookmark + ", mNflx=" + this.mNflx + ", mDuration=" + this.mDuration + ", mEndtime=" + this.mEndtime + ", mLogicalStart=" + this.mLogicalStart + ", mIsAgeProtected=" + this.mIsAgeProtected + ", mIsPinProtected=" + this.mIsPinProtected + ", mIsPinVerified=" + this.mIsPinVerified + ", mSeasonNumber=" + this.mSeasonNumber + ", mEpisodeNumber=" + this.mEpisodeNumber + ", mPostPlayVideoPlayed=" + this.mPostPlayVideoPlayed + ", mExpirationEnd=" + this.mExpirationTime + ", mPlayRequestedLocation=" + this.mPlayLocation + ", mIsAdvisoryDisabled=" + this.mIsAdvisoryDisabled + ", mIsBrowsePlay=" + this.mIsBrowsePlay + ", mSeasonAbbrSeqLabel=" + this.mSeasonAbbrSeqLabel + "]";
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -454,6 +434,7 @@ public class Asset implements Parcelable, PlayContext
         ParcelUtils.writeInt(parcel, this.mTrackId);
         ParcelUtils.writeBoolean(parcel, this.mIsNSRE);
         ParcelUtils.writeBoolean(parcel, this.mIsEpisode);
+        ParcelUtils.writeBoolean(parcel, this.mIsSupplementalVideo);
         ParcelUtils.writeString(parcel, this.mTitle);
         ParcelUtils.writeString(parcel, this.mParentTitle);
         ParcelUtils.writeLong(parcel, this.mWatchedDate);
@@ -475,9 +456,6 @@ public class Asset implements Parcelable, PlayContext
         ParcelUtils.writeBoolean(parcel, this.mIsPinVerified);
         ParcelUtils.writeLong(parcel, this.mExpirationTime);
         ParcelUtils.writeString(parcel, this.mPlayLocation);
-        ParcelUtils.writeString(parcel, this.mAdvisoryRating);
-        ParcelUtils.writeString(parcel, this.mAdvisoryDescription);
-        ParcelUtils.writeInt(parcel, this.mAdvisoryDisplayDuration);
         ParcelUtils.writeBoolean(parcel, this.mIsAdvisoryDisabled);
         ParcelUtils.writeBoolean(parcel, this.mIsBrowsePlay);
         ParcelUtils.writeString(parcel, this.mSeasonAbbrSeqLabel);

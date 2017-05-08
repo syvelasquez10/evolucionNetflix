@@ -34,14 +34,14 @@ public final class MdxMenu
             throw new IllegalArgumentException("Activity that uses MdxMenu must own a reference to mdxFrag!");
         }
         mdxMiniPlayerFrag.attachMenuItem(this);
-        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131231173))).setShowAsAction(1);
+        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131231179))).setShowAsAction(1);
         this.mdxItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MdxMenu$1(this));
         this.setEnabled(mdxMiniPlayerFrag.isMdxMenuEnabled());
         this.update();
     }
     
-    public static void addSelectPlayTarget(final NetflixActivity netflixActivity, final Menu menu, final boolean b) {
-        new MdxMenu(netflixActivity, menu, b);
+    public static MenuItem addSelectPlayTarget(final NetflixActivity netflixActivity, final Menu menu, final boolean b) {
+        return new MdxMenu(netflixActivity, menu, b).mdxItem;
     }
     
     private void animateMdxIcon(final AnimationDrawable animationDrawable) {
@@ -50,15 +50,15 @@ public final class MdxMenu
     
     private int getIcon() {
         if (this.activity.isConnectingToTarget()) {
-            return 2130837677;
+            return 2130837675;
         }
         if (MdxUtils.isTargetReadyToControl(this.activity.getServiceManager())) {
-            return 2130837676;
+            return 2130837674;
         }
         if (this.useDarkIcon) {
-            return 2130837706;
+            return 2130837703;
         }
-        return 2130837681;
+        return 2130837679;
     }
     
     private boolean isAnyMdxTargetAvailable() {

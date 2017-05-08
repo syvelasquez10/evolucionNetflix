@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerVideoDetailsViewGroup;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +33,7 @@ class BarkerKidsMovieDetailsFrag$1 implements RecyclerViewHeaderAdapter$IViewCre
     }
     
     private int getImageHeight() {
-        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362169) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362171) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 1.43f);
     }
     
     @Override
@@ -44,7 +43,6 @@ class BarkerKidsMovieDetailsFrag$1 implements RecyclerViewHeaderAdapter$IViewCre
         videoView.setClickListener(new BarkerMovieDetailsFrag$BarkerRelatedVideoDetailsClickListener(this.this$0, this.this$0.getNetflixActivity(), videoView));
         videoView.setScaleType(ImageView$ScaleType.FIT_XY);
         videoView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.getImageHeight()));
-        videoView.setIsHorizontal(true);
         return (View)videoView;
     }
 }

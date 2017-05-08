@@ -69,4 +69,8 @@ class ViewCompatLollipop
     public static void setOnApplyWindowInsetsListener(final View view, final OnApplyWindowInsetsListener onApplyWindowInsetsListener) {
         view.setOnApplyWindowInsetsListener((View$OnApplyWindowInsetsListener)new ViewCompatLollipop$1(onApplyWindowInsetsListener));
     }
+    
+    public static void stopNestedScroll(final View view) {
+        view.stopNestedScroll();
+    }
 }

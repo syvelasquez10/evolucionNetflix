@@ -98,6 +98,9 @@ public class RoleDetailsFrag extends NetflixFrag implements LoadingStatus, Error
         this.relatedRequestId = System.nanoTime();
         this.leWrapper.showLoadingView(true);
         this.adapter.clearData();
+        if (this.actorDetailsView != null) {
+            this.actorDetailsView.onNetFlixLabel.setVisibility(4);
+        }
         Log.v("RoleDetailsFrag", "Fetching data for actor ID: " + this.actorId);
         ((NetflixActivity)this.getActivity()).getServiceManager().getBrowse().fetchPersonDetail(this.actorId, new RoleDetailsFrag$FetchActorDetailsAndRelatedCallback(this, this.detailsRequestId), this.videoId);
         ((NetflixActivity)this.getActivity()).getServiceManager().getBrowse().fetchPersonRelated(this.actorId, new RoleDetailsFrag$FetchActorDetailsAndRelatedCallback(this, this.relatedRequestId));
@@ -135,10 +138,10 @@ public class RoleDetailsFrag extends NetflixFrag implements LoadingStatus, Error
     
     private void setupRecyclerViewItemDecoration() {
         if (this.numColumns > 1) {
-            this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131361871), this.numColumns, 2));
+            this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131361869), this.numColumns, 2));
             return;
         }
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361869), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361867), this.numColumns));
     }
     
     protected void findViews(final View view) {
@@ -173,7 +176,7 @@ public class RoleDetailsFrag extends NetflixFrag implements LoadingStatus, Error
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("RoleDetailsFrag", "Creating new frag view...");
-        final ViewGroup viewGroup2 = (ViewGroup)layoutInflater.inflate(2130903250, (ViewGroup)null, false);
+        final ViewGroup viewGroup2 = (ViewGroup)layoutInflater.inflate(2130903257, (ViewGroup)null, false);
         this.findViews((View)viewGroup2);
         this.leWrapper = new LoadingAndErrorWrapper((View)viewGroup2, this.errorCallback);
         this.setupRecyclerView();
@@ -261,7 +264,7 @@ public class RoleDetailsFrag extends NetflixFrag implements LoadingStatus, Error
         if (this.recyclerView == null) {
             return;
         }
-        this.recyclerView.setBackgroundResource(2131624079);
+        this.recyclerView.setBackgroundResource(2131624082);
         this.recyclerView.setFocusable(false);
         this.recyclerView.setVisibility(4);
         this.setupRecyclerViewLayoutManager();

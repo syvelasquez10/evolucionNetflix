@@ -25,6 +25,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_BREADCRUMB_LOGGING_CONFIGURATION = "breadcrumb_log_configuration";
     public static final String PREFERENCE_CAST_KEY_INFO = "castKeyData";
     public static final String PREFERENCE_CL_CONFIGURATION = "cl_configuration";
+    public static final String PREFERENCE_CONFIG_APP_BOOT_URL_SUFFIX = "device_config_appBootUrlSuffix";
     public static final String PREFERENCE_COPPOLA_USER_MUTED_PLAYBACK = "nf_play_user_muted_playback";
     public static final String PREFERENCE_COPPOLA_WARNED_WHEN_PLAY_ON_NOWIFI = "nf_play_user_no_wifi_warned_already";
     public static final String PREFERENCE_CUSTOMER_SUPPORT_VOIP_AUTHORIZATIONS = "cusotmer_support_voip_authorizations";
@@ -62,10 +63,10 @@ public interface PreferenceKeys
     public static final String PREFERENCE_MDX_TARGET_LASTACTIVE = "mdx_target_lastactive";
     public static final String PREFERENCE_MDX_TARGET_UUID = "mdx_target_uuid";
     public static final String PREFERENCE_NFLX_LANGUAGES = "nflxLanguages";
+    public static final String PREFERENCE_NON_MEMBER_PLAYBACK = "prefs_non_member_playback";
     public static final String PREFERENCE_NOTIFICATION_ID_DELETED_FROM_STATUSBAR = "notification_id_deleted_from_statusbar";
     public static final String PREFERENCE_NOTIFICATION_SETTINGS = "notification_settings";
     public static final String PREFERENCE_NRM_INFO = "nrmInfo";
-    public static final String PREFERENCE_NRM_NETFLIXID = "nrm_netflix_id";
     public static final String PREFERENCE_PENDING_JOBS_PRE_L = "pending_jobs";
     public static final String PREFERENCE_PLAYBACK_CONFIGURATION_LOCAL_PLAYBACK_ENABLED = "playback_configuration_local_playback_enabled";
     public static final String PREFERENCE_PLAYER_TYPE = "nflx_player_type";

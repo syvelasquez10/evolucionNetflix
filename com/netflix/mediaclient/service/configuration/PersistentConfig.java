@@ -14,7 +14,6 @@ import com.netflix.mediaclient.service.configuration.persistent.BrandLoveSurvey;
 import com.netflix.mediaclient.service.configuration.persistent.Memento;
 import com.netflix.mediaclient.service.configuration.persistent.PhoneOrientation;
 import com.netflix.mediaclient.service.configuration.persistent.ContinueWatchingProgBar;
-import com.netflix.mediaclient.service.configuration.persistent.PushNotifOptIn;
 import com.netflix.mediaclient.service.configuration.persistent.DisplayPageRefreshConfig;
 import com.netflix.mediaclient.service.configuration.persistent.MotionBB;
 import com.netflix.mediaclient.service.configuration.persistent.CoppolaTwo;
@@ -34,7 +33,6 @@ public final class PersistentConfig
         PersistentConfig.mConfigs.put(CoppolaTwo.class, new CoppolaTwo());
         PersistentConfig.mConfigs.put(MotionBB.class, new MotionBB());
         PersistentConfig.mConfigs.put(DisplayPageRefreshConfig.class, new DisplayPageRefreshConfig());
-        PersistentConfig.mConfigs.put(PushNotifOptIn.class, new PushNotifOptIn());
         PersistentConfig.mConfigs.put(ContinueWatchingProgBar.class, new ContinueWatchingProgBar());
         PersistentConfig.mConfigs.put(PhoneOrientation.class, new PhoneOrientation());
         PersistentConfig.mConfigs.put(Memento.class, new Memento());
@@ -83,10 +81,6 @@ public final class PersistentConfig
     
     public static ABTestConfig$Cell getPrefetchLolomoConfig(final Context context) {
         return PersistentConfig.mConfigs.get(PrefetchLolomoConfig.class).getCell(context);
-    }
-    
-    public static ABTestConfig$Cell getPushNotificationOptIn(final Context context) {
-        return PersistentConfig.mConfigs.get(PushNotifOptIn.class).getCell(context);
     }
     
     public static ABTestConfig$Cell getVoiceSearchABTestCell(final Context context) {

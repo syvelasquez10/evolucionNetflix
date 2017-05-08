@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.util;
 
 import android.widget.SeekBar;
-import com.netflix.mediaclient.servicemgr.IMdx;
 import android.util.Pair;
+import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
@@ -37,17 +37,17 @@ public final class MdxUtils
             return null;
         }
         final View inflate = netflixActivity.getLayoutInflater().inflate(2130903176, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131689925)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
-        final TextView textView = (TextView)inflate.findViewById(2131689926);
-        final TextView textView2 = (TextView)inflate.findViewById(2131689927);
+        ((TextView)inflate.findViewById(2131689923)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
+        final TextView textView = (TextView)inflate.findViewById(2131689924);
+        final TextView textView2 = (TextView)inflate.findViewById(2131689925);
         final Playable playable = mdxUtils$MdxTargetSelectionDialogInterface.getPlayable();
         String string2;
         if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && playable != null) {
-            final String string = netflixActivity.getResources().getString(2131231242, new Object[] { "" });
+            final String string = netflixActivity.getResources().getString(2131231248, new Object[] { "" });
             textView2.setVisibility(0);
             String text;
             if (playable.isPlayableEpisode()) {
-                text = netflixActivity.getResources().getString(2131231233, new Object[] { playable.getParentTitle(), playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
+                text = netflixActivity.getResources().getString(2131231239, new Object[] { playable.getParentTitle(), playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
             }
             else {
                 text = playable.getPlayableTitle();
@@ -56,11 +56,11 @@ public final class MdxUtils
             string2 = string;
         }
         else {
-            string2 = netflixActivity.getResources().getString(2131231232);
+            string2 = netflixActivity.getResources().getString(2131231238);
             textView2.setVisibility(8);
         }
         textView.setText((CharSequence)string2);
-        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131231231, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
+        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131231237, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
         create.setCanceledOnTouchOutside(true);
         return create;
     }
@@ -87,13 +87,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(netflixActivity);
         mdxTargetSelectionDialog$Builder.setCancelable(true);
-        mdxTargetSelectionDialog$Builder.setTitle(2131231092);
+        mdxTargetSelectionDialog$Builder.setTitle(2131231094);
         mdxTargetSelectionDialog$Builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxUtils$MdxTargetSelectionDialogInterface.getPlayable() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle())) {
-                format = String.format(netflixActivity.getString(2131231242), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
+                format = String.format(netflixActivity.getString(2131231248), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
             }
         }
         mdxTargetSelectionDialog$Builder.setSelection(devicePositionByUUID, format);
@@ -108,6 +108,26 @@ public final class MdxUtils
         }
         Log.d("MdxUtils", "Movie, use movie ID as video ID");
         return videoDetails.getId();
+    }
+    
+    public static boolean isAnyMdxTargetAvailable(final IMdx mdx) {
+        if (mdx == null) {
+            Log.w("MdxUtils", "MDX agent is null inside isAnyMdxTargetAvailable()...returning false!");
+            return false;
+        }
+        if (!mdx.isReady()) {
+            Log.d("MdxUtils", "MDX service is NOT ready");
+            return false;
+        }
+        final Pair<String, String>[] targetList = mdx.getTargetList();
+        if (targetList == null || targetList.length < 1) {
+            Log.d("MdxUtils", "No MDX remote targets found");
+            return false;
+        }
+        if (Log.isLoggable()) {
+            Log.d("MdxUtils", "MDX remote targets found: " + targetList.length);
+        }
+        return true;
     }
     
     public static boolean isCurrentMdxTargetAvailable(final ServiceManager serviceManager) {

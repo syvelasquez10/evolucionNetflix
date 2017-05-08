@@ -5,22 +5,31 @@
 package android.support.v7.widget;
 
 import android.support.v4.view.ViewConfigurationCompat;
+import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.VelocityTrackerCompat;
+import android.support.v4.os.TraceCompat;
 import android.view.ViewParent;
 import android.view.FocusFinder;
 import android.graphics.Canvas;
+import android.util.SparseArray;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MotionEventCompat;
+import android.util.TypedValue;
 import android.view.MotionEvent;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import android.view.ViewConfiguration;
 import android.os.Build$VERSION;
 import android.view.VelocityTracker;
+import android.support.v4.view.NestedScrollingChildHelper;
 import java.util.List;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
+import android.support.v4.view.ScrollingView;
+import android.support.v4.view.NestedScrollingChild;
 import android.view.ViewGroup;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -34,31 +43,35 @@ import android.view.accessibility.AccessibilityEvent;
 import java.util.ArrayList;
 import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup$MarginLayoutParams;
-import android.util.AttributeSet;
-import android.content.Context;
 import android.graphics.Rect;
 import android.view.ViewGroup$LayoutParams;
+import android.content.res.TypedArray;
+import android.support.v7.recyclerview.R$styleable;
+import android.util.AttributeSet;
+import android.content.Context;
 import android.view.View$MeasureSpec;
 import android.view.View;
 
 public abstract class RecyclerView$LayoutManager
 {
     ChildHelper mChildHelper;
+    private boolean mIsAttachedToWindow;
     RecyclerView mRecyclerView;
     private boolean mRequestedSimpleAnimations;
     RecyclerView$SmoothScroller mSmoothScroller;
     
     public RecyclerView$LayoutManager() {
         this.mRequestedSimpleAnimations = false;
+        this.mIsAttachedToWindow = false;
     }
     
     private void addViewInt(final View view, final int n, final boolean b) {
         final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
         if (b || childViewHolderInt.isRemoved()) {
-            this.mRecyclerView.addToDisappearingList(view);
+            this.mRecyclerView.mState.addToDisappearingList(view);
         }
         else {
-            this.mRecyclerView.removeFromDisappearingList(view);
+            this.mRecyclerView.mState.removeFromDisappearingList(view);
         }
         final RecyclerView$LayoutParams recyclerView$LayoutParams = (RecyclerView$LayoutParams)view.getLayoutParams();
         if (childViewHolderInt.wasReturnedFromScrap() || childViewHolderInt.isScrap()) {
@@ -133,6 +146,17 @@ public abstract class RecyclerView$LayoutManager
         return View$MeasureSpec.makeMeasureSpec(n, n2);
     }
     
+    public static RecyclerView$LayoutManager$Properties getProperties(final Context context, final AttributeSet set, final int n, final int n2) {
+        final RecyclerView$LayoutManager$Properties recyclerView$LayoutManager$Properties = new RecyclerView$LayoutManager$Properties();
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.RecyclerView, n, n2);
+        recyclerView$LayoutManager$Properties.orientation = obtainStyledAttributes.getInt(R$styleable.RecyclerView_android_orientation, 1);
+        recyclerView$LayoutManager$Properties.spanCount = obtainStyledAttributes.getInt(R$styleable.RecyclerView_spanCount, 1);
+        recyclerView$LayoutManager$Properties.reverseLayout = obtainStyledAttributes.getBoolean(R$styleable.RecyclerView_reverseLayout, false);
+        recyclerView$LayoutManager$Properties.stackFromEnd = obtainStyledAttributes.getBoolean(R$styleable.RecyclerView_stackFromEnd, false);
+        obtainStyledAttributes.recycle();
+        return recyclerView$LayoutManager$Properties;
+    }
+    
     private void onSmoothScrollerStopped(final RecyclerView$SmoothScroller recyclerView$SmoothScroller) {
         if (this.mSmoothScroller == recyclerView$SmoothScroller) {
             this.mSmoothScroller = null;
@@ -192,10 +216,10 @@ public abstract class RecyclerView$LayoutManager
     public void attachView(final View view, final int n, final RecyclerView$LayoutParams recyclerView$LayoutParams) {
         final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
         if (childViewHolderInt.isRemoved()) {
-            this.mRecyclerView.addToDisappearingList(view);
+            this.mRecyclerView.mState.addToDisappearingList(view);
         }
         else {
-            this.mRecyclerView.removeFromDisappearingList(view);
+            this.mRecyclerView.mState.removeFromDisappearingList(view);
         }
         this.mChildHelper.attachViewToParent(view, n, (ViewGroup$LayoutParams)recyclerView$LayoutParams, childViewHolderInt.isRemoved());
     }
@@ -269,6 +293,16 @@ public abstract class RecyclerView$LayoutManager
         this.detachViewInternal(n, this.getChildAt(n));
     }
     
+    void dispatchAttachedToWindow(final RecyclerView recyclerView) {
+        this.mIsAttachedToWindow = true;
+        this.onAttachedToWindow(recyclerView);
+    }
+    
+    void dispatchDetachedFromWindow(final RecyclerView recyclerView, final RecyclerView$Recycler recyclerView$Recycler) {
+        this.mIsAttachedToWindow = false;
+        this.onDetachedFromWindow(recyclerView, recyclerView$Recycler);
+    }
+    
     public void endAnimation(final View view) {
         if (this.mRecyclerView.mItemAnimator != null) {
             this.mRecyclerView.mItemAnimator.endAnimation(RecyclerView.getChildViewHolderInt(view));
@@ -279,7 +313,7 @@ public abstract class RecyclerView$LayoutManager
         for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
             final View child = this.getChildAt(i);
             final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(child);
-            if (childViewHolderInt != null && childViewHolderInt.getPosition() == n && !childViewHolderInt.shouldIgnore() && (this.mRecyclerView.mState.isPreLayout() || !childViewHolderInt.isRemoved())) {
+            if (childViewHolderInt != null && childViewHolderInt.getLayoutPosition() == n && !childViewHolderInt.shouldIgnore() && (this.mRecyclerView.mState.isPreLayout() || !childViewHolderInt.isRemoved())) {
                 return child;
             }
         }
@@ -300,6 +334,10 @@ public abstract class RecyclerView$LayoutManager
             return new RecyclerView$LayoutParams((ViewGroup$MarginLayoutParams)viewGroup$LayoutParams);
         }
         return new RecyclerView$LayoutParams(viewGroup$LayoutParams);
+    }
+    
+    public int getBaseline() {
+        return -1;
     }
     
     public int getBottomDecorationHeight(final View view) {
@@ -451,7 +489,7 @@ public abstract class RecyclerView$LayoutManager
     }
     
     public int getPosition(final View view) {
-        return ((RecyclerView$LayoutParams)view.getLayoutParams()).getViewPosition();
+        return ((RecyclerView$LayoutParams)view.getLayoutParams()).getViewLayoutPosition();
     }
     
     public int getRightDecorationWidth(final View view) {
@@ -491,6 +529,10 @@ public abstract class RecyclerView$LayoutManager
         final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
         childViewHolderInt.addFlags(128);
         this.mRecyclerView.mState.onViewIgnored(childViewHolderInt);
+    }
+    
+    public boolean isAttachedToWindow() {
+        return this.mIsAttachedToWindow;
     }
     
     public boolean isFocused() {
@@ -595,7 +637,6 @@ public abstract class RecyclerView$LayoutManager
     }
     
     public void onInitializeAccessibilityNodeInfo(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, final AccessibilityNodeInfoCompat accessibilityNodeInfoCompat) {
-        accessibilityNodeInfoCompat.setClassName(RecyclerView.class.getName());
         if (ViewCompat.canScrollVertically((View)this.mRecyclerView, -1) || ViewCompat.canScrollHorizontally((View)this.mRecyclerView, -1)) {
             accessibilityNodeInfoCompat.addAction(8192);
             accessibilityNodeInfoCompat.setScrollable(true);
@@ -627,7 +668,7 @@ public abstract class RecyclerView$LayoutManager
     
     void onInitializeAccessibilityNodeInfoForItem(final View view, final AccessibilityNodeInfoCompat accessibilityNodeInfoCompat) {
         final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
-        if (childViewHolderInt != null && !childViewHolderInt.isRemoved()) {
+        if (childViewHolderInt != null && !childViewHolderInt.isRemoved() && !this.mChildHelper.isHidden(childViewHolderInt.itemView)) {
             this.onInitializeAccessibilityNodeInfoForItem(this.mRecyclerView.mRecycler, this.mRecyclerView.mState, view, accessibilityNodeInfoCompat);
         }
     }
@@ -651,34 +692,16 @@ public abstract class RecyclerView$LayoutManager
     public void onItemsUpdated(final RecyclerView recyclerView, final int n, final int n2) {
     }
     
+    public void onItemsUpdated(final RecyclerView recyclerView, final int n, final int n2, final Object o) {
+        this.onItemsUpdated(recyclerView, n, n2);
+    }
+    
     public void onLayoutChildren(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State) {
         Log.e("RecyclerView", "You must override onLayoutChildren(Recycler recycler, State state) ");
     }
     
-    public void onMeasure(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, int n, int n2) {
-        final int mode = View$MeasureSpec.getMode(n);
-        final int mode2 = View$MeasureSpec.getMode(n2);
-        n = View$MeasureSpec.getSize(n);
-        n2 = View$MeasureSpec.getSize(n2);
-        switch (mode) {
-            default: {
-                n = this.getMinimumWidth();
-            }
-            case Integer.MIN_VALUE:
-            case 1073741824: {
-                switch (mode2) {
-                    default: {
-                        n2 = this.getMinimumHeight();
-                    }
-                    case Integer.MIN_VALUE:
-                    case 1073741824: {
-                        this.setMeasuredDimension(n, n2);
-                        return;
-                    }
-                }
-                break;
-            }
-        }
+    public void onMeasure(final RecyclerView$Recycler recyclerView$Recycler, final RecyclerView$State recyclerView$State, final int n, final int n2) {
+        this.mRecyclerView.defaultOnMeasure(n, n2);
     }
     
     public boolean onRequestChildFocus(final RecyclerView recyclerView, final RecyclerView$State recyclerView$State, final View view, final View view2) {
@@ -687,7 +710,7 @@ public abstract class RecyclerView$LayoutManager
     
     @Deprecated
     public boolean onRequestChildFocus(final RecyclerView recyclerView, final View view, final View view2) {
-        return this.isSmoothScrolling() || recyclerView.mRunningLayoutOrScroll;
+        return this.isSmoothScrolling() || recyclerView.isComputingLayout();
     }
     
     public void onRestoreInstanceState(final Parcelable parcelable) {
@@ -771,9 +794,14 @@ public abstract class RecyclerView$LayoutManager
         return this.performAccessibilityActionForItem(this.mRecyclerView.mRecycler, this.mRecyclerView.mState, view, n, bundle);
     }
     
+    public void postOnAnimation(final Runnable runnable) {
+        if (this.mRecyclerView != null) {
+            ViewCompat.postOnAnimation((View)this.mRecyclerView, runnable);
+        }
+    }
+    
     public void removeAllViews() {
         for (int i = this.getChildCount() - 1; i >= 0; --i) {
-            this.getChildAt(i);
             this.mChildHelper.removeViewAt(i);
         }
     }
@@ -788,13 +816,18 @@ public abstract class RecyclerView$LayoutManager
     
     void removeAndRecycleScrapInt(final RecyclerView$Recycler recyclerView$Recycler) {
         final int scrapCount = recyclerView$Recycler.getScrapCount();
-        for (int i = 0; i < scrapCount; ++i) {
+        for (int i = scrapCount - 1; i >= 0; --i) {
             final View scrapView = recyclerView$Recycler.getScrapViewAt(i);
             final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(scrapView);
             if (!childViewHolderInt.shouldIgnore()) {
+                childViewHolderInt.setIsRecyclable(false);
                 if (childViewHolderInt.isTmpDetached()) {
                     this.mRecyclerView.removeDetachedView(scrapView, false);
                 }
+                if (this.mRecyclerView.mItemAnimator != null) {
+                    this.mRecyclerView.mItemAnimator.endAnimation(childViewHolderInt);
+                }
+                childViewHolderInt.setIsRecyclable(true);
                 recyclerView$Recycler.quickRecycleScrapView(scrapView);
             }
         }
@@ -815,6 +848,10 @@ public abstract class RecyclerView$LayoutManager
         recyclerView$Recycler.recycleView(child);
     }
     
+    public boolean removeCallbacks(final Runnable runnable) {
+        return this.mRecyclerView != null && this.mRecyclerView.removeCallbacks(runnable);
+    }
+    
     public void removeDetachedView(final View view) {
         this.mRecyclerView.removeDetachedView(view, false);
     }
@@ -832,43 +869,37 @@ public abstract class RecyclerView$LayoutManager
     public boolean requestChildRectangleOnScreen(final RecyclerView recyclerView, final View view, final Rect rect, final boolean b) {
         final int paddingLeft = this.getPaddingLeft();
         final int paddingTop = this.getPaddingTop();
-        final int width = this.getWidth();
-        final int paddingRight = this.getPaddingRight();
+        final int n = this.getWidth() - this.getPaddingRight();
         final int height = this.getHeight();
         final int paddingBottom = this.getPaddingBottom();
-        final int n = view.getLeft() + rect.left;
-        final int n2 = view.getTop() + rect.top;
-        final int width2 = rect.width();
+        final int n2 = view.getLeft() + rect.left;
+        final int n3 = view.getTop() + rect.top;
+        final int n4 = n2 + rect.width();
         final int height2 = rect.height();
-        final int min = Math.min(0, n - paddingLeft);
-        final int min2 = Math.min(0, n2 - paddingTop);
-        final int max = Math.max(0, width2 + n - (width - paddingRight));
-        final int max2 = Math.max(0, height2 + n2 - (height - paddingBottom));
-        int n3;
-        if (ViewCompat.getLayoutDirection((View)recyclerView) == 1) {
+        int n5 = Math.min(0, n2 - paddingLeft);
+        int n6 = Math.min(0, n3 - paddingTop);
+        final int max = Math.max(0, n4 - n);
+        final int max2 = Math.max(0, n3 + height2 - (height - paddingBottom));
+        if (this.getLayoutDirection() == 1) {
             if (max != 0) {
-                n3 = max;
+                n5 = max;
             }
             else {
-                n3 = min;
+                n5 = Math.max(n5, n4 - n);
             }
         }
-        else if ((n3 = min) == 0) {
-            n3 = max;
+        else if (n5 == 0) {
+            n5 = Math.min(n2 - paddingLeft, max);
         }
-        int n4;
-        if (min2 != 0) {
-            n4 = min2;
+        if (n6 == 0) {
+            n6 = Math.min(n3 - paddingTop, max2);
         }
-        else {
-            n4 = max2;
-        }
-        if (n3 != 0 || n4 != 0) {
+        if (n5 != 0 || n6 != 0) {
             if (b) {
-                recyclerView.scrollBy(n3, n4);
+                recyclerView.scrollBy(n5, n6);
             }
             else {
-                recyclerView.smoothScrollBy(n3, n4);
+                recyclerView.smoothScrollBy(n5, n6);
             }
             return true;
         }
@@ -897,7 +928,7 @@ public abstract class RecyclerView$LayoutManager
     }
     
     public void setMeasuredDimension(final int n, final int n2) {
-        RecyclerView.access$4500(this.mRecyclerView, n, n2);
+        RecyclerView.access$4600(this.mRecyclerView, n, n2);
     }
     
     void setRecyclerView(final RecyclerView mRecyclerView) {

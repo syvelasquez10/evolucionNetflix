@@ -5,17 +5,29 @@
 package android.support.v7.widget;
 
 import android.support.v4.view.ViewConfigurationCompat;
+import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.VelocityTrackerCompat;
-import android.os.Parcelable;
+import android.support.v4.os.TraceCompat;
 import android.view.ViewParent;
 import android.view.FocusFinder;
 import android.graphics.Canvas;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MotionEventCompat;
+import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.View$MeasureSpec;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import android.view.ViewGroup$LayoutParams;
+import android.content.res.TypedArray;
+import android.support.v7.recyclerview.R$styleable;
+import android.view.View;
 import android.support.v4.view.ViewCompat;
 import android.view.ViewConfiguration;
 import android.util.AttributeSet;
@@ -23,11 +35,13 @@ import android.content.Context;
 import android.os.Build$VERSION;
 import android.view.VelocityTracker;
 import android.graphics.Rect;
-import java.util.ArrayList;
-import android.view.View;
+import android.support.v4.view.NestedScrollingChildHelper;
 import java.util.List;
+import java.util.ArrayList;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.view.accessibility.AccessibilityManager;
+import android.support.v4.view.ScrollingView;
+import android.support.v4.view.NestedScrollingChild;
 import android.view.ViewGroup;
 import android.util.Log;
 import android.view.animation.Interpolator;
@@ -40,12 +54,14 @@ public class RecyclerView$SmoothScroller$Action
     private int mDx;
     private int mDy;
     private Interpolator mInterpolator;
+    private int mJumpToPosition;
     
     public RecyclerView$SmoothScroller$Action(final int n, final int n2) {
         this(n, n2, Integer.MIN_VALUE, null);
     }
     
     public RecyclerView$SmoothScroller$Action(final int mDx, final int mDy, final int mDuration, final Interpolator mInterpolator) {
+        this.mJumpToPosition = -1;
         this.changed = false;
         this.consecutiveUpdates = 0;
         this.mDx = mDx;
@@ -55,6 +71,13 @@ public class RecyclerView$SmoothScroller$Action
     }
     
     private void runIfNecessary(final RecyclerView recyclerView) {
+        if (this.mJumpToPosition >= 0) {
+            final int mJumpToPosition = this.mJumpToPosition;
+            this.mJumpToPosition = -1;
+            recyclerView.jumpToPositionForSmoothScroller(mJumpToPosition);
+            this.changed = false;
+            return;
+        }
         if (this.changed) {
             this.validate();
             if (this.mInterpolator == null) {
@@ -85,6 +108,14 @@ public class RecyclerView$SmoothScroller$Action
         if (this.mDuration < 1) {
             throw new IllegalStateException("Scroll duration must be a positive number");
         }
+    }
+    
+    boolean hasJumpTarget() {
+        return this.mJumpToPosition >= 0;
+    }
+    
+    public void jumpTo(final int mJumpToPosition) {
+        this.mJumpToPosition = mJumpToPosition;
     }
     
     public void update(final int mDx, final int mDy, final int mDuration, final Interpolator mInterpolator) {

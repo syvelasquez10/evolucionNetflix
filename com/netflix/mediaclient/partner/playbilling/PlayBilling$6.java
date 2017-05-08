@@ -7,6 +7,7 @@ package com.netflix.mediaclient.partner.playbilling;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.util.StringUtils;
+import android.annotation.TargetApi;
 import java.util.Iterator;
 import java.util.Collection;
 import org.json.JSONArray;

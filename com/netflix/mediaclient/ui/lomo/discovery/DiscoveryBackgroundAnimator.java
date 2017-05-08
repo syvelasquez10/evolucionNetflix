@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.util.StringUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup$LayoutParams;
@@ -68,14 +67,14 @@ public class DiscoveryBackgroundAnimator implements PaginatedDiscoveryAdapter$Bl
         Log.i("DiscoveryBackgroundAnimator", "addBottomGradientIfNeeded()");
         this.bottomGradient = (ImageView)this.bottomView.findViewById(2131689482);
         if (this.bottomGradient == null) {
-            (this.bottomGradient = new ImageView(this.context)).setImageResource(2130837940);
+            (this.bottomGradient = new ImageView(this.context)).setImageResource(2130837937);
             this.bottomGradient.setId(2131689482);
             (this.blurredTopImageView = new ImageView(this.context)).setScaleType(ImageView$ScaleType.CENTER_CROP);
             this.blurredTopImageView.setId(2131689481);
             (this.blurredBottomImageView = new ImageView(this.context)).setScaleType(ImageView$ScaleType.CENTER_CROP);
             this.blurredBottomImageView.setId(2131689480);
             final ViewGroup viewGroup = (ViewGroup)this.bottomView;
-            viewGroup.addView((View)this.bottomGradient, 0, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.context.getResources().getDimension(2131362071), 80));
+            viewGroup.addView((View)this.bottomGradient, 0, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.context.getResources().getDimension(2131362070), 80));
             viewGroup.addView((View)this.blurredTopImageView, 0, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1, 80));
             viewGroup.addView((View)this.blurredBottomImageView, 0, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1, 80));
             LayoutInflater.from(this.context).inflate(2130903168, viewGroup);
@@ -136,20 +135,19 @@ public class DiscoveryBackgroundAnimator implements PaginatedDiscoveryAdapter$Bl
     
     private void updateDrawables() {
         Log.i("DiscoveryBackgroundAnimator", "updateDrawables()");
-        if (!this.hasDataForPage(this.currentPage)) {
-            final String string = "SPY-8068 - NO data for currentPage: " + this.currentPage;
-            Log.e("DiscoveryBackgroundAnimator", string);
-            ErrorLoggingManager.logHandledException(string);
+        if (this.hasDataForPage(this.currentPage)) {
+            NetflixActivity.getImageLoader(this.context).getImg(this.getBackgroundUrl(this.data.get(this.currentPage)), IClientLogging$AssetType.boxArt, this.topView.getWidth(), this.topView.getHeight(), new DiscoveryBackgroundAnimator$2(this));
+        }
+        else if (Log.isLoggable()) {
+            Log.w("DiscoveryBackgroundAnimator", "SPY-8068 - NO data for currentPage: " + this.currentPage);
             return;
         }
-        NetflixActivity.getImageLoader(this.context).getImg(this.getBackgroundUrl(this.data.get(this.currentPage)), IClientLogging$AssetType.boxArt, this.topView.getWidth(), this.topView.getHeight(), new DiscoveryBackgroundAnimator$2(this));
         if (this.hasDataForPage(this.nextPage)) {
             NetflixActivity.getImageLoader(this.context).getImg(this.getBackgroundUrl(this.data.get(this.nextPage)), IClientLogging$AssetType.boxArt, this.blurredTopImageView.getWidth(), this.blurredTopImageView.getHeight(), new DiscoveryBackgroundAnimator$3(this));
-            return;
         }
-        final String string2 = "SPY-8068 - NO data for nextPage: " + this.nextPage;
-        Log.e("DiscoveryBackgroundAnimator", string2);
-        ErrorLoggingManager.logHandledException(string2);
+        else if (Log.isLoggable()) {
+            Log.w("DiscoveryBackgroundAnimator", "SPY-8068 - NO data for nextPage: " + this.nextPage);
+        }
     }
     
     public void destroy() {

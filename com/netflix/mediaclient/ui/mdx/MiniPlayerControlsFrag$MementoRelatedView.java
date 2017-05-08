@@ -13,6 +13,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.app.FragmentTransaction;
 import com.netflix.mediaclient.ui.details.RoleDetailsFrag;
 import android.view.animation.Animation;
@@ -105,7 +106,7 @@ class MiniPlayerControlsFrag$MementoRelatedView extends RelativeLayout implement
         if (trackable != null) {
             this.playContext = new PlayContextImp(trackable, n);
         }
-        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689986);
+        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689984);
         if (advancedImageView != null) {
             final String imageUrl = this.getImageUrl(video, b2);
             final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());

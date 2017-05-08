@@ -61,7 +61,7 @@ public class IrisUtils
         }
         if (context instanceof DetailsActivity && b2) {
             Log.v("SocialUtils", "Adding share icon");
-            menu.add(0, 2131689493, 0, 2131231277).setIcon(2130837718).setShowAsAction(2);
+            menu.add(0, 2131689494, 0, 2131231283).setIcon(2130837715).setShowAsAction(2);
         }
     }
     
@@ -74,9 +74,9 @@ public class IrisUtils
     private static String getShareText(final Resources resources, final String s, final String s2) {
         if (s.length() < 1) {
             ErrorLoggingManager.logHandledException("SPY-9064 - Video title was not ready - showing no title share msg.");
-            return resources.getString(2131231279, new Object[] { s2 });
+            return resources.getString(2131231285, new Object[] { s2 });
         }
-        return resources.getString(2131231278, new Object[] { s, s2 });
+        return resources.getString(2131231284, new Object[] { s, s2 });
     }
     
     private static String getShareUrl(final String s, final VideoType videoType) {
@@ -147,12 +147,12 @@ public class IrisUtils
         intent.setFlags(268435456);
         intent.setType("text/plain");
         intent.putExtra("android.intent.extra.TEXT", getShareText(resources, s, shareUrl));
-        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131231280)));
+        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131231286)));
         UserActionLogUtils.reportShareSheetActionEnded(context, IClientLogging$CompletionReason.success, null);
     }
     
     public static boolean tryHandleMenuItemClick(final MenuItem menuItem, final Context context) {
-        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131689493) {
+        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131689494) {
             final DetailsActivity detailsActivity = (DetailsActivity)context;
             final String videoId = detailsActivity.getVideoId();
             final VideoType videoType = detailsActivity.getVideoType();
