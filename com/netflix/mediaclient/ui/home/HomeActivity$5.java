@@ -32,7 +32,6 @@ import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
-import android.app.Activity;
 import android.support.v4.widget.DrawerLayout$DrawerListener;
 import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$InteractiveListener;
 import android.widget.Toast;
@@ -59,6 +58,8 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Context;
 import com.netflix.mediaclient.ui.survey.SurveyActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
+import android.app.Activity;
+import com.netflix.mediaclient.ui.signup.OnRampActivity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -76,6 +77,7 @@ class HomeActivity$5 implements ManagerStatusListener
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         Log.v("HomeActivity", "ServiceManager ready");
         this.this$0.manager = serviceManager;
+        OnRampActivity.showOnRampIfApplicable(serviceManager, this.this$0);
         this.this$0.setupTTRTracking();
         this.this$0.showProfileToast();
         this.this$0.leaveExperienceBreadcrumb();

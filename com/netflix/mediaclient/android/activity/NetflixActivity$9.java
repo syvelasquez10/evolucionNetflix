@@ -15,6 +15,7 @@ import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.widget.Toast;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.app.FragmentTransaction;

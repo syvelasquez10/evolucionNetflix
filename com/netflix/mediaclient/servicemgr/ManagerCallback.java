@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.model.leafs.OnRampEligibility;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -81,6 +82,8 @@ public interface ManagerCallback
     void onMovieDetailsFetched(final MovieDetails p0, final Status p1);
     
     void onNotificationsListFetched(final IrisNotificationsList p0, final Status p1);
+    
+    void onOnRampEligibilityAction(final OnRampEligibility p0, final Status p1);
     
     void onPersonDetailFetched(final FalkorPerson p0, final FalkorActorStill p1, final Status p2);
     

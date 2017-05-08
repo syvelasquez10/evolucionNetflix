@@ -106,6 +106,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     NrmConfigData getNrmConfigData();
     
+    ABTestConfig$Cell getOnRampConfig();
+    
     ABTestConfig$Cell getPhoneOrientationConfig();
     
     PlaybackConfiguration getPlaybackConfiguration();

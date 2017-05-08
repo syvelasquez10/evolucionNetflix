@@ -29,6 +29,7 @@ import com.netflix.mediaclient.servicemgr.IBrowseInterface;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -71,6 +72,7 @@ import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
 import com.netflix.model.survey.Survey;
+import com.netflix.model.leafs.OnRampEligibility;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
@@ -144,6 +146,17 @@ class NetflixService$UserAgentClientCallback implements UserAgent$UserAgentCallb
         }
         Log.d("NetflixService", "Notified onLogoutComplete");
         netflixServiceCallback.onLogoutComplete(this.requestId, status);
+    }
+    
+    @Override
+    public void onOnRampEligibilityActionComplete(final OnRampEligibility onRampEligibility, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("NetflixService", "No client callback found for onOnRampEligibilityActionComplete");
+            return;
+        }
+        Log.d("NetflixService", "Notified onOnRampEligibilityActionComplete");
+        netflixServiceCallback.onOnRampEligibilityAction(this.requestId, onRampEligibility, status);
     }
     
     @Override

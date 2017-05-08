@@ -17,6 +17,7 @@ import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
@@ -486,6 +487,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             final NetflixImmutableStatus localeSupportStatus = CommonStatus.OK;
             continue;
         }
+    }
+    
+    public void doOnRampEligibilityAction(final OnRampEligibility$Action onRampEligibility$Action, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
+        this.launchTask(new UserAgent$DoOnRampEligibilityAction(this, onRampEligibility$Action, userAgent$UserAgentCallback));
     }
     
     public void editWebUserProfile(final String s, final String s2, final boolean b, final String s3, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {

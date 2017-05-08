@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
@@ -37,9 +38,6 @@ import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
@@ -177,17 +175,6 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     private boolean isCoppolaExperience() {
         return this.getActivity() instanceof CoppolaDetailsActivity;
-    }
-    
-    public static boolean isDialogFragmentVisible(final NetflixActivity netflixActivity, final DialogFragment dialogFragment) {
-        final DialogFragment dialogFragment2 = netflixActivity.getDialogFragment();
-        if (dialogFragment2 != null && dialogFragment2.isVisible()) {
-            final String string = "SPY-10201, Dialog fragment already visible (" + netflixActivity.getDialogFragment() + ") while trying to display " + dialogFragment + ". There should only be one visible at time.";
-            Log.w("EpisodesFrag", string);
-            ErrorLoggingManager.logHandledException(new IllegalArgumentException(string));
-            return true;
-        }
-        return false;
     }
     
     private void notifyDataLoadingComplete() {

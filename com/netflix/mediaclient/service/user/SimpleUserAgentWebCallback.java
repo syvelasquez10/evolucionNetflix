@@ -9,6 +9,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.model.survey.Survey;
 import java.util.Set;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
+import com.netflix.model.leafs.OnRampEligibility;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
@@ -40,6 +41,10 @@ public abstract class SimpleUserAgentWebCallback implements UserAgentWebCallback
     
     @Override
     public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
+    }
+    
+    @Override
+    public void onOnRampEligibilityAction(final OnRampEligibility onRampEligibility, final Status status) {
     }
     
     @Override

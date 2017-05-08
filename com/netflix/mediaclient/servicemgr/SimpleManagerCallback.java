@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.model.leafs.OnRampEligibility;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -126,6 +127,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     
     @Override
     public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
+    }
+    
+    @Override
+    public void onOnRampEligibilityAction(final OnRampEligibility onRampEligibility, final Status status) {
     }
     
     @Override

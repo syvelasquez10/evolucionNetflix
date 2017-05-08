@@ -11,6 +11,7 @@ import java.util.Iterator;
 import android.content.Context;
 import com.netflix.mediaclient.service.configuration.persistent.PrefetchLolomoConfig;
 import com.netflix.mediaclient.service.configuration.persistent.BrandLoveSurvey;
+import com.netflix.mediaclient.service.configuration.persistent.OnRamp;
 import com.netflix.mediaclient.service.configuration.persistent.Memento;
 import com.netflix.mediaclient.service.configuration.persistent.PhoneOrientation;
 import com.netflix.mediaclient.service.configuration.persistent.ContinueWatchingProgBar;
@@ -36,6 +37,7 @@ public final class PersistentConfig
         PersistentConfig.mConfigs.put(ContinueWatchingProgBar.class, new ContinueWatchingProgBar());
         PersistentConfig.mConfigs.put(PhoneOrientation.class, new PhoneOrientation());
         PersistentConfig.mConfigs.put(Memento.class, new Memento());
+        PersistentConfig.mConfigs.put(OnRamp.class, new OnRamp());
         PersistentConfig.mConfigs.put(BrandLoveSurvey.class, new BrandLoveSurvey());
         PersistentConfig.mConfigs.put(PrefetchLolomoConfig.class, new PrefetchLolomoConfig());
     }
@@ -89,6 +91,10 @@ public final class PersistentConfig
     
     public static boolean inMementoTest(final Context context) {
         return getMemento(context).ordinal() == ABTestConfig$Cell.CELL_TWO.ordinal() || getMemento(context).ordinal() == ABTestConfig$Cell.CELL_THREE.ordinal();
+    }
+    
+    public static boolean isOnRampTest(final Context context) {
+        return PersistentConfig.mConfigs.get(Memento.class).getCell(context).ordinal() == ABTestConfig$Cell.CELL_ONE.ordinal();
     }
     
     public static void refresh() {

@@ -140,5 +140,7 @@ public interface IMedia
     
     void unpause();
     
+    void updateCellLevelBandwidthMargin(final int p0);
+    
     void volumeChange(final PlaybackVolumeMetric p0, final PlaybackVolumeMetric p1);
 }

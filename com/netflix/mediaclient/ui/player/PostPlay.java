@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import android.content.res.Configuration;
@@ -14,6 +13,7 @@ import com.netflix.model.leafs.PostPlayAction;
 import com.netflix.model.leafs.PostPlayItem;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -256,6 +256,7 @@ public abstract class PostPlay
             if (!TextUtils.isEmpty((CharSequence)s) && this.mNetflixActivity.getServiceManager() != null) {
                 Log.d("nf_postplay", "Fetch post_play videos...");
                 final PostPlay$FetchPostPlayForPlaybackCallback mFetchPostPlayForPlaybackCallback = new PostPlay$FetchPostPlayForPlaybackCallback(this);
+                ErrorLoggingManager.leaveBreadcrumb("nf_postplay: Requesting post play response for video ID: " + s + " Type: " + videoType);
                 this.mNetflixActivity.getServiceManager().getBrowse().fetchPostPlayVideos(s, videoType, postPlayRequestContext, mFetchPostPlayForPlaybackCallback);
                 this.mFetchPostPlayForPlaybackCallback = mFetchPostPlayForPlaybackCallback;
             }
@@ -310,8 +311,11 @@ public abstract class PostPlay
     protected boolean hasValidPlayAction(final PostPlayItem postPlayItem) {
         if (postPlayItem != null) {
             final PostPlayAction playAction = postPlayItem.getPlayAction();
-            if (playAction != null && playAction.getPlayBackVideo() != null && playAction.getPlayBackVideo().getPlayable() != null) {
-                return true;
+            if (playAction != null) {
+                ErrorLoggingManager.leaveBreadcrumb("nf_postplay: Checking post play play action video ID: " + playAction.getVideoId());
+                if (playAction.getPlayBackVideo() != null && playAction.getPlayBackVideo().getPlayable() != null) {
+                    return true;
+                }
             }
         }
         return false;

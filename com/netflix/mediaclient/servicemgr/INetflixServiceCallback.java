@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.model.leafs.OnRampEligibility;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -76,6 +77,8 @@ public interface INetflixServiceCallback
     void onLogoutComplete(final int p0, final Status p1);
     
     void onMovieDetailsFetched(final int p0, final MovieDetails p1, final Status p2);
+    
+    void onOnRampEligibilityAction(final int p0, final OnRampEligibility p1, final Status p2);
     
     void onPersonDetailFetched(final int p0, final FalkorPerson p1, final FalkorActorStill p2, final Status p3);
     

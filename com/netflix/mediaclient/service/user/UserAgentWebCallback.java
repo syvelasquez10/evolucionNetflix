@@ -9,6 +9,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.model.survey.Survey;
 import java.util.Set;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
+import com.netflix.model.leafs.OnRampEligibility;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
@@ -29,6 +30,8 @@ public interface UserAgentWebCallback
     void onDummyWebCallDone(final Status p0);
     
     void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> p0, final Status p1);
+    
+    void onOnRampEligibilityAction(final OnRampEligibility p0, final Status p1);
     
     void onProfileDataFetched(final UserProfile p0, final Status p1);
     

@@ -239,7 +239,7 @@ public class JPlayer2
         while (true) {
             try {
                 this.configureVideoPipe();
-                if (this.mVideoPipe.isDecoderCreated()) {
+                if (this.mVideoPipe != null && this.mVideoPipe.isDecoderCreated() && this.mAudioPipe != null) {
                     this.mVideoPipe.setReferenceClock(this.mAudioPipe.getClock());
                     this.mVideoPipe.start();
                     return;

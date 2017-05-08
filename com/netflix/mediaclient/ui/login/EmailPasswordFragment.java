@@ -135,8 +135,8 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
                 break Label_0023;
             }
             while (true) {
-                Object o = null;
-                String string = null;
+                Object o;
+                String string;
                 try {
                     if (Log.isLoggable()) {
                         Log.d("LoginBaseFragment", "GPS client is null, unable to try to save credentials");
@@ -144,31 +144,31 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
                     Label_0020: {
                         return;
                     }
-                    Label_0045_Outer:Block_5_Outer:
-                    while (true) {
-                        Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
-                        return;
-                        Label_0096: {
+                    // iftrue(Label_0045:, !Log.isLoggable())
+                    // iftrue(Label_0020:, !Log.isLoggable())
+                    // iftrue(Label_0119:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
+                    // iftrue(Label_0020:, !this.mSaveCredentials)
+                    Block_7: {
+                    Label_0096_Outer:
+                        while (true) {
+                            Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
                             while (true) {
-                                while (true) {
-                                    SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
-                                    this.mSaveCredentials = false;
-                                    o = this.mEmailEditText.getText().toString();
-                                    string = this.mPasswordEditText.getText().toString();
-                                    break Label_0096;
-                                    Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
-                                    continue Block_5_Outer;
+                                Label_0045: {
+                                    break Label_0045;
+                                    break Block_7;
                                 }
+                                SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
+                                this.mSaveCredentials = false;
+                                o = this.mEmailEditText.getText().toString();
+                                string = this.mPasswordEditText.getText().toString();
                                 continue;
                             }
+                            continue Label_0096_Outer;
                         }
-                        continue Label_0045_Outer;
                     }
+                    Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
+                    return;
                 }
-                // iftrue(Label_0119:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
-                // iftrue(Label_0020:, !this.mSaveCredentials)
-                // iftrue(Label_0045:, !Log.isLoggable())
-                // iftrue(Label_0020:, !Log.isLoggable())
                 finally {
                 }
                 // monitorexit(this)

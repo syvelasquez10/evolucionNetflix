@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import android.content.res.Configuration;
@@ -38,6 +37,7 @@ import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.iko.InteractivePostPlayFactory;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.model.leafs.PostPlayAction;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.model.leafs.PostPlayItem;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -92,21 +92,29 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                     }
                     int i = 0;
                     int n = 0;
+                Label_0555_Outer:
                     while (i < this.this$0.mPostPlayExperience.getItems().size()) {
                         final PostPlayItem postPlayItem2 = this.this$0.mPostPlayExperience.getItems().get(i);
-                        postPlayItem2.setExperienceType(this.this$0.mPostPlayExperience.getType());
-                        for (final PostPlayAction postPlayAction : postPlayItem2.getActions()) {
-                            postPlayAction.setItemIndex(i);
-                            postPlayAction.setRequestId(this.this$0.mPostPlayExperience.getRequestId());
-                            postPlayAction.setAncestorTitle(postPlayItem2.getAncestorTitle());
-                            if (postPlayAction.getVideoType() == null) {
-                                postPlayAction.setVideoType(postPlayItem2.getType());
+                        if (postPlayItem2 != null) {
+                            ErrorLoggingManager.leaveBreadcrumb("nf_postplay: Processing post play response for item video ID: " + postPlayItem2.getVideoId());
+                            postPlayItem2.setExperienceType(this.this$0.mPostPlayExperience.getType());
+                            for (final PostPlayAction postPlayAction : postPlayItem2.getActions()) {
+                                postPlayAction.setItemIndex(i);
+                                postPlayAction.setRequestId(this.this$0.mPostPlayExperience.getRequestId());
+                                postPlayAction.setAncestorTitle(postPlayItem2.getAncestorTitle());
+                                if (postPlayAction.getVideoType() == null) {
+                                    postPlayAction.setVideoType(postPlayItem2.getType());
+                                }
+                            }
+                            if (this.this$0.hasValidPlayAction(postPlayItem2)) {
+                                ++n;
                             }
                         }
-                        if (this.this$0.hasValidPlayAction(postPlayItem2)) {
-                            ++n;
+                        while (true) {
+                            ++i;
+                            continue Label_0555_Outer;
+                            continue;
                         }
-                        ++i;
                     }
                     if (n == 0) {
                         Log.e("nf_postplay", "No playable items in post play response");

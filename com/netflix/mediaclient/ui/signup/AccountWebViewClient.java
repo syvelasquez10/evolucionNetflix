@@ -16,15 +16,15 @@ import android.net.Uri;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
 import android.webkit.WebViewClient;
 
-class SignUpWebViewClient extends WebViewClient
+class AccountWebViewClient extends WebViewClient
 {
     private static final String TAG = "SignupActivity";
     private boolean mClearHistory;
     private String mCurrentPageURL;
     private boolean mSecurityFailure;
-    private final SignupActivity mUi;
+    private final WebViewAccountActivity mUi;
     
-    SignUpWebViewClient(final SignupActivity mUi) {
+    AccountWebViewClient(final WebViewAccountActivity mUi) {
         this.mClearHistory = false;
         this.mCurrentPageURL = null;
         this.mUi = mUi;
@@ -78,7 +78,7 @@ class SignUpWebViewClient extends WebViewClient
                 this.mUi.showToast("Loading insecure resource, ERROR:" + string);
                 Log.e("SignupActivity", "Trying to load from unsecure location in release build. Prevent loading, security breach! URL: " + string);
                 string = this.mUi.getString(2131231289);
-                this.mUi.provideDialog(string, this.mUi.mHandleError);
+                this.mUi.provideDialog(string, this.mUi.getErrorHandler());
             }
         }
     }

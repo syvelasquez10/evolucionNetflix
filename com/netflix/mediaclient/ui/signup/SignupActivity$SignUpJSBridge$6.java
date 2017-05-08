@@ -35,11 +35,11 @@ import com.netflix.mediaclient.android.app.Status;
 import org.json.JSONObject;
 import com.netflix.mediaclient.partner.playbilling.PlayBillingCallback;
 
-class SignupActivity$NFAndroidJS$4 extends PlayBillingCallback
+class SignupActivity$SignUpJSBridge$6 extends PlayBillingCallback
 {
-    final /* synthetic */ SignupActivity$NFAndroidJS this$1;
+    final /* synthetic */ SignupActivity$SignUpJSBridge this$1;
     
-    SignupActivity$NFAndroidJS$4(final SignupActivity$NFAndroidJS this$1, final String s) {
+    SignupActivity$SignUpJSBridge$6(final SignupActivity$SignUpJSBridge this$1, final String s) {
         this.this$1 = this$1;
         super(s);
     }

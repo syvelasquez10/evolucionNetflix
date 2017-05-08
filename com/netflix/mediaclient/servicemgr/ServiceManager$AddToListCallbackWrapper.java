@@ -12,6 +12,7 @@ import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;

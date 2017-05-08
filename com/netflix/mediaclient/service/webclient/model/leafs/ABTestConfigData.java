@@ -22,6 +22,7 @@ public class ABTestConfigData
     public static final String DISPLAY_PAGE_REFRESH_TEST_ID = "7196";
     public static final String MEMENTO_TEST_ID = "7131";
     public static final String MOTION_BB_AB_TEST_ID = "6930";
+    public static final String ONRAMP_TEST_ID = "7714";
     public static final String PHONE_ORIENTATION_TEST_ID = "7129";
     public static final String SURVEY_TEST_ID = "7141";
     private static final String TAG = "nf_config";
@@ -41,6 +42,8 @@ public class ABTestConfigData
     private ABTestConfig mementoConfig;
     @SerializedName("6930")
     private ABTestConfig motionBBConfig;
+    @SerializedName("7714")
+    private ABTestConfig onrampConfig;
     @SerializedName("7129")
     private ABTestConfig phoneOrientationConfig;
     @SerializedName("7141")
@@ -70,6 +73,7 @@ public class ABTestConfigData
         ABTestConfigData.testIds.add("7151");
         ABTestConfigData.testIds.add("7141");
         ABTestConfigData.testIds.add("7131");
+        ABTestConfigData.testIds.add("7714");
         ABTestConfigData.testIds.add("7480");
         if (DeviceUtils.isNotTabletByContext(context)) {
             ABTestConfigData.testIds.add("6729");
@@ -109,6 +113,10 @@ public class ABTestConfigData
     
     public ABTestConfig getMotionBBTestConfig() {
         return this.motionBBConfig;
+    }
+    
+    public ABTestConfig getOnRampConfig() {
+        return this.onrampConfig;
     }
     
     public ABTestConfig getPhoneOrientationConfig() {

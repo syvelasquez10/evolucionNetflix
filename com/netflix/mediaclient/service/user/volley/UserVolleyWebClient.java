@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
@@ -39,6 +40,11 @@ public final class UserVolleyWebClient implements UserWebClient
     @Override
     public void doDummyWebCall(final UserAgentWebCallback userAgentWebCallback) {
         this.webclient.sendRequest(new FetchDummyWebRequest(this.service.getApplicationContext(), userAgentWebCallback));
+    }
+    
+    @Override
+    public void doOnRampEligibilityAction(final OnRampEligibility$Action onRampEligibility$Action, final UserAgentWebCallback userAgentWebCallback) {
+        this.webclient.sendRequest(new DoOnRampEligibilityActionRequest(this.service.getApplicationContext(), onRampEligibility$Action, userAgentWebCallback));
     }
     
     @Override

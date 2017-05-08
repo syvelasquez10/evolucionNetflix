@@ -12,6 +12,7 @@ import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.model.leafs.OnRampEligibility;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -404,6 +406,20 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onMovieDetailsFetched(movieDetails, status);
+    }
+    
+    @Override
+    public void onOnRampEligibilityAction(final int n, final OnRampEligibility onRampEligibility, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "doOnRampEligibilityAction requestId=" + n + " errorCode=" + status.getStatusCode());
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for doOnRampEligibilityAction requestId " + n);
+            return;
+        }
+        access$400.onOnRampEligibilityAction(onRampEligibility, status);
     }
     
     @Override

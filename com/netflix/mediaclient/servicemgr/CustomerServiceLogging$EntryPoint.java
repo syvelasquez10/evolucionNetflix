@@ -11,5 +11,6 @@ public enum CustomerServiceLogging$EntryPoint
     login, 
     nonMemberLanding, 
     notification, 
+    profileGate, 
     returnTo;
 }

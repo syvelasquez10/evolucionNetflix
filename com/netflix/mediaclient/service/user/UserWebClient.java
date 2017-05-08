@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 
 public interface UserWebClient
 {
@@ -15,6 +16,8 @@ public interface UserWebClient
     void createAutoLoginToken(final long p0, final UserAgentWebCallback p1);
     
     void doDummyWebCall(final UserAgentWebCallback p0);
+    
+    void doOnRampEligibilityAction(final OnRampEligibility$Action p0, final UserAgentWebCallback p1);
     
     void editWebUserProfile(final String p0, final String p1, final boolean p2, final String p3, final UserAgentWebCallback p4);
     

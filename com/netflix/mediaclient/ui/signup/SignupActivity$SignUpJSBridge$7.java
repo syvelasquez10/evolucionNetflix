@@ -13,7 +13,6 @@ import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.ArrayList;
-import com.netflix.mediaclient.partner.playbilling.PlayBillingCallback;
 import org.json.JSONException;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -32,22 +31,21 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.Log;
-import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
+import org.json.JSONObject;
+import com.netflix.mediaclient.partner.playbilling.PlayBillingCallback;
 
-class SignupActivity$NFAndroidJS$9 extends SimpleManagerCallback
+class SignupActivity$SignUpJSBridge$7 extends PlayBillingCallback
 {
-    final /* synthetic */ SignupActivity$NFAndroidJS this$1;
-    final /* synthetic */ String val$callbackFunction;
+    final /* synthetic */ SignupActivity$SignUpJSBridge this$1;
     
-    SignupActivity$NFAndroidJS$9(final SignupActivity$NFAndroidJS this$1, final String val$callbackFunction) {
+    SignupActivity$SignUpJSBridge$7(final SignupActivity$SignUpJSBridge this$1, final String s) {
         this.this$1 = this$1;
-        this.val$callbackFunction = val$callbackFunction;
+        super(s);
     }
     
     @Override
-    public void onLoginComplete(final Status status) {
-        this.this$1.handleTokenActivate(status, this.val$callbackFunction);
+    public void onResult(final JSONObject jsonObject) {
+        this.this$1.invokeJsCallback(this.getCallback(), jsonObject);
     }
 }

@@ -60,13 +60,13 @@ import android.os.Debug;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.app.DialogFragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
@@ -151,11 +151,11 @@ class PlayerFragment$8 implements Runnable
             return;
         }
         synchronized (this.this$0) {
-            final PlayScreen access$800 = this.this$0.mScreen;
-            if (Log.isLoggable() && access$800 != null) {
+            final PlayScreen access$900 = this.this$0.mScreen;
+            if (Log.isLoggable() && access$900 != null) {
                 Log.d("PlayerFragment", "Player UI state - " + this.this$0.mScreen.getState());
             }
-            if (access$800 != null && !this.this$0.mState.draggingInProgress && !this.this$0.mState.draggingAudioInProgress) {
+            if (access$900 != null && !this.this$0.mState.draggingInProgress && !this.this$0.mState.draggingAudioInProgress) {
                 if (this.this$0.mState.getLastActionTime() > 0L && SystemClock.elapsedRealtime() - this.this$0.mState.getLastActionTime() > 5000L && this.this$0.mScreen.getState() != PlayerUiState.PostPlay) {
                     Log.d("PlayerFragment", "Time to remove panel");
                     this.this$0.clearPanel();

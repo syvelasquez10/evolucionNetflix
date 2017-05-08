@@ -30,6 +30,7 @@ import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
 import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
@@ -387,6 +388,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public boolean deleteLocalResource(final String s) {
         return this.mResourceFetcher.deleteLocalResource(s);
+    }
+    
+    public void doOnRampEligibilityAction(final OnRampEligibility$Action onRampEligibility$Action, final int n, final int n2) {
+        this.mUserAgent.doOnRampEligibilityAction(onRampEligibility$Action, new NetflixService$UserAgentClientCallback(this, n, n2));
     }
     
     public void editProfile(final String s, final String s2, final boolean b, final String s3, final int n, final int n2) {

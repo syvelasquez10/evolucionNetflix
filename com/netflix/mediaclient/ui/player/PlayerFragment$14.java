@@ -61,13 +61,13 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.app.DialogFragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
@@ -146,9 +146,9 @@ class PlayerFragment$14 implements Runnable
     
     @Override
     public void run() {
-        final SecondSurface access$2500 = this.this$0.mSurface2;
-        if (access$2500 != null) {
-            access$2500.setSurfaceInvisible();
+        final SecondSurface access$2600 = this.this$0.mSurface2;
+        if (access$2600 != null) {
+            access$2600.setSurfaceInvisible();
         }
     }
 }

@@ -37,6 +37,8 @@ public enum IClientLogging$ModalView
     nmLanding, 
     notification, 
     offerDetails, 
+    offlineShows, 
+    onramp, 
     openSourceLicenses, 
     optInDialog, 
     orderConfirmation, 

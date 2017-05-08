@@ -122,6 +122,10 @@ public class DebugMenuItems
         new Handler().postDelayed((Runnable)new DebugMenuItems$15(this), 5000L);
     }
     
+    private void launchOnramp(final Menu menu) {
+        menu.add((CharSequence)"Launch OnRamp").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$24(this));
+    }
+    
     private boolean requestExternalFileWritePermission() {
         if (PermissionUtils.shouldRequestPermission((Context)this.activity, "android.permission.WRITE_EXTERNAL_STORAGE")) {
             ActivityCompat.requestPermissions(this.activity, new String[] { "android.permission.WRITE_EXTERNAL_STORAGE" }, 145);
@@ -139,6 +143,7 @@ public class DebugMenuItems
         this.addResetABConfigData(menu);
         this.addFlushCLEvents(menu);
         this.addRunPrefetchLolomoSchedulerJob(menu);
+        this.launchOnramp(menu);
         this.addBarkerBars(menu);
         this.addDumpPerfData(menu);
         this.addLaunchNotificationsActivity(menu);

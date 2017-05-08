@@ -61,13 +61,13 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.app.DialogFragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
@@ -154,6 +154,10 @@ class PlayerFragment$3 implements View$OnClickListener
         }
         if (!this.this$0.mAsset.isEpisode()) {
             Log.e("PlayerFragment", "mPlayable is not episode detail!");
+            return;
+        }
+        if (this.this$0.mEpisodesFrag != null && this.this$0.mEpisodesFrag.isVisible()) {
+            Log.e("PlayerFragment", "Episode dialog already showing");
             return;
         }
         Log.d("PlayerFragment", "Start episodes dialog");

@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.model.leafs.OnRampEligibility;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -320,6 +321,13 @@ public class LoggingManagerCallback implements ManagerCallback
                 value = list.getSocialNotifications().size();
             }
             Log.v(tag, append.append(value).toString());
+        }
+    }
+    
+    @Override
+    public void onOnRampEligibilityAction(final OnRampEligibility onRampEligibility, final Status status) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onOnRampEligibilityAction, status: %d", status.getStatusCode().getValue()));
         }
     }
     

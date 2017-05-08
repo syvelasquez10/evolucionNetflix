@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.javabridge.ui.android;
 
 import com.netflix.mediaclient.javabridge.invoke.media.VolumeChange;
+import com.netflix.mediaclient.javabridge.invoke.android.UpdateCellLevelBandwidthMargin;
 import com.netflix.mediaclient.javabridge.invoke.media.Unpause;
 import com.netflix.mediaclient.javabridge.invoke.media.Stop;
 import com.netflix.mediaclient.javabridge.invoke.media.SetVideoResolutionRangeToPlayer;
@@ -995,6 +996,11 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     @Override
     public void unpause() {
         this.bridge.getNrdProxy().invokeMethod(new Unpause());
+    }
+    
+    @Override
+    public void updateCellLevelBandwidthMargin(final int n) {
+        this.bridge.getNrdProxy().invokeMethod(new UpdateCellLevelBandwidthMargin(n));
     }
     
     @Override

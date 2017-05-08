@@ -35,12 +35,12 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import org.json.JSONObject;
 
-class SignupActivity$NFAndroidJS$8 implements Runnable
+class SignupActivity$SignUpJSBridge$8 implements Runnable
 {
-    final /* synthetic */ SignupActivity$NFAndroidJS this$1;
+    final /* synthetic */ SignupActivity$SignUpJSBridge this$1;
     final /* synthetic */ String val$callbackFunction;
     
-    SignupActivity$NFAndroidJS$8(final SignupActivity$NFAndroidJS this$1, final String val$callbackFunction) {
+    SignupActivity$SignUpJSBridge$8(final SignupActivity$SignUpJSBridge this$1, final String val$callbackFunction) {
         this.this$1 = this$1;
         this.val$callbackFunction = val$callbackFunction;
     }

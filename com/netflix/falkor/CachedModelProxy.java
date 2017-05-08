@@ -952,15 +952,28 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         // 
         // Original Bytecode:
         // 
-        //     0: aload_0        
-        //     1: new             new            !!! ERROR
-        //     4: dup            
-        //     5: aload_0        
-        //     6: aload_1        
+        //     0: aload_1        
+        //     1: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //     4: ifeq            29
         //     7: aload_2        
-        //     8: invokespecial   invokespecial  !!! ERROR
-        //    11: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    14: return         
+        //     8: ifnull          28
+        //    11: aload_2        
+        //    12: new             Ljava/util/ArrayList;
+        //    15: dup            
+        //    16: iconst_0       
+        //    17: invokespecial   java/util/ArrayList.<init>:(I)V
+        //    20: getstatic       com/netflix/mediaclient/android/app/CommonStatus.INTERNAL_ERROR:Lcom/netflix/mediaclient/android/app/NetflixImmutableStatus;
+        //    23: invokeinterface com/netflix/mediaclient/service/browse/BrowseAgentCallback.onAdvisoriesFetched:(Ljava/util/List;Lcom/netflix/mediaclient/android/app/Status;)V
+        //    28: return         
+        //    29: aload_0        
+        //    30: new             new            !!! ERROR
+        //    33: dup            
+        //    34: aload_0        
+        //    35: aload_1        
+        //    36: aload_2        
+        //    37: invokespecial   invokespecial  !!! ERROR
+        //    40: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    43: return         
         // 
         // The error that occurred was:
         // 

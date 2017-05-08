@@ -54,6 +54,7 @@ import com.netflix.mediaclient.event.nrdp.media.Buffering;
 import com.netflix.mediaclient.event.nrdp.media.OpenComplete;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
+import android.telephony.TelephonyManager;
 import android.os.PowerManager$WakeLock;
 import android.content.BroadcastReceiver;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -72,6 +73,7 @@ import com.netflix.mediaclient.servicemgr.IManifestCache;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
 import com.netflix.mediaclient.media.MediaPlayerHelper;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthDelayedBifDownload;
+import android.telephony.PhoneStateListener;
 import com.netflix.mediaclient.media.BifManager;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
@@ -107,6 +109,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static int TimeToWaitBeforeLowBRStreamsEnabled = 0;
     private static final int TimeToWaitBeforeShutdown = 30000;
     private static final int TimeToWaitBeforeUnmute = 10000;
+    private static boolean getLevelExceptionReported;
     private boolean ignoreErrorsWhileActionId12IsProcessed;
     private boolean inPlaybackSession;
     private NccpError mActionId12Error;
@@ -114,6 +117,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private BifManager mBifManager;
     private long mBookmark;
     private boolean mBufferingCompleted;
+    private final PhoneStateListener mCellularNetworkListener;
     private PlayerAgent$CloseTimeoutTask mCloseTimeoutTask;
     private BandwidthDelayedBifDownload mDelayedBifDowloadForDataSaver;
     private boolean mForcedRebuffer;
@@ -164,6 +168,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private long sessionInitRxBytes;
     private long sessionInitTxBytes;
     private boolean splashScreenRemoved;
+    private TelephonyManager telephonyManager;
     private boolean toCancelOpen;
     private volatile boolean toOpenAfterClose;
     private boolean toPlayAfterStop;
@@ -201,6 +206,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.muted = false;
         this.playerChangesReceiver = new PlayerAgent$6(this);
         this.mUserAgentReceiver = new PlayerAgent$9(this);
+        this.mCellularNetworkListener = new PlayerAgent$10(this);
     }
     
     private boolean canStartBifDownload() {
@@ -245,6 +251,9 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 new PlaybackVolumeMetric(this.getContext());
             }
             this.mUpdatePlaybackVolumeMetric.set(false);
+            if (this.telephonyManager != null) {
+                this.telephonyManager.listen(this.mCellularNetworkListener, 0);
+            }
             this.mMedia.close(audioSinkType, this.mPlaybackVolumeMetric);
             this.mNrdp.getLog().flush();
         }
@@ -973,7 +982,14 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         if (this.mState == 0) {
             this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
             if (this.isMPPlayerType()) {
-                if (ConnectivityUtils.isNetworkTypeCellular(this.getContext()) && Coppola1Utils.isLowBitratePlaybackOnMobileNetwork(this.getContext()) && DeviceUtils.isPortrait(this.getContext())) {
+                final boolean networkTypeCellular = ConnectivityUtils.isNetworkTypeCellular(this.getContext());
+                if (networkTypeCellular) {
+                    this.telephonyManager = (TelephonyManager)this.getContext().getSystemService("phone");
+                    if (this.telephonyManager != null) {
+                        this.telephonyManager.listen(this.mCellularNetworkListener, 256);
+                    }
+                }
+                if (networkTypeCellular && Coppola1Utils.isLowBitratePlaybackOnMobileNetwork(this.getContext()) && DeviceUtils.isPortrait(this.getContext())) {
                     this.mMedia.setVideoBitrateRange(0, 100);
                     Log.i(PlayerAgent.TAG, "Pushing 100kbps bitrate for faster playback launch at Coppola portrait MDP in low bitrate test cell");
                     PlayerAgent.TimeToWaitBeforeLowBRStreamsEnabled = 7000;
@@ -1289,6 +1305,10 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     public void handleConnectivityChange(final Intent intent) {
         if (ConnectivityUtils.isNetworkTypeCellular(this.getContext())) {
+            this.telephonyManager = (TelephonyManager)this.getContext().getSystemService("phone");
+            if (this.telephonyManager != null) {
+                this.telephonyManager.listen(this.mCellularNetworkListener, 256);
+            }
             if (BandwidthUtility.shouldLimitCellularVideoBitrate(this.getContext())) {
                 final int cellularVideoBitrateKbps = BandwidthUtility.getCellularVideoBitrateKbps(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData());
                 if (cellularVideoBitrateKbps > 0 && cellularVideoBitrateKbps < PlayerAgent.MaxBRThreshold) {
@@ -1299,6 +1319,11 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         }
         else {
             this.setVideoStreamingBufferSize(300000);
+            this.mMedia.updateCellLevelBandwidthMargin(-1);
+            if (this.telephonyManager != null) {
+                this.telephonyManager.listen(this.mCellularNetworkListener, 0);
+                this.telephonyManager = null;
+            }
         }
         this.getManifestCache().cacheFlush();
     }
@@ -1331,11 +1356,12 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     @Override
     public void open(final long mMovieId, final PlayContext mPlayContext, final long n) {
-        int maxBRThreshold = 0;
-        Label_0084_Outer:Label_0261_Outer:
+    Label_0261_Outer:
         while (true) {
+        Label_0084_Outer:
             while (true) {
                 while (true) {
+                    int maxBRThreshold = 0;
                     Label_0315: {
                         synchronized (this) {
                             while (true) {
@@ -1367,19 +1393,18 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                                     Log.d(PlayerAgent.TAG, String.format("nf_bw bwOverride: %d,MaxBRThreshold : %d ", maxBRThreshold, PlayerAgent.MaxBRThreshold));
                                 }
                                 break Label_0315;
+                                maxBRThreshold = PlayerAgent.MaxBRThreshold;
                                 PlayerAgent.MaxBRThreshold = maxBRThreshold;
-                                continue Label_0084_Outer;
+                                continue Label_0261_Outer;
                             }
-                            maxBRThreshold = PlayerAgent.MaxBRThreshold;
-                            continue Label_0261_Outer;
                         }
                     }
                     if (maxBRThreshold > 0) {
-                        continue Label_0261_Outer;
+                        continue;
                     }
                     break;
                 }
-                continue;
+                continue Label_0084_Outer;
             }
         }
     }

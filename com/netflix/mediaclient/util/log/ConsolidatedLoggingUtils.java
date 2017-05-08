@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.util.log;
 
 import java.util.Iterator;
-import com.android.volley.TimeoutError;
 import com.android.volley.NetworkError;
 import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import android.support.v4.content.LocalBroadcastManager;
@@ -276,21 +276,23 @@ public abstract class ConsolidatedLoggingUtils
                                             return error;
                                         }
                                         break Label_0307;
-                                        // iftrue(Label_0258:, !volleyError instanceof ServerError)
-                                        error.setRootCause(RootCause.serverFailure);
-                                        break;
-                                        // iftrue(Label_0109:, !volleyError instanceof NetworkError)
-                                        // iftrue(Label_0275:, !volleyError instanceof TimeoutError)
-                                        Block_12: {
-                                            break Block_12;
-                                            Label_0258: {
-                                                error.setRootCause(RootCause.tcpConnectionTimeout);
-                                            }
-                                            break;
+                                        Label_0258: {
+                                            error.setRootCause(RootCause.tcpConnectionTimeout);
                                         }
-                                        error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                        // iftrue(Label_0275:, !volleyError instanceof TimeoutError)
                                         break;
+                                        while (true) {
+                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                            break;
+                                            error.setRootCause(RootCause.serverFailure);
+                                            break;
+                                            Label_0275: {
+                                                continue;
+                                            }
+                                        }
                                     }
+                                    // iftrue(Label_0258:, !volleyError instanceof ServerError)
+                                    // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                     catch (Throwable t) {
                                         Log.e("nf_log", "Failed to add body response to JSON object", t);
                                         continue Label_0156;

@@ -37,7 +37,7 @@ public class TimeUtils$CountdownTimer
     }
     
     public void startTimer() {
-        if (!this.running && this.mTimer > 1) {
+        if (!this.running && this.mTimer > 0) {
             this.running = true;
             this.netflixActivity.getHandler().postDelayed(this.onEverySecond, 1000L);
         }

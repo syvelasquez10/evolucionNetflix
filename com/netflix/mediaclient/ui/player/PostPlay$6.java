@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import android.content.res.Configuration;
@@ -14,6 +13,7 @@ import com.netflix.model.leafs.PostPlayAction;
 import com.netflix.model.leafs.PostPlayItem;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.logging.client.model.Error;

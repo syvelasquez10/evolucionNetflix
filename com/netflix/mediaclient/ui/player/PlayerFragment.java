@@ -61,13 +61,13 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.os.SystemClock;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.app.DialogFragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsFrag;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
@@ -792,25 +792,26 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
     
     private void showEpisodesFrag() {
         final NetflixActivity netflixActivity = this.getNetflixActivity();
-        if (netflixActivity != null && !AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity) && !EpisodesFrag.isDialogFragmentVisible(netflixActivity, this.mEpisodesFrag)) {
-            if (this.mEpisodesFrag == null) {
-                NetflixDialogFrag mEpisodesFrag;
-                if (BrowseExperience.isKubrick() || BarkerHelper.isInTest((Context)this.getActivity())) {
-                    mEpisodesFrag = BarkerShowDetailsFrag.create(false);
-                }
-                else {
-                    mEpisodesFrag = EpisodesFrag.createEpisodes(this.mAsset.getParentId(), this.mAsset.getPlayableId(), false);
-                }
-                (this.mEpisodesFrag = mEpisodesFrag).onManagerReady(this.getServiceManager(), CommonStatus.OK);
-                this.mEpisodesFrag.setCancelable(true);
-                this.mEpisodesFrag.setStyle(1, 2131427569);
-            }
-            if (this.mEpisodesFrag instanceof BarkerShowDetailsFrag) {
-                ((BarkerShowDetailsFrag)this.mEpisodesFrag).addEpisodeArguments(this.mAsset.getParentId(), this.mAsset.getPlayableId());
-            }
-            this.notifyOthersOfPlayStop();
-            netflixActivity.showDialog(this.mEpisodesFrag);
+        if (netflixActivity == null || AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+            return;
         }
+        if (this.mEpisodesFrag == null) {
+            NetflixDialogFrag mEpisodesFrag;
+            if (BrowseExperience.isKubrick() || BarkerHelper.isInTest((Context)this.getActivity())) {
+                mEpisodesFrag = BarkerShowDetailsFrag.create(false);
+            }
+            else {
+                mEpisodesFrag = EpisodesFrag.createEpisodes(this.mAsset.getParentId(), this.mAsset.getPlayableId(), false);
+            }
+            (this.mEpisodesFrag = mEpisodesFrag).onManagerReady(this.getServiceManager(), CommonStatus.OK);
+            this.mEpisodesFrag.setCancelable(true);
+            this.mEpisodesFrag.setStyle(1, 2131427569);
+        }
+        if (this.mEpisodesFrag instanceof BarkerShowDetailsFrag) {
+            ((BarkerShowDetailsFrag)this.mEpisodesFrag).addEpisodeArguments(this.mAsset.getParentId(), this.mAsset.getPlayableId());
+        }
+        this.notifyOthersOfPlayStop();
+        netflixActivity.showDialog(this.mEpisodesFrag);
     }
     
     private void showLoading() {

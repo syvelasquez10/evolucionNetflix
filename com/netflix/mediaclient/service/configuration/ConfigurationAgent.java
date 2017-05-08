@@ -674,6 +674,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public ABTestConfig$Cell getOnRampConfig() {
+        return this.mABTestConfigOverride.getOnRampConfig();
+    }
+    
+    @Override
     public ABTestConfig$Cell getPhoneOrientationConfig() {
         return this.mABTestConfigOverride.getPhoneOrientationConfig();
     }

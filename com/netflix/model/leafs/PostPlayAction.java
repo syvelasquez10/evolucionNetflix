@@ -11,6 +11,8 @@ import com.google.gson.JsonNull;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import java.util.List;
+import com.netflix.model.branches.FalkorObject;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.falkor.PQL;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
 import java.util.HashMap;
@@ -122,10 +124,16 @@ public class PostPlayAction implements JsonMerger, JsonPopulator, Trackable
     }
     
     public PostPlayVideo getPlayBackVideo() {
-        final List<PostPlayVideo> itemsAsList = (List<PostPlayVideo>)this.proxy.getItemsAsList(PQL.create("videos", this.videoId, "summary"));
-        if (itemsAsList.size() > 0) {
-            return itemsAsList.get(0);
+        final List<FalkorObject> itemsAsList = this.proxy.getItemsAsList(PQL.create("videos", this.videoId, "summary"));
+        if (itemsAsList.size() <= 0) {
+            ErrorLoggingManager.logHandledException("SPY-10641 - Error getting playback video ID: " + this.videoId);
+            return null;
         }
+        final FalkorObject falkorObject = itemsAsList.get(0);
+        if (falkorObject instanceof PostPlayVideo) {
+            return (PostPlayVideo)falkorObject;
+        }
+        ErrorLoggingManager.logHandledException("SPY-10641 - Error casting playback video to the right type ID: " + this.videoId);
         return null;
     }
     

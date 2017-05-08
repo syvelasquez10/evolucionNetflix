@@ -16,6 +16,7 @@ import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 
 public interface INetflixService
 {
@@ -31,6 +32,8 @@ public interface INetflixService
     void createAutoLoginToken(final long p0, final int p1, final int p2);
     
     boolean deleteLocalResource(final String p0);
+    
+    void doOnRampEligibilityAction(final OnRampEligibility$Action p0, final int p1, final int p2);
     
     void editProfile(final String p0, final String p1, final boolean p2, final String p3, final int p4, final int p5);
     

@@ -13,6 +13,7 @@ import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
@@ -181,6 +182,14 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
+    public void doOnRampEligibilityAction(final OnRampEligibility$Action onRampEligibility$Action, final ManagerCallback managerCallback) {
+        if (this.validateService()) {
+            this.mService.doOnRampEligibilityAction(onRampEligibility$Action, this.mClientId, this.addCallback(managerCallback));
+            return;
+        }
+        Log.w("ServiceManager", "doOnRampEligibilityAction:: service is not available");
+    }
+    
     public void editProfile(final String s, final String s2, final boolean b, final String s3, final ManagerCallback managerCallback) {
         if (this.validateService()) {
             this.mService.editProfile(s, s2, b, s3, this.mClientId, this.addCallback(managerCallback));
@@ -201,25 +210,21 @@ public final class ServiceManager implements IServiceManagerAccess
                 return b;
                 // iftrue(Label_0103:, !this.validateService())
                 // iftrue(Label_0073:, !Log.isLoggable())
-            Block_4_Outer:
+                int addCallback = 0;
+            Block_4:
                 while (true) {
-                    final int addCallback;
                     Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                    while (true) {
-                        Label_0073: {
-                            break Label_0073;
-                            this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
-                            b = true;
-                            return b;
-                        }
-                        continue;
+                    Label_0073: {
+                        break Block_4;
                     }
-                    addCallback = this.addCallback(managerCallback);
-                    continue Block_4_Outer;
-                }
-                Label_0103: {
+                    Label_0103:
                     Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
+                    return b;
+                    addCallback = this.addCallback(managerCallback);
+                    continue;
                 }
+                this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                b = true;
                 return b;
             }
             finally {

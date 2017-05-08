@@ -89,6 +89,13 @@ public class ABTestConfiguration
         return this.mABTestConfigData.getMotionBBTestConfig().getCell();
     }
     
+    public ABTestConfig$Cell getOnRampConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getOnRampConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getOnRampConfig().getCell();
+    }
+    
     public ABTestConfig$Cell getPhoneOrientationConfig() {
         if (this.mABTestConfigData == null || this.mABTestConfigData.getPhoneOrientationConfig() == null) {
             return ABTestConfig$Cell.CELL_ONE;

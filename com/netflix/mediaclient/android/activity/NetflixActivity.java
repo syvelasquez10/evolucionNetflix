@@ -15,6 +15,7 @@ import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.widget.Toast;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.app.FragmentTransaction;
@@ -542,7 +543,6 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             if (!b) {
                 break Label_0095;
             }
-        Block_9_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable()) {
@@ -552,15 +552,11 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                     return;
                     // iftrue(Label_0144:, !Log.isLoggable())
                     // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                    Label_0144: {
-                        while (true) {
-                            while (true) {
-                                Log.d("NetflixActivity", "displayServiceAgentDialog " + s);
-                                break Label_0144;
-                                continue Block_9_Outer;
-                            }
-                            continue;
-                        }
+                Label_0144:
+                    while (true) {
+                        Log.d("NetflixActivity", "displayServiceAgentDialog " + s);
+                        break Label_0144;
+                        continue;
                     }
                     this.displayDialog(dialog);
                     return;
@@ -1464,146 +1460,45 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
         }
     }
     
-    public boolean showDialog(final DialogFragment p0) {
-        // 
-        // This method could not be decompiled.
-        // 
-        // Original Bytecode:
-        // 
-        //     0: aload_1        
-        //     1: ifnull          11
-        //     4: aload_0        
-        //     5: invokestatic    com/netflix/mediaclient/util/AndroidUtils.isActivityFinishedOrDestroyed:(Landroid/app/Activity;)Z
-        //     8: ifeq            13
-        //    11: iconst_0       
-        //    12: ireturn        
-        //    13: aload_0        
-        //    14: getfield        com/netflix/mediaclient/android/activity/NetflixActivity.instanceStateSaved:Ljava/util/concurrent/atomic/AtomicBoolean;
-        //    17: astore_2       
-        //    18: aload_2        
-        //    19: monitorenter   
-        //    20: aload_0        
-        //    21: getfield        com/netflix/mediaclient/android/activity/NetflixActivity.instanceStateSaved:Ljava/util/concurrent/atomic/AtomicBoolean;
-        //    24: invokevirtual   java/util/concurrent/atomic/AtomicBoolean.get:()Z
-        //    27: ifeq            43
-        //    30: ldc             "NetflixActivity"
-        //    32: ldc_w           "Instance state has been saved - skipping showing dialog"
-        //    35: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    38: pop            
-        //    39: aload_2        
-        //    40: monitorexit    
-        //    41: iconst_0       
-        //    42: ireturn        
-        //    43: aload_0        
-        //    44: invokevirtual   com/netflix/mediaclient/android/activity/NetflixActivity.getFragmentManager:()Landroid/app/FragmentManager;
-        //    47: invokevirtual   android/app/FragmentManager.beginTransaction:()Landroid/app/FragmentTransaction;
-        //    50: astore_3       
-        //    51: aload_0        
-        //    52: invokevirtual   com/netflix/mediaclient/android/activity/NetflixActivity.getDialogFragment:()Landroid/app/DialogFragment;
-        //    55: astore          4
-        //    57: aload           4
-        //    59: ifnull          103
-        //    62: aload           4
-        //    64: instanceof      Landroid/app/DialogFragment;
-        //    67: ifeq            87
-        //    70: ldc             "NetflixActivity"
-        //    72: ldc_w           "Dismissing previous dialog"
-        //    75: invokestatic    com/netflix/mediaclient/Log.v:(Ljava/lang/String;Ljava/lang/String;)I
-        //    78: pop            
-        //    79: aload           4
-        //    81: checkcast       Landroid/app/DialogFragment;
-        //    84: invokevirtual   android/app/DialogFragment.dismiss:()V
-        //    87: ldc             "NetflixActivity"
-        //    89: ldc_w           "Removing previous dialog"
-        //    92: invokestatic    com/netflix/mediaclient/Log.v:(Ljava/lang/String;Ljava/lang/String;)I
-        //    95: pop            
-        //    96: aload_3        
-        //    97: aload           4
-        //    99: invokevirtual   android/app/FragmentTransaction.remove:(Landroid/app/Fragment;)Landroid/app/FragmentTransaction;
-        //   102: pop            
-        //   103: aload_3        
-        //   104: aconst_null    
-        //   105: invokevirtual   android/app/FragmentTransaction.addToBackStack:(Ljava/lang/String;)Landroid/app/FragmentTransaction;
-        //   108: pop            
-        //   109: ldc             "NetflixActivity"
-        //   111: ldc_w           "Showing dialog"
-        //   114: invokestatic    com/netflix/mediaclient/Log.v:(Ljava/lang/String;Ljava/lang/String;)I
-        //   117: pop            
-        //   118: aload_1        
-        //   119: aload_0        
-        //   120: invokevirtual   com/netflix/mediaclient/android/activity/NetflixActivity.getFragmentManager:()Landroid/app/FragmentManager;
-        //   123: aload_3        
-        //   124: ldc             "frag_dialog"
-        //   126: invokestatic    com/netflix/mediaclient/util/ViewUtils.safeShowDialogFragment:(Landroid/app/DialogFragment;Landroid/app/FragmentManager;Landroid/app/FragmentTransaction;Ljava/lang/String;)V
-        //   129: aload_2        
-        //   130: monitorexit    
-        //   131: iconst_1       
-        //   132: ireturn        
-        //   133: astore_1       
-        //   134: aload_2        
-        //   135: monitorexit    
-        //   136: aload_1        
-        //   137: athrow         
-        //   138: astore_1       
-        //   139: new             Ljava/lang/StringBuilder;
-        //   142: dup            
-        //   143: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   146: ldc_w           "Failed to show dialog, "
-        //   149: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   152: aload_1        
-        //   153: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   156: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   159: astore_1       
-        //   160: ldc             "NetflixActivity"
-        //   162: aload_1        
-        //   163: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   166: pop            
-        //   167: aload_1        
-        //   168: invokestatic    com/netflix/mediaclient/service/logging/error/ErrorLoggingManager.logHandledException:(Ljava/lang/String;)V
-        //   171: aload_2        
-        //   172: monitorexit    
-        //   173: iconst_0       
-        //   174: ireturn        
-        //    Exceptions:
-        //  Try           Handler
-        //  Start  End    Start  End    Type                 
-        //  -----  -----  -----  -----  ---------------------
-        //  20     41     133    138    Any
-        //  43     57     138    175    Ljava/lang/Throwable;
-        //  43     57     133    138    Any
-        //  62     87     138    175    Ljava/lang/Throwable;
-        //  62     87     133    138    Any
-        //  87     103    138    175    Ljava/lang/Throwable;
-        //  87     103    133    138    Any
-        //  103    129    138    175    Ljava/lang/Throwable;
-        //  103    129    133    138    Any
-        //  129    131    133    138    Any
-        //  134    136    133    138    Any
-        //  139    173    133    138    Any
-        // 
-        // The error that occurred was:
-        // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0043:
-        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
-        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-        // 
-        throw new IllegalStateException("An error occurred while decompiling this method.");
+    public boolean showDialog(final DialogFragment dialogFragment) {
+        if (dialogFragment == null || AndroidUtils.isActivityFinishedOrDestroyed(this)) {
+            return false;
+        }
+        final DialogFragment dialogFragment2 = this.getDialogFragment();
+        if (dialogFragment2 != null && dialogFragment2.isVisible()) {
+            final String string = "SPY-10201, Dialog fragment already visible (" + this.getDialogFragment() + ") while trying to display " + dialogFragment + ". There should only be one visible at time.";
+            Log.w("NetflixActivity", string);
+            ErrorLoggingManager.logHandledException(new IllegalArgumentException(string));
+            return true;
+        }
+        synchronized (this.instanceStateSaved) {
+            if (this.instanceStateSaved.get()) {
+                Log.d("NetflixActivity", "Instance state has been saved - skipping showing dialog");
+                return false;
+            }
+            try {
+                final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
+                final DialogFragment dialogFragment3 = this.getDialogFragment();
+                if (dialogFragment3 != null) {
+                    if (dialogFragment3 instanceof DialogFragment) {
+                        Log.v("NetflixActivity", "Dismissing previous dialog");
+                        dialogFragment3.dismiss();
+                    }
+                    Log.v("NetflixActivity", "Removing previous dialog");
+                    beginTransaction.remove((Fragment)dialogFragment3);
+                }
+                beginTransaction.addToBackStack((String)null);
+                Log.v("NetflixActivity", "Showing dialog");
+                ViewUtils.safeShowDialogFragment(dialogFragment, this.getFragmentManager(), beginTransaction, "frag_dialog");
+                return true;
+            }
+            catch (Throwable t) {
+                final String string2 = "Failed to show dialog, " + t;
+                Log.e("NetflixActivity", string2);
+                ErrorLoggingManager.logHandledException(string2);
+                return false;
+            }
+        }
     }
     
     public void showFetchErrorsToast() {

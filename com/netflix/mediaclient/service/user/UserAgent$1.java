@@ -14,6 +14,7 @@ import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
+import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;

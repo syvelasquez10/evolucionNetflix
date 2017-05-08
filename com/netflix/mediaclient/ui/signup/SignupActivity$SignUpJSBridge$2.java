@@ -6,11 +6,11 @@ package com.netflix.mediaclient.ui.signup;
 
 import com.netflix.mediaclient.Log;
 
-class SignupActivity$NFAndroidJS$2 implements Runnable
+class SignupActivity$SignUpJSBridge$2 implements Runnable
 {
-    final /* synthetic */ SignupActivity$NFAndroidJS this$1;
+    final /* synthetic */ SignupActivity$SignUpJSBridge this$1;
     
-    SignupActivity$NFAndroidJS$2(final SignupActivity$NFAndroidJS this$1) {
+    SignupActivity$SignUpJSBridge$2(final SignupActivity$SignUpJSBridge this$1) {
         this.this$1 = this$1;
     }
     
